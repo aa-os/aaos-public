@@ -1,0 +1,21 @@
+source_url: "https://github.com/marketplace/threatrix"
+source_name: "Threatrix"
+source_type: "supply-chain-tool"
+claimed_capability: "Provides open-source risk, dependency, SBOM, license, and software supply-chain security signals."
+aaos_layer_mapping:
+  - L4.5
+  - L5
+  - L6
+evidence_produced:
+  - dependency_risk_findings
+  - sbom_artifact
+  - license_risk_record
+  - vulnerability_findings
+  - supply_chain_risk_summary
+decision_boundary: "Threatrix may produce supply-chain evidence candidates, but it must not approve releases, accept license risk, define risk appetite, waive vulnerabilities, or close compliance review."
+not_authority_statement: "Supply-chain finding is not release approval."
+risk_if_misclassified: "Scanner output could be incorrectly treated as release permission, compliance proof, license clearance, or vulnerability waiver."
+required_admission_record: "threatrix_radar_admission_record.json"
+required_replay_or_audit_evidence: "threatrix_supply_chain_replay_packet.json"
+proposed_adapter_issue: "AAOS × Threatrix Supply Chain Evidence Governance Adapter Pack"
+status: "candidate"

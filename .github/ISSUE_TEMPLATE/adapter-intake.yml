@@ -1,0 +1,133 @@
+name: AAOS Adapter Intake
+description: Admit an external tool, scanner, runtime, model, MCP server, or framework as an AAOS governed signal.
+title: "Add AAOS × [Source Name] Governance Adapter"
+labels:
+  - governance-adapter
+  - adapter-intake
+  - evidence-governance
+body:
+  - type: input
+    id: source_url
+    attributes:
+      label: Source URL
+      description: Link to the external source.
+    validations:
+      required: true
+  - type: input
+    id: source_name
+    attributes:
+      label: Source Name
+      description: Name of the tool, runtime, scanner, model, MCP server, or framework.
+    validations:
+      required: true
+  - type: dropdown
+    id: source_type
+    attributes:
+      label: Source Type
+      options:
+        - label: model-runtime
+          value: model-runtime
+        - label: local-runtime
+          value: local-runtime
+        - label: distributed-inference
+          value: distributed-inference
+        - label: scanner
+          value: scanner
+        - label: github-action
+          value: github-action
+        - label: mcp-server
+          value: mcp-server
+        - label: agent-framework
+          value: agent-framework
+        - label: repository-intelligence
+          value: repository-intelligence
+        - label: supply-chain-tool
+          value: supply-chain-tool
+        - label: audit-tool
+          value: audit-tool
+        - label: other
+          value: other
+    validations:
+      required: true
+  - type: textarea
+    id: claimed_capability
+    attributes:
+      label: Claimed Capability
+      description: What the source claims to do.
+    validations:
+      required: true
+  - type: checkboxes
+    id: aaos_layer_mapping
+    attributes:
+      label: AAOS Layer Mapping
+      options:
+        - label: L3 Model / Runtime
+          value: L3
+        - label: L4 Tool / Data Execution
+          value: L4
+        - label: L4.5 Evidence Adapter
+          value: L4.5
+        - label: L5 Memory / Reconstruction Candidate
+          value: L5
+        - label: L6 Verification / Audit Input
+          value: L6
+    validations:
+      required: true
+  - type: textarea
+    id: evidence_produced
+    attributes:
+      label: Evidence Produced
+      description: Logs, reports, findings, traces, SBOMs, metrics, attestations, replay inputs, or other evidence artifacts.
+    validations:
+      required: true
+  - type: textarea
+    id: decision_boundary
+    attributes:
+      label: Decision Boundary
+      value: |
+        This source must not define business intent, risk appetite, identity trust chain, approval doctrine, decision router logic, fail-closed rules, escalation semantics, or risk calibration thresholds.
+    validations:
+      required: true
+  - type: textarea
+    id: not_authority_statement
+    attributes:
+      label: Not Authority Statement
+      value: |
+        This source is an evidence candidate, not a governance authority.
+    validations:
+      required: true
+  - type: textarea
+    id: risk_if_misclassified
+    attributes:
+      label: Risk if Misclassified as Authority
+    validations:
+      required: true
+  - type: textarea
+    id: admission_record
+    attributes:
+      label: Required Admission Record
+    validations:
+      required: true
+  - type: textarea
+    id: replay_audit_evidence
+    attributes:
+      label: Required Replay / Audit Evidence
+    validations:
+      required: true
+  - type: dropdown
+    id: proposed_status
+    attributes:
+      label: Proposed Status
+      options:
+        - label: candidate
+          value: candidate
+        - label: admitted-with-constraints
+          value: admitted-with-constraints
+        - label: review-required
+          value: review-required
+        - label: rejected
+          value: rejected
+        - label: deferred
+          value: deferred
+    validations:
+      required: true
