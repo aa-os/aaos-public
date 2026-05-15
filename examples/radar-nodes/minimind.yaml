@@ -1,0 +1,3 @@
+description: |
+  This directory contains tests for governance contracts, schemas, and runtime evaluators.
+  Tests should verify that external sources remain evidence candidates and do not become governance authorities.

@@ -1,0 +1,21 @@
+source_url: "https://github.com/marketplace/ecc-tools"
+source_name: "ECC Tools"
+source_type: "repository-intelligence"
+claimed_capability: "Analyzes repository history, code structure, workflow patterns, and agent-related configuration to produce repo-specific skills, guardrails, rollout plans, and agent workflow recommendations."
+aaos_layer_mapping:
+  - L4.5
+  - L5
+  - L6
+evidence_produced:
+  - repository_history_summary
+  - code_structure_analysis
+  - workflow_pattern_record
+  - agent_configuration_findings
+  - rollout_recommendation_record
+decision_boundary: "ECC Tools may produce repository intelligence and agent workflow evidence, but it must not approve agent execution, define governance policy, authorize production changes, or close audit findings."
+not_authority_statement: "Repository intelligence is not agent execution authority."
+risk_if_misclassified: "Repo analysis could be incorrectly treated as approval to modify workflows, introduce agent behavior, change hooks, or roll out coding agents without AAOS governance review."
+required_admission_record: "ecc_tools_radar_admission_record.json"
+required_replay_or_audit_evidence: "ecc_tools_repository_intelligence_replay_packet.json"
+proposed_adapter_issue: "AAOS × ECC Tools AI Coding Agent Workflow Governance Adapter Pack"
+status: "candidate"

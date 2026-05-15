@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aa-os.org/schemas/radar-node.schema.json",
+  "title": "AAOS Radar Node",
+  "type": "object",
+  "properties": {
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "source_name": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "model-runtime",
+        "local-runtime",
+        "distributed-inference",
+        "scanner",
+        "github-action",
+        "mcp-server",
+        "agent-framework",
+        "repository-intelligence",
+        "supply-chain-tool",
+        "audit-tool",
+        "web-audit",
+        "memory-source",
+        "reconstruction-candidate",
+        "other"
+      ]
+    },
+    "claimed_capability": {
+      "type": "string"
+    },
+    "aaos_layer_mapping": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["L3", "L4", "L4.5", "L5", "L6"]
+      },
+      "minItems": 1
+    },
+    "evidence_produced": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "decision_boundary": {
+      "type": "string"
+    },
+    "not_authority_statement": {
+      "type": "string"
+    },
+    "risk_if_misclassified": {
+      "type": "string"
+    },
+    "required_admission_record": {
+      "type": "string"
+    },
+    "required_replay_or_audit_evidence": {
+      "type": "string"
+    },
+    "proposed_adapter_issue": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["candidate", "admitted-with-constraints", "review-required", "rejected", "deferred"]
+    }
+  },
+  "required": [
+    "source_url",
+    "source_name",
+    "source_type",
+    "aaos_layer_mapping",
+    "evidence_produced",
+    "decision_boundary",
+    "not_authority_statement",
+    "risk_if_misclassified",
+    "required_admission_record",
+    "required_replay_or_audit_evidence",
+    "status"
+  ]
+}
