@@ -1,0 +1,56 @@
+title: DS4 Local Runtime Governance Boundary Contract
+summary: >
+  This contract defines the governance boundary for ds4 local runtime evidence within AAOS.
+source:
+  url: https://github.com/antirez/ds4
+  name: ds4 / DwarfStar 4
+  type: local-runtime
+governance_boundary:
+  - DS4 is an evidence candidate, not a governance authority.
+  - DS4 is not AAOS policy.
+  - DS4 is not identity authority.
+  - DS4 is not decision approval authority.
+  - DS4 is not audit closure.
+  - DS4 is not risk acceptance.
+aaos_layer_mapping:
+  maps_to:
+    - L3 Local Runtime Candidate
+    - L4 Runtime Execution Substrate
+    - L4.5 Evidence Adapter
+  must_not_map_to:
+    - L0 Governance / Business Intent
+    - L1 Policy / Identity Authority
+    - L2 Control / Decision Authority
+core_invariants:
+  - Local runtime output is not governance authority.
+  - Local inference is not sovereignty proof.
+  - Evidence from ds4 is not audit closure.
+  - Runtime capability is not policy authority.
+  - Runtime trace is not verification authority.
+  - Model runtime output is not production execution permission.
+  - Local model evidence is not risk acceptance.
+  - White-box runtime access is not safety proof.
+  - Inference output is not decision approval.
+  - Runtime evidence is not AAOS L0/L1/L2 authority.
+decision_boundary: >
+  The runtime may provide evidence and trace data, but it must not define governance policy,
+  approval authority, production execution permission, risk acceptance, or audit closure.
+required_boundary_records:
+  - ds4_runtime_admission_record.json
+  - ds4_replay_packet.json
+  - ds4_model_identity_record.json
+  - ds4_runtime_configuration_snapshot.json
+  - ds4_prompt_response_trace.json
+fail_closed_conditions:
+  - ds4 output is used as governance decision authority
+  - ds4 evidence is used to bypass AAOS policy or approval chains
+  - ds4 is treated as verification or audit authority
+  - runtime output is used to authorize external action without higher-layer approval
+  - evidence lacks source/version, model identity, runtime config, or replay binding
+non_goals:
+  - make ds4 a governance authority
+  - treat local inference as compliance proof
+  - treat ds4 runtime evidence as risk acceptance
+  - define or approve production deployment
+  - close audits or reviews
+status: candidate

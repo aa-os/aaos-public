@@ -1,0 +1,59 @@
+title: DS4 Governance Admission Contract
+summary: >
+  This contract defines the admission rules for ds4 as an AAOS local runtime evidence source.
+source:
+  url: https://github.com/antirez/ds4
+  name: ds4 / DwarfStar 4
+  type: local-runtime
+purpose: >
+  Ensure ds4 is treated as a runtime evidence subject rather than a governance authority.
+  Define the evidence required for admission, required bindings, and fail-closed conditions.
+admission_criteria:
+  - runtime admission record bound to ds4 source, version, and environment
+  - model identity and variant metadata
+  - runtime configuration snapshot
+  - inference prompt/response trace
+  - replay or audit evidence capable of reproducing the runtime event
+  - explicit admission decision, reason codes, and human reviewer binding
+required_evidence_records:
+  - ds4_runtime_admission_record.json
+  - ds4_model_identity_record.json
+  - ds4_runtime_configuration_snapshot.json
+  - ds4_prompt_response_trace.json
+  - ds4_replay_packet.json
+required_binding_fields:
+  - source version
+  - model identity
+  - model variant
+  - runtime environment
+  - runtime configuration
+  - execution timestamp
+  - input hash
+  - output hash
+  - trace ID
+  - admission decision
+  - human reviewer
+  - reason codes
+governance_assertion: >
+  DS4 runtime evidence is admitted as local runtime evidence. Admission does not make ds4
+  a governance authority, nor does it approve production execution or accept risk on behalf
+  of AAOS.fail_closed_conditions:
+  - ds4 output is treated as governance decision or approval authority
+  - required admission records are missing or incomplete
+  - bindings between runtime evidence and source/model/configuration are absent
+  - replay evidence is missing, incomplete, or irreproducible
+  - admission decision is absent, ambiguous, or not reviewable
+  - ds4 metadata is not tied to a specific version and runtime environment
+decision_outcomes:
+  - admit_with_constraints
+  - review_required
+  - reject
+  - fail_closed
+  - allow_with_recorded_exception
+non_goals:
+  - implement ds4 itself
+  - define AAOS policy or business intent
+  - waive governance requirements
+  - treat ds4 runtime output as audit closure
+  - approve external action without higher-layer authority
+status: candidate
