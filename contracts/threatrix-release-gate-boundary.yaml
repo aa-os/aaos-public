@@ -1,0 +1,84 @@
+contract_id: threatrix_release_gate_boundary
+contract_version: "0.1.0"
+adapter: threatrix
+boundary_type: release_gate
+
+purpose: >
+  Define how Threatrix supply-chain evidence may be routed into a release
+  gate without becoming release authority.
+
+release_gate_rule: >
+  Threatrix findings are release-gate inputs only. Release approval requires
+  AAOS authority binding, policy evaluation, exception governance where
+  applicable, and replayable evidence.
+
+required_release_gate_inputs:
+  - threatrix_admission_record
+  - dependency_inventory_record
+  - sbom_record
+  - vulnerability_findings_record
+  - license_risk_record
+  - policy_mapping_record
+  - remediation_or_exception_record
+  - human_review_record
+  - admission_decision
+  - reason_codes
+
+release_blocking_conditions:
+  - critical_vulnerability_without_exception
+  - prohibited_license_without_approval
+  - missing_sbom_binding
+  - missing_commit_sha
+  - missing_build_id
+  - missing_artifact_id
+  - missing_human_review_for_release_use
+  - waiver_without_expiration
+  - waiver_without_authority_binding
+  - non_replayable_scan_evidence
+
+waiver_requirements:
+  waiver_must_be:
+    - finding_bound
+    - scope_bound
+    - time_bound
+    - authority_bound
+    - replayable
+    - revocable
+  required_fields:
+    - waiver_id
+    - finding_id
+    - waiver_type
+    - requested_by
+    - approved_by
+    - approval_role
+    - approval_timestamp
+    - scope
+    - expiration
+    - compensating_controls
+    - residual_risk_statement
+    - revalidation_required
+
+forbidden_release_interpretations:
+  - scanner_clean_means_release_approved
+  - sbom_exists_means_supply_chain_sovereign
+  - no_findings_means_safe
+  - risk_score_means_risk_accepted
+  - waiver_request_means_waiver_granted
+  - evidence_record_means_audit_closed
+
+decision_outcomes:
+  admit_with_constraints:
+    required_reason_codes:
+      - scanner_output_not_release_approval
+      - evidence_bound_to_commit_build_artifact
+  review_required:
+    trigger_conditions:
+      - high_or_critical_finding_present
+      - license_policy_review_required
+      - transitive_dependency_exposure_detected
+  fail_closed:
+    trigger_conditions:
+      - release_approval_confusion_detected
+      - waiver_without_authority_binding
+      - sbom_missing_binding
+      - critical_finding_without_exception_or_remediation
