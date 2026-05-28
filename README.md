@@ -76,3 +76,18 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 Current baseline:
 
 AAOS Public now includes the Governance Radar foundation, first adapter skeletons, and contract/schema hardening for representative runtime and supply-chain evidence adapters.
+## Current Status
+
+M1, M2, and M3 are complete.
+
+AAOS Public now has:
+
+- external signal admission documentation
+- radar node schema
+- adapter intake template
+- sample radar nodes
+- first adapter skeletons
+- ds4 contract/schema hardening
+- Threatrix contract/schema hardening
+
+Next phase should focus on deterministic evaluators, tests, and CI gates.
