@@ -1,0 +1,54 @@
+contract_id: threatrix_supply_chain_evidence_boundary
+contract_version: "0.1.0"
+adapter: threatrix
+boundary_type: supply_chain_evidence
+
+core_invariants:
+  - scanner_finding_is_not_release_approval
+  - sbom_existence_is_not_supply_chain_sovereignty
+  - vulnerability_detection_is_not_vulnerability_remediation
+  - license_finding_is_not_license_clearance
+  - dependency_inventory_is_not_dependency_trust
+  - risk_score_is_not_risk_acceptance
+  - open_source_reputation_signal_is_not_procurement_approval
+  - transitive_dependency_visibility_is_not_transitive_dependency_control
+  - compliance_evidence_is_not_compliance_closure
+  - threatrix_is_evidence_source_not_l0_l1_l2_authority
+
+evidence_categories:
+  - dependency_inventory
+  - sbom_artifact
+  - vulnerability_finding
+  - license_risk
+  - transitive_dependency_exposure
+  - open_source_reputation_signal
+  - policy_mapping
+  - exception_request
+  - remediation_plan
+  - release_gate_input
+  - audit_input
+
+required_evidence_properties:
+  commit_bound: true
+  build_bound: true
+  artifact_bound: true
+  scanner_version_bound: true
+  timestamp_bound: true
+  replayable: true
+  human_review_required_for_release_use: true
+
+misclassification_risks:
+  - release_approval_confusion_risk
+  - license_clearance_confusion_risk
+  - vulnerability_waiver_risk
+  - sbom_sovereignty_confusion_risk
+  - stale_dependency_evidence_risk
+  - transitive_dependency_blind_spot_risk
+  - critical_finding_suppression_risk
+  - unbound_scan_artifact_risk
+  - policy_mapping_drift_risk
+  - scanner_output_overtrust_risk
+
+decision_boundary: >
+  Threatrix evidence may inform AAOS review, but it must not approve,
+  waive, clear, release, procure, or close governance decisions.

@@ -1,0 +1,81 @@
+contract_id: threatrix_admission_contract
+contract_version: "0.1.0"
+adapter: threatrix
+adapter_type: supply_chain_evidence
+aaos_layers:
+  - L4.5
+  - L5
+  - L6
+
+purpose: >
+  Admit Threatrix as a supply-chain, dependency, SBOM, vulnerability,
+  license-risk, and open-source risk evidence source.
+
+not_authority_statement: >
+  Threatrix output is supply-chain evidence, not release approval,
+  compliance closure, vulnerability waiver, license clearance,
+  procurement approval, audit closure, or governance authority.
+
+allowed_roles:
+  - evidence_candidate
+  - dependency_inventory_source
+  - sbom_evidence_source
+  - vulnerability_evidence_source
+  - license_risk_evidence_source
+  - replay_input
+  - audit_input
+
+forbidden_roles:
+  - release_authority
+  - compliance_authority
+  - vulnerability_waiver_authority
+  - license_clearance_authority
+  - procurement_authority
+  - policy_authority
+  - identity_authority
+  - decision_authority
+  - audit_closure_authority
+
+required_bindings:
+  - repository
+  - repository_owner
+  - branch
+  - commit_sha
+  - build_id
+  - artifact_id
+  - package_ecosystem
+  - scanner_version
+  - scan_timestamp
+  - finding_ids
+  - admission_decision
+  - reason_codes
+
+admission_decisions:
+  - admit_with_constraints
+  - review_required
+  - reject
+  - fail_closed
+  - allow_with_recorded_exception
+
+fail_closed_conditions:
+  - scanner_output_treated_as_release_approval
+  - license_risk_accepted_without_authority
+  - vulnerability_waived_without_authority_binding
+  - sbom_missing_commit_or_build_binding
+  - critical_finding_without_remediation_or_exception
+  - evidence_stale_partial_or_non_replayable
+  - scanner_absence_treated_as_clean_state
+
+l0_l1_l2_sovereignty_boundary:
+  external_source_must_not_define:
+    - business_intent
+    - risk_appetite
+    - identity_trust_chain
+    - approval_doctrine
+    - release_approval_authority
+    - vulnerability_waiver_authority
+    - license_risk_acceptance_authority
+    - decision_router_logic
+    - fail_closed_rules
+    - escalation_semantics
+    - risk_calibration_thresholds
