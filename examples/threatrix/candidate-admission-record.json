@@ -1,0 +1,21 @@
+{
+  "record_id": "threatrix-candidate-admission-001",
+  "source_name": "Threatrix",
+  "source_version": "candidate",
+  "repository": "aa-os/aaos-public",
+  "branch": "main",
+  "commit_sha": "example-commit-sha",
+  "build_id": "example-build-id",
+  "artifact_id": "example-artifact-id",
+  "sbom_format": "spdx-json",
+  "sbom_hash": "sha256:example",
+  "scan_timestamp": "2026-05-28T00:00:00Z",
+  "package_ecosystems": ["npm", "python"],
+  "not_authority_statement": "SBOM existence is not supply-chain sovereignty. Threatrix evidence is not release approval.",
+  "admission_decision": "admit_with_constraints",
+  "reason_codes": [
+    "sbom_bound_to_commit_build_artifact",
+    "scanner_output_not_release_approval",
+    "human_review_required_for_release_use"
+  ]
+}

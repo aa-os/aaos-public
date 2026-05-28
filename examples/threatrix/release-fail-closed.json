@@ -1,0 +1,21 @@
+{
+  "record_id": "threatrix-release-fail-closed-001",
+  "source_name": "Threatrix",
+  "source_version": "candidate",
+  "repository": "aa-os/aaos-public",
+  "commit_sha": "example-commit-sha",
+  "package_name": "example-package",
+  "package_version": "1.0.0",
+  "fixed_version": "1.0.1",
+  "severity": "critical",
+  "exploitability_signal": "known_exploit_available",
+  "scanner_timestamp": "2026-05-28T00:00:00Z",
+  "remediation_status": "open",
+  "not_authority_statement": "Vulnerability finding is not vulnerability waiver. Scanner output is not release approval.",
+  "admission_decision": "fail_closed",
+  "reason_codes": [
+    "critical_vulnerability_without_exception",
+    "release_gate_requires_authority_binding",
+    "scanner_output_treated_as_release_approval_blocked"
+  ]
+}
