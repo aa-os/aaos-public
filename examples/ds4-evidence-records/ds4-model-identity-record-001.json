@@ -1,0 +1,39 @@
+{
+  "record_id": "ds4-model-001-2026-05-28",
+  "record_timestamp": "2026-05-28T14:30:00Z",
+  "model_identity": "deepseek-v4-flash",
+  "model_variant": "int4-quantized",
+  "weights_reference": {
+    "reference_type": "huggingface_hub",
+    "reference_value": "deepseek-ai/deepseek-llm-7b-chat-int4",
+    "content_hash": "sha256:7e2d3f8a9c1b4e6d2a5f8c3b9e1a4d6c"
+  },
+  "model_source": {
+    "source_url": "https://huggingface.co/deepseek-ai/deepseek-llm-7b-chat",
+    "license": "DEEPSEEK Model License",
+    "original_author": "DeepSeek Team"
+  },
+  "quantization": {
+    "quantization_scheme": "int4",
+    "quantization_timestamp": "2026-05-20T09:15:00Z",
+    "quantization_tool": "llama.cpp with k-quants",
+    "quantization_parameters": {
+      "type": "nf4",
+      "groupsize": 64,
+      "desc_act": true,
+      "mcu_mbn": false
+    }
+  },
+  "architecture": {
+    "model_type": "llm",
+    "parameter_count": 7.0,
+    "context_window": 4096,
+    "vocabulary_size": 100257
+  },
+  "training_reference": {
+    "training_date": "2024-11-01",
+    "training_data_cutoff": "2024-08-01",
+    "fine_tuning_applied": true,
+    "fine_tuning_reference": "instruction_tuning_v2_2024"
+  }
+}

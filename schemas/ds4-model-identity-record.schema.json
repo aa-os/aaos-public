@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aa-os.org/schemas/ds4-model-identity-record.schema.json",
+  "title": "DS4 Model Identity Record",
+  "description": "Model identity and metadata record for ds4 runtime evidence",
+  "type": "object",
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "description": "Unique model identity record identifier"
+    },
+    "record_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "model_identity": {
+      "type": "string",
+      "description": "e.g., deepseek-v4-flash"
+    },
+    "model_variant": {
+      "type": "string",
+      "description": "e.g., int4-quantized, int8-quantized"
+    },
+    "weights_reference": {
+      "type": "object",
+      "properties": {
+        "reference_type": {
+          "type": "string",
+          "enum": ["huggingface_hub", "local_path", "checkpoint_hash", "uri"]
+        },
+        "reference_value": {
+          "type": "string"
+        },
+        "content_hash": {
+          "type": "string",
+          "description": "SHA256 hash of weights"
+        }
+      },
+      "required": ["reference_type", "reference_value"]
+    },
+    "model_source": {
+      "type": "object",
+      "properties": {
+        "source_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "license": {
+          "type": "string"
+        },
+        "original_author": {
+          "type": "string"
+        }
+      }
+    },
+    "quantization": {
+      "type": "object",
+      "properties": {
+        "quantization_scheme": {
+          "type": "string",
+          "description": "e.g., int4, int8, fp16"
+        },
+        "quantization_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "quantization_tool": {
+          "type": "string"
+        },
+        "quantization_parameters": {
+          "type": "object",
+          "description": "Tool-specific quantization parameters"
+        }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "properties": {
+        "model_type": {
+          "type": "string",
+          "description": "e.g., llm, vision, multimodal"
+        },
+        "parameter_count": {
+          "type": "number",
+          "description": "Total parameters in billions"
+        },
+        "context_window": {
+          "type": "number",
+          "description": "Maximum context length in tokens"
+        },
+        "vocabulary_size": {
+          "type": "number"
+        }
+      }
+    },
+    "training_reference": {
+      "type": "object",
+      "properties": {
+        "training_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "training_data_cutoff": {
+          "type": "string",
+          "format": "date"
+        },
+        "fine_tuning_applied": {
+          "type": "boolean"
+        },
+        "fine_tuning_reference": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "record_id",
+    "record_timestamp",
+    "model_identity",
+    "model_variant",
+    "weights_reference"
+  ]
+}

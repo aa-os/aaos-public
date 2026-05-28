@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aa-os.org/schemas/ds4-prompt-response-trace.schema.json",
+  "title": "DS4 Prompt Response Trace",
+  "description": "Inference trace record containing prompt, response, and execution metadata",
+  "type": "object",
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "description": "Unique trace record identifier"
+    },
+    "trace_id": {
+      "type": "string",
+      "description": "Unique identifier for this inference execution"
+    },
+    "execution_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "prompt": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Complete prompt text"
+        },
+        "format": {
+          "type": "string",
+          "enum": ["text", "json", "multipart"]
+        },
+        "content_hash": {
+          "type": "string",
+          "description": "SHA256 hash of prompt content"
+        },
+        "token_count": {
+          "type": "number"
+        },
+        "system_prompt": {
+          "type": "string"
+        }
+      },
+      "required": ["content"]
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Complete response text"
+        },
+        "content_hash": {
+          "type": "string",
+          "description": "SHA256 hash of response content"
+        },
+        "token_count": {
+          "type": "number"
+        },
+        "finish_reason": {
+          "type": "string",
+          "enum": ["stop", "length", "tool_calls", "error"]
+        }
+      },
+      "required": ["content"]
+    },
+    "inference_parameters": {
+      "type": "object",
+      "properties": {
+        "temperature": {
+          "type": "number"
+        },
+        "top_p": {
+          "type": "number"
+        },
+        "top_k": {
+          "type": "number"
+        },
+        "max_tokens": {
+          "type": "number"
+        }
+      }
+    },
+    "execution_metrics": {
+      "type": "object",
+      "properties": {
+        "total_duration_ms": {
+          "type": "number"
+        },
+        "prompt_processing_ms": {
+          "type": "number"
+        },
+        "generation_ms": {
+          "type": "number"
+        },
+        "tokens_per_second": {
+          "type": "number"
+        },
+        "memory_used_mb": {
+          "type": "number"
+        }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "properties": {
+        "model_identity": {
+          "type": "string"
+        },
+        "model_variant": {
+          "type": "string"
+        },
+        "runtime_version": {
+          "type": "string"
+        },
+        "configuration_hash": {
+          "type": "string"
+        },
+        "hardware_profile": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "record_id",
+    "trace_id",
+    "execution_timestamp",
+    "prompt",
+    "response"
+  ]
+}
