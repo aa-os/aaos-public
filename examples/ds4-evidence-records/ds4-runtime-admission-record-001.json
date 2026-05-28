@@ -1,0 +1,49 @@
+{
+  "record_id": "ds4-admission-001-2026-05-28",
+  "record_timestamp": "2026-05-28T14:32:45Z",
+  "source_binding": {
+    "source_url": "https://github.com/antirez/ds4",
+    "source_name": "ds4 / DwarfStar 4",
+    "source_type": "local-runtime",
+    "source_version": "3f8c2e1a5d9b7c4e2a1f8d3b6c9e2a1f (2026-05-15)"
+  },
+  "model_binding": {
+    "model_identity": "deepseek-v4-flash",
+    "model_variant": "int4-quantized",
+    "weights_reference": "sha256:7e2d3f8a9c1b4e6d2a5f8c3b9e1a4d6c",
+    "quantization_profile": "int4-nf4-per-group-64"
+  },
+  "runtime_binding": {
+    "runtime_environment": "macOS 14.6 with Metal acceleration",
+    "runtime_configuration_hash": "sha256:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
+    "hardware_profile": "Apple Silicon M2 Pro with 16GB unified memory",
+    "execution_timestamp": "2026-05-28T14:30:15Z"
+  },
+  "evidence_binding": {
+    "input_hash": "sha256:b9e8d7c6f5a4e3d2c1b0a9f8e7d6c5b4",
+    "output_hash": "sha256:f4e3d2c1b0a9f8e7d6c5b4a3e2d1c0b9",
+    "trace_id": "trace-20260528-143015-uuid-9876543210"
+  },
+  "governance_decision": {
+    "admission_status": "admit_with_constraints",
+    "decision_timestamp": "2026-05-28T14:32:45Z",
+    "human_reviewer": "alice@aa-os.org",
+    "reason_codes": [
+      "REC_001_SOURCE_VERSION_MATCHED",
+      "REC_002_MODEL_WEIGHTS_VERIFIED",
+      "REC_003_RUNTIME_CONFIG_REPRODUCIBLE",
+      "REC_004_TRACE_BINDING_COMPLETE"
+    ],
+    "constraints": [
+      "Evidence limited to local inference context only",
+      "Not valid for production authorization decisions",
+      "Requires replay verification before use in governance decisions"
+    ]
+  },
+  "required_records": {
+    "model_identity_record_binding": "examples/ds4-evidence-records/ds4-model-identity-record-001.json",
+    "runtime_configuration_binding": "examples/ds4-evidence-records/ds4-runtime-configuration-snapshot-001.json",
+    "prompt_response_trace_binding": "examples/ds4-evidence-records/ds4-prompt-response-trace-001.json",
+    "replay_packet_binding": "examples/ds4-evidence-records/ds4-replay-packet-001.json"
+  }
+}

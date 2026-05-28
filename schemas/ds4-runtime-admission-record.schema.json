@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aa-os.org/schemas/ds4-runtime-admission-record.schema.json",
+  "title": "DS4 Runtime Admission Record",
+  "description": "Admission record for ds4 local runtime evidence. Binds runtime execution to source version, model identity, configuration, and governance decision.",
+  "type": "object",
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "description": "Unique admission record identifier"
+    },
+    "record_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when record was created"
+    },
+    "source_binding": {
+      "type": "object",
+      "properties": {
+        "source_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "source_name": {
+          "type": "string"
+        },
+        "source_type": {
+          "type": "string",
+          "enum": ["local-runtime"]
+        },
+        "source_version": {
+          "type": "string",
+          "description": "Specific commit hash or release tag of ds4"
+        }
+      },
+      "required": ["source_url", "source_name", "source_type", "source_version"]
+    },
+    "model_binding": {
+      "type": "object",
+      "properties": {
+        "model_identity": {
+          "type": "string",
+          "description": "e.g., deepseek-v4-flash"
+        },
+        "model_variant": {
+          "type": "string",
+          "description": "e.g., int4-quantized"
+        },
+        "weights_reference": {
+          "type": "string",
+          "description": "Reference to model weights (hash, checkpoint identifier, or URI)"
+        },
+        "quantization_profile": {
+          "type": "string",
+          "description": "Quantization scheme applied to weights"
+        }
+      },
+      "required": ["model_identity", "model_variant", "weights_reference"]
+    },
+    "runtime_binding": {
+      "type": "object",
+      "properties": {
+        "runtime_environment": {
+          "type": "string",
+          "description": "e.g., macOS with Metal acceleration"
+        },
+        "runtime_configuration_hash": {
+          "type": "string",
+          "description": "Hash of complete runtime configuration snapshot"
+        },
+        "hardware_profile": {
+          "type": "string",
+          "description": "e.g., Apple Silicon M2 Pro"
+        },
+        "execution_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["runtime_environment", "runtime_configuration_hash", "execution_timestamp"]
+    },
+    "evidence_binding": {
+      "type": "object",
+      "properties": {
+        "input_hash": {
+          "type": "string",
+          "description": "Hash of inference input/prompt"
+        },
+        "output_hash": {
+          "type": "string",
+          "description": "Hash of inference output/response"
+        },
+        "trace_id": {
+          "type": "string",
+          "description": "Unique identifier for inference trace"
+        }
+      },
+      "required": ["input_hash", "output_hash", "trace_id"]
+    },
+    "governance_decision": {
+      "type": "object",
+      "properties": {
+        "admission_status": {
+          "type": "string",
+          "enum": ["admit_with_constraints", "review_required", "reject", "fail_closed", "allow_with_recorded_exception"]
+        },
+        "decision_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "human_reviewer": {
+          "type": "string",
+          "description": "Identity of human decision maker"
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Structured reason codes for admission decision"
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Any constraints on use of this evidence"
+        }
+      },
+      "required": ["admission_status", "decision_timestamp", "human_reviewer"]
+    },
+    "required_records": {
+      "type": "object",
+      "properties": {
+        "model_identity_record_binding": {
+          "type": "string",
+          "description": "Reference to ds4_model_identity_record.json"
+        },
+        "runtime_configuration_binding": {
+          "type": "string",
+          "description": "Reference to ds4_runtime_configuration_snapshot.json"
+        },
+        "prompt_response_trace_binding": {
+          "type": "string",
+          "description": "Reference to ds4_prompt_response_trace.json"
+        },
+        "replay_packet_binding": {
+          "type": "string",
+          "description": "Reference to ds4_replay_packet.json"
+        }
+      }
+    }
+  },
+  "required": [
+    "record_id",
+    "record_timestamp",
+    "source_binding",
+    "model_binding",
+    "runtime_binding",
+    "evidence_binding",
+    "governance_decision"
+  ]
+}

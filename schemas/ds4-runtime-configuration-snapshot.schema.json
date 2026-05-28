@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aa-os.org/schemas/ds4-runtime-configuration-snapshot.schema.json",
+  "title": "DS4 Runtime Configuration Snapshot",
+  "description": "Complete runtime configuration snapshot for ds4 local inference execution",
+  "type": "object",
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "description": "Unique configuration snapshot identifier"
+    },
+    "snapshot_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ds4_version": {
+      "type": "string",
+      "description": "Specific version/commit of ds4 runtime"
+    },
+    "runtime_environment": {
+      "type": "object",
+      "properties": {
+        "os": {
+          "type": "string",
+          "description": "Operating system (macOS, Linux, Windows)"
+        },
+        "os_version": {
+          "type": "string"
+        },
+        "architecture": {
+          "type": "string",
+          "description": "Processor architecture (arm64, x86_64)"
+        }
+      },
+      "required": ["os"]
+    },
+    "hardware_configuration": {
+      "type": "object",
+      "properties": {
+        "processor": {
+          "type": "string",
+          "description": "e.g., Apple Silicon M2 Pro, NVIDIA RTX 4090"
+        },
+        "total_memory_gb": {
+          "type": "number"
+        },
+        "available_memory_gb": {
+          "type": "number"
+        },
+        "accelerator_type": {
+          "type": "string",
+          "description": "e.g., Metal, CUDA, OpenCL"
+        },
+        "accelerator_device_id": {
+          "type": "string"
+        }
+      }
+    },
+    "inference_configuration": {
+      "type": "object",
+      "properties": {
+        "model_path": {
+          "type": "string"
+        },
+        "max_tokens": {
+          "type": "number"
+        },
+        "temperature": {
+          "type": "number"
+        },
+        "top_p": {
+          "type": "number"
+        },
+        "top_k": {
+          "type": "number"
+        },
+        "batch_size": {
+          "type": "number"
+        },
+        "num_threads": {
+          "type": "number"
+        },
+        "num_gpu_layers": {
+          "type": "number"
+        }
+      }
+    },
+    "server_configuration": {
+      "type": "object",
+      "properties": {
+        "serving_mode": {
+          "type": "string",
+          "enum": ["openai_compatible", "custom", "cli_inference"]
+        },
+        "listen_address": {
+          "type": "string"
+        },
+        "listen_port": {
+          "type": "number"
+        },
+        "api_version": {
+          "type": "string"
+        },
+        "cors_enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "quantization_configuration": {
+      "type": "object",
+      "properties": {
+        "quantization_scheme": {
+          "type": "string"
+        },
+        "quantization_bits": {
+          "type": "number"
+        }
+      }
+    },
+    "logging_configuration": {
+      "type": "object",
+      "properties": {
+        "log_level": {
+          "type": "string",
+          "enum": ["debug", "info", "warning", "error"]
+        },
+        "trace_enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "security_settings": {
+      "type": "object",
+      "properties": {
+        "tls_enabled": {
+          "type": "boolean"
+        },
+        "authentication_required": {
+          "type": "boolean"
+        },
+        "allowed_origins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "configuration_hash": {
+      "type": "string",
+      "description": "SHA256 hash of complete configuration for reproducibility"
+    }
+  },
+  "required": [
+    "record_id",
+    "snapshot_timestamp",
+    "ds4_version",
+    "runtime_environment",
+    "configuration_hash"
+  ]
+}

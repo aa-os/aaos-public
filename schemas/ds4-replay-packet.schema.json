@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aa-os.org/schemas/ds4-replay-packet.schema.json",
+  "title": "DS4 Replay Packet",
+  "description": "Complete replay packet enabling reproduction of ds4 inference execution for audit and verification",
+  "type": "object",
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "description": "Unique replay packet identifier"
+    },
+    "replay_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "trace_reference": {
+      "type": "object",
+      "properties": {
+        "trace_id": {
+          "type": "string"
+        },
+        "original_execution_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["trace_id"]
+    },
+    "reproducibility_requirements": {
+      "type": "object",
+      "properties": {
+        "ds4_version": {
+          "type": "string",
+          "description": "Exact version/commit for reproduction"
+        },
+        "model_weights_reference": {
+          "type": "string",
+          "description": "Exact model weights hash or checkpoint identifier"
+        },
+        "quantization_config": {
+          "type": "string"
+        },
+        "runtime_configuration_hash": {
+          "type": "string"
+        },
+        "os_requirement": {
+          "type": "string"
+        },
+        "hardware_requirement": {
+          "type": "string",
+          "description": "Specific hardware needed or minimum specifications"
+        }
+      }
+    },
+    "prompt_input": {
+      "type": "object",
+      "properties": {
+        "system_prompt": {
+          "type": "string"
+        },
+        "user_prompt": {
+          "type": "string"
+        },
+        "prompt_content_hash": {
+          "type": "string"
+        },
+        "input_tokens": {
+          "type": "number"
+        }
+      },
+      "required": ["user_prompt"]
+    },
+    "inference_config": {
+      "type": "object",
+      "properties": {
+        "temperature": {
+          "type": "number"
+        },
+        "top_p": {
+          "type": "number"
+        },
+        "top_k": {
+          "type": "number"
+        },
+        "max_tokens": {
+          "type": "number"
+        },
+        "seed": {
+          "type": "number",
+          "description": "RNG seed if determinism needed"
+        }
+      }
+    },
+    "expected_output": {
+      "type": "object",
+      "properties": {
+        "response_content": {
+          "type": "string"
+        },
+        "response_content_hash": {
+          "type": "string"
+        },
+        "output_tokens": {
+          "type": "number"
+        }
+      },
+      "required": ["response_content", "response_content_hash"]
+    },
+    "replay_instructions": {
+      "type": "object",
+      "properties": {
+        "instruction_format": {
+          "type": "string",
+          "description": "Format of replay instructions (bash, python, docker, etc.)"
+        },
+        "instruction_steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reproducibility_status": {
+          "type": "string",
+          "enum": ["deterministic", "stochastic_with_seed", "non_deterministic_documented"]
+        }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "properties": {
+        "created_by": {
+          "type": "string",
+          "description": "Identity of packet creator"
+        },
+        "creation_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verification_status": {
+          "type": "string",
+          "enum": ["verified_reproducible", "verification_pending", "known_non_reproducible"]
+        },
+        "verified_on_date": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "supplementary_data": {
+      "type": "object",
+      "properties": {
+        "intermediate_states": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Checkpoints or intermediate states if available"
+        },
+        "log_output": {
+          "type": "string",
+          "description": "Runtime logs from original execution"
+        },
+        "additional_metadata": {
+          "type": "object",
+          "description": "Any other metadata relevant to reproduction"
+        }
+      }
+    }
+  },
+  "required": [
+    "record_id",
+    "replay_timestamp",
+    "trace_reference",
+    "reproducibility_requirements",
+    "prompt_input",
+    "expected_output"
+  ]
+}

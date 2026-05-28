@@ -1,0 +1,60 @@
+{
+  "record_id": "ds4-replay-001-2026-05-28",
+  "replay_timestamp": "2026-05-28T15:00:00Z",
+  "trace_reference": {
+    "trace_id": "trace-20260528-143015-uuid-9876543210",
+    "original_execution_timestamp": "2026-05-28T14:30:15Z"
+  },
+  "reproducibility_requirements": {
+    "ds4_version": "3f8c2e1a5d9b7c4e2a1f8d3b6c9e2a1f (exact commit)",
+    "model_weights_reference": "sha256:7e2d3f8a9c1b4e6d2a5f8c3b9e1a4d6c (deepseek-llm-7b-chat-int4)",
+    "quantization_config": "int4-nf4-per-group-64",
+    "runtime_configuration_hash": "sha256:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
+    "os_requirement": "macOS 14.6+",
+    "hardware_requirement": "Apple Silicon processor with minimum 14GB available memory"
+  },
+  "prompt_input": {
+    "system_prompt": "You are a helpful AI assistant. Provide clear, concise, and accurate responses.",
+    "user_prompt": "Explain the difference between machine learning and deep learning in 2-3 sentences.",
+    "prompt_content_hash": "sha256:b9e8d7c6f5a4e3d2c1b0a9f8e7d6c5b4",
+    "input_tokens": 18
+  },
+  "inference_config": {
+    "temperature": 0.7,
+    "top_p": 0.95,
+    "top_k": 40,
+    "max_tokens": 2048,
+    "seed": 42
+  },
+  "expected_output": {
+    "response_content": "Machine learning is a broader field where algorithms learn patterns from data without explicit programming. Deep learning is a subset of machine learning that uses neural networks with multiple layers to automatically learn hierarchical representations from raw data. Deep learning is particularly effective for complex tasks like image recognition and natural language processing.",
+    "response_content_hash": "sha256:f4e3d2c1b0a9f8e7d6c5b4a3e2d1c0b9",
+    "output_tokens": 58
+  },
+  "replay_instructions": {
+    "instruction_format": "bash",
+    "instruction_steps": [
+      "git clone https://github.com/antirez/ds4.git && cd ds4",
+      "git checkout 3f8c2e1a5d9b7c4e2a1f8d3b6c9e2a1f",
+      "wget -O deepseek-llm-7b-chat-int4.gguf https://huggingface.co/deepseek-ai/deepseek-llm-7b-chat-int4/resolve/main/model.gguf",
+      "verify model hash: sha256sum deepseek-llm-7b-chat-int4.gguf | grep 7e2d3f8a9c1b4e6d2a5f8c3b9e1a4d6c",
+      "./ds4 -m deepseek-llm-7b-chat-int4.gguf -t 8 -ngl 16 -p 8000 --seed 42",
+      "curl -X POST http://127.0.0.1:8000/v1/chat/completions -H 'Content-Type: application/json' -d '{\"model\": \"deepseek\", \"messages\": [{\"role\": \"system\", \"content\": \"You are a helpful AI assistant. Provide clear, concise, and accurate responses.\"}, {\"role\": \"user\", \"content\": \"Explain the difference between machine learning and deep learning in 2-3 sentences.\"}], \"temperature\": 0.7, \"top_p\": 0.95, \"top_k\": 40, \"max_tokens\": 2048}'"
+    ],
+    "reproducibility_status": "deterministic"
+  },
+  "attestation": {
+    "created_by": "alice@aa-os.org",
+    "creation_timestamp": "2026-05-28T15:00:00Z",
+    "verification_status": "verified_reproducible",
+    "verified_on_date": "2026-05-28"
+  },
+  "supplementary_data": {
+    "intermediate_states": [],
+    "log_output": "[AAOS-20260528] Model loaded: deepseek-llm-7b-chat-int4.gguf\n[AAOS-20260528] Prompt tokens: 18, Context: 36 tokens\n[AAOS-20260528] Generation started, temperature: 0.7\n[AAOS-20260528] Generated 58 tokens in 2100ms at 27.6 tok/s\n[AAOS-20260528] Trace complete: hash f4e3d2c1b0a9f8e7d6c5b4a3e2d1c0b9",
+    "additional_metadata": {
+      "environment_snapshot_timestamp": "2026-05-28T14:30:15Z",
+      "verifier_notes": "Successfully reproduced on identical hardware and software stack."
+    }
+  }
+}
