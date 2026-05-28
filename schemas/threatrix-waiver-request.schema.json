@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aa-os.org/schemas/threatrix-waiver-request.schema.json",
+  "title": "Threatrix Waiver Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "waiver_id",
+    "finding_id",
+    "waiver_type",
+    "requested_by",
+    "approved_by",
+    "approval_role",
+    "approval_timestamp",
+    "scope",
+    "expiration",
+    "compensating_controls",
+    "residual_risk_statement",
+    "revalidation_required",
+    "not_authority_statement",
+    "admission_decision",
+    "reason_codes"
+  ],
+  "properties": {
+    "waiver_id": { "type": "string" },
+    "finding_id": { "type": "string" },
+    "waiver_type": {
+      "type": "string",
+      "enum": ["vulnerability", "license", "dependency", "other"]
+    },
+    "requested_by": { "type": "string" },
+    "approved_by": { "type": "string" },
+    "approval_role": { "type": "string" },
+    "approval_timestamp": { "type": "string" },
+    "scope": { "type": "string" },
+    "expiration": { "type": "string" },
+    "compensating_controls": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "residual_risk_statement": { "type": "string" },
+    "revalidation_required": { "type": "boolean" },
+    "not_authority_statement": { "type": "string" },
+    "admission_decision": {
+      "type": "string",
+      "enum": [
+        "admit_with_constraints",
+        "review_required",
+        "reject",
+        "fail_closed",
+        "allow_with_recorded_exception"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    }
+  }
+}

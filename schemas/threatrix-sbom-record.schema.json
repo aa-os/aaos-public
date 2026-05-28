@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aa-os.org/schemas/threatrix-sbom-record.schema.json",
+  "title": "Threatrix SBOM Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "source_name",
+    "source_version",
+    "repository",
+    "branch",
+    "commit_sha",
+    "build_id",
+    "artifact_id",
+    "sbom_format",
+    "sbom_hash",
+    "scan_timestamp",
+    "not_authority_statement",
+    "admission_decision",
+    "reason_codes"
+  ],
+  "properties": {
+    "record_id": { "type": "string" },
+    "source_name": { "type": "string" },
+    "source_version": { "type": "string" },
+    "repository": { "type": "string" },
+    "branch": { "type": "string" },
+    "commit_sha": { "type": "string" },
+    "build_id": { "type": "string" },
+    "artifact_id": { "type": "string" },
+    "sbom_format": { "type": "string" },
+    "sbom_hash": { "type": "string" },
+    "scan_timestamp": { "type": "string" },
+    "package_ecosystems": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "not_authority_statement": { "type": "string" },
+    "admission_decision": {
+      "type": "string",
+      "enum": [
+        "admit_with_constraints",
+        "review_required",
+        "reject",
+        "fail_closed",
+        "allow_with_recorded_exception"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    }
+  }
+}
