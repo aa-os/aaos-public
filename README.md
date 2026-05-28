@@ -68,3 +68,11 @@ The repository now has the first public AAOS external signal admission path:
 external source → governed signal → radar node → adapter issue → governance adapter skeleton
 
 AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. External tools, runtimes, scanners, and agent frameworks now have a public admission path into AAOS as governed signals, not authorities.
+## Releases
+
+- v0.1.0 — Governance Radar Bootstrap
+- v0.2.0 — Contract & Schema Hardening
+
+Current baseline:
+
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, and contract/schema hardening for representative runtime and supply-chain evidence adapters.
