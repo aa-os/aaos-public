@@ -1,0 +1,158 @@
+contract_id: cloudflare_security_audit_boundary
+contract_version: "0.1.0"
+adapter: cloudflare_security_audit_skill
+adapter_type: security_verification
+aaos_layers:
+  - L6
+
+purpose: >
+  Admit Cloudflare security-audit-skill as an AAOS L6 security verification
+  adapter for security evidence, audit traces, risk findings, release readiness
+  signals, escalation requirements, and replay-ready audit output.
+
+not_authority_statement: >
+  Cloudflare security-audit-skill output is security verification evidence, not
+  governance authority, release authority, business approval, risk acceptance,
+  identity authority, escalation doctrine, decision router logic, audit closure,
+  or final fail-closed policy.
+
+allowed_roles:
+  - security_evidence_verifier
+  - audit_trace_verifier
+  - risk_finding_normalizer
+  - release_gate_signal_source
+  - escalation_requirement_source
+  - replay_input
+  - audit_input
+
+forbidden_roles:
+  - governance_authority
+  - business_intent_authority
+  - risk_appetite_authority
+  - approval_doctrine_authority
+  - identity_trust_authority
+  - decision_router
+  - escalation_semantics_authority
+  - release_authority
+  - audit_closure_authority
+  - fail_closed_policy_authority
+
+verification_scope:
+  may_verify:
+    - security_evidence
+    - audit_traces
+    - risk_findings
+    - release_readiness_signals
+    - escalation_requirements
+    - replay_readiness
+  must_not_define:
+    - business_intent
+    - risk_appetite
+    - approval_doctrine
+    - identity_trust_chain
+    - decision_router_logic
+    - escalation_semantics
+    - final_release_authority
+    - production_fail_closed_policy
+
+required_bindings:
+  - repository
+  - repository_owner
+  - branch
+  - commit_sha
+  - build_id
+  - artifact_id
+  - audit_trace_id
+  - skill_version
+  - verification_timestamp
+  - evidence_hashes
+  - finding_ids
+  - release_gate_signal
+  - human_review_handoff
+  - reason_codes
+
+release_gate_behavior:
+  adapter_output: recommendation_or_trigger_only
+  may_emit:
+    - no_gate_signal
+    - human_review_required
+    - release_gate_triggered
+    - fail_closed_recommended
+  must_not_emit:
+    - release_approved
+    - release_rejected_by_adapter
+    - risk_accepted
+    - waiver_granted
+    - audit_closed
+  decision_owner: aaos_governance_and_release_authority
+
+fail_closed_conditions:
+  adapter_must_emit_fail_closed_signal_when:
+    - security_audit_missing_or_non_replayable
+    - high_or_critical_finding_without_remediation_or_exception_evidence
+    - evidence_not_bound_to_commit_build_or_artifact
+    - audit_trace_missing_timestamp_skill_version_or_input_hash
+    - release_gate_signal_treated_as_final_release_decision
+    - waiver_or_risk_acceptance_claim_without_authority_binding
+    - scanner_absence_treated_as_clean_security_state
+  aaos_retains_policy_authority_for:
+    - final_fail_closed_decision
+    - fail_closed_thresholds
+    - release_block_duration
+    - exception_approval
+    - escalation_semantics
+
+human_review_handoff:
+  required_when:
+    - high_or_critical_security_finding_present
+    - release_gate_triggered
+    - fail_closed_signal_emitted
+    - remediation_or_exception_evidence_missing
+    - authority_boundary_confusion_detected
+  required_handoff_fields:
+    - reviewer_role
+    - handoff_reason
+    - triggering_findings
+    - release_gate_signal
+    - required_authority
+    - replay_packet_ref
+
+risk_to_governance_mapping:
+  high_or_critical_security_finding:
+    maps_to:
+      - human_review_required
+      - release_gate_triggered
+      - remediation_or_exception_required
+  missing_replay_evidence:
+    maps_to:
+      - evidence_sufficiency_failure
+      - fail_closed_recommended
+  authority_boundary_confusion:
+    maps_to:
+      - governance_boundary_violation
+      - escalation_required
+  stale_security_audit:
+    maps_to:
+      - verification_freshness_failure
+      - revalidation_required
+
+replay_ready_audit_evidence:
+  required_properties:
+    - audit_trace_id
+    - skill_version
+    - input_refs
+    - evidence_hashes
+    - finding_ids
+    - verification_timestamp
+    - release_gate_signal
+    - human_review_handoff
+    - adapter_decision_boundary
+
+decision_outcomes:
+  - admit_with_constraints
+  - review_required
+  - release_gate_triggered
+  - fail_closed_recommended
+  - reject_as_authority_confusion
+
+status: candidate

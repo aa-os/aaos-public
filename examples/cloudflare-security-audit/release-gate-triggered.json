@@ -1,0 +1,95 @@
+{
+  "record_id": "cloudflare-security-audit-release-gate-001",
+  "adapter": "cloudflare_security_audit_skill",
+  "adapter_version": "candidate",
+  "aaos_layer": "L6",
+  "evidence_type": "release_gate_signal",
+  "repository": "aa-os/aaos-public",
+  "branch": "feature/cloudflare-security-audit-l6",
+  "commit_sha": "example-commit-sha",
+  "build_id": "example-build-id",
+  "artifact_id": "example-artifact-id",
+  "audit_trace": {
+    "audit_trace_id": "cf-security-audit-trace-001",
+    "workflow_id": "release-security-verification",
+    "skill_version": "candidate",
+    "verification_timestamp": "2026-07-02T00:00:00Z",
+    "input_refs": [
+      "release-manifest:example-release",
+      "security-audit-input:example"
+    ],
+    "evidence_hashes": [
+      "sha256:example-audit-input",
+      "sha256:example-finding-output"
+    ]
+  },
+  "security_findings": [
+    {
+      "finding_id": "CF-AUDIT-HIGH-001",
+      "title": "High-severity release security finding remains open",
+      "severity": "high",
+      "category": "application_security",
+      "evidence_refs": [
+        "audit_trace:cf-security-audit-trace-001",
+        "finding_report:CF-AUDIT-HIGH-001"
+      ],
+      "remediation_status": "open",
+      "recommended_action": "remediate_before_release"
+    }
+  ],
+  "release_gate": {
+    "gate_triggered": true,
+    "trigger": "high_severity_security_findings_present",
+    "adapter_recommendation": "block_or_escalate",
+    "aaos_release_state": "blocked_pending_governance_review",
+    "final_release_decision": "not_decided_by_adapter",
+    "decision_owner": "AAOS governance and release authority",
+    "triggering_findings": [
+      "CF-AUDIT-HIGH-001"
+    ]
+  },
+  "risk_to_governance_mapping": [
+    {
+      "risk_id": "CF-AUDIT-HIGH-001",
+      "severity": "high",
+      "governance_concern": "High-severity security finding requires remediation, exception review, or release authority decision before release.",
+      "recommended_governance_action": "release_gate_triggered",
+      "decision_owner": "AAOS governance and release authority"
+    }
+  ],
+  "human_review_handoff": {
+    "required": true,
+    "handoff_to": "AAOS security governance reviewer",
+    "handoff_reason": "High-severity security finding triggered release gate recommendation.",
+    "status": "pending",
+    "required_authority": [
+      "risk_acceptance_authority",
+      "release_authority"
+    ]
+  },
+  "replay_packet": {
+    "replay_ready": true,
+    "trace_id": "cf-security-audit-trace-001",
+    "input_refs": [
+      "release-manifest:example-release",
+      "security-audit-input:example"
+    ],
+    "evidence_hashes": [
+      "sha256:example-audit-input",
+      "sha256:example-finding-output"
+    ],
+    "finding_ids": [
+      "CF-AUDIT-HIGH-001"
+    ],
+    "replay_instructions_ref": "docs/adapters/cloudflare-security-audit.md#replay-ready-audit-evidence"
+  },
+  "not_authority_statement": "Cloudflare security-audit-skill provides L6 security verification evidence and release gate recommendations only. It is not governance authority, release authority, decision router, risk acceptance, or audit closure.",
+  "adapter_decision_boundary": "The adapter recommends block or escalation because high-severity findings exist. AAOS governance and release authority retain final decision, exception, escalation semantics, and fail-closed policy.",
+  "verification_outcome": "release_gate_triggered",
+  "reason_codes": [
+    "high_severity_security_finding_present",
+    "release_gate_recommendation_only",
+    "human_review_required",
+    "adapter_not_final_release_authority"
+  ]
+}

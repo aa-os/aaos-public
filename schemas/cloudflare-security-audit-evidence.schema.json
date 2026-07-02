@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aa-os.org/schemas/cloudflare-security-audit-evidence.schema.json",
+  "title": "Cloudflare Security Audit Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "adapter",
+    "adapter_version",
+    "aaos_layer",
+    "evidence_type",
+    "repository",
+    "branch",
+    "commit_sha",
+    "build_id",
+    "artifact_id",
+    "audit_trace",
+    "security_findings",
+    "release_gate",
+    "risk_to_governance_mapping",
+    "human_review_handoff",
+    "replay_packet",
+    "not_authority_statement",
+    "adapter_decision_boundary",
+    "verification_outcome",
+    "reason_codes"
+  ],
+  "properties": {
+    "record_id": { "type": "string" },
+    "adapter": {
+      "type": "string",
+      "const": "cloudflare_security_audit_skill"
+    },
+    "adapter_version": { "type": "string" },
+    "aaos_layer": {
+      "type": "string",
+      "const": "L6"
+    },
+    "evidence_type": {
+      "type": "string",
+      "enum": [
+        "security_verification",
+        "audit_trace",
+        "release_gate_signal",
+        "risk_finding"
+      ]
+    },
+    "repository": { "type": "string" },
+    "branch": { "type": "string" },
+    "commit_sha": { "type": "string" },
+    "build_id": { "type": "string" },
+    "artifact_id": { "type": "string" },
+    "audit_trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "audit_trace_id",
+        "workflow_id",
+        "skill_version",
+        "verification_timestamp",
+        "input_refs",
+        "evidence_hashes"
+      ],
+      "properties": {
+        "audit_trace_id": { "type": "string" },
+        "workflow_id": { "type": "string" },
+        "skill_version": { "type": "string" },
+        "verification_timestamp": { "type": "string" },
+        "input_refs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "evidence_hashes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      }
+    },
+    "security_findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "finding_id",
+          "title",
+          "severity",
+          "category",
+          "evidence_refs",
+          "remediation_status",
+          "recommended_action"
+        ],
+        "properties": {
+          "finding_id": { "type": "string" },
+          "title": { "type": "string" },
+          "severity": {
+            "type": "string",
+            "enum": ["informational", "low", "medium", "high", "critical"]
+          },
+          "category": { "type": "string" },
+          "evidence_refs": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          },
+          "remediation_status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "remediation_planned",
+              "remediated",
+              "exception_requested",
+              "exception_recorded"
+            ]
+          },
+          "recommended_action": {
+            "type": "string",
+            "enum": [
+              "record_only",
+              "review_required",
+              "remediate_before_release",
+              "exception_review_required"
+            ]
+          }
+        }
+      }
+    },
+    "release_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate_triggered",
+        "trigger",
+        "adapter_recommendation",
+        "aaos_release_state",
+        "final_release_decision",
+        "decision_owner",
+        "triggering_findings"
+      ],
+      "properties": {
+        "gate_triggered": { "type": "boolean" },
+        "trigger": { "type": "string" },
+        "adapter_recommendation": {
+          "type": "string",
+          "enum": [
+            "continue",
+            "human_review_required",
+            "block_or_escalate",
+            "fail_closed_recommended"
+          ]
+        },
+        "aaos_release_state": {
+          "type": "string",
+          "enum": [
+            "not_gated",
+            "blocked_pending_governance_review",
+            "escalated_pending_governance_review",
+            "pending_aaos_decision"
+          ]
+        },
+        "final_release_decision": {
+          "type": "string",
+          "enum": [
+            "not_decided_by_adapter",
+            "pending_aaos_governance",
+            "decided_by_aaos_governance"
+          ]
+        },
+        "decision_owner": { "type": "string" },
+        "triggering_findings": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "risk_to_governance_mapping": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "risk_id",
+          "severity",
+          "governance_concern",
+          "recommended_governance_action",
+          "decision_owner"
+        ],
+        "properties": {
+          "risk_id": { "type": "string" },
+          "severity": {
+            "type": "string",
+            "enum": ["informational", "low", "medium", "high", "critical"]
+          },
+          "governance_concern": { "type": "string" },
+          "recommended_governance_action": {
+            "type": "string",
+            "enum": [
+              "record_evidence",
+              "human_review_required",
+              "release_gate_triggered",
+              "fail_closed_recommended",
+              "exception_review_required"
+            ]
+          },
+          "decision_owner": { "type": "string" }
+        }
+      },
+      "minItems": 1
+    },
+    "human_review_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "handoff_to",
+        "handoff_reason",
+        "status",
+        "required_authority"
+      ],
+      "properties": {
+        "required": { "type": "boolean" },
+        "handoff_to": { "type": "string" },
+        "handoff_reason": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["not_required", "pending", "completed"]
+        },
+        "required_authority": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      }
+    },
+    "replay_packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "replay_ready",
+        "trace_id",
+        "input_refs",
+        "evidence_hashes",
+        "finding_ids",
+        "replay_instructions_ref"
+      ],
+      "properties": {
+        "replay_ready": { "type": "boolean" },
+        "trace_id": { "type": "string" },
+        "input_refs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "evidence_hashes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "finding_ids": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "replay_instructions_ref": { "type": "string" }
+      }
+    },
+    "not_authority_statement": { "type": "string" },
+    "adapter_decision_boundary": { "type": "string" },
+    "verification_outcome": {
+      "type": "string",
+      "enum": [
+        "admit_with_constraints",
+        "review_required",
+        "release_gate_triggered",
+        "fail_closed_recommended",
+        "reject_as_authority_confusion"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    }
+  }
+}
