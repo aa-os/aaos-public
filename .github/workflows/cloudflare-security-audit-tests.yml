@@ -1,0 +1,39 @@
+name: Cloudflare Security Audit Deterministic Tests
+
+on:
+  pull_request:
+    paths:
+      - "contracts/cloudflare-security-audit-boundary.yaml"
+      - "schemas/cloudflare-security-audit-evidence.schema.json"
+      - "examples/cloudflare-security-audit/**"
+      - "docs/adapters/cloudflare-security-audit.md"
+      - "runtime/cloudflare_security_audit_evaluator.py"
+      - "tests/test_cloudflare_security_audit.py"
+      - ".github/workflows/cloudflare-security-audit-tests.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "contracts/cloudflare-security-audit-boundary.yaml"
+      - "schemas/cloudflare-security-audit-evidence.schema.json"
+      - "examples/cloudflare-security-audit/**"
+      - "docs/adapters/cloudflare-security-audit.md"
+      - "runtime/cloudflare_security_audit_evaluator.py"
+      - "tests/test_cloudflare_security_audit.py"
+      - ".github/workflows/cloudflare-security-audit-tests.yml"
+
+jobs:
+  deterministic-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run deterministic evaluator tests
+        run: python -m unittest discover -s tests -t . -p "test_*.py"
