@@ -1,0 +1,126 @@
+{
+  "record_id": "aitbm-high-risk-stale-evidence-001",
+  "adapter": "aitbm_scoring_adapter",
+  "adapter_version": "candidate",
+  "aaos_layer": "L6",
+  "evidence_type": "admission_control_signal",
+  "repository": "aa-os/aaos-public",
+  "branch": "feature/aitbm-scoring-adapter",
+  "commit_sha": "example-commit-sha",
+  "score_snapshot": {
+    "snapshot_id": "aitbm-score-snapshot-001",
+    "framework": "AITBM",
+    "score_version": "candidate",
+    "evaluation_timestamp": "2026-07-03T00:00:00Z",
+    "max_evidence_age_days": 90,
+    "evidence_refs": [
+      "aitbm-assessment:example-agent-system",
+      "deployment-context:production-tool-enabled"
+    ],
+    "evidence_hashes": [
+      "sha256:example-aitbm-assessment",
+      "sha256:example-deployment-context"
+    ]
+  },
+  "assessment_date": "2026-02-15T00:00:00Z",
+  "evidence_age_days": 138,
+  "evidence_confidence": "low",
+  "deployment_context": "production",
+  "assessor_assumptions": [
+    "Tool access was evaluated from declared deployment configuration.",
+    "Containment controls were not reassessed after the most recent autonomy increase."
+  ],
+  "required_reassessment_date": "2026-05-15T00:00:00Z",
+  "decision_gate_result": {
+    "adapter_outputs": [
+      "risk_score",
+      "maturity_score",
+      "evidence_freshness_signal",
+      "evidence_confidence_signal",
+      "containment_maturity_signal",
+      "deployment_context_multiplier",
+      "reassessment_required",
+      "verification_gate_input",
+      "recommendation_to_review",
+      "recommendation_to_restrict",
+      "recommendation_to_retest",
+      "recommendation_to_fail_closed",
+      "advisor_review_required"
+    ],
+    "aaos_decision_state": "review_required",
+    "final_decision": "not_decided_by_adapter",
+    "decision_owner": "AAOS governance and final decision authority"
+  },
+  "maturity_score": {
+    "value": 58,
+    "threshold": 75,
+    "status": "below_threshold"
+  },
+  "risk_score": {
+    "value": 82,
+    "rating": "high"
+  },
+  "containment_maturity": "weak",
+  "autonomy_level": "high",
+  "tool_access_level": "high",
+  "data_sensitivity": "high",
+  "reassessment_trigger": {
+    "required": true,
+    "trigger_types": [
+      "stale_evidence",
+      "low_confidence",
+      "high_or_critical_risk",
+      "maturity_below_threshold",
+      "weak_containment",
+      "high_tool_access",
+      "high_data_sensitivity",
+      "missing_or_expired_reassessment"
+    ],
+    "reason": "AITBM score is stale, low confidence, high risk, below maturity threshold, weakly contained, and tied to high tool access and high data sensitivity."
+  },
+  "advisor_invocation": {
+    "required": true,
+    "contract_ref": "advisor_invocation_boundary",
+    "trigger_types": [
+      "external_scoring_adapter_stale_evidence",
+      "high_or_critical_risk_signal",
+      "release_gate_escalation"
+    ],
+    "review_reason": "High-risk AITBM admission-control evidence is stale, low confidence, below threshold, and requires reassessment before AAOS decision.",
+    "recommended_actions": [
+      "review_required",
+      "reassessment_required",
+      "restriction_recommended",
+      "human_approval_required",
+      "fail_closed_recommended"
+    ],
+    "status": "pending",
+    "decision_owner": "AAOS governance and final decision authority"
+  },
+  "human_review_handoff": {
+    "required": true,
+    "handoff_to": "AAOS security governance reviewer",
+    "handoff_reason": "AITBM score is high risk, stale, low confidence, below maturity threshold, and tied to high tool access and high data sensitivity.",
+    "status": "pending",
+    "required_authority": [
+      "risk_acceptance_authority",
+      "approval_doctrine_authority",
+      "final_decision_authority"
+    ]
+  },
+  "not_authority_statement": "AITBM provides external scoring evidence, maturity scoring, evidence freshness signals, and review recommendations only. It is not AAOS governance authority, model runtime, identity authority, final decision authority, rollback engine, approval doctrine authority, or risk acceptance authority.",
+  "adapter_decision_boundary": "The adapter recommends review, reassessment, restriction, human approval, fail-closed handling, and advisor review because evidence is stale and high risk. AAOS retains risk appetite, thresholds, approval doctrine, fail-closed rules, rollback semantics, escalation policy, identity trust, and final decision authority.",
+  "verification_outcome": "fail_closed_recommended",
+  "reason_codes": [
+    "stale_evidence",
+    "low_evidence_confidence",
+    "high_risk_score",
+    "maturity_below_threshold",
+    "weak_containment_maturity",
+    "high_tool_access",
+    "high_data_sensitivity",
+    "expired_reassessment_date",
+    "advisor_review_required",
+    "adapter_not_final_decision_authority"
+  ]
+}
