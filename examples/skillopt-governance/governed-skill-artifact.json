@@ -1,0 +1,173 @@
+{
+  "skill_id": "aaos-skillopt-example-review-skill",
+  "skill_name": "Example Governed Review Skill",
+  "skill_version": "0.3.0-skillopt-candidate.1",
+  "source_artifact_refs": [
+    "skills/example-review-skill/v0.2.0/SKILL.md",
+    "runtime/evaluation-fixtures/example-review-skill.json"
+  ],
+  "skill_lineage": {
+    "parent_artifact_ref": "skills/example-review-skill/v0.2.0/SKILL.md",
+    "previous_versions": [
+      "0.2.0"
+    ],
+    "change_intent": "Reduce repeated review misses while preserving AAOS policy and authority boundaries."
+  },
+  "accepted_edits": [
+    {
+      "edit_id": "accepted-edit-001",
+      "description": "Clarify validation evidence requirements for review outputs.",
+      "rationale": "Improves repeatability without expanding tool use, data access, autonomy, or authority.",
+      "validation_ref": "validation/example-review-skill/policy-precheck-001"
+    }
+  ],
+  "rejected_edits": [
+    {
+      "edit_id": "rejected-edit-001",
+      "description": "Allow the optimized skill to self-approve deployment after high validation score.",
+      "rejection_reason": "Deployment approval remains an AAOS authority and cannot be delegated to SkillOpt.",
+      "policy_signal": "deployment_authority_boundary"
+    }
+  ],
+  "validation_scores": {
+    "overall_score": 0.91,
+    "policy_score": 0.96,
+    "safety_score": 0.94,
+    "regression_score": 0.89,
+    "validation_improved": true
+  },
+  "validation_results": [
+    {
+      "check_id": "policy-precheck-001",
+      "check_type": "policy_precheck",
+      "result": "pass",
+      "evidence_ref": "evidence/policy-precheck-001.json"
+    },
+    {
+      "check_id": "replay-001",
+      "check_type": "replay",
+      "result": "pass",
+      "evidence_ref": "evidence/replay-001.json"
+    },
+    {
+      "check_id": "rollback-001",
+      "check_type": "rollback",
+      "result": "pass",
+      "evidence_ref": "evidence/rollback-001.json"
+    }
+  ],
+  "failure_patterns_addressed": [
+    "missing_validation_evidence",
+    "incomplete_replay_trace_reference"
+  ],
+  "capability_regression_check": {
+    "status": "pass",
+    "regressions_detected": false,
+    "evidence_ref": "evidence/capability-regression-001.json"
+  },
+  "tool_use_impact": {
+    "impact_level": "unchanged",
+    "expanded": false,
+    "notes": "No new tool permissions are introduced."
+  },
+  "data_access_impact": {
+    "impact_level": "unchanged",
+    "expanded": false,
+    "notes": "No new data sources or data classes are introduced."
+  },
+  "authority_impact": {
+    "impact_level": "unchanged",
+    "boundary_changed": false,
+    "notes": "SkillOpt recommends an artifact only; AAOS keeps acceptance and deployment authority."
+  },
+  "autonomy_impact": {
+    "impact_level": "unchanged",
+    "increased": false,
+    "notes": "The skill remains review-guidance only and does not execute autonomous actions."
+  },
+  "safety_impact": {
+    "affects_safety_behavior": true,
+    "risk_level": "medium",
+    "notes": "Safety behavior is clarified, so advisor review is required before deployment approval."
+  },
+  "policy_precheck": {
+    "status": "pass",
+    "policy_risk_increased": false,
+    "checks": [
+      {
+        "check": "policy_violation",
+        "result": "pass",
+        "evidence_ref": "evidence/policy-violation-check.json"
+      },
+      {
+        "check": "tool_misuse_risk",
+        "result": "pass",
+        "evidence_ref": "evidence/tool-misuse-check.json"
+      },
+      {
+        "check": "unsafe_instruction",
+        "result": "pass",
+        "evidence_ref": "evidence/unsafe-instruction-check.json"
+      }
+    ]
+  },
+  "deployment_gate": {
+    "status": "pending_aaos_approval",
+    "checked_by": "SkillOpt",
+    "approval_owner": "AAOS",
+    "approval_state": "aaos_pending",
+    "checks": {
+      "policy_violation_detected": false,
+      "tool_misuse_risk_detected": false,
+      "unsafe_instruction_detected": false,
+      "overbroad_autonomy_detected": false,
+      "missing_fallback_detected": false,
+      "rollback_ready": true,
+      "trace_complete": true,
+      "replay_ready": true,
+      "authority_boundary_change": false,
+      "data_access_expansion": false,
+      "aaos_deployment_approval_present": false
+    }
+  },
+  "rollback_plan": {
+    "ready": true,
+    "plan_ref": "rollback/skillopt-example-review-skill-rollback.md",
+    "owner": "AAOS",
+    "trigger": "Regression, policy failure, trace gap, replay failure, or AAOS governance challenge.",
+    "last_tested_ref": "evidence/rollback-001.json"
+  },
+  "replay_trace_refs": [
+    "traces/replay/example-review-skill/replay-001.json"
+  ],
+  "evidence_hashes": [
+    {
+      "ref": "evidence/policy-precheck-001.json",
+      "algorithm": "sha256",
+      "hash": "sha256:example-policy-precheck"
+    },
+    {
+      "ref": "traces/replay/example-review-skill/replay-001.json",
+      "algorithm": "sha256",
+      "hash": "sha256:example-replay-trace"
+    }
+  ],
+  "advisor_invocation": {
+    "required": true,
+    "contract_ref": "advisor_invocation_boundary",
+    "trigger_types": [
+      "safety_behavior_change"
+    ],
+    "review_reason": "The optimized skill changes safety guidance semantics and requires strategic review before AAOS deployment approval.",
+    "status": "pending",
+    "decision_owner": "AAOS"
+  },
+  "aaos_decision_state": {
+    "deployment_decision": "pending",
+    "decision_owner": "AAOS",
+    "risk_acceptance_state": "not_accepted_by_skillopt",
+    "audit_judgment_state": "pending_aaos_review"
+  },
+  "not_authority_statement": "SkillOpt may recommend optimized skill artifacts, but it is not AAOS governance authority, deployment authority, risk authority, rollback authority, identity authority, decision router, audit final judgment authority, or policy rewrite authority.",
+  "sovereignty_statement": "AAOS governs how optimized skills are accepted, rejected, deployed, rolled back, replayed, challenged, and finally judged."
+}
