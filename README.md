@@ -73,13 +73,24 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 - v0.1.0 — Governance Radar Bootstrap
 - v0.2.0 — Contract & Schema Hardening
 - v0.3.0 — L6 Security Verification & Deterministic CI Gates
+- v0.4.0 — M5 Evaluator Expansion, Adapter Regression Packs, and Governed Specimens
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, and a CI gate for security audit evidence.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, and the M5 governed adapter/specimen/evaluator pattern.
+
+v0.4.0 extends AAOS from a single L6 security verification adapter into a broader governed adapter/specimen/evaluator pattern. External tools continue to be admitted as governed signals, not authorities.
+
 ## Current Status
 
-M1, M2, M3, and M4 are complete.
+M1, M2, M3, M4, and M5 are complete.
+
+M5 completed:
+
+- #28 Advisor Invocation Contract
+- #29 AITBM L6 Scoring Adapter
+- #30 Heretic Adversarial Specimen
+- #33 SkillOpt Governed Skill Evolution Layer
 
 AAOS Public now has:
 
@@ -93,5 +104,38 @@ AAOS Public now has:
 - Cloudflare security-audit-skill L6 security verification adapter
 - deterministic evaluator tests
 - GitHub Actions CI gate for Cloudflare security audit evidence
+- Advisor Invocation Contract
+- AITBM L6 Scoring Adapter
+- Heretic Adversarial Specimen handling
+- SkillOpt Governed Skill Evolution Layer
 
-Next phase should focus on broader evaluator coverage, CI gate expansion, release governance hardening, and adapter regression packs.
+## M5 Additions
+
+### Advisor Invocation Contract (#28)
+
+Purpose: Defines when AAOS requires strategic governance review before adapter admission, release gating, fail-closed override, high-risk specimen handling, stale evidence handling, or authority-boundary escalation.
+
+### AITBM L6 Scoring Adapter (#29)
+
+Purpose: Adds AI trust benchmarking / maturity scoring as an external L6 scoring signal for risk score, maturity score, evidence freshness, confidence, reassessment, and admission-control input.
+
+Boundary: AITBM is not governance authority, model runtime, identity authority, rollback engine, or final decision authority.
+
+### Heretic Adversarial Specimen (#30)
+
+Purpose: Adds high-risk adversarial model-modification specimen handling for alignment drift detection, refusal degradation detection, unsafe provenance detection, tool misuse precheck, fail-closed simulation, red-team scenarios, and replay under compromised model behavior.
+
+Boundary: Heretic is not a trusted runtime, adapter, governance component, decision router, or production tool.
+
+### SkillOpt Governed Skill Evolution Layer (#33)
+
+Purpose: Adds governed skill artifact, validation evidence, rollback readiness, replay trace, and deployment-gate structure for self-improving or optimized skills.
+
+Boundary: SkillOpt may produce optimized skill artifacts and validation evidence, but AAOS owns deployment approval, rollback policy, risk thresholds, identity trust, audit final judgment, and final governance authority.
+
+## Next Phase
+
+- M6 — Decision Proof Reconstruction Layer
+  - #32 codebase-memory-mcp Codebase Memory & Reconstruction Adapter
+- M7 — Human-Agent Control Surface
+  - #31 open-tag Human-Agent Workspace Adapter
