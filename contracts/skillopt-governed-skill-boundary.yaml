@@ -1,0 +1,164 @@
+contract_id: skillopt_governed_skill_boundary
+contract_version: 0.1.0
+status: candidate
+owner: AAOS
+
+component:
+  name: SkillOpt
+  role: governed_skill_evolution_layer
+  aaos_layer: L4.5 Skill Optimization Layer
+  purpose: >
+    SkillOpt produces versioned, testable, replayable, and auditable skill
+    artifacts for AAOS governance review.
+
+layer_mapping:
+  belongs_in:
+    - L4.5 Skill Optimization Layer
+  outputs_feed:
+    - L6 Verification / Audit Layer
+    - L5 Memory & Reconstruction Graph
+    - L4 Tool / Data Execution Substrate
+    - L3 Model Runtime
+  must_not_own:
+    - L0 Governance / Business Intent
+    - L1 Policy & Identity Plane
+    - L2 Control Plane
+    - final_deployment_authority
+    - decision_router_authority
+
+allowed_skillopt_outputs:
+  - best_skill_artifact
+  - skill_snapshot
+  - accepted_edit
+  - rejected_edit
+  - validation_score
+  - validation_result
+  - rollout_trace
+  - history_log
+  - runtime_state
+  - optimization_recommendation
+  - replay_dataset
+  - regression_signal
+
+forbidden_skillopt_outputs:
+  - deployment_approved
+  - deployment_rejected_by_skillopt
+  - risk_accepted
+  - waiver_granted
+  - approval_doctrine_changed
+  - identity_trust_changed
+  - rollback_executed
+  - decision_route_changed
+  - governance_policy_rewritten
+  - audit_closed
+  - final_governance_judgment
+
+required_governed_skill_artifact_fields:
+  - skill_id
+  - skill_name
+  - skill_version
+  - source_artifact_refs
+  - skill_lineage
+  - accepted_edits
+  - rejected_edits
+  - validation_scores
+  - validation_results
+  - failure_patterns_addressed
+  - capability_regression_check
+  - tool_use_impact
+  - data_access_impact
+  - authority_impact
+  - autonomy_impact
+  - safety_impact
+  - policy_precheck
+  - deployment_gate
+  - rollback_plan
+  - replay_trace_refs
+  - evidence_hashes
+  - advisor_invocation
+  - aaos_decision_state
+  - not_authority_statement
+  - sovereignty_statement
+
+policy_bound_deployment_gate_checks:
+  - policy_violation
+  - tool_misuse_risk
+  - unsafe_instruction
+  - overbroad_autonomy
+  - missing_fallback
+  - rollback_readiness
+  - trace_completeness
+  - replay_readiness
+  - authority_boundary_change
+  - data_access_expansion
+  - deployment_approval_missing
+
+required_controls:
+  rollback_readiness: required
+  replay_ready_traces: required
+  validation_evidence: required
+  rejected_edit_history: required
+  deployment_gate_status: required
+  aaos_deployment_approval: required_before_deployment
+
+advisor_invocation:
+  contract_ref: advisor_invocation_boundary
+  review_hook_only: true
+  required_when:
+    - skill_changes_authority_boundary
+    - skill_expands_tool_use
+    - skill_expands_data_access
+    - skill_increases_autonomy
+    - skill_affects_safety_behavior
+    - validation_improves_but_policy_risk_increases
+    - rollback_plan_is_missing
+    - replay_traces_are_missing
+    - deployment_gate_fails_or_is_incomplete
+    - skillopt_output_appears_to_claim_aaos_authority
+  permitted_recommendations:
+    - review
+    - challenge
+    - defer
+    - restrict
+    - retest
+    - rollback_ready_gate
+    - fail_closed_handling
+  forbidden_authority:
+    - final_deployment_authority
+    - risk_acceptance_authority
+    - approval_doctrine_authority
+    - identity_authority
+    - rollback_authority
+    - decision_router
+    - audit_final_judgment_authority
+    - governance_policy_rewrite_authority
+
+aaos_retained_authority:
+  - deployment_approval_doctrine
+  - risk_thresholds
+  - identity_trust_chain
+  - escalation_semantics
+  - fail_closed_rules
+  - rollback_policy
+  - decision_routing
+  - regulatory_mapping
+  - audit_final_judgment
+  - final_governance_authority
+
+fail_closed_conditions:
+  - forbidden_skillopt_authority_claim
+  - deployment_approval_claimed_by_skillopt
+  - rollback_plan_missing
+  - replay_traces_missing
+  - validation_evidence_missing
+  - deployment_gate_missing_or_failed
+  - advisor_invocation_missing_for_governance_sensitive_change
+
+not_authority_statement: >
+  SkillOpt is not AAOS governance authority, deployment authority,
+  risk authority, rollback authority, identity authority, decision router,
+  audit final judgment authority, or policy rewrite authority.
+
+sovereignty_statement: >
+  AAOS governs how optimized skills are accepted, rejected, deployed,
+  rolled back, replayed, challenged, and finally judged.
