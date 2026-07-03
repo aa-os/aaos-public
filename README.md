@@ -81,7 +81,7 @@ AAOS Public now includes the Governance Radar foundation, first adapter skeleton
 
 M1, M2, M3, and M4 are complete.
 
-AAOS Public now includes:
+AAOS Public now has:
 
 - external signal admission documentation
 - radar node schema
