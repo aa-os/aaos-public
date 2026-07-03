@@ -1,0 +1,659 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/governed-skill-artifact.schema.json",
+  "title": "AAOS Governed Skill Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "skill_id",
+    "skill_name",
+    "skill_version",
+    "source_artifact_refs",
+    "skill_lineage",
+    "accepted_edits",
+    "rejected_edits",
+    "validation_scores",
+    "validation_results",
+    "failure_patterns_addressed",
+    "capability_regression_check",
+    "tool_use_impact",
+    "data_access_impact",
+    "authority_impact",
+    "autonomy_impact",
+    "safety_impact",
+    "policy_precheck",
+    "deployment_gate",
+    "rollback_plan",
+    "replay_trace_refs",
+    "evidence_hashes",
+    "advisor_invocation",
+    "aaos_decision_state",
+    "not_authority_statement",
+    "sovereignty_statement"
+  ],
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "skill_name": {
+      "type": "string"
+    },
+    "skill_version": {
+      "type": "string"
+    },
+    "source_artifact_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "skill_lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parent_artifact_ref",
+        "previous_versions",
+        "change_intent"
+      ],
+      "properties": {
+        "parent_artifact_ref": {
+          "type": "string"
+        },
+        "previous_versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "change_intent": {
+          "type": "string"
+        }
+      }
+    },
+    "accepted_edits": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "edit_id",
+          "description",
+          "rationale",
+          "validation_ref"
+        ],
+        "properties": {
+          "edit_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "validation_ref": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "rejected_edits": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "edit_id",
+          "description",
+          "rejection_reason",
+          "policy_signal"
+        ],
+        "properties": {
+          "edit_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "rejection_reason": {
+            "type": "string"
+          },
+          "policy_signal": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "validation_scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "overall_score",
+        "policy_score",
+        "safety_score",
+        "regression_score",
+        "validation_improved"
+      ],
+      "properties": {
+        "overall_score": {
+          "type": "number"
+        },
+        "policy_score": {
+          "type": "number"
+        },
+        "safety_score": {
+          "type": "number"
+        },
+        "regression_score": {
+          "type": "number"
+        },
+        "validation_improved": {
+          "type": "boolean"
+        }
+      }
+    },
+    "validation_results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "check_id",
+          "check_type",
+          "result",
+          "evidence_ref"
+        ],
+        "properties": {
+          "check_id": {
+            "type": "string"
+          },
+          "check_type": {
+            "type": "string",
+            "enum": [
+              "policy_precheck",
+              "regression",
+              "replay",
+              "rollback",
+              "trace",
+              "tool_use",
+              "data_access",
+              "authority",
+              "autonomy",
+              "safety"
+            ]
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "fail",
+              "review_required"
+            ]
+          },
+          "evidence_ref": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "failure_patterns_addressed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "capability_regression_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "regressions_detected",
+        "evidence_ref"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "incomplete"
+          ]
+        },
+        "regressions_detected": {
+          "type": "boolean"
+        },
+        "evidence_ref": {
+          "type": "string"
+        }
+      }
+    },
+    "tool_use_impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "impact_level",
+        "expanded",
+        "notes"
+      ],
+      "properties": {
+        "impact_level": {
+          "type": "string",
+          "enum": [
+            "none",
+            "reduced",
+            "unchanged",
+            "expanded",
+            "high"
+          ]
+        },
+        "expanded": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "data_access_impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "impact_level",
+        "expanded",
+        "notes"
+      ],
+      "properties": {
+        "impact_level": {
+          "type": "string",
+          "enum": [
+            "none",
+            "reduced",
+            "unchanged",
+            "expanded",
+            "high"
+          ]
+        },
+        "expanded": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "authority_impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "impact_level",
+        "boundary_changed",
+        "notes"
+      ],
+      "properties": {
+        "impact_level": {
+          "type": "string",
+          "enum": [
+            "none",
+            "unchanged",
+            "expanded",
+            "ambiguous"
+          ]
+        },
+        "boundary_changed": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "autonomy_impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "impact_level",
+        "increased",
+        "notes"
+      ],
+      "properties": {
+        "impact_level": {
+          "type": "string",
+          "enum": [
+            "none",
+            "reduced",
+            "unchanged",
+            "expanded",
+            "high"
+          ]
+        },
+        "increased": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "safety_impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "affects_safety_behavior",
+        "risk_level",
+        "notes"
+      ],
+      "properties": {
+        "affects_safety_behavior": {
+          "type": "boolean"
+        },
+        "risk_level": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "policy_precheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "policy_risk_increased",
+        "checks"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "incomplete"
+          ]
+        },
+        "policy_risk_increased": {
+          "type": "boolean"
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "check",
+              "result",
+              "evidence_ref"
+            ],
+            "properties": {
+              "check": {
+                "type": "string"
+              },
+              "result": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "fail",
+                  "review_required"
+                ]
+              },
+              "evidence_ref": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "deployment_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "checked_by",
+        "approval_owner",
+        "approval_state",
+        "checks"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "ready_for_aaos_review",
+            "pending_aaos_approval",
+            "pass",
+            "fail",
+            "incomplete"
+          ]
+        },
+        "checked_by": {
+          "type": "string"
+        },
+        "approval_owner": {
+          "type": "string",
+          "const": "AAOS"
+        },
+        "approval_state": {
+          "type": "string",
+          "enum": [
+            "aaos_pending",
+            "aaos_approved",
+            "aaos_rejected"
+          ]
+        },
+        "checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "policy_violation_detected",
+            "tool_misuse_risk_detected",
+            "unsafe_instruction_detected",
+            "overbroad_autonomy_detected",
+            "missing_fallback_detected",
+            "rollback_ready",
+            "trace_complete",
+            "replay_ready",
+            "authority_boundary_change",
+            "data_access_expansion",
+            "aaos_deployment_approval_present"
+          ],
+          "properties": {
+            "policy_violation_detected": {
+              "type": "boolean"
+            },
+            "tool_misuse_risk_detected": {
+              "type": "boolean"
+            },
+            "unsafe_instruction_detected": {
+              "type": "boolean"
+            },
+            "overbroad_autonomy_detected": {
+              "type": "boolean"
+            },
+            "missing_fallback_detected": {
+              "type": "boolean"
+            },
+            "rollback_ready": {
+              "type": "boolean"
+            },
+            "trace_complete": {
+              "type": "boolean"
+            },
+            "replay_ready": {
+              "type": "boolean"
+            },
+            "authority_boundary_change": {
+              "type": "boolean"
+            },
+            "data_access_expansion": {
+              "type": "boolean"
+            },
+            "aaos_deployment_approval_present": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "rollback_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ready",
+        "plan_ref",
+        "owner",
+        "trigger",
+        "last_tested_ref"
+      ],
+      "properties": {
+        "ready": {
+          "type": "boolean"
+        },
+        "plan_ref": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string",
+          "const": "AAOS"
+        },
+        "trigger": {
+          "type": "string"
+        },
+        "last_tested_ref": {
+          "type": "string"
+        }
+      }
+    },
+    "replay_trace_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_hashes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ref",
+          "algorithm",
+          "hash"
+        ],
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "algorithm": {
+            "type": "string"
+          },
+          "hash": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "advisor_invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "contract_ref",
+        "trigger_types",
+        "review_reason",
+        "status",
+        "decision_owner"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "contract_ref": {
+          "type": "string",
+          "const": "advisor_invocation_boundary"
+        },
+        "trigger_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "authority_boundary_change",
+              "tool_use_expansion",
+              "data_access_expansion",
+              "autonomy_increase",
+              "safety_behavior_change",
+              "validation_improved_policy_risk_increased",
+              "rollback_or_replay_missing",
+              "deployment_gate_failure_or_incomplete",
+              "skillopt_authority_claim"
+            ]
+          }
+        },
+        "review_reason": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "completed",
+            "not_required"
+          ]
+        },
+        "decision_owner": {
+          "type": "string",
+          "const": "AAOS"
+        }
+      }
+    },
+    "aaos_decision_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deployment_decision",
+        "decision_owner",
+        "risk_acceptance_state",
+        "audit_judgment_state"
+      ],
+      "properties": {
+        "deployment_decision": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "approved",
+            "rejected",
+            "not_requested"
+          ]
+        },
+        "decision_owner": {
+          "type": "string",
+          "const": "AAOS"
+        },
+        "risk_acceptance_state": {
+          "type": "string"
+        },
+        "audit_judgment_state": {
+          "type": "string"
+        }
+      }
+    },
+    "not_authority_statement": {
+      "type": "string"
+    },
+    "sovereignty_statement": {
+      "type": "string"
+    }
+  }
+}
