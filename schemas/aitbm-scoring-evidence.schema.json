@@ -1,0 +1,323 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aa-os.org/schemas/aitbm-scoring-evidence.schema.json",
+  "title": "AITBM Scoring Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "adapter",
+    "adapter_version",
+    "aaos_layer",
+    "evidence_type",
+    "repository",
+    "branch",
+    "commit_sha",
+    "score_snapshot",
+    "assessment_date",
+    "evidence_age_days",
+    "evidence_confidence",
+    "deployment_context",
+    "assessor_assumptions",
+    "required_reassessment_date",
+    "decision_gate_result",
+    "maturity_score",
+    "risk_score",
+    "containment_maturity",
+    "autonomy_level",
+    "tool_access_level",
+    "data_sensitivity",
+    "reassessment_trigger",
+    "advisor_invocation",
+    "human_review_handoff",
+    "not_authority_statement",
+    "adapter_decision_boundary",
+    "verification_outcome",
+    "reason_codes"
+  ],
+  "properties": {
+    "record_id": { "type": "string" },
+    "adapter": {
+      "type": "string",
+      "const": "aitbm_scoring_adapter"
+    },
+    "adapter_version": { "type": "string" },
+    "aaos_layer": {
+      "type": "string",
+      "const": "L6"
+    },
+    "evidence_type": {
+      "type": "string",
+      "enum": [
+        "ai_trust_benchmark",
+        "maturity_scoring",
+        "risk_scoring",
+        "evidence_freshness",
+        "admission_control_signal"
+      ]
+    },
+    "repository": { "type": "string" },
+    "branch": { "type": "string" },
+    "commit_sha": { "type": "string" },
+    "score_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshot_id",
+        "framework",
+        "score_version",
+        "evaluation_timestamp",
+        "max_evidence_age_days",
+        "evidence_refs",
+        "evidence_hashes"
+      ],
+      "properties": {
+        "snapshot_id": { "type": "string" },
+        "framework": { "type": "string" },
+        "score_version": { "type": "string" },
+        "evaluation_timestamp": { "type": "string" },
+        "max_evidence_age_days": { "type": "integer" },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "evidence_hashes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      }
+    },
+    "assessment_date": { "type": "string" },
+    "evidence_age_days": { "type": "integer" },
+    "evidence_confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "deployment_context": {
+      "type": "string",
+      "enum": ["production", "pre_production", "internal", "research", "sandbox"]
+    },
+    "assessor_assumptions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "required_reassessment_date": { "type": "string" },
+    "decision_gate_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adapter_outputs",
+        "aaos_decision_state",
+        "final_decision",
+        "decision_owner"
+      ],
+      "properties": {
+        "adapter_outputs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "risk_score",
+              "maturity_score",
+              "evidence_freshness_signal",
+              "evidence_confidence_signal",
+              "containment_maturity_signal",
+              "deployment_context_multiplier",
+              "reassessment_required",
+              "verification_gate_input",
+              "recommendation_to_review",
+              "recommendation_to_restrict",
+              "recommendation_to_retest",
+              "recommendation_to_fail_closed",
+              "advisor_review_required"
+            ]
+          },
+          "minItems": 1
+        },
+        "aaos_decision_state": {
+          "type": "string",
+          "enum": [
+            "pending_aaos_decision",
+            "review_required",
+            "restricted_pending_reassessment",
+            "not_decided_by_adapter"
+          ]
+        },
+        "final_decision": {
+          "type": "string",
+          "enum": [
+            "not_decided_by_adapter",
+            "pending_aaos_governance",
+            "decided_by_aaos_governance"
+          ]
+        },
+        "decision_owner": { "type": "string" }
+      }
+    },
+    "maturity_score": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "threshold", "status"],
+      "properties": {
+        "value": { "type": "number" },
+        "threshold": { "type": "number" },
+        "status": {
+          "type": "string",
+          "enum": ["meets_threshold", "below_threshold"]
+        }
+      }
+    },
+    "risk_score": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "rating"],
+      "properties": {
+        "value": { "type": "number" },
+        "rating": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical"]
+        }
+      }
+    },
+    "containment_maturity": {
+      "type": "string",
+      "enum": ["strong", "moderate", "weak"]
+    },
+    "autonomy_level": {
+      "type": "string",
+      "enum": ["none", "low", "medium", "high"]
+    },
+    "tool_access_level": {
+      "type": "string",
+      "enum": ["none", "low", "medium", "high", "privileged"]
+    },
+    "data_sensitivity": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "regulated"]
+    },
+    "reassessment_trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "trigger_types", "reason"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "trigger_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "stale_evidence",
+              "low_confidence",
+              "high_or_critical_risk",
+              "maturity_below_threshold",
+              "weak_containment",
+              "high_tool_access",
+              "high_data_sensitivity",
+              "missing_or_expired_reassessment"
+            ]
+          }
+        },
+        "reason": { "type": "string" }
+      }
+    },
+    "advisor_invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "contract_ref",
+        "trigger_types",
+        "review_reason",
+        "recommended_actions",
+        "status",
+        "decision_owner"
+      ],
+      "properties": {
+        "required": { "type": "boolean" },
+        "contract_ref": {
+          "type": "string",
+          "const": "advisor_invocation_boundary"
+        },
+        "trigger_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "external_scoring_adapter_stale_evidence",
+              "high_or_critical_risk_signal",
+              "human_review_required_but_missing",
+              "adapter_authority_boundary_uncertainty",
+              "release_gate_escalation"
+            ]
+          }
+        },
+        "review_reason": { "type": "string" },
+        "recommended_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "review_required",
+              "reassessment_required",
+              "restriction_recommended",
+              "human_approval_required",
+              "fail_closed_recommended"
+            ]
+          },
+          "minItems": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": ["not_required", "pending", "completed"]
+        },
+        "decision_owner": { "type": "string" }
+      }
+    },
+    "human_review_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "handoff_to",
+        "handoff_reason",
+        "status",
+        "required_authority"
+      ],
+      "properties": {
+        "required": { "type": "boolean" },
+        "handoff_to": { "type": "string" },
+        "handoff_reason": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["not_required", "pending", "completed"]
+        },
+        "required_authority": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      }
+    },
+    "not_authority_statement": { "type": "string" },
+    "adapter_decision_boundary": { "type": "string" },
+    "verification_outcome": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "review_required",
+        "reassessment_required",
+        "restrict_pending_review",
+        "fail_closed_recommended",
+        "reject_as_authority_confusion"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    }
+  }
+}
