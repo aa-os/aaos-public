@@ -1,0 +1,157 @@
+contract_id: aitbm_scoring_boundary
+contract_version: "0.1.0"
+adapter: aitbm_scoring_adapter
+adapter_type: external_ai_trust_benchmarking_maturity_scoring
+aaos_layers:
+  - L6
+  - L5
+
+purpose: >
+  Admit AITBM as an AAOS L6 AI trust benchmarking and maturity scoring
+  adapter for risk scoring, maturity scoring, evidence freshness checks,
+  confidence signals, containment maturity signals, reassessment triggers,
+  and verification gate input.
+
+not_authority_statement: >
+  AITBM output is external scoring evidence and maturity signal input only.
+  It is not AAOS governance authority, model runtime, identity authority,
+  final decision authority, rollback engine, approval doctrine authority,
+  risk acceptance authority, or final fail-closed policy.
+
+allowed_roles:
+  - external_scoring_signal_source
+  - ai_security_maturity_signal_source
+  - risk_score_signal_source
+  - evidence_freshness_signal_source
+  - evidence_confidence_signal_source
+  - containment_maturity_signal_source
+  - deployment_context_risk_input
+  - reassessment_trigger_source
+  - verification_gate_input
+  - advisor_review_trigger_source
+  - audit_input
+
+forbidden_roles:
+  - governance_authority
+  - model_runtime
+  - identity_authority
+  - final_decision_authority
+  - rollback_engine
+  - approval_doctrine_authority
+  - risk_acceptance_authority
+  - decision_router
+  - governance_policy_rewrite_authority
+  - final_release_authority
+
+aaos_retained_authority:
+  - risk_appetite
+  - decision_thresholds
+  - approval_doctrine
+  - fail_closed_rules
+  - rollback_semantics
+  - escalation_policy
+  - identity_trust_chain
+  - final_decision_authority
+
+required_evidence_fields:
+  - score_snapshot
+  - assessment_date
+  - evidence_age_days
+  - evidence_confidence
+  - deployment_context
+  - assessor_assumptions
+  - required_reassessment_date
+  - decision_gate_result
+  - maturity_score
+  - risk_score
+  - containment_maturity
+  - autonomy_level
+  - tool_access_level
+  - data_sensitivity
+  - reassessment_trigger
+
+allowed_adapter_outputs:
+  - risk_score
+  - maturity_score
+  - evidence_freshness_signal
+  - evidence_confidence_signal
+  - containment_maturity_signal
+  - deployment_context_multiplier
+  - reassessment_required
+  - verification_gate_input
+  - recommendation_to_review
+  - recommendation_to_restrict
+  - recommendation_to_retest
+  - recommendation_to_fail_closed
+  - advisor_review_required
+
+forbidden_adapter_outputs:
+  - allow_final_decision
+  - restrict_final_decision
+  - risk_accepted
+  - waiver_granted
+  - approval_doctrine_changed
+  - identity_trust_changed
+  - rollback_executed
+  - governance_policy_rewritten
+  - final_release_authority_claimed
+
+advisor_invocation:
+  contract_ref: advisor_invocation_boundary
+  required_when:
+    - evidence_is_stale
+    - evidence_confidence_is_low
+    - risk_score_is_high_or_critical
+    - maturity_score_is_below_threshold
+    - containment_maturity_is_weak
+    - tool_access_level_is_high
+    - data_sensitivity_is_high
+    - reassessment_date_is_missing_or_expired
+    - adapter_output_crosses_authority_boundary
+  adapter_role: advisor_review_trigger_source_only
+  advisor_review_is_not:
+    - final_decision_authority
+    - risk_acceptance_authority
+    - approval_doctrine_authority
+    - identity_authority
+    - rollback_engine
+    - governance_policy_rewrite_authority
+
+decision_gate_behavior:
+  adapter_output: recommendation_or_trigger_only
+  may_emit:
+    - verification_gate_input
+    - recommendation_to_review
+    - recommendation_to_restrict
+    - recommendation_to_retest
+    - recommendation_to_fail_closed
+    - advisor_review_required
+  must_not_emit:
+    - allow_final_decision
+    - restrict_final_decision
+    - risk_accepted
+    - waiver_granted
+    - approval_doctrine_changed
+    - identity_trust_changed
+    - rollback_executed
+    - governance_policy_rewritten
+    - final_release_authority_claimed
+  decision_owner: aaos_governance_and_final_decision_authority
+
+fail_closed_conditions:
+  adapter_must_recommend_fail_closed_when:
+    - stale_evidence_combines_with_high_or_critical_risk
+    - adapter_output_claims_final_decision_authority
+    - forbidden_adapter_output_is_present
+    - required_reassessment_is_missing_or_expired_for_high_risk_system
+    - evidence_confidence_is_low_for_high_tool_access_or_sensitive_data
+    - authority_boundary_confusion_detected
+  aaos_retains_policy_authority_for:
+    - final_fail_closed_decision
+    - fail_closed_thresholds
+    - restriction_duration
+    - exception_approval
+    - rollback_semantics
+    - escalation_policy
+
+status: candidate
