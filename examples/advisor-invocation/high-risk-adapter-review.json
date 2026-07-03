@@ -1,0 +1,67 @@
+{
+  "packet_id": "advisor-review-high-risk-adapter-001",
+  "contract_id": "advisor_invocation_boundary",
+  "contract_version": "0.1.0",
+  "repository": "aa-os/aaos-public",
+  "branch": "feature/advisor-invocation-contract",
+  "commit_sha": "example-commit-sha",
+  "aaos_layers": ["L2", "L5", "L6"],
+  "trigger_types": [
+    "new_adapter_admission",
+    "adapter_authority_boundary_uncertainty",
+    "high_or_critical_risk_signal",
+    "human_review_required_but_missing"
+  ],
+  "subject": {
+    "subject_type": "adapter_admission",
+    "subject_id": "adapter-candidate-high-risk-001",
+    "title": "High-risk external scoring adapter admission review",
+    "owner": "AAOS governance",
+    "source_refs": [
+      "issue:#28",
+      "tracker:#35",
+      "adapter-intake:example-high-risk-adapter"
+    ]
+  },
+  "risk_signal": {
+    "severity": "high",
+    "authority_boundary_uncertainty": true,
+    "stale_evidence": false,
+    "governance_sensitive_artifact": true,
+    "human_review_missing": true
+  },
+  "advisor_invocation": {
+    "required": true,
+    "reviewer_role": "AAOS strategic governance advisor",
+    "trigger_reason": "New high-risk adapter admission has unresolved authority-boundary uncertainty and missing human-review handoff.",
+    "executor_model": "example-executor-model",
+    "advisor_model": "example-advisor-model",
+    "transcript_snapshot_hash": "sha256:example-transcript-snapshot",
+    "tool_state_hash": "sha256:example-tool-state",
+    "advisor_result_hash": "sha256:example-advisor-result",
+    "advice_summary": "Defer adapter admission until boundary roles, human-review handoff, and evidence replay requirements are complete.",
+    "executor_acceptance_status": "pending_aaos_decision",
+    "downstream_actions": [
+      "defer_admission",
+      "require_boundary_contract_update",
+      "require_human_review_handoff",
+      "require_replay_ready_evidence"
+    ],
+    "verification_status": "pending",
+    "rollback_or_escalation_required": true
+  },
+  "evidence_refs": [
+    "contracts/advisor-invocation-boundary.yaml",
+    "schemas/advisor-review-trigger.schema.json",
+    "docs/governance/advisor-invocation-contract.md"
+  ],
+  "recommended_governance_action": "defer_admission",
+  "sovereignty_statement": "Advisor review is a governance review hook only. AAOS retains risk appetite, approval doctrine, identity trust chain, decision router logic, escalation semantics, fail-closed policy, and final release authority.",
+  "reason_codes": [
+    "new_adapter_admission",
+    "authority_boundary_uncertainty",
+    "high_risk_signal_present",
+    "human_review_required_but_missing",
+    "advisor_not_final_authority"
+  ]
+}
