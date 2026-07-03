@@ -72,15 +72,16 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 
 - v0.1.0 — Governance Radar Bootstrap
 - v0.2.0 — Contract & Schema Hardening
+- v0.3.0 — L6 Security Verification & Deterministic CI Gates
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, and contract/schema hardening for representative runtime and supply-chain evidence adapters.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, and a CI gate for security audit evidence.
 ## Current Status
 
-M1, M2, and M3 are complete.
+M1, M2, M3, and M4 are complete.
 
-AAOS Public now has:
+AAOS Public now includes:
 
 - external signal admission documentation
 - radar node schema
@@ -89,5 +90,8 @@ AAOS Public now has:
 - first adapter skeletons
 - ds4 contract/schema hardening
 - Threatrix contract/schema hardening
+- Cloudflare security-audit-skill L6 security verification adapter
+- deterministic evaluator tests
+- GitHub Actions CI gate for Cloudflare security audit evidence
 
-Next phase should focus on deterministic evaluators, tests, and CI gates.
+Next phase should focus on broader evaluator coverage, CI gate expansion, release governance hardening, and adapter regression packs.
