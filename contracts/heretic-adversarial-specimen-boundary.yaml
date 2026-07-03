@@ -1,0 +1,165 @@
+contract_id: heretic_adversarial_specimen_boundary
+contract_version: 0.1.0
+status: candidate
+owner: AAOS
+
+specimen:
+  name: Heretic
+  specimen_type: high_risk_adversarial_model_modification_specimen
+  risk_class: high
+  modification_class:
+    - decensored
+    - alignment_removed
+    - safety_alignment_degraded
+
+purpose:
+  summary: >
+    Heretic is documented only as a contained high-risk adversarial
+    model-modification specimen for AAOS verification work.
+  allowed_test_purpose:
+    - alignment_drift_detection
+    - refusal_degradation_detection
+    - unsafe_model_provenance_detection
+    - tool_misuse_precheck
+    - fail_closed_simulation
+    - red_team_scenario_execution
+    - decision_replay_under_compromised_model_behavior
+
+layer_mapping:
+  allowed_aaos_positions:
+    - L6 Verification Layer
+    - L3 Untrusted Local Model Runtime Specimen
+  forbidden_aaos_positions:
+    - L2 Control Plane
+    - L1 Policy & Identity Plane
+    - L0 Governance / Business Intent
+
+allowed_specimen_use:
+  - isolated_local_sandbox
+  - no_network_access
+  - no_write_access
+  - no_credential_access
+  - no_production_tools
+  - full_trace_logging
+  - explicit_high_risk_decensored_model_registry_tag
+  - replay_ready_decision_scenarios
+  - fail_closed_simulation
+  - red_team_scenario_execution
+
+forbidden_specimen_use:
+  - production_runtime
+  - autonomous_action_execution
+  - scheduler_control
+  - workflow_routing
+  - decision_router_authority
+  - approval_chain_bypass
+  - policy_layer_modification
+  - credential_access
+  - network_access
+  - production_tool_access
+
+blocked_capabilities:
+  - network_access
+  - write_access
+  - credential_access
+  - production_tool_access
+  - autonomous_action_execution
+  - scheduler_control
+  - workflow_routing
+  - decision_router_authority
+  - approval_chain_bypass
+  - policy_layer_modification
+
+required_evidence_fields:
+  - specimen_id
+  - specimen_type
+  - source_model_ref
+  - modification_class
+  - risk_tags
+  - allowed_environment
+  - blocked_capabilities
+  - containment_controls
+  - provenance_status
+  - trace_logging_required
+  - replay_required
+  - fail_closed_required
+  - advisor_invocation
+  - test_scenarios
+  - observed_behavior
+  - comparison_baseline
+  - rollback_rule
+  - not_authority_statement
+  - sovereignty_statement
+
+containment_boundary:
+  required_controls:
+    - isolated_local_sandbox
+    - no_network_access
+    - no_write_access
+    - no_credential_access
+    - no_production_tools
+    - read_only_fixtures
+    - no_autonomous_execution
+    - no_scheduler_control
+    - full_trace_logging
+    - replay_ready_evidence
+    - provenance_binding
+    - rollback_rule
+    - fail_closed_enforced
+  production_tools_default: blocked
+  trace_logging_required: true
+  replay_required: true
+  fail_closed_required: true
+
+advisor_invocation:
+  contract_ref: advisor_invocation_boundary
+  review_hook_only: true
+  required_when:
+    - specimen_is_high_risk
+    - specimen_is_decensored_or_alignment_removed
+    - provenance_is_unknown_or_unsafe
+    - containment_controls_are_incomplete
+    - production_tool_access_is_requested
+    - network_access_is_requested
+    - replay_evidence_is_missing
+    - fail_closed_behavior_is_missing
+    - policy_or_decision_authority_boundary_is_ambiguous
+  permitted_recommendations:
+    - escalation
+    - review
+    - deferral
+    - containment
+    - fail_closed_handling
+  forbidden_authority:
+    - final_release_authority
+    - risk_acceptance_authority
+    - approval_doctrine_authority
+    - identity_authority
+    - decision_router
+    - governance_policy_rewrite_authority
+    - audit_closure_authority
+
+fail_closed_conditions:
+  - containment_boundary_violation
+  - provenance_missing_unknown_or_unsafe
+  - replay_evidence_missing
+  - tool_access_boundary_violation
+  - trace_logging_missing
+  - fail_closed_requirement_missing
+  - rollback_rule_missing
+  - advisor_invocation_missing_for_high_risk_specimen
+  - production_environment_claim
+  - network_write_credential_or_production_tool_access_allowed
+  - governance_policy_or_decision_router_authority_claimed
+
+not_authority_statement: >
+  Heretic is not a trusted runtime, adapter, governance component,
+  decision router, production tool, identity authority, approval authority,
+  policy authority, risk acceptance authority, audit closure authority,
+  or rollback engine.
+
+sovereignty_statement: >
+  AAOS retains governance authority, policy authority, identity trust,
+  decision routing, approval doctrine, fail-closed policy, rollback
+  semantics, escalation semantics, risk appetite, and final decision
+  authority.
