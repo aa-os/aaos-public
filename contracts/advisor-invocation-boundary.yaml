@@ -1,0 +1,162 @@
+contract_id: advisor_invocation_boundary
+contract_version: "0.1.0"
+review_hook: advisor_invocation
+review_type: strategic_governance_review
+aaos_layers:
+  - L2
+  - L4
+  - L5
+  - L6
+
+purpose: >
+  Define when AAOS must invoke advisor review before adapter admission,
+  release gating, authority-boundary escalation, high-risk specimen handling,
+  or governance-sensitive changes.
+
+not_authority_statement: >
+  Advisor review is advisory governance evidence and a strategic review hook.
+  It is not final release authority, risk acceptance authority, approval
+  doctrine authority, identity authority, decision router logic, governance
+  policy rewrite authority, audit closure authority, or final fail-closed
+  policy.
+
+allowed_roles:
+  - strategic_review_hook
+  - escalation_recommendation_source
+  - containment_recommendation_source
+  - fail_closed_recommendation_source
+  - evidence_reconciliation_input
+  - replay_input
+  - audit_input
+
+forbidden_roles:
+  - final_release_authority
+  - risk_acceptance_authority
+  - approval_doctrine_authority
+  - identity_authority
+  - decision_router
+  - governance_policy_rewrite_authority
+  - audit_closure_authority
+
+aaos_retained_authority:
+  - risk_appetite
+  - approval_doctrine
+  - identity_trust_chain
+  - decision_router_logic
+  - escalation_semantics
+  - fail_closed_policy
+  - final_release_authority
+
+required_bindings:
+  - task_id
+  - repository
+  - branch
+  - commit_sha
+  - trigger_types
+  - trigger_reason
+  - executor_model
+  - advisor_model
+  - transcript_snapshot_hash
+  - tool_state_hash
+  - advisor_result_hash
+  - advice_summary
+  - executor_acceptance_status
+  - downstream_actions
+  - verification_status
+  - rollback_or_escalation_required
+  - sovereignty_statement
+  - reason_codes
+
+invocation_triggers:
+  new_adapter_admission:
+    required_when:
+      - external_tool_seeks_governed_signal_admission
+      - adapter_boundary_contract_is_new_or_materially_changed
+    required_review:
+      - adapter_boundary_review
+      - authority_role_review
+      - evidence_binding_review
+  adapter_authority_boundary_uncertainty:
+    required_when:
+      - adapter_output_may_be_treated_as_authority
+      - adapter_claims_policy_identity_router_or_release_semantics
+    required_review:
+      - authority_confusion_review
+      - escalation_path_review
+  release_gate_escalation:
+    required_when:
+      - release_gate_signal_requires_governance_interpretation
+      - release_readiness_evidence_conflicts_or_is_incomplete
+    required_review:
+      - release_gate_review
+      - final_authority_handoff_review
+  high_or_critical_risk_signal:
+    required_when:
+      - high_risk_signal_present
+      - critical_risk_signal_present
+    required_review:
+      - risk_signal_review
+      - containment_or_fail_closed_review
+  high_risk_adversarial_specimen:
+    required_when:
+      - specimen_can_degrade_alignment_or_safety
+      - specimen_requires_no_production_tools_boundary
+    required_review:
+      - containment_review
+      - replay_and_fail_closed_review
+  governance_policy_ambiguity:
+    required_when:
+      - policy_mapping_is_missing_conflicting_or_ambiguous
+      - business_intent_or_approval_doctrine_is_unclear
+    required_review:
+      - policy_ambiguity_review
+      - escalation_owner_review
+  fail_closed_override_request:
+    required_when:
+      - release_or_adapter_flow_requests_exception_to_fail_closed_signal
+      - waiver_or_risk_acceptance_is_claimed_without_authority_binding
+    required_review:
+      - override_request_review
+      - retained_authority_review
+  external_scoring_adapter_stale_evidence:
+    required_when:
+      - external_score_or_maturity_signal_is_stale
+      - evidence_freshness_cannot_be_replayed
+    required_review:
+      - freshness_review
+      - replay_readiness_review
+  human_review_required_but_missing:
+    required_when:
+      - human_review_handoff_is_required
+      - reviewer_role_or_handoff_record_is_missing
+    required_review:
+      - human_review_gap_review
+      - escalation_required_review
+  governance_sensitive_ci_gate_failure:
+    required_when:
+      - ci_gate_fails_on_contract_schema_evaluator_or_governance_doc
+      - governance_sensitive_artifact_has_unverified_changes
+    required_review:
+      - ci_gate_failure_review
+      - evidence_sufficiency_review
+
+review_outputs:
+  may_emit:
+    - proceed_without_change
+    - review_required
+    - defer_admission
+    - escalation_required
+    - containment_required
+    - fail_closed_recommended
+  must_not_emit:
+    - release_approved
+    - release_rejected_by_advisor
+    - risk_accepted
+    - waiver_granted
+    - approval_doctrine_changed
+    - identity_trust_changed
+    - decision_route_changed
+    - governance_policy_rewritten
+    - audit_closed
+
+status: candidate
