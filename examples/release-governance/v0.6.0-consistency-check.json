@@ -1,0 +1,98 @@
+{
+  "release_id": "v0.6.0",
+  "release_title": "v0.6.0 - M7 Human-Agent Control Surface and Workspace Adapter",
+  "milestone": "M7",
+  "completed_milestones": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M7"
+  ],
+  "readme_version_status": {
+    "version": "v0.6.0",
+    "present": true,
+    "status_text": "M1, M2, M3, M4, M5, M6, and M7 are complete."
+  },
+  "milestone_completion_wording": {
+    "expected": "M1, M2, M3, M4, M5, M6, and M7 are complete.",
+    "actual": "M1, M2, M3, M4, M5, M6, and M7 are complete.",
+    "matches": true
+  },
+  "issue_tracker_closure": {
+    "tracker_issue": "#68",
+    "closed": true
+  },
+  "closing_prs": [
+    {
+      "pr": "#69",
+      "title": "Add open-tag human-agent workspace adapter boundary",
+      "merged": true
+    },
+    {
+      "pr": "#72",
+      "title": "Update README for v0.6.0 M7 completion",
+      "merged": true
+    }
+  ],
+  "release_tag": {
+    "tag": "v0.6.0",
+    "present": true
+  },
+  "release_title_consistency": {
+    "readme_title": "v0.6.0 - M7 Human-Agent Control Surface and Workspace Adapter",
+    "release_title": "v0.6.0 - M7 Human-Agent Control Surface and Workspace Adapter",
+    "matches": true
+  },
+  "release_body_consistency": {
+    "governance_boundary_preserved": true,
+    "body_summary": "External workspaces and collaboration systems are governed collaboration surfaces and evidence sources, not authorities."
+  },
+  "next_phase_declaration": {
+    "expected": "M8 - Release Governance Hardening and Cross-Adapter Regression",
+    "actual": "M8 - Release Governance Hardening and Cross-Adapter Regression",
+    "matches_expected": true
+  },
+  "related_issue_linkage": {
+    "expected_issues": [
+      "#68",
+      "#31"
+    ],
+    "linked_issues": [
+      "#68",
+      "#31"
+    ],
+    "present": true
+  },
+  "governance_boundary_preservation": {
+    "preserved": true,
+    "aaos_retained_authority": [
+      "purpose_and_business_intent",
+      "risk_appetite",
+      "approval_doctrine",
+      "identity_trust_chain",
+      "policy_authority",
+      "decision_router_logic",
+      "escalation_semantics",
+      "fail_closed_policy",
+      "rollback_policy",
+      "final_risk_classification",
+      "decision_proof_sealing_logic",
+      "audit_final_judgment",
+      "final_governance_authority"
+    ]
+  },
+  "evaluator_outputs": [
+    "release_consistency_passed",
+    "regression_findings",
+    "missing_evidence",
+    "authority_boundary_violation",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "not_authority_statement": "Release governance consistency evidence may detect inconsistencies but must not approve, block, classify, roll back, seal Decision Proof, close audits, or make final governance judgments.",
+  "sovereignty_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, and final governance authority."
+}
