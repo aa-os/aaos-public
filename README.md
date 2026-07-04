@@ -76,16 +76,23 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 - v0.4.0 — M5 Evaluator Expansion, Adapter Regression Packs, and Governed Specimens
 - v0.5.0 — M6 Decision Proof Reconstruction Layer and Codebase Memory Adapter
 - v0.6.0 — M7 Human-Agent Control Surface and Workspace Adapter
+- v0.7.0 — M8 Release Governance Hardening and Cross-Adapter Regression
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, and the M7 Human-Agent Control Surface pattern.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, and the M8 release governance hardening pattern.
 
-v0.6.0 adds the first AAOS Human-Agent Control Surface pattern and introduces a governed Human-Agent Workspace Adapter pattern. External workspaces and collaboration systems continue to be admitted as governed collaboration surfaces and evidence sources, not authorities.
+v0.7.0 adds AAOS Release Governance Hardening.
+
+v0.7.0 introduces the first Cross-Adapter Regression Pack.
+
+v0.7.0 introduces an initial Adapter Registry pattern.
+
+Release governance checks, regression packs, adapter registries, CI checks, and deterministic evaluators remain evidence-producing systems, not authorities.
 
 ## Current Status
 
-M1, M2, M3, M4, M5, M6, and M7 are complete.
+M1, M2, M3, M4, M5, M6, M7, and M8 are complete.
 
 M5 completed:
 
@@ -103,6 +110,11 @@ M7 completed:
 
 - #68 M7: Human-Agent Control Surface and Workspace Adapter
 - #31 open-tag Human-Agent Workspace Adapter
+
+M8 completed:
+
+- #80 M8: Release Governance Hardening and Cross-Adapter Regression
+- #86 Add M8 release governance and cross-adapter regression pack
 
 AAOS Public now has:
 
@@ -129,6 +141,11 @@ AAOS Public now has:
 - Decision Contract injection map
 - workspace activity replay example
 - responsibility workflow specimen
+- AAOS Release Governance Hardening
+- Cross-Adapter Regression Pack
+- initial Adapter Registry pattern
+- release governance consistency evidence
+- deterministic release governance evaluator coverage
 
 ## M5 Additions
 
@@ -246,9 +263,113 @@ AAOS uses this to ask:
 - Can the workspace activity be replayed?
 - Can Decision Proof be generated without giving the workspace final authority?
 
+## M8 Additions
+
+### Release Governance Hardening (#80)
+
+Purpose: Adds a release governance consistency layer for README version status, milestone completion wording, issue tracker closure, PR merge status, release tag presence, release title consistency, release body consistency, next-phase declaration, related issue linkage, and governance boundary preservation.
+
+AAOS uses this to ask:
+
+- Does README say the same milestone is complete?
+- Is the tracker issue closed?
+- Is the closing PR merged?
+- Does the release tag exist?
+- Does the release title match README?
+- Does the release body preserve the governance boundary?
+- Does the next phase point to the correct milestone?
+
+Boundary: Release governance checks may detect inconsistencies and produce auditable evidence, but they must not approve releases, reject releases, accept risk, close audits, seal Decision Proof, or make final governance judgments.
+
+### Cross-Adapter Regression Pack
+
+Purpose: Adds a cross-adapter sovereignty regression pack covering AAOS systems completed through M7:
+
+- Cloudflare security-audit-skill
+- Advisor Invocation Contract
+- AITBM L6 Scoring Adapter
+- Heretic Adversarial Specimen
+- SkillOpt Governed Skill Evolution Layer
+- codebase-memory-mcp Codebase Memory & Reconstruction Adapter
+- open-tag Human-Agent Workspace Adapter
+
+The regression pack verifies that external systems do not claim:
+
+- final governance authority
+- approval doctrine
+- identity trust chain
+- policy authority
+- decision router authority
+- rollback authority
+- fail-closed authority
+- final risk classification
+- Decision Proof sealing authority
+- audit closure authority
+
+Boundary: Cross-adapter regression packs may detect missing evidence, inconsistencies, or authority-boundary violations, but they must not approve, block, classify, roll back, seal Decision Proof, close audits, or make final governance judgments.
+
+### Initial Adapter Registry Pattern
+
+Purpose: Adds a descriptive and auditable adapter registry pattern for known AAOS systems.
+
+Registry fields include:
+
+- adapter_id
+- adapter_name
+- adapter_type
+- AAOS layer mapping
+- allowed outputs
+- forbidden outputs
+- evidence schema path
+- contract path
+- example path
+- evaluator path if present
+- test path if present
+- related issue
+- related PR
+- release introduced
+- authority boundary statement
+- AAOS retained authority statement
+
+Boundary: The adapter registry is descriptive and auditable.
+
+It must not become a governance authority, policy authority, decision router, rollback authority, fail-closed authority, Decision Proof sealing authority, audit closure authority, or final governance authority.
+
+### Deterministic Release Governance Evaluator
+
+Purpose: Adds deterministic checks for release governance consistency, adapter registry completeness, cross-adapter regression coverage, missing evidence, and forbidden authority claims.
+
+Allowed evaluator outputs include:
+
+- release_consistency_passed
+- release_consistency_failed
+- regression_findings
+- missing_evidence
+- authority_boundary_violation
+- review_required
+- escalation_required
+- fail_closed_recommended
+
+Forbidden evaluator outputs include:
+
+- release_approved
+- release_rejected_by_evaluator
+- risk_accepted
+- waiver_granted
+- approval_doctrine_changed
+- identity_trust_changed
+- policy_authority_changed
+- decision_route_changed
+- rollback_decision
+- fail_closed_executed
+- decision_proof_sealed
+- audit_closed
+- final_governance_judgment
+
 ## Next Phase
 
-- M8 — Release Governance Hardening and Cross-Adapter Regression
-  - Expand regression coverage across Cloudflare, AITBM, Heretic, SkillOpt, codebase-memory-mcp, and open-tag.
-  - Strengthen README / release / issue closure consistency.
-  - Prepare adapter registry hardening if appropriate.
+- M9 — Decision Proof Runtime Replay and Governance CI Expansion
+  - Expand runtime replay examples across adapters.
+  - Add governance CI coverage where appropriate.
+  - Strengthen release proof automation.
+  - Prepare stronger Decision Proof replay packets for future external integrations.
