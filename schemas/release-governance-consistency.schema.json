@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/release-governance-consistency.schema.json",
+  "title": "AAOS Release Governance Consistency Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "release_id",
+    "release_title",
+    "milestone",
+    "completed_milestones",
+    "readme_version_status",
+    "milestone_completion_wording",
+    "issue_tracker_closure",
+    "closing_prs",
+    "release_tag",
+    "release_title_consistency",
+    "release_body_consistency",
+    "next_phase_declaration",
+    "related_issue_linkage",
+    "governance_boundary_preservation",
+    "evaluator_outputs",
+    "not_authority_statement",
+    "sovereignty_statement"
+  ],
+  "properties": {
+    "release_id": {
+      "type": "string"
+    },
+    "release_title": {
+      "type": "string"
+    },
+    "milestone": {
+      "type": "string"
+    },
+    "completed_milestones": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "readme_version_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "present",
+        "status_text"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "present": {
+          "type": "boolean"
+        },
+        "status_text": {
+          "type": "string"
+        }
+      }
+    },
+    "milestone_completion_wording": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected",
+        "actual",
+        "matches"
+      ],
+      "properties": {
+        "expected": {
+          "type": "string"
+        },
+        "actual": {
+          "type": "string"
+        },
+        "matches": {
+          "type": "boolean"
+        }
+      }
+    },
+    "issue_tracker_closure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tracker_issue",
+        "closed"
+      ],
+      "properties": {
+        "tracker_issue": {
+          "type": "string"
+        },
+        "closed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "closing_prs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pr",
+          "title",
+          "merged"
+        ],
+        "properties": {
+          "pr": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "merged": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "release_tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tag",
+        "present"
+      ],
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "present": {
+          "type": "boolean"
+        }
+      }
+    },
+    "release_title_consistency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "readme_title",
+        "release_title",
+        "matches"
+      ],
+      "properties": {
+        "readme_title": {
+          "type": "string"
+        },
+        "release_title": {
+          "type": "string"
+        },
+        "matches": {
+          "type": "boolean"
+        }
+      }
+    },
+    "release_body_consistency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "governance_boundary_preserved",
+        "body_summary"
+      ],
+      "properties": {
+        "governance_boundary_preserved": {
+          "type": "boolean"
+        },
+        "body_summary": {
+          "type": "string"
+        }
+      }
+    },
+    "next_phase_declaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected",
+        "actual",
+        "matches_expected"
+      ],
+      "properties": {
+        "expected": {
+          "type": "string"
+        },
+        "actual": {
+          "type": "string"
+        },
+        "matches_expected": {
+          "type": "boolean"
+        }
+      }
+    },
+    "related_issue_linkage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_issues",
+        "linked_issues",
+        "present"
+      ],
+      "properties": {
+        "expected_issues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "linked_issues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "present": {
+          "type": "boolean"
+        }
+      }
+    },
+    "governance_boundary_preservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preserved",
+        "aaos_retained_authority"
+      ],
+      "properties": {
+        "preserved": {
+          "type": "boolean"
+        },
+        "aaos_retained_authority": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evaluator_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "release_consistency_passed",
+          "release_consistency_failed",
+          "regression_findings",
+          "missing_evidence",
+          "authority_boundary_violation",
+          "review_required",
+          "escalation_required",
+          "fail_closed_recommended"
+        ]
+      }
+    },
+    "not_authority_statement": {
+      "type": "string"
+    },
+    "sovereignty_statement": {
+      "type": "string"
+    }
+  }
+}

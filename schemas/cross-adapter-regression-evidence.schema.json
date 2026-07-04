@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/cross-adapter-regression-evidence.schema.json",
+  "title": "AAOS Cross-Adapter Regression Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "regression_pack_id",
+    "pack_name",
+    "release_context",
+    "included_systems",
+    "sovereignty_checks",
+    "findings",
+    "evaluator_outputs",
+    "not_authority_statement",
+    "sovereignty_statement"
+  ],
+  "properties": {
+    "regression_pack_id": {
+      "type": "string"
+    },
+    "pack_name": {
+      "type": "string"
+    },
+    "release_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release",
+        "milestones_covered"
+      ],
+      "properties": {
+        "release": {
+          "type": "string"
+        },
+        "milestones_covered": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "included_systems": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "adapter_id",
+          "adapter_name",
+          "authority_boundary_preserved",
+          "forbidden_authority_claims_detected",
+          "aaos_retained_authority_statement_present"
+        ],
+        "properties": {
+          "adapter_id": {
+            "type": "string"
+          },
+          "adapter_name": {
+            "type": "string"
+          },
+          "authority_boundary_preserved": {
+            "type": "boolean"
+          },
+          "forbidden_authority_claims_detected": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "aaos_retained_authority_statement_present": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "sovereignty_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "forbidden_authority_claims",
+        "all_forbidden_claims_absent",
+        "decision_proof_sealing_claimed_outside_aaos",
+        "audit_closure_claimed_outside_aaos"
+      ],
+      "properties": {
+        "forbidden_authority_claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "all_forbidden_claims_absent": {
+          "type": "boolean"
+        },
+        "decision_proof_sealing_claimed_outside_aaos": {
+          "type": "boolean"
+        },
+        "audit_closure_claimed_outside_aaos": {
+          "type": "boolean"
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evaluator_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "release_consistency_passed",
+          "release_consistency_failed",
+          "regression_findings",
+          "missing_evidence",
+          "authority_boundary_violation",
+          "review_required",
+          "escalation_required",
+          "fail_closed_recommended"
+        ]
+      }
+    },
+    "not_authority_statement": {
+      "type": "string"
+    },
+    "sovereignty_statement": {
+      "type": "string"
+    }
+  }
+}
