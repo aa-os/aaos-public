@@ -1,0 +1,45 @@
+{
+  "decision_id": "v0.8.0-m9-release-proof-sealing-boundary",
+  "sealing_status": "sealing_eligible",
+  "evidence_readiness_state": "evidence_complete",
+  "sealing_eligibility_state": "eligible_for_aaos_review",
+  "actual_sealing_state": "not_sealed",
+  "audit_closure_state": "audit_open",
+  "final_governance_judgment_state": "not_finalized",
+  "final_sealing_authority_owner": "AAOS",
+  "captured_evidence": [
+    "examples/release-proof-automation/v0.7.0-release-proof.json",
+    "examples/decision-proof-runtime-replay/release-governance-replay.json"
+  ],
+  "replayable_evidence": [
+    "examples/decision-proof-runtime-replay/release-governance-replay.json",
+    "examples/decision-proof-runtime-replay/cross-adapter-regression-replay.json"
+  ],
+  "evaluator_findings": [
+    "runtime/decision_proof_replay_evaluator.py",
+    "runtime/release_governance_evaluator.py"
+  ],
+  "release_proof_evidence": [
+    "examples/release-proof-automation/v0.7.0-release-proof.json"
+  ],
+  "governance_ci_findings": [
+    "docs/governance/governance-ci-expansion.md"
+  ],
+  "human_review_state": "human_review_required_before_sealing",
+  "advisor_review_state": "advisor_review_available_for_boundary_escalation",
+  "sealing_boundary_statement": "Runtime replay, release proof automation, governance CI, and deterministic evaluators may prepare evidence, but final Decision Proof sealing remains AAOS-owned.",
+  "not_delegated_to": [
+    "adapters",
+    "external_tools",
+    "ci_checks",
+    "runtime_replay",
+    "release_proof_automation",
+    "deterministic_evaluators",
+    "registries",
+    "public_integration_packs",
+    "external_consumers"
+  ],
+  "aaos_retained_authority_statement": "AAOS retains Decision Proof sealing logic, audit final judgment, final governance authority, risk appetite, approval doctrine, identity trust chain, decision router logic, escalation semantics, fail-closed policy, rollback policy, and final risk classification.",
+  "not_authority_statement": "This sealing status is evidence and eligibility state only. It must not seal Decision Proof, close audit, approve release, accept risk, execute rollback, or make final governance judgment.",
+  "sovereignty_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, and final governance authority."
+}
