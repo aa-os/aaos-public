@@ -1,0 +1,184 @@
+{
+  "decision_proof_id": "codebase-decision-proof-api-handler-change-001",
+  "proof_version": "0.1.0",
+  "adapter_ref": "codebase-memory-mcp",
+  "codebase_graph_evidence": {
+    "repository_id": "aa-os/aaos-public",
+    "repository_ref": {
+      "repository_full_name": "aa-os/aaos-public",
+      "branch": "feature/example-api-handler-change",
+      "remote_url": "https://github.com/aa-os/aaos-public"
+    },
+    "commit_sha": "basecommit-example-001",
+    "index_timestamp": "2026-07-04T00:00:00Z",
+    "indexed_paths": [
+      "runtime/",
+      "schemas/",
+      "tests/"
+    ],
+    "language_summary": [
+      {
+        "language": "Python",
+        "file_count": 12
+      },
+      {
+        "language": "JSON Schema",
+        "file_count": 8
+      }
+    ],
+    "symbol_table_ref": "graphs/aaos-public/basecommit-example-001/symbol-table.json",
+    "dependency_graph_ref": "graphs/aaos-public/basecommit-example-001/dependency-graph.json",
+    "call_graph_ref": "graphs/aaos-public/basecommit-example-001/call-graph.json",
+    "route_map_ref": "graphs/aaos-public/basecommit-example-001/route-map.json",
+    "test_map_ref": "graphs/aaos-public/basecommit-example-001/test-map.json",
+    "architecture_summary_ref": "graphs/aaos-public/basecommit-example-001/architecture-summary.md",
+    "graph_hash": "sha256:example-codebase-graph",
+    "source_hashes": [
+      {
+        "path": "runtime/example_api_handler.py",
+        "algorithm": "sha256",
+        "hash": "sha256:example-api-handler-source"
+      },
+      {
+        "path": "tests/test_example_api_handler.py",
+        "algorithm": "sha256",
+        "hash": "sha256:example-api-handler-tests"
+      }
+    ],
+    "replay_trace_ref": "traces/codebase-memory/basecommit-example-001/index-replay.json",
+    "evidence_freshness": {
+      "status": "fresh",
+      "evidence_age_days": 1,
+      "max_age_days": 14,
+      "assessed_at": "2026-07-04T00:00:00Z"
+    },
+    "not_authority_statement": "codebase-memory-mcp reconstructs graph evidence only; it does not approve, block, roll back, classify, seal, or close AAOS decisions.",
+    "sovereignty_statement": "AAOS decides whether a code change is allowed, blocked, escalated, replayed, rolled back, or sealed."
+  },
+  "patch_impact_evidence": {
+    "change_id": "api-handler-change-001",
+    "repository_ref": {
+      "repository_full_name": "aa-os/aaos-public",
+      "branch": "feature/example-api-handler-change",
+      "remote_url": "https://github.com/aa-os/aaos-public"
+    },
+    "base_commit_sha": "basecommit-example-001",
+    "proposed_commit_sha": "proposedcommit-example-001",
+    "changed_files": [
+      {
+        "path": "runtime/example_api_handler.py",
+        "change_type": "modified",
+        "file_role": "api"
+      },
+      {
+        "path": "tests/test_example_api_handler.py",
+        "change_type": "modified",
+        "file_role": "test"
+      }
+    ],
+    "changed_symbols": [
+      {
+        "name": "handle_request",
+        "file_path": "runtime/example_api_handler.py",
+        "symbol_type": "function"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "name": "handle_request",
+        "file_path": "runtime/example_api_handler.py",
+        "symbol_type": "function"
+      },
+      {
+        "name": "validate_request_policy",
+        "file_path": "runtime/example_api_handler.py",
+        "symbol_type": "function"
+      }
+    ],
+    "affected_routes": [
+      "POST /example/api"
+    ],
+    "affected_tests": [
+      "tests/test_example_api_handler.py::test_policy_gate_blocks_missing_evidence",
+      "tests/test_example_api_handler.py::test_replay_trace_is_required"
+    ],
+    "dependency_edges_touched": [
+      {
+        "from": "runtime/example_api_handler.py",
+        "to": "schemas/example-request.schema.json",
+        "edge_type": "schema_validation"
+      }
+    ],
+    "call_paths_touched": [
+      {
+        "entrypoint": "POST /example/api",
+        "path_ref": "graphs/aaos-public/basecommit-example-001/call-paths/post-example-api.json"
+      }
+    ],
+    "auth_surface_touched": true,
+    "payment_surface_touched": false,
+    "security_surface_touched": true,
+    "data_pipeline_surface_touched": false,
+    "governance_sensitive_surface_touched": true,
+    "blast_radius": {
+      "rating": "high",
+      "scope_summary": "API handler, request policy precheck, tests, and route replay evidence are affected.",
+      "affected_file_count": 4,
+      "confidence": "high"
+    },
+    "rollback_surface": {
+      "complete": true,
+      "rollback_ready": true,
+      "candidate_refs": [
+        "runtime/example_api_handler.py@basecommit-example-001",
+        "tests/test_example_api_handler.py@basecommit-example-001"
+      ],
+      "owner": "AAOS",
+      "notes": "Rollback candidates are mapped, but rollback authority remains with AAOS."
+    },
+    "replay_ready": true,
+    "trace_refs": [
+      "traces/codebase-memory/api-handler-change-001/impact-replay.json",
+      "traces/codebase-memory/api-handler-change-001/test-surface-replay.json"
+    ],
+    "policy_precheck": {
+      "status": "pass",
+      "checks": {
+        "graph_evidence_present": true,
+        "affected_symbol_map_present": true,
+        "affected_test_surface_present": true,
+        "rollback_surface_present": true,
+        "replay_trace_present": true,
+        "authority_boundary_check_present": true
+      }
+    },
+    "advisor_invocation": {
+      "required": true,
+      "contract_ref": "advisor_invocation_boundary",
+      "trigger_types": [
+        "high_blast_radius",
+        "auth_surface_touched",
+        "security_surface_touched",
+        "governance_sensitive_surface_touched"
+      ],
+      "review_reason": "High blast radius API change touches auth, security, and governance-sensitive surfaces.",
+      "status": "pending",
+      "decision_owner": "AAOS"
+    },
+    "aaos_decision_state": {
+      "decision_owner": "AAOS",
+      "code_change_decision": "pending",
+      "final_risk_classification": "pending_aaos_classification",
+      "decision_proof_state": "pending_aaos_seal"
+    },
+    "not_authority_statement": "codebase-memory-mcp reconstructs patch impact evidence only; it does not approve, block, classify, roll back, seal Decision Proof, or close audits.",
+    "sovereignty_statement": "AAOS decides whether this code change is allowed, blocked, escalated, replayed, rolled back, or sealed."
+  },
+  "software_decision_context": {
+    "change_summary": "Example API handler change with high blast radius and replay-ready graph evidence.",
+    "decision_question": "Should AAOS allow, block, escalate, replay, roll back, or seal this code change?",
+    "adapter_role": "governed_evidence_source_only"
+  },
+  "not_authority_statement": "codebase-memory-mcp is not a coding agent, model runtime, governance authority, verification authority, decision router, rollback authority, identity authority, fail-closed authority, Decision Proof sealing authority, audit closure authority, or final governance authority.",
+  "sovereignty_statement": "AAOS retains risk appetite, approval doctrine, identity trust chain, decision router logic, escalation semantics, fail-closed rules, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, and final governance authority."
+}
