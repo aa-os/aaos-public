@@ -77,22 +77,25 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 - v0.5.0 — M6 Decision Proof Reconstruction Layer and Codebase Memory Adapter
 - v0.6.0 — M7 Human-Agent Control Surface and Workspace Adapter
 - v0.7.0 — M8 Release Governance Hardening and Cross-Adapter Regression
+- v0.8.0 — M9 Decision Proof Runtime Replay and Governance CI Expansion
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, and the M8 release governance hardening pattern.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, and the M9 Decision Proof Runtime Replay pattern.
 
-v0.7.0 adds AAOS Release Governance Hardening.
+v0.8.0 adds AAOS Decision Proof Runtime Replay.
 
-v0.7.0 introduces the first Cross-Adapter Regression Pack.
+v0.8.0 introduces the first Decision Proof Runtime Replay Packet.
 
-v0.7.0 introduces an initial Adapter Registry pattern.
+v0.8.0 introduces the Governance CI Expansion pattern.
 
-Release governance checks, regression packs, adapter registries, CI checks, and deterministic evaluators remain evidence-producing systems, not authorities.
+v0.8.0 introduces the Release Proof Automation pattern.
+
+Runtime replay, CI checks, release proof automation, adapter events, evaluator outputs, and replay packets remain evidence-producing systems, not authorities.
 
 ## Current Status
 
-M1, M2, M3, M4, M5, M6, M7, and M8 are complete.
+M1, M2, M3, M4, M5, M6, M7, M8, and M9 are complete.
 
 M5 completed:
 
@@ -115,6 +118,11 @@ M8 completed:
 
 - #80 M8: Release Governance Hardening and Cross-Adapter Regression
 - #86 Add M8 release governance and cross-adapter regression pack
+
+M9 completed:
+
+- #93 M9: Decision Proof Runtime Replay and Governance CI Expansion
+- #94 Add M9 Decision Proof runtime replay and governance CI pattern
 
 AAOS Public now has:
 
@@ -146,6 +154,13 @@ AAOS Public now has:
 - initial Adapter Registry pattern
 - release governance consistency evidence
 - deterministic release governance evaluator coverage
+- AAOS Decision Proof Runtime Replay
+- Decision Proof Runtime Replay Packet
+- runtime replay examples
+- Governance CI Expansion pattern
+- Release Proof Automation pattern
+- v0.7.0 release proof evidence
+- deterministic Decision Proof replay evaluator coverage
 
 ## M5 Additions
 
@@ -366,10 +381,159 @@ Forbidden evaluator outputs include:
 - audit_closed
 - final_governance_judgment
 
+## M9 Additions
+
+### Decision Proof Runtime Replay (#93)
+
+Purpose: Adds a runtime replay pattern that reconstructs what happened around an AAOS-governed decision.
+
+Replay packets bind:
+
+- decision context
+- adapter events
+- runtime events
+- evaluator findings
+- rollback surface
+- replay target
+- replay steps
+- replay result
+- sealing status
+- not-authority statement
+- AAOS sovereignty statement
+
+AAOS uses this to ask:
+
+- What decision was being executed?
+- Who or what acted?
+- Which authority source allowed the work to proceed?
+- Which tools were allowed?
+- Was approval required and present?
+- Which adapters or runtime components produced events?
+- Which evidence was captured?
+- What did deterministic evaluators report?
+- What rollback or escalation surface existed?
+- Can the decision be replayed?
+- Was Decision Proof sealing preserved as an AAOS-owned boundary?
+
+Boundary: Runtime replay reconstructs what happened and may produce evidence for review, escalation, replay, rollback-surface inspection, fail-closed recommendation, or release proof automation.
+
+It must not approve, block, classify, roll back, publish releases, seal Decision Proof, close audits, or make final governance judgments.
+
+### Decision Proof Runtime Replay Packet
+
+Purpose: Adds a replayable packet structure for Decision Proof runtime replay.
+
+Packet fields include:
+
+- decision_id
+- intent
+- actor
+- authority_source
+- risk_class
+- allowed_tools
+- approval_required
+- approval_state
+- adapter_events
+- runtime_events
+- execution_trace
+- evidence_refs
+- evaluator_outputs
+- regression_findings
+- rollback_plan
+- rollback_surface
+- replay_target
+- replay_steps
+- replay_result
+- sealing_status
+- not_authority_statement
+- sovereignty_statement
+
+Boundary: The packet is replay evidence.
+
+It must not become governance authority, policy authority, identity authority, approval authority, release authority, decision router, rollback authority, fail-closed authority, final risk classification authority, Decision Proof sealing authority, audit closure authority, or final governance authority.
+
+### Governance CI Expansion Pattern
+
+Purpose: Adds a governance CI expansion pattern for deterministic checks over schemas, examples, replay packets, release proof evidence, adapter registry entries, and authority-boundary preservation.
+
+Governance CI may check:
+
+- schema validity
+- example validity
+- evaluator forbidden-output detection
+- adapter registry required fields
+- release proof consistency
+- replay packet completeness
+- forbidden authority claim detection
+- Decision Proof sealing boundary preservation
+
+Boundary: Governance CI checks evidence consistency.
+
+CI may detect missing evidence, incomplete replay packets, stale registry entries, forbidden authority claims, or Decision Proof sealing boundary violations.
+
+CI must not approve, block, classify, roll back, publish releases, seal Decision Proof, close audits, or make final governance judgments.
+
+### Release Proof Automation Pattern
+
+Purpose: Adds a release proof automation pattern that prepares auditable release evidence before AAOS decides whether a release is ready.
+
+Release proof automation checks:
+
+- README version status
+- tracker issue closure
+- PR merge status
+- release tag presence
+- release title consistency
+- release body consistency
+- next-phase declaration
+- Decision Proof replay packet presence
+- governance boundary preservation
+
+Boundary: Release proof automation prepares auditable release evidence.
+
+It may recommend review, escalation, or fail-closed handling when evidence is missing or an authority boundary is violated.
+
+It must not publish releases, approve releases, accept risk, close audits, seal Decision Proof, or make final governance judgments.
+
+### Deterministic Decision Proof Replay Evaluator
+
+Purpose: Adds deterministic checks for replay packet completeness, release proof consistency, missing evidence, and forbidden authority claims.
+
+Allowed evaluator outputs include:
+
+- replay_packet_valid
+- replay_packet_invalid
+- replay_findings
+- missing_evidence
+- authority_boundary_violation
+- release_proof_consistency_passed
+- release_proof_consistency_failed
+- review_required
+- escalation_required
+- fail_closed_recommended
+
+Forbidden evaluator outputs include:
+
+- release_approved
+- release_rejected_by_evaluator
+- risk_accepted
+- waiver_granted
+- approval_doctrine_changed
+- identity_trust_changed
+- policy_authority_changed
+- decision_route_changed
+- rollback_decision
+- rollback_executed
+- fail_closed_executed
+- decision_proof_sealed
+- audit_closed
+- final_governance_judgment
+
 ## Next Phase
 
-- M9 — Decision Proof Runtime Replay and Governance CI Expansion
-  - Expand runtime replay examples across adapters.
-  - Add governance CI coverage where appropriate.
-  - Strengthen release proof automation.
-  - Prepare stronger Decision Proof replay packets for future external integrations.
+- M10 — Decision Proof Sealing Boundary and External Integration Readiness
+  - Define stronger Decision Proof sealing boundary documentation.
+  - Prepare external integration readiness checks.
+  - Strengthen adapter-to-release proof traceability.
+  - Evaluate whether public-facing integration packs should be introduced.
+
