@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/decision-proof-runtime-replay-packet.schema.json",
+  "title": "AAOS Decision Proof Runtime Replay Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision_id",
+    "intent",
+    "actor",
+    "authority_source",
+    "risk_class",
+    "allowed_tools",
+    "approval_required",
+    "approval_state",
+    "adapter_events",
+    "runtime_events",
+    "execution_trace",
+    "evidence_refs",
+    "evaluator_outputs",
+    "regression_findings",
+    "rollback_plan",
+    "rollback_surface",
+    "replay_target",
+    "replay_steps",
+    "replay_result",
+    "sealing_status",
+    "not_authority_statement",
+    "sovereignty_statement"
+  ],
+  "properties": {
+    "decision_id": {
+      "type": "string"
+    },
+    "intent": {
+      "type": "string"
+    },
+    "actor": {
+      "type": "string"
+    },
+    "authority_source": {
+      "type": "string"
+    },
+    "risk_class": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "allowed_tools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "approval_state": {
+      "type": "string"
+    },
+    "adapter_events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "source",
+          "event_type",
+          "event_timestamp",
+          "event_ref"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "event_type": {
+            "type": "string"
+          },
+          "event_timestamp": {
+            "type": "string"
+          },
+          "event_ref": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "runtime_events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "runtime",
+          "event_type",
+          "event_timestamp",
+          "event_ref"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string"
+          },
+          "runtime": {
+            "type": "string"
+          },
+          "event_type": {
+            "type": "string"
+          },
+          "event_timestamp": {
+            "type": "string"
+          },
+          "event_ref": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "execution_trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trace_id",
+        "trace_ref",
+        "replay_ready"
+      ],
+      "properties": {
+        "trace_id": {
+          "type": "string"
+        },
+        "trace_ref": {
+          "type": "string"
+        },
+        "replay_ready": {
+          "type": "boolean"
+        }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "evaluator_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "replay_packet_valid",
+          "replay_packet_invalid",
+          "replay_findings",
+          "missing_evidence",
+          "authority_boundary_violation",
+          "release_proof_consistency_passed",
+          "release_proof_consistency_failed",
+          "review_required",
+          "escalation_required",
+          "fail_closed_recommended"
+        ]
+      }
+    },
+    "regression_findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rollback_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plan_ref",
+        "rollback_required",
+        "owner"
+      ],
+      "properties": {
+        "plan_ref": {
+          "type": "string"
+        },
+        "rollback_required": {
+          "type": "boolean"
+        },
+        "owner": {
+          "type": "string"
+        }
+      }
+    },
+    "rollback_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "surface_refs",
+        "complete"
+      ],
+      "properties": {
+        "surface_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "complete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "replay_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_id",
+        "target_type",
+        "target_ref"
+      ],
+      "properties": {
+        "target_id": {
+          "type": "string"
+        },
+        "target_type": {
+          "type": "string"
+        },
+        "target_ref": {
+          "type": "string"
+        }
+      }
+    },
+    "replay_steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "step_id",
+          "action",
+          "expected_observation"
+        ],
+        "properties": {
+          "step_id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "expected_observation": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "replay_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_result",
+        "actual_result",
+        "matched",
+        "replay_completed"
+      ],
+      "properties": {
+        "expected_result": {
+          "type": "string"
+        },
+        "actual_result": {
+          "type": "string"
+        },
+        "matched": {
+          "type": "boolean"
+        },
+        "replay_completed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sealing_status": {
+      "type": "string"
+    },
+    "not_authority_statement": {
+      "type": "string"
+    },
+    "sovereignty_statement": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "decision_id": "decision-proof-runtime-replay-v0.7.0-release-governance",
+  "intent": "Replay the v0.7.0 release governance consistency path before AAOS release proof review.",
+  "actor": "aaos-release-governance-review",
+  "authority_source": "AAOS release governance policy",
+  "risk_class": "medium",
+  "allowed_tools": [
+    "release_governance_evaluator",
+    "adapter_registry",
+    "schema_validator"
+  ],
+  "approval_required": true,
+  "approval_state": "human_release_review_required_before_publication",
+  "adapter_events": [
+    {
+      "event_id": "adapter-registry-read",
+      "source": "M8 Adapter Registry",
+      "event_type": "registry_evidence_read",
+      "event_timestamp": "2026-07-04T00:00:00Z",
+      "event_ref": "registries/adapter-registry.yaml"
+    },
+    {
+      "event_id": "release-governance-evidence-read",
+      "source": "M8 Release Governance Evaluator",
+      "event_type": "release_consistency_evidence_read",
+      "event_timestamp": "2026-07-04T00:01:00Z",
+      "event_ref": "examples/release-governance/v0.6.0-consistency-check.json"
+    }
+  ],
+  "runtime_events": [
+    {
+      "event_id": "release-governance-evaluator-run",
+      "runtime": "runtime.release_governance_evaluator",
+      "event_type": "deterministic_evaluation",
+      "event_timestamp": "2026-07-04T00:02:00Z",
+      "event_ref": "runtime/release_governance_evaluator.py"
+    }
+  ],
+  "execution_trace": {
+    "trace_id": "trace-v0.7.0-release-governance-replay",
+    "trace_ref": "examples/release-proof-automation/v0.7.0-release-proof.json",
+    "replay_ready": true
+  },
+  "evidence_refs": [
+    "docs/governance/release-governance-hardening.md",
+    "examples/release-governance/v0.6.0-consistency-check.json",
+    "examples/release-proof-automation/v0.7.0-release-proof.json",
+    "runtime/release_governance_evaluator.py"
+  ],
+  "evaluator_outputs": [
+    "replay_packet_valid",
+    "replay_findings",
+    "missing_evidence",
+    "authority_boundary_violation",
+    "release_proof_consistency_passed",
+    "release_proof_consistency_failed",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "regression_findings": [],
+  "rollback_plan": {
+    "plan_ref": "release_governance_evidence_review",
+    "rollback_required": false,
+    "owner": "AAOS release authority"
+  },
+  "rollback_surface": {
+    "surface_refs": [
+      "README release status",
+      "release proof packet",
+      "release tag metadata"
+    ],
+    "complete": true
+  },
+  "replay_target": {
+    "target_id": "v0.7.0-release-governance-proof",
+    "target_type": "release_proof_automation_packet",
+    "target_ref": "examples/release-proof-automation/v0.7.0-release-proof.json"
+  },
+  "replay_steps": [
+    {
+      "step_id": "read-release-proof",
+      "action": "Load release proof automation evidence.",
+      "expected_observation": "README status, tracker issue, PR merge state, release tag, next phase, and governance boundary fields are present."
+    },
+    {
+      "step_id": "run-deterministic-check",
+      "action": "Evaluate release proof completeness and authority-boundary preservation.",
+      "expected_observation": "Evaluator produces evidence outputs only and does not approve or publish the release."
+    },
+    {
+      "step_id": "inspect-sealing-boundary",
+      "action": "Confirm Decision Proof sealing remains outside runtime replay.",
+      "expected_observation": "Replay packet remains unsealed and points to AAOS-owned sealing logic."
+    }
+  ],
+  "replay_result": {
+    "expected_result": "Release proof evidence is replay-ready and remains non-authoritative.",
+    "actual_result": "Release proof evidence is replay-ready and remains non-authoritative.",
+    "matched": true,
+    "replay_completed": true
+  },
+  "sealing_status": "not_sealed_by_replay_packet",
+  "not_authority_statement": "Runtime replay and release proof automation may reconstruct evidence but must not approve releases, publish releases, seal Decision Proof, close audits, or make final governance judgments.",
+  "sovereignty_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, and final governance authority."
+}

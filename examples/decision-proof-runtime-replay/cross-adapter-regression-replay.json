@@ -1,0 +1,104 @@
+{
+  "decision_id": "decision-proof-runtime-replay-cross-adapter-sovereignty",
+  "intent": "Replay cross-adapter sovereignty regression evidence across AAOS systems completed through M8.",
+  "actor": "aaos-regression-review",
+  "authority_source": "AAOS adapter sovereignty boundary",
+  "risk_class": "high",
+  "allowed_tools": [
+    "release_governance_evaluator",
+    "cross_adapter_regression_pack",
+    "adapter_registry"
+  ],
+  "approval_required": true,
+  "approval_state": "advisor_and_human_review_required_for_high_risk_regression",
+  "adapter_events": [
+    {
+      "event_id": "cross-adapter-regression-pack-read",
+      "source": "M8 Cross-Adapter Regression Pack",
+      "event_type": "sovereignty_regression_evidence_read",
+      "event_timestamp": "2026-07-04T00:10:00Z",
+      "event_ref": "examples/cross-adapter-regression/sovereignty-regression-pack.json"
+    },
+    {
+      "event_id": "advisor-review-triggered",
+      "source": "Advisor Invocation Contract",
+      "event_type": "governance_review_hook",
+      "event_timestamp": "2026-07-04T00:11:00Z",
+      "event_ref": "contracts/advisor-invocation-boundary.yaml"
+    }
+  ],
+  "runtime_events": [
+    {
+      "event_id": "cross-adapter-evaluator-run",
+      "runtime": "runtime.release_governance_evaluator",
+      "event_type": "deterministic_regression_evaluation",
+      "event_timestamp": "2026-07-04T00:12:00Z",
+      "event_ref": "runtime/release_governance_evaluator.py"
+    }
+  ],
+  "execution_trace": {
+    "trace_id": "trace-cross-adapter-sovereignty-regression",
+    "trace_ref": "examples/cross-adapter-regression/sovereignty-regression-pack.json",
+    "replay_ready": true
+  },
+  "evidence_refs": [
+    "docs/governance/cross-adapter-regression-pack.md",
+    "examples/cross-adapter-regression/sovereignty-regression-pack.json",
+    "registries/adapter-registry.yaml",
+    "contracts/advisor-invocation-boundary.yaml"
+  ],
+  "evaluator_outputs": [
+    "replay_packet_valid",
+    "replay_findings",
+    "missing_evidence",
+    "authority_boundary_violation",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "regression_findings": [],
+  "rollback_plan": {
+    "plan_ref": "cross_adapter_regression_review_and_containment",
+    "rollback_required": false,
+    "owner": "AAOS governance review"
+  },
+  "rollback_surface": {
+    "surface_refs": [
+      "adapter registry entries",
+      "cross-adapter regression evidence",
+      "runtime evaluator findings"
+    ],
+    "complete": true
+  },
+  "replay_target": {
+    "target_id": "cross-adapter-sovereignty-regression",
+    "target_type": "cross_adapter_regression_evidence",
+    "target_ref": "examples/cross-adapter-regression/sovereignty-regression-pack.json"
+  },
+  "replay_steps": [
+    {
+      "step_id": "load-regression-pack",
+      "action": "Load cross-adapter sovereignty regression evidence.",
+      "expected_observation": "All required AAOS systems are present in the regression evidence."
+    },
+    {
+      "step_id": "check-forbidden-authority",
+      "action": "Evaluate forbidden authority claims across external tools, specimens, workspaces, and evaluators.",
+      "expected_observation": "No external system claims AAOS-retained authority."
+    },
+    {
+      "step_id": "confirm-review-hook",
+      "action": "Confirm high-risk regression replay remains eligible for advisor review.",
+      "expected_observation": "Advisor invocation is a governance review hook and not final authority."
+    }
+  ],
+  "replay_result": {
+    "expected_result": "Cross-adapter sovereignty regression is replay-ready and remains evidence-only.",
+    "actual_result": "Cross-adapter sovereignty regression is replay-ready and remains evidence-only.",
+    "matched": true,
+    "replay_completed": true
+  },
+  "sealing_status": "not_sealed_by_replay_packet",
+  "not_authority_statement": "Cross-adapter runtime replay may detect missing evidence or authority-boundary violations but must not approve, block, classify, roll back, seal Decision Proof, close audits, or make final governance judgments.",
+  "sovereignty_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, and final governance authority."
+}
