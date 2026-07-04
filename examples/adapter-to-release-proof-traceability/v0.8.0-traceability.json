@@ -6,7 +6,7 @@
   "adapter_example": "examples/decision-proof-runtime-replay/release-governance-replay.json",
   "evaluator_output": "runtime/decision_proof_replay_evaluator.py",
   "runtime_replay_packet": "examples/decision-proof-runtime-replay/release-governance-replay.json",
-  "release_proof_automation_packet": "examples/release-proof-automation/v0.7.0-release-proof.json",
+  "release_proof_automation_packet": "examples/release-proof-automation/v0.8.0-release-proof.json",
   "readme_release_status": "v0.8.0 — M9 Decision Proof Runtime Replay and Governance CI Expansion",
   "tracker_issue": "#93",
   "closing_pr": "#103",
