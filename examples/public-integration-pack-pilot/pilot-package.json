@@ -1,0 +1,69 @@
+{
+  "pack_id": "m11-public-integration-pack-pilot",
+  "pack_name": "M11 Public Integration Pack Pilot",
+  "milestone": "M11",
+  "status": "pilot_active_not_released",
+  "integration_boundary_contract": {
+    "defined": true,
+    "contract_ref": "examples/public-integration-pack-pilot/pilot-package.json#integration_boundary_contract",
+    "external_system_role": "evidence_provider_or_evidence_consumer",
+    "aaos_role": "decision_sovereignty_layer"
+  },
+  "evidence_schema_reference": [
+    "schemas/external-integration-readiness.schema.json",
+    "schemas/decision-proof-sealing-status.schema.json",
+    "schemas/decision-proof-runtime-replay-packet.schema.json",
+    "schemas/release-proof-automation.schema.json"
+  ],
+  "replay_packet_example": "examples/decision-proof-runtime-replay/release-governance-replay.json",
+  "release_proof_linkage": {
+    "present": true,
+    "release_proof_ref": "examples/release-proof-automation/v0.8.0-release-proof.json",
+    "traceability_ref": "examples/adapter-to-release-proof-traceability/v0.8.0-traceability.json"
+  },
+  "sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned. Public integration packs may shape, reference, replay, inspect, check, or link evidence, but they must not seal Decision Proof or make final governance judgments.",
+  "adapter_registry_entry_reference": {
+    "registry_ref": "registries/adapter-registry.yaml#public-integration-pack-pilot",
+    "entry_type": "evidence_interface_package",
+    "descriptive_only": true
+  },
+  "evaluator_check_reference": "runtime/public_integration_pack_evaluator.py",
+  "readme_integration_status_language": "M11 is active work in progress. This pilot does not declare M11 complete and does not declare v0.10.0 released.",
+  "governance_boundary_language": "Public integration packs are evidence-interface packages. They must not become governance authority, approval authority, release authority, rollback authority, Decision Proof sealing authority, audit closure authority, or final governance authority.",
+  "allowed_pack_outputs": [
+    "public_integration_pack_valid",
+    "public_integration_pack_invalid",
+    "artifact_consumption_semantics_present",
+    "artifact_consumption_semantics_missing",
+    "release_proof_linkage_present",
+    "release_proof_linkage_missing",
+    "authority_boundary_preserved",
+    "authority_boundary_violation",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_pack_outputs": [
+    "decision_proof_sealed",
+    "sealed_by_integration_pack",
+    "sealed_by_external_consumer",
+    "release_approved",
+    "risk_accepted",
+    "rollback_executed",
+    "audit_closed",
+    "final_governance_judgment"
+  ],
+  "integration_facing_examples": {
+    "external_tool_provides_evidence": "External systems may provide schema-compatible evidence packets as governed input.",
+    "aaos_receives_evidence": "AAOS receives evidence without delegating policy, approval, release, rollback, sealing, audit closure, or final governance authority.",
+    "deterministic_checks_evaluate_readiness": "Deterministic checks may report readiness, missing evidence, release proof linkage, artifact consumption semantics, and authority-boundary findings.",
+    "runtime_replay_supports_inspection": "Runtime replay may reconstruct evidence for inspection but must not approve, seal, or close audit.",
+    "release_proof_linkage_is_preserved": "Release proof evidence remains linked through existing release proof and traceability specimens.",
+    "sealing_eligibility_is_represented": "Sealing eligibility is represented as evidence state and remains subject to AAOS-owned review.",
+    "aaos_retains_final_sealing_authority": "AAOS retains final Decision Proof sealing authority.",
+    "external_consumers_consume_without_authority": "External consumers may read, reference, replay, inspect, or report on artifacts without becoming authorities."
+  },
+  "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
+  "not_authority_statement": "This public integration pack is an evidence-interface package. It must not seal Decision Proof, approve releases, accept risk, execute rollback, close audits, grant waivers, change approval doctrine, change identity trust, change policy authority, change decision routing, or make final governance judgments.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
