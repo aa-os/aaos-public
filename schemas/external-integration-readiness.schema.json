@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/external-integration-readiness.schema.json",
+  "title": "AAOS External Integration Readiness",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "integration_id",
+    "integration_name",
+    "integration_type",
+    "readiness_state",
+    "identity_boundary",
+    "authority_boundary",
+    "evidence_schema_compatibility",
+    "replay_compatibility",
+    "rollback_traceability",
+    "escalation_semantics",
+    "fail_closed_behavior",
+    "decision_proof_sealing_boundary_preservation",
+    "audit_trace_export",
+    "adapter_registry_entry_readiness",
+    "release_proof_linkage",
+    "public_documentation_readiness",
+    "allowed_integration_outputs",
+    "forbidden_integration_outputs",
+    "not_authority_statement",
+    "sovereignty_statement"
+  ],
+  "properties": {
+    "integration_id": {
+      "type": "string"
+    },
+    "integration_name": {
+      "type": "string"
+    },
+    "integration_type": {
+      "type": "string"
+    },
+    "readiness_state": {
+      "type": "string",
+      "enum": [
+        "not_ready",
+        "evidence_interface_ready",
+        "review_required",
+        "restricted",
+        "blocked"
+      ]
+    },
+    "identity_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "defined",
+        "owner"
+      ],
+      "properties": {
+        "defined": {
+          "type": "boolean"
+        },
+        "owner": {
+          "type": "string"
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "defined",
+        "authority_claims_forbidden"
+      ],
+      "properties": {
+        "defined": {
+          "type": "boolean"
+        },
+        "authority_claims_forbidden": {
+          "type": "boolean"
+        }
+      }
+    },
+    "evidence_schema_compatibility": {
+      "type": "boolean"
+    },
+    "replay_compatibility": {
+      "type": "boolean"
+    },
+    "rollback_traceability": {
+      "type": "boolean"
+    },
+    "escalation_semantics": {
+      "type": "boolean"
+    },
+    "fail_closed_behavior": {
+      "type": "boolean"
+    },
+    "decision_proof_sealing_boundary_preservation": {
+      "type": "boolean"
+    },
+    "audit_trace_export": {
+      "type": "boolean"
+    },
+    "adapter_registry_entry_readiness": {
+      "type": "boolean"
+    },
+    "release_proof_linkage": {
+      "type": "boolean"
+    },
+    "public_documentation_readiness": {
+      "type": "boolean"
+    },
+    "allowed_integration_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forbidden_integration_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "not_authority_statement": {
+      "type": "string"
+    },
+    "sovereignty_statement": {
+      "type": "string"
+    }
+  }
+}
