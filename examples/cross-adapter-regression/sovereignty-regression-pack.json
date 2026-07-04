@@ -1,0 +1,97 @@
+{
+  "regression_pack_id": "m8-sovereignty-regression-pack-001",
+  "pack_name": "M8 Cross-Adapter Sovereignty Regression Pack",
+  "release_context": {
+    "release": "v0.6.0",
+    "milestones_covered": [
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "M7"
+    ]
+  },
+  "included_systems": [
+    {
+      "adapter_id": "cloudflare_security_audit_skill",
+      "adapter_name": "Cloudflare security-audit-skill",
+      "authority_boundary_preserved": true,
+      "forbidden_authority_claims_detected": [],
+      "aaos_retained_authority_statement_present": true
+    },
+    {
+      "adapter_id": "advisor_invocation_contract",
+      "adapter_name": "Advisor Invocation Contract",
+      "authority_boundary_preserved": true,
+      "forbidden_authority_claims_detected": [],
+      "aaos_retained_authority_statement_present": true
+    },
+    {
+      "adapter_id": "aitbm_l6_scoring_adapter",
+      "adapter_name": "AITBM L6 Scoring Adapter",
+      "authority_boundary_preserved": true,
+      "forbidden_authority_claims_detected": [],
+      "aaos_retained_authority_statement_present": true
+    },
+    {
+      "adapter_id": "heretic_adversarial_specimen",
+      "adapter_name": "Heretic Adversarial Specimen",
+      "authority_boundary_preserved": true,
+      "forbidden_authority_claims_detected": [],
+      "aaos_retained_authority_statement_present": true
+    },
+    {
+      "adapter_id": "skillopt_governed_skill_evolution",
+      "adapter_name": "SkillOpt Governed Skill Evolution Layer",
+      "authority_boundary_preserved": true,
+      "forbidden_authority_claims_detected": [],
+      "aaos_retained_authority_statement_present": true
+    },
+    {
+      "adapter_id": "codebase_memory_reconstruction_adapter",
+      "adapter_name": "codebase-memory-mcp Codebase Memory & Reconstruction Adapter",
+      "authority_boundary_preserved": true,
+      "forbidden_authority_claims_detected": [],
+      "aaos_retained_authority_statement_present": true
+    },
+    {
+      "adapter_id": "open_tag_human_agent_workspace_adapter",
+      "adapter_name": "open-tag Human-Agent Workspace Adapter",
+      "authority_boundary_preserved": true,
+      "forbidden_authority_claims_detected": [],
+      "aaos_retained_authority_statement_present": true
+    }
+  ],
+  "sovereignty_checks": {
+    "forbidden_authority_claims": [
+      "final_governance_authority",
+      "approval_doctrine",
+      "identity_trust_chain",
+      "policy_authority",
+      "decision_router_authority",
+      "rollback_authority",
+      "fail_closed_authority",
+      "final_risk_classification",
+      "decision_proof_sealing_authority",
+      "audit_closure_authority"
+    ],
+    "all_forbidden_claims_absent": true,
+    "decision_proof_sealing_claimed_outside_aaos": false,
+    "audit_closure_claimed_outside_aaos": false
+  },
+  "findings": [],
+  "evaluator_outputs": [
+    "release_consistency_passed",
+    "release_consistency_failed",
+    "regression_findings",
+    "missing_evidence",
+    "authority_boundary_violation",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "not_authority_statement": "The cross-adapter regression pack produces evidence and must not approve, block, classify, roll back, seal Decision Proof, close audits, or make final governance judgments.",
+  "sovereignty_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, and final governance authority."
+}
