@@ -1,0 +1,199 @@
+contract_id: codebase_memory_reconstruction_boundary
+contract_version: 0.1.0
+status: candidate
+owner: AAOS
+
+adapter:
+  name: codebase-memory-mcp
+  role: codebase_memory_and_reconstruction_adapter
+  purpose: >
+    Reconstruct software context as governed evidence for dependency
+    reconstruction, graph evidence, patch impact analysis, rollback surface
+    mapping, software decision replay, and code-level Decision Proof.
+
+layer_mapping:
+  primary:
+    - L5 Memory & Reconstruction Graph
+  secondary:
+    - L4 Tool / Data Execution Substrate
+  evidence_feed_only:
+    - L6 Verification Layer
+  forbidden_aaos_positions:
+    - L2 Control Plane
+    - L1 Policy & Identity Plane
+    - L0 Governance / Business Intent
+
+allowed_adapter_outputs:
+  - repository_index
+  - codebase_snapshot
+  - dependency_graph
+  - call_graph
+  - route_map
+  - affected_symbol_map
+  - affected_test_surface
+  - architecture_summary
+  - change_impact_evidence
+  - patch_blast_radius
+  - rollback_surface_candidate
+  - replay_support_evidence
+  - software_decision_context
+
+forbidden_adapter_outputs:
+  - code_change_approved
+  - code_change_blocked_by_adapter
+  - final_risk_classification
+  - approval_doctrine_changed
+  - decision_route_changed
+  - rollback_decision
+  - fail_closed_policy_changed
+  - escalation_semantics_changed
+  - identity_trust_changed
+  - decision_proof_sealed
+  - audit_closed
+  - final_governance_judgment
+
+required_codebase_graph_evidence_fields:
+  - repository_id
+  - repository_ref
+  - commit_sha
+  - index_timestamp
+  - indexed_paths
+  - language_summary
+  - symbol_table_ref
+  - dependency_graph_ref
+  - call_graph_ref
+  - route_map_ref
+  - test_map_ref
+  - architecture_summary_ref
+  - graph_hash
+  - source_hashes
+  - replay_trace_ref
+  - evidence_freshness
+  - not_authority_statement
+  - sovereignty_statement
+
+required_patch_impact_evidence_fields:
+  - change_id
+  - repository_ref
+  - base_commit_sha
+  - proposed_commit_sha
+  - changed_files
+  - changed_symbols
+  - affected_symbols
+  - affected_routes
+  - affected_tests
+  - dependency_edges_touched
+  - call_paths_touched
+  - auth_surface_touched
+  - payment_surface_touched
+  - security_surface_touched
+  - data_pipeline_surface_touched
+  - governance_sensitive_surface_touched
+  - blast_radius
+  - rollback_surface
+  - replay_ready
+  - trace_refs
+  - policy_precheck
+  - advisor_invocation
+  - aaos_decision_state
+  - not_authority_statement
+  - sovereignty_statement
+
+required_controls:
+  replay_ready_graph_evidence: required
+  rollback_surface_mapping: required
+  affected_symbol_mapping: required
+  affected_test_surface_mapping: required
+  authority_boundary_checks: required
+  aaos_decision_owner: required
+  decision_proof_sealing_owner: AAOS
+
+policy_bound_code_change_gate_checks:
+  - graph_evidence_missing
+  - stale_codebase_index
+  - affected_symbol_map_missing
+  - affected_test_surface_missing
+  - rollback_surface_missing
+  - replay_trace_missing
+  - auth_surface_touched
+  - payment_surface_touched
+  - security_surface_touched
+  - data_pipeline_surface_touched
+  - governance_sensitive_surface_touched
+  - high_blast_radius
+  - adapter_claims_final_risk_classification
+  - adapter_claims_approval_or_block_authority
+  - adapter_claims_rollback_authority
+  - adapter_claims_decision_proof_sealing_authority
+
+advisor_invocation:
+  contract_ref: advisor_invocation_boundary
+  review_hook_only: true
+  required_when:
+    - blast_radius_is_high
+    - auth_surface_is_touched
+    - payment_surface_is_touched
+    - security_surface_is_touched
+    - data_pipeline_surface_is_touched
+    - governance_sensitive_surface_is_touched
+    - rollback_surface_is_incomplete
+    - replay_traces_are_missing
+    - graph_evidence_is_stale
+    - adapter_output_appears_to_claim_aaos_authority
+    - final_risk_classification_is_attempted_by_adapter
+    - decision_proof_sealing_is_attempted_by_adapter
+  permitted_recommendations:
+    - review
+    - escalation
+    - replay
+    - rollback_surface_review
+    - fail_closed_handling
+    - decision_proof_challenge
+  forbidden_authority:
+    - final_risk_classification_authority
+    - code_change_approval_authority
+    - code_change_block_authority
+    - rollback_authority
+    - fail_closed_authority
+    - decision_router_authority
+    - identity_authority
+    - decision_proof_sealing_authority
+    - audit_closure_authority
+    - final_governance_authority
+
+aaos_retained_authority:
+  - risk_appetite
+  - approval_doctrine
+  - identity_trust_chain
+  - decision_router_logic
+  - escalation_semantics
+  - fail_closed_rules
+  - rollback_policy
+  - final_risk_classification
+  - decision_proof_sealing_logic
+  - audit_final_judgment
+  - final_governance_authority
+
+fail_closed_or_review_conditions:
+  - graph_evidence_missing_or_stale
+  - dependency_graph_missing
+  - call_graph_missing
+  - route_map_missing_for_route_or_api_change
+  - affected_symbol_map_missing
+  - affected_test_surface_missing
+  - rollback_surface_missing
+  - replay_trace_missing
+  - high_blast_radius_without_advisor_invocation
+  - governance_sensitive_surface_without_advisor_invocation
+  - forbidden_adapter_authority_claim
+  - decision_proof_sealing_claimed_by_adapter
+
+not_authority_statement: >
+  codebase-memory-mcp is not a coding agent, model runtime, governance
+  authority, verification authority, decision router, rollback authority,
+  identity authority, fail-closed authority, Decision Proof sealing authority,
+  audit closure authority, or final governance authority.
+
+sovereignty_statement: >
+  codebase-memory-mcp reconstructs software context. AAOS decides whether a
+  code change is allowed, blocked, escalated, replayed, rolled back, or sealed.
