@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/codebase-graph-evidence.schema.json",
+  "title": "AAOS Codebase Graph Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "repository_id",
+    "repository_ref",
+    "commit_sha",
+    "index_timestamp",
+    "indexed_paths",
+    "language_summary",
+    "symbol_table_ref",
+    "dependency_graph_ref",
+    "call_graph_ref",
+    "route_map_ref",
+    "test_map_ref",
+    "architecture_summary_ref",
+    "graph_hash",
+    "source_hashes",
+    "replay_trace_ref",
+    "evidence_freshness",
+    "not_authority_statement",
+    "sovereignty_statement"
+  ],
+  "properties": {
+    "repository_id": {
+      "type": "string"
+    },
+    "repository_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_full_name",
+        "branch",
+        "remote_url"
+      ],
+      "properties": {
+        "repository_full_name": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "remote_url": {
+          "type": "string"
+        }
+      }
+    },
+    "commit_sha": {
+      "type": "string"
+    },
+    "index_timestamp": {
+      "type": "string"
+    },
+    "indexed_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "language_summary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "language",
+          "file_count"
+        ],
+        "properties": {
+          "language": {
+            "type": "string"
+          },
+          "file_count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "symbol_table_ref": {
+      "type": "string"
+    },
+    "dependency_graph_ref": {
+      "type": "string"
+    },
+    "call_graph_ref": {
+      "type": "string"
+    },
+    "route_map_ref": {
+      "type": "string"
+    },
+    "test_map_ref": {
+      "type": "string"
+    },
+    "architecture_summary_ref": {
+      "type": "string"
+    },
+    "graph_hash": {
+      "type": "string"
+    },
+    "source_hashes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "algorithm",
+          "hash"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "algorithm": {
+            "type": "string"
+          },
+          "hash": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "replay_trace_ref": {
+      "type": "string"
+    },
+    "evidence_freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "evidence_age_days",
+        "max_age_days",
+        "assessed_at"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "fresh",
+            "stale",
+            "unknown"
+          ]
+        },
+        "evidence_age_days": {
+          "type": "integer"
+        },
+        "max_age_days": {
+          "type": "integer"
+        },
+        "assessed_at": {
+          "type": "string"
+        }
+      }
+    },
+    "not_authority_statement": {
+      "type": "string"
+    },
+    "sovereignty_statement": {
+      "type": "string"
+    }
+  }
+}
