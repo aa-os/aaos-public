@@ -1,0 +1,125 @@
+{
+  "replay_id": "open-tag-activity-replay-001",
+  "workspace_binding": "workspace:aaos-m7-control-surface",
+  "activity_evidence": [
+    {
+      "workspace_id": "workspace-aaos-m7",
+      "workspace_ref": "open-tag://workspaces/aaos-m7-control-surface",
+      "channel_id": "channel-governed-agent-work",
+      "thread_id": "thread-task-31-open-tag",
+      "task_id": "task-open-tag-workspace-adapter",
+      "decision_id": "decision-open-tag-task-001",
+      "actor": "human:release-owner",
+      "actor_type": "human",
+      "authority_source": "aaos_decision_contract",
+      "agent_id": "agent:codex-implementation-worker",
+      "agent_runtime": "codex",
+      "daemon_id": "daemon:open-tag-workspace-events",
+      "event_type": "runtime_adapter_event",
+      "event_timestamp": "2026-07-04T03:00:00Z",
+      "task_state": "in_progress",
+      "intent": "Implement governed open-tag workspace adapter boundary evidence.",
+      "risk_class": "high",
+      "allowed_tools": [
+        "github_file_editor",
+        "schema_validator",
+        "deterministic_evaluator"
+      ],
+      "approval_required": true,
+      "approval_state": "pending",
+      "rollback_plan_ref": "rollback/open-tag-workspace-adapter-rollback.md",
+      "evidence_required": [
+        "human-agent activity evidence",
+        "Decision Contract injection",
+        "execution trace",
+        "replay target"
+      ],
+      "completion_criteria": [
+        "boundary contract committed",
+        "schemas committed",
+        "examples committed",
+        "evaluator checks pass in CI"
+      ],
+      "execution_trace_ref": "traces/open-tag/activity-replay-001/execution-trace.json",
+      "replay_target_ref": "replays/open-tag/activity-replay-001/replay-target.json",
+      "activity_hash": "sha256:open-tag-activity-001",
+      "prior_activity_hash": "sha256:open-tag-activity-000",
+      "decision_contract_ref": "decision-contracts/open-tag/decision-open-tag-task-001.json",
+      "advisor_invocation": {
+        "required": true,
+        "contract_ref": "advisor_invocation_boundary",
+        "trigger_types": [
+          "high_risk_task",
+          "runtime_adapter_event",
+          "governance_sensitive_workspace_event"
+        ],
+        "review_reason": "High-risk workspace task binds runtime adapter activity to AAOS decision evidence.",
+        "status": "pending",
+        "decision_owner": "AAOS"
+      },
+      "not_authority_statement": "open-tag records workspace context and replay evidence only; it does not approve, route, roll back, seal Decision Proof, close audits, or make final governance decisions.",
+      "sovereignty_statement": "AAOS retains purpose, policy authority, identity trust, decision routing, rollback policy, Decision Proof sealing logic, audit final judgment, and final governance authority."
+    }
+  ],
+  "decision_contract_injection": {
+    "decision_id": "decision-open-tag-task-001",
+    "intent": "Implement governed open-tag workspace adapter boundary evidence.",
+    "actor": "human:release-owner",
+    "authority_source": "aaos_decision_contract",
+    "risk_class": "high",
+    "allowed_tools": [
+      "github_file_editor",
+      "schema_validator",
+      "deterministic_evaluator"
+    ],
+    "approval_required": true,
+    "rollback_plan": {
+      "required": true,
+      "plan_ref": "rollback/open-tag-workspace-adapter-rollback.md",
+      "owner": "AAOS"
+    },
+    "evidence_required": [
+      "human-agent activity evidence",
+      "Decision Contract injection",
+      "execution trace",
+      "replay target"
+    ],
+    "completion_criteria": [
+      "boundary contract committed",
+      "schemas committed",
+      "examples committed",
+      "evaluator checks pass in CI"
+    ],
+    "execution_trace": {
+      "required": true,
+      "trace_ref": "traces/open-tag/activity-replay-001/execution-trace.json"
+    },
+    "replay_target": {
+      "required": true,
+      "target_ref": "replays/open-tag/activity-replay-001/replay-target.json"
+    },
+    "workspace_binding": "workspace-aaos-m7",
+    "channel_binding": "channel-governed-agent-work",
+    "thread_binding": "thread-task-31-open-tag",
+    "task_binding": "task-open-tag-workspace-adapter",
+    "runtime_adapter_binding": "runtime-adapter:github-file-editor",
+    "approval_binding": "approval:aaos-pending",
+    "rollback_binding": "rollback/open-tag-workspace-adapter-rollback.md",
+    "decision_proof_binding": "decision-proof/open-tag/decision-open-tag-task-001",
+    "advisor_invocation": {
+      "required": true,
+      "contract_ref": "advisor_invocation_boundary",
+      "trigger_types": [
+        "high_risk_task",
+        "governance_sensitive_workspace_event"
+      ],
+      "status": "pending",
+      "decision_owner": "AAOS"
+    },
+    "sovereignty_statement": "AAOS decides whether workspace activity is allowed, blocked, escalated, replayed, rolled back, or sealed."
+  },
+  "collaboration_replay_context": {
+    "summary": "Replayable workspace activity binds actor, agent, daemon, task, trace, approval, rollback, and Decision Proof context.",
+    "open_tag_role": "governed_collaboration_surface_only"
+  }
+}
