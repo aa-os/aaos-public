@@ -1,6 +1,6 @@
 {
   "release_id": "v0.6.0",
-  "release_title": "v0.6.0 - M7 Human-Agent Control Surface and Workspace Adapter",
+  "release_title": "v0.6.0 — M7 Human-Agent Control Surface and Workspace Adapter",
   "milestone": "M7",
   "completed_milestones": [
     "M1",
@@ -42,8 +42,8 @@
     "present": true
   },
   "release_title_consistency": {
-    "readme_title": "v0.6.0 - M7 Human-Agent Control Surface and Workspace Adapter",
-    "release_title": "v0.6.0 - M7 Human-Agent Control Surface and Workspace Adapter",
+    "readme_title": "v0.6.0 — M7 Human-Agent Control Surface and Workspace Adapter",
+    "release_title": "v0.6.0 — M7 Human-Agent Control Surface and Workspace Adapter",
     "matches": true
   },
   "release_body_consistency": {
@@ -51,8 +51,8 @@
     "body_summary": "External workspaces and collaboration systems are governed collaboration surfaces and evidence sources, not authorities."
   },
   "next_phase_declaration": {
-    "expected": "M8 - Release Governance Hardening and Cross-Adapter Regression",
-    "actual": "M8 - Release Governance Hardening and Cross-Adapter Regression",
+    "expected": "M8 — Release Governance Hardening and Cross-Adapter Regression",
+    "actual": "M8 — Release Governance Hardening and Cross-Adapter Regression",
     "matches_expected": true
   },
   "related_issue_linkage": {
