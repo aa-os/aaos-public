@@ -78,24 +78,29 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 - v0.6.0 — M7 Human-Agent Control Surface and Workspace Adapter
 - v0.7.0 — M8 Release Governance Hardening and Cross-Adapter Regression
 - v0.8.0 — M9 Decision Proof Runtime Replay and Governance CI Expansion
+- v0.9.0 — M10 Decision Proof Sealing Boundary and External Integration Readiness
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, and the M9 Decision Proof Runtime Replay pattern.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, the M9 Decision Proof Runtime Replay pattern, and the M10 Decision Proof Sealing Boundary and External Integration Readiness pattern.
 
-v0.8.0 adds AAOS Decision Proof Runtime Replay.
+v0.9.0 adds AAOS Decision Proof Sealing Boundary.
 
-v0.8.0 introduces the first Decision Proof Runtime Replay Packet.
+v0.9.0 introduces sealing status semantics.
 
-v0.8.0 introduces the Governance CI Expansion pattern.
+v0.9.0 introduces External Integration Readiness checks.
 
-v0.8.0 introduces the Release Proof Automation pattern.
+v0.9.0 introduces Adapter-to-Release Proof Traceability.
 
-Runtime replay, CI checks, release proof automation, adapter events, evaluator outputs, and replay packets remain evidence-producing systems, not authorities.
+v0.9.0 introduces the Public Integration Pack Pattern.
+
+Decision Proof sealing remains AAOS-owned.
+
+Adapters, external tools, runtime replay packets, release proof automation, governance CI checks, deterministic evaluators, registries, and public integration packs remain evidence-producing or evidence-consuming systems, not authorities.
 
 ## Current Status
 
-M1, M2, M3, M4, M5, M6, M7, M8, and M9 are complete.
+M1, M2, M3, M4, M5, M6, M7, M8, M9, and M10 are complete.
 
 M5 completed:
 
@@ -123,6 +128,11 @@ M9 completed:
 
 - #93 M9: Decision Proof Runtime Replay and Governance CI Expansion
 - #94 Add M9 Decision Proof runtime replay and governance CI pattern
+
+M10 completed:
+
+- #106 M10: Decision Proof Sealing Boundary and External Integration Readiness
+- #107 Add M10 Decision Proof sealing boundary and integration readiness
 
 AAOS Public now has:
 
@@ -161,6 +171,13 @@ AAOS Public now has:
 - Release Proof Automation pattern
 - v0.7.0 release proof evidence
 - deterministic Decision Proof replay evaluator coverage
+- AAOS Decision Proof Sealing Boundary
+- sealing status semantics
+- External Integration Readiness checks
+- Adapter-to-Release Proof Traceability
+- Public Integration Pack Pattern
+- v0.8.0 release proof linkage
+- deterministic Decision Proof sealing evaluator coverage
 
 ## M5 Additions
 
@@ -529,11 +546,192 @@ Forbidden evaluator outputs include:
 - audit_closed
 - final_governance_judgment
 
+## M10 Additions
+
+### Decision Proof Sealing Boundary (#106)
+
+Purpose: Adds a sealing boundary that separates replayable Decision Proof evidence from final Decision Proof sealing authority.
+
+The sealing boundary separates:
+
+- captured evidence
+- replayable evidence
+- evaluator findings
+- release proof evidence
+- governance CI findings
+- human review state
+- sealing eligibility
+- final sealing authority
+
+AAOS uses this to ask:
+
+- Has evidence been captured?
+- Is the evidence replayable?
+- Were deterministic evaluator findings produced?
+- Was release proof evidence prepared?
+- Were governance CI findings produced?
+- Is human or advisor review required?
+- Is the Decision Proof sealing-eligible?
+- Who owns final sealing authority?
+
+Boundary: Evidence may be captured by adapters, replayed by runtime replay packets, checked by deterministic evaluators, prepared by release proof automation, and reviewed by humans or advisors.
+
+Final Decision Proof sealing remains AAOS-owned.
+
+Decision Proof sealing must not be delegated to adapters, external tools, CI checks, runtime replay, release proof automation, deterministic evaluators, registries, public integration packs, or external consumers.
+
+### Sealing Status Semantics
+
+Purpose: Adds sealing status semantics that distinguish evidence readiness, sealing eligibility, actual sealing, audit closure, and final governance judgment.
+
+Allowed sealing states include:
+
+- unsealed
+- replay_ready
+- evidence_complete
+- human_review_required
+- advisor_review_required
+- sealing_eligible
+- sealed_by_aaos
+- sealing_rejected_by_aaos
+- sealing_deferred
+- sealing_blocked
+
+Forbidden sealing states or outputs include:
+
+- sealed_by_adapter
+- sealed_by_ci
+- sealed_by_evaluator
+- sealed_by_runtime_replay
+- sealed_by_release_automation
+- sealed_by_registry
+- sealed_by_external_system
+- audit_closed_by_adapter
+- final_governance_judgment_by_external_system
+
+Boundary: Sealing status may describe evidence readiness or eligibility.
+
+It must not itself seal Decision Proof, close audits, approve releases, accept risk, execute rollback, or make final governance judgments.
+
+### External Integration Readiness
+
+Purpose: Adds external integration readiness checks for systems that want to provide evidence to AAOS or consume AAOS artifacts.
+
+External integration readiness evaluates:
+
+- identity boundary
+- authority boundary
+- evidence schema compatibility
+- replay compatibility
+- rollback traceability
+- escalation semantics
+- fail-closed behavior
+- Decision Proof sealing boundary preservation
+- audit trace export
+- adapter registry entry readiness
+- release proof linkage
+- public documentation readiness
+
+Boundary: External integrations may provide evidence or consume sealed and non-sealed artifacts.
+
+They must not become AAOS final governance authority.
+
+### Adapter-to-Release Proof Traceability
+
+Purpose: Adds a traceability pattern from adapter evidence to release proof evidence.
+
+AAOS should be able to trace:
+
+- adapter contract
+- adapter evidence schema
+- adapter example
+- evaluator output
+- runtime replay packet
+- release proof automation packet
+- README release status
+- tracker issue
+- closing PR
+- release tag
+- release title
+- release body
+- sealing status
+- AAOS retained authority statement
+
+Boundary: Adapter-to-release proof traceability is evidence linkage.
+
+It may support release review, replay, audit inspection, rollback-surface review, escalation, or fail-closed recommendation.
+
+It must not approve releases, accept risk, execute rollback, seal Decision Proof, close audits, or make final governance judgments.
+
+### Public Integration Pack Pattern
+
+Purpose: Adds a public integration pack pattern for external systems that need to provide evidence to AAOS or consume AAOS artifacts.
+
+A public integration pack may include:
+
+- integration boundary contract
+- evidence schema
+- replay packet example
+- release proof linkage
+- sealing boundary statement
+- adapter registry entry
+- evaluator checks
+- README integration status
+- governance boundary language
+
+Boundary: Public integration packs are evidence-interface patterns.
+
+They may define how evidence is shaped, referenced, replayed, checked, and linked to release proof.
+
+They must not become governance authorities, approval authorities, release authorities, rollback authorities, Decision Proof sealing authorities, audit closure authorities, or final governance authorities.
+
+### Deterministic Decision Proof Sealing Evaluator
+
+Purpose: Adds deterministic checks for sealing boundary preservation, external integration readiness, adapter-to-release proof traceability, missing evidence, forbidden sealing states, and authority-boundary violations.
+
+Allowed evaluator outputs include:
+
+- sealing_boundary_valid
+- sealing_boundary_invalid
+- integration_readiness_passed
+- integration_readiness_failed
+- traceability_complete
+- traceability_incomplete
+- sealing_findings
+- missing_evidence
+- forbidden_sealing_state
+- authority_boundary_violation
+- review_required
+- escalation_required
+- fail_closed_recommended
+
+Forbidden evaluator outputs include:
+
+- decision_proof_sealed
+- sealed_by_evaluator
+- sealed_by_ci
+- sealed_by_adapter
+- sealed_by_runtime_replay
+- sealed_by_release_automation
+- sealed_by_registry
+- sealed_by_external_system
+- release_approved
+- risk_accepted
+- waiver_granted
+- approval_doctrine_changed
+- identity_trust_changed
+- policy_authority_changed
+- decision_route_changed
+- rollback_decision
+- rollback_executed
+- fail_closed_executed
+- audit_closed
+- final_governance_judgment
+
 ## Next Phase
 
-- M10 — Decision Proof Sealing Boundary and External Integration Readiness
-  - Define stronger Decision Proof sealing boundary documentation.
-  - Prepare external integration readiness checks.
-  - Strengthen adapter-to-release proof traceability.
-  - Evaluate whether public-facing integration packs should be introduced.
-
+- M11 — Public Integration Pack and External Evidence Consumer Pilot
+  - Turn the public integration pack pattern into a concrete pilot package.
+  - Add an external evidence consumer specimen.
+  - Strengthen sealed vs non-sealed artifact consumption semantics.
+  - Prepare integration-facing examples that preserve AAOS final governance authority.
