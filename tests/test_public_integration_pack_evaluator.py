@@ -1,9 +1,14 @@
 import copy
 import json
+import sys
 import unittest
 from pathlib import Path
 
-from runtime.public_integration_pack_evaluator import (
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from runtime.public_integration_pack_evaluator import (  # noqa: E402
     detect_forbidden_authority_claims,
     evaluate_artifact_consumption_semantics,
     evaluate_external_evidence_consumer,
@@ -11,7 +16,6 @@ from runtime.public_integration_pack_evaluator import (
 )
 
 
-ROOT = Path(__file__).resolve().parents[1]
 PACK_EXAMPLE_PATH = (
     ROOT / "examples" / "public-integration-pack-pilot" / "pilot-package.json"
 )
