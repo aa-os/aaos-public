@@ -1,0 +1,22 @@
+{
+  "traceability_id": "v0.8.0-adapter-to-release-proof-traceability",
+  "release_id": "v0.8.0",
+  "adapter_contract": "contracts/advisor-invocation-boundary.yaml",
+  "adapter_evidence_schema": "schemas/decision-proof-runtime-replay-packet.schema.json",
+  "adapter_example": "examples/decision-proof-runtime-replay/release-governance-replay.json",
+  "evaluator_output": "runtime/decision_proof_replay_evaluator.py",
+  "runtime_replay_packet": "examples/decision-proof-runtime-replay/release-governance-replay.json",
+  "release_proof_automation_packet": "examples/release-proof-automation/v0.8.0-release-proof.json",
+  "readme_release_status": "v0.8.0 — M9 Decision Proof Runtime Replay and Governance CI Expansion",
+  "tracker_issue": "#93",
+  "closing_pr": "#103",
+  "release_tag": "v0.8.0",
+  "release_title": "v0.8.0 — M9 Decision Proof Runtime Replay and Governance CI Expansion",
+  "release_body": "M9 added AAOS Decision Proof Runtime Replay, runtime replay packet structure, governance CI expansion, release proof automation, and deterministic replay evaluator coverage.",
+  "sealing_status": "sealing_eligible",
+  "adapter_to_release_proof_traceability": true,
+  "release_proof_linkage": true,
+  "aaos_retained_authority_statement": "AAOS retains Decision Proof sealing logic, audit final judgment, final governance authority, risk appetite, approval doctrine, identity trust chain, decision router logic, escalation semantics, fail-closed policy, rollback policy, and final risk classification.",
+  "not_authority_statement": "Traceability links evidence to release proof but must not approve releases, accept risk, execute rollback, seal Decision Proof, close audits, or make final governance judgments.",
+  "sovereignty_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, and final governance authority."
+}

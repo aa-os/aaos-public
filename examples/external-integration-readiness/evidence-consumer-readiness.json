@@ -1,0 +1,42 @@
+{
+  "integration_id": "external-evidence-consumer",
+  "integration_name": "External Evidence Consumer",
+  "integration_type": "public_evidence_consumer",
+  "readiness_state": "evidence_interface_ready",
+  "identity_boundary": {
+    "defined": true,
+    "owner": "AAOS identity trust chain"
+  },
+  "authority_boundary": {
+    "defined": true,
+    "authority_claims_forbidden": true
+  },
+  "evidence_schema_compatibility": true,
+  "replay_compatibility": true,
+  "rollback_traceability": true,
+  "escalation_semantics": true,
+  "fail_closed_behavior": true,
+  "decision_proof_sealing_boundary_preservation": true,
+  "audit_trace_export": true,
+  "adapter_registry_entry_readiness": true,
+  "release_proof_linkage": true,
+  "public_documentation_readiness": true,
+  "allowed_integration_outputs": [
+    "evidence_read_status",
+    "schema_compatibility_signal",
+    "replay_reference",
+    "audit_trace_export_status",
+    "release_proof_reference"
+  ],
+  "forbidden_integration_outputs": [
+    "decision_proof_sealed",
+    "sealed_by_external_system",
+    "release_approved",
+    "risk_accepted",
+    "rollback_executed",
+    "audit_closed",
+    "final_governance_judgment"
+  ],
+  "not_authority_statement": "External integrations may provide evidence or consume AAOS artifacts, but they must not seal Decision Proof, approve releases, accept risk, execute rollback, close audits, or make final governance judgments.",
+  "sovereignty_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, and final governance authority."
+}
