@@ -74,16 +74,17 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 - v0.2.0 — Contract & Schema Hardening
 - v0.3.0 — L6 Security Verification & Deterministic CI Gates
 - v0.4.0 — M5 Evaluator Expansion, Adapter Regression Packs, and Governed Specimens
+- v0.5.0 — M6 Decision Proof Reconstruction Layer and Codebase Memory Adapter
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, and the M5 governed adapter/specimen/evaluator pattern.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, and the M6 software Decision Proof reconstruction workflow.
 
-v0.4.0 extends AAOS from a single L6 security verification adapter into a broader governed adapter/specimen/evaluator pattern. External tools continue to be admitted as governed signals, not authorities.
+v0.5.0 adds the first AAOS software Decision Proof reconstruction workflow and introduces a governed Codebase Memory & Reconstruction Adapter pattern. External tools continue to be admitted as governed evidence sources, not authorities.
 
 ## Current Status
 
-M1, M2, M3, M4, and M5 are complete.
+M1, M2, M3, M4, M5, and M6 are complete.
 
 M5 completed:
 
@@ -91,6 +92,11 @@ M5 completed:
 - #29 AITBM L6 Scoring Adapter
 - #30 Heretic Adversarial Specimen
 - #33 SkillOpt Governed Skill Evolution Layer
+
+M6 completed:
+
+- #62 M6: Decision Proof Reconstruction Layer and Codebase Memory Adapter
+- #32 codebase-memory-mcp Codebase Memory & Reconstruction Adapter
 
 AAOS Public now has:
 
@@ -108,6 +114,10 @@ AAOS Public now has:
 - AITBM L6 Scoring Adapter
 - Heretic Adversarial Specimen handling
 - SkillOpt Governed Skill Evolution Layer
+- Codebase Memory & Reconstruction Adapter
+- codebase graph evidence schema
+- patch impact / blast-radius evidence schema
+- software Decision Proof reconstruction example
 
 ## M5 Additions
 
@@ -133,9 +143,42 @@ Purpose: Adds governed skill artifact, validation evidence, rollback readiness, 
 
 Boundary: SkillOpt may produce optimized skill artifacts and validation evidence, but AAOS owns deployment approval, rollback policy, risk thresholds, identity trust, audit final judgment, and final governance authority.
 
+## M6 Additions
+
+### Codebase Memory & Reconstruction Adapter (#32)
+
+Purpose: Adds codebase-memory-mcp as a governed evidence source for codebase memory, dependency reconstruction, graph evidence, patch impact analysis, rollback surface mapping, software decision replay, and code-level Decision Proof.
+
+Layer mapping:
+
+- Primary: L5 Memory & Reconstruction Graph
+- Secondary: L4 Tool / Data Execution Substrate
+- Evidence feed only: L6 Verification Layer
+
+Boundary: codebase-memory-mcp reconstructs software context and may provide repository indexes, dependency graphs, call graphs, route maps, affected-symbol maps, affected-test surfaces, patch blast radius, rollback surface candidates, and replay-support evidence.
+
+codebase-memory-mcp must not act as a coding agent, model runtime, governance authority, verification authority, decision router, rollback authority, identity authority, fail-closed authority, Decision Proof sealing authority, audit closure authority, or final governance authority.
+
+### Software Decision Proof Reconstruction Workflow (#62)
+
+Purpose: Defines the first AAOS workflow for reconstructing codebase context before, during, and after an agentic code change.
+
+AAOS uses graph evidence to ask:
+
+- What code path is affected?
+- What functions, classes, routes, or tests depend on this change?
+- Does the change touch auth, payment, security, data pipeline, or governance-sensitive code?
+- What is the patch blast radius?
+- Can the rollback surface be reconstructed?
+- Can the decision be replayed?
+
+### Patch Impact / Blast-Radius Evidence
+
+Purpose: Adds governed patch impact evidence for changed files, changed symbols, affected symbols, affected routes, affected tests, dependency edges touched, call paths touched, sensitive surface flags, blast radius, rollback surface, replay readiness, policy precheck, advisor invocation, and AAOS decision state.
+
+Boundary: Patch impact evidence may inform AAOS review, escalation, replay, rollback-surface review, or fail-closed handling, but it must not approve, block, classify, roll back, seal Decision Proof, or close audit by itself.
+
 ## Next Phase
 
-- M6 — Decision Proof Reconstruction Layer
-  - #32 codebase-memory-mcp Codebase Memory & Reconstruction Adapter
 - M7 — Human-Agent Control Surface
   - #31 open-tag Human-Agent Workspace Adapter
