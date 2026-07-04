@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/decision-proof-sealing-status.schema.json",
+  "title": "AAOS Decision Proof Sealing Status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision_id",
+    "sealing_status",
+    "evidence_readiness_state",
+    "sealing_eligibility_state",
+    "actual_sealing_state",
+    "audit_closure_state",
+    "final_governance_judgment_state",
+    "final_sealing_authority_owner",
+    "captured_evidence",
+    "replayable_evidence",
+    "evaluator_findings",
+    "release_proof_evidence",
+    "governance_ci_findings",
+    "human_review_state",
+    "advisor_review_state",
+    "sealing_boundary_statement",
+    "not_delegated_to",
+    "aaos_retained_authority_statement",
+    "not_authority_statement",
+    "sovereignty_statement"
+  ],
+  "properties": {
+    "decision_id": {
+      "type": "string"
+    },
+    "sealing_status": {
+      "type": "string",
+      "enum": [
+        "unsealed",
+        "replay_ready",
+        "evidence_complete",
+        "human_review_required",
+        "advisor_review_required",
+        "sealing_eligible",
+        "sealed_by_aaos",
+        "sealing_rejected_by_aaos",
+        "sealing_deferred",
+        "sealing_blocked"
+      ]
+    },
+    "evidence_readiness_state": {
+      "type": "string"
+    },
+    "sealing_eligibility_state": {
+      "type": "string"
+    },
+    "actual_sealing_state": {
+      "type": "string"
+    },
+    "audit_closure_state": {
+      "type": "string"
+    },
+    "final_governance_judgment_state": {
+      "type": "string"
+    },
+    "final_sealing_authority_owner": {
+      "type": "string",
+      "const": "AAOS"
+    },
+    "captured_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "replayable_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evaluator_findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "release_proof_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "governance_ci_findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "human_review_state": {
+      "type": "string"
+    },
+    "advisor_review_state": {
+      "type": "string"
+    },
+    "sealing_boundary_statement": {
+      "type": "string"
+    },
+    "not_delegated_to": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "aaos_retained_authority_statement": {
+      "type": "string"
+    },
+    "not_authority_statement": {
+      "type": "string"
+    },
+    "sovereignty_statement": {
+      "type": "string"
+    }
+  }
+}
