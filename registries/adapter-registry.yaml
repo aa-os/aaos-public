@@ -1,0 +1,285 @@
+registry_id: aaos_public_adapter_registry
+registry_version: 0.1.0
+status: initial
+release_scope: M1-M7
+registry_boundary:
+  description: The adapter registry is descriptive and auditable.
+  not_authority:
+    - governance_authority
+    - policy_authority
+    - decision_router
+    - rollback_authority
+    - fail_closed_authority
+    - decision_proof_sealing_authority
+    - audit_closure_authority
+    - final_governance_authority
+required_adapter_fields:
+  - adapter_id
+  - adapter_name
+  - adapter_type
+  - aaos_layer_mapping
+  - allowed_outputs
+  - forbidden_outputs
+  - evidence_schema_path
+  - contract_path
+  - example_path
+  - evaluator_path
+  - test_path
+  - related_issue
+  - related_pr
+  - release_introduced
+  - authority_boundary_statement
+  - aaos_retained_authority_statement
+forbidden_authority_claims:
+  - final_governance_authority
+  - approval_doctrine
+  - identity_trust_chain
+  - policy_authority
+  - decision_router_authority
+  - rollback_authority
+  - fail_closed_authority
+  - final_risk_classification
+  - decision_proof_sealing_authority
+  - audit_closure_authority
+adapters:
+  - adapter_id: cloudflare_security_audit_skill
+    adapter_name: Cloudflare security-audit-skill
+    adapter_type: external_l6_security_verification_adapter
+    aaos_layer_mapping:
+      - L6 Verification Layer
+    allowed_outputs:
+      - security_audit_evidence
+      - release_gate_signal
+      - verification_gate_input
+      - recommendation_to_review
+      - recommendation_to_fail_closed
+    forbidden_outputs:
+      - release_approved
+      - risk_accepted
+      - approval_doctrine_changed
+      - identity_trust_changed
+      - rollback_decision
+      - decision_proof_sealed
+      - audit_closed
+      - final_governance_judgment
+    evidence_schema_path: schemas/cloudflare-security-audit-evidence.schema.json
+    contract_path: contracts/cloudflare-security-audit-boundary.yaml
+    example_path: examples/cloudflare-security-audit/release-gate-triggered.json
+    evaluator_path: runtime/cloudflare_security_audit_evaluator.py
+    test_path: tests/test_cloudflare_security_audit.py
+    related_issue: "#27"
+    related_pr: "#34"
+    release_introduced: v0.3.0
+    authority_boundary_statement: Cloudflare security-audit-skill provides L6 security verification evidence only.
+    aaos_retained_authority_statement: AAOS retains risk appetite, approval doctrine, identity trust, decision routing, fail-closed policy, audit final judgment, and final release authority.
+  - adapter_id: advisor_invocation_contract
+    adapter_name: Advisor Invocation Contract
+    adapter_type: strategic_governance_review_hook
+    aaos_layer_mapping:
+      - Governance review hook
+    allowed_outputs:
+      - recommendation_to_review
+      - recommendation_to_escalate
+      - recommendation_to_defer
+      - recommendation_to_contain
+      - recommendation_to_fail_closed
+    forbidden_outputs:
+      - release_approved
+      - risk_accepted
+      - approval_doctrine_changed
+      - identity_trust_changed
+      - decision_route_changed
+      - audit_closed
+      - final_governance_judgment
+    evidence_schema_path: schemas/advisor-review-trigger.schema.json
+    contract_path: contracts/advisor-invocation-boundary.yaml
+    example_path: examples/advisor-invocation/high-risk-adapter-review.json
+    evaluator_path: not_applicable_review_hook
+    test_path: not_applicable_review_hook
+    related_issue: "#28"
+    related_pr: "#36"
+    release_introduced: v0.4.0
+    authority_boundary_statement: Advisor review is a governance review hook, not final authority.
+    aaos_retained_authority_statement: AAOS retains risk appetite, approval doctrine, identity trust chain, decision router logic, escalation semantics, fail-closed policy, and final release authority.
+  - adapter_id: aitbm_l6_scoring_adapter
+    adapter_name: AITBM L6 Scoring Adapter
+    adapter_type: external_ai_trust_benchmarking_scoring_adapter
+    aaos_layer_mapping:
+      - L6 Verification Layer
+    allowed_outputs:
+      - risk_score
+      - maturity_score
+      - evidence_freshness_signal
+      - evidence_confidence_signal
+      - containment_maturity_signal
+      - recommendation_to_review
+      - recommendation_to_retest
+      - recommendation_to_fail_closed
+    forbidden_outputs:
+      - allow_final_decision
+      - restrict_final_decision
+      - risk_accepted
+      - approval_doctrine_changed
+      - identity_trust_changed
+      - rollback_executed
+      - governance_policy_rewritten
+      - final_release_authority_claimed
+    evidence_schema_path: schemas/aitbm-scoring-evidence.schema.json
+    contract_path: contracts/aitbm-scoring-boundary.yaml
+    example_path: examples/aitbm-scoring/high-risk-stale-evidence.json
+    evaluator_path: runtime/aitbm_scoring_evaluator.py
+    test_path: tests/test_aitbm_scoring.py
+    related_issue: "#29"
+    related_pr: "#38"
+    release_introduced: v0.4.0
+    authority_boundary_statement: AITBM provides external scoring evidence and maturity signals only.
+    aaos_retained_authority_statement: AAOS retains risk appetite, decision thresholds, approval doctrine, fail-closed rules, rollback semantics, escalation policy, identity trust, and final decision authority.
+  - adapter_id: heretic_adversarial_specimen
+    adapter_name: Heretic Adversarial Specimen
+    adapter_type: high_risk_adversarial_model_modification_specimen
+    aaos_layer_mapping:
+      - L6 Verification Layer
+      - L3 Untrusted Local Model Runtime Specimen
+    allowed_outputs:
+      - alignment_drift_evidence
+      - refusal_degradation_evidence
+      - unsafe_provenance_signal
+      - fail_closed_simulation
+      - replay_ready_decision_scenarios
+    forbidden_outputs:
+      - production_runtime
+      - autonomous_action_execution
+      - scheduler_control
+      - decision_router_authority
+      - approval_chain_bypass
+      - policy_layer_modification
+      - credential_access
+      - production_tool_access
+    evidence_schema_path: schemas/high-risk-model-specimen.schema.json
+    contract_path: contracts/heretic-adversarial-specimen-boundary.yaml
+    example_path: examples/heretic-adversarial-specimen/high-risk-decensored-model.json
+    evaluator_path: runtime/heretic_specimen_evaluator.py
+    test_path: tests/test_heretic_specimen.py
+    related_issue: "#30"
+    related_pr: "#39"
+    release_introduced: v0.4.0
+    authority_boundary_statement: Heretic is a contained high-risk adversarial specimen, not a trusted runtime or production tool.
+    aaos_retained_authority_statement: AAOS retains governance authority, policy authority, identity trust, decision routing, approval doctrine, fail-closed policy, rollback semantics, and final decision authority.
+  - adapter_id: skillopt_governed_skill_evolution
+    adapter_name: SkillOpt Governed Skill Evolution Layer
+    adapter_type: governed_skill_optimization_layer
+    aaos_layer_mapping:
+      - L4.5 Skill Optimization Layer
+      - L6 Verification / Audit Layer
+      - L5 Memory & Reconstruction Graph
+      - L4 Tool / Data Execution Substrate
+      - L3 Model Runtime
+    allowed_outputs:
+      - best_skill_artifact
+      - skill_snapshot
+      - accepted_edit
+      - rejected_edit
+      - validation_score
+      - rollout_trace
+      - replay_dataset
+      - regression_signal
+    forbidden_outputs:
+      - deployment_approved
+      - risk_accepted
+      - waiver_granted
+      - approval_doctrine_changed
+      - identity_trust_changed
+      - rollback_executed
+      - decision_route_changed
+      - governance_policy_rewritten
+      - audit_closed
+      - final_governance_judgment
+    evidence_schema_path: schemas/governed-skill-artifact.schema.json
+    contract_path: contracts/skillopt-governed-skill-boundary.yaml
+    example_path: examples/skillopt-governance/governed-skill-artifact.json
+    evaluator_path: runtime/skillopt_governance_evaluator.py
+    test_path: tests/test_skillopt_governance.py
+    related_issue: "#33"
+    related_pr: "#40"
+    release_introduced: v0.4.0
+    authority_boundary_statement: SkillOpt may recommend optimized skill artifacts, but AAOS owns deployment approval and final governance judgment.
+    aaos_retained_authority_statement: AAOS retains deployment approval doctrine, risk thresholds, identity trust chain, escalation semantics, fail-closed rules, rollback policy, decision routing, audit final judgment, and final governance authority.
+  - adapter_id: codebase_memory_reconstruction_adapter
+    adapter_name: codebase-memory-mcp Codebase Memory & Reconstruction Adapter
+    adapter_type: governed_codebase_memory_reconstruction_adapter
+    aaos_layer_mapping:
+      - L5 Memory & Reconstruction Graph
+      - L4 Tool / Data Execution Substrate
+      - L6 Verification Layer evidence feed
+    allowed_outputs:
+      - repository_index
+      - codebase_snapshot
+      - dependency_graph
+      - call_graph
+      - route_map
+      - affected_symbol_map
+      - affected_test_surface
+      - patch_blast_radius
+      - rollback_surface_candidate
+      - replay_support_evidence
+    forbidden_outputs:
+      - code_change_approved
+      - code_change_blocked_by_adapter
+      - final_risk_classification
+      - decision_route_changed
+      - rollback_decision
+      - decision_proof_sealed
+      - audit_closed
+      - final_governance_judgment
+    evidence_schema_path: schemas/patch-impact-evidence.schema.json
+    contract_path: contracts/codebase-memory-reconstruction-boundary.yaml
+    example_path: examples/codebase-decision-proof/api-handler-change.json
+    evaluator_path: runtime/codebase_memory_evaluator.py
+    test_path: tests/test_codebase_memory_evaluator.py
+    related_issue: "#32"
+    related_pr: "#64"
+    release_introduced: v0.5.0
+    authority_boundary_statement: codebase-memory-mcp reconstructs software context and produces evidence only.
+    aaos_retained_authority_statement: AAOS decides whether a code change is allowed, blocked, escalated, replayed, rolled back, or sealed.
+  - adapter_id: open_tag_human_agent_workspace_adapter
+    adapter_name: open-tag Human-Agent Workspace Adapter
+    adapter_type: governed_human_agent_workspace_adapter
+    aaos_layer_mapping:
+      - L2 Control Plane candidate
+      - L4 Tool / Data Execution Substrate
+      - Human-agent workspace adapter specimen
+    allowed_outputs:
+      - channel_context
+      - thread_context
+      - task_context
+      - workspace_state
+      - human_message_log
+      - agent_message_log
+      - daemon_event_log
+      - runtime_adapter_event
+      - activity_log
+      - execution_trace
+      - collaboration_replay_context
+      - responsibility_workflow_context
+    forbidden_outputs:
+      - business_intent_changed
+      - risk_appetite_changed
+      - approval_doctrine_changed
+      - identity_trust_changed
+      - policy_authority_changed
+      - decision_route_changed
+      - rollback_decision
+      - final_risk_classification
+      - decision_proof_sealed
+      - audit_closed
+      - final_governance_judgment
+    evidence_schema_path: schemas/human-agent-activity-evidence.schema.json
+    contract_path: contracts/open-tag-workspace-boundary.yaml
+    example_path: examples/open-tag-workspace/activity-replay.json
+    evaluator_path: runtime/open_tag_workspace_evaluator.py
+    test_path: tests/test_open_tag_workspace_evaluator.py
+    related_issue: "#31"
+    related_pr: "#69"
+    release_introduced: v0.6.0
+    authority_boundary_statement: open-tag may host the work, but AAOS governs the decision.
+    aaos_retained_authority_statement: AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, and final governance authority.
