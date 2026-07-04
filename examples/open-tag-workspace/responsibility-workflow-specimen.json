@@ -1,0 +1,96 @@
+{
+  "specimen_id": "open-tag-responsibility-workflow-001",
+  "specimen_type": "human_agent_responsibility_workflow",
+  "workspace_ref": "open-tag://workspaces/aaos-responsibility-lab",
+  "responsibility_model": {
+    "human_actor": "human:release-owner",
+    "agent_worker": "agent:codex-implementation-worker",
+    "workspace_daemon": "daemon:open-tag-workspace-events",
+    "aaos_decision_owner": "AAOS"
+  },
+  "workflow_steps": [
+    {
+      "step_id": "step-001",
+      "name": "Decision Contract injection",
+      "responsible_actor": "human:release-owner",
+      "evidence_ref": "decision-contracts/open-tag/decision-open-tag-task-001.json"
+    },
+    {
+      "step_id": "step-002",
+      "name": "Agent task execution",
+      "responsible_actor": "agent:codex-implementation-worker",
+      "evidence_ref": "traces/open-tag/activity-replay-001/execution-trace.json"
+    },
+    {
+      "step_id": "step-003",
+      "name": "Workspace event replay",
+      "responsible_actor": "daemon:open-tag-workspace-events",
+      "evidence_ref": "replays/open-tag/activity-replay-001/replay-target.json"
+    },
+    {
+      "step_id": "step-004",
+      "name": "AAOS governance judgment",
+      "responsible_actor": "AAOS",
+      "evidence_ref": "decision-proof/open-tag/decision-open-tag-task-001"
+    }
+  ],
+  "activity_evidence": {
+    "workspace_id": "workspace-aaos-responsibility-lab",
+    "workspace_ref": "open-tag://workspaces/aaos-responsibility-lab",
+    "channel_id": "channel-responsibility-workflows",
+    "thread_id": "thread-responsibility-specimen-001",
+    "task_id": "task-responsibility-workflow-001",
+    "decision_id": "decision-responsibility-workflow-001",
+    "actor": "human:release-owner",
+    "actor_type": "human",
+    "authority_source": "aaos_decision_contract",
+    "agent_id": "agent:codex-implementation-worker",
+    "agent_runtime": "codex",
+    "daemon_id": "daemon:open-tag-workspace-events",
+    "event_type": "governance_sensitive_workspace_event",
+    "event_timestamp": "2026-07-04T03:10:00Z",
+    "task_state": "assigned",
+    "intent": "Demonstrate actor, agent, daemon, approval, rollback, and Decision Proof separation.",
+    "risk_class": "high",
+    "allowed_tools": [
+      "workspace_event_log",
+      "activity_replay",
+      "decision_contract_binding"
+    ],
+    "approval_required": true,
+    "approval_state": "pending",
+    "rollback_plan_ref": "rollback/responsibility-workflow-specimen-rollback.md",
+    "evidence_required": [
+      "activity log",
+      "execution trace",
+      "approval mapping",
+      "rollback mapping",
+      "Decision Proof binding"
+    ],
+    "completion_criteria": [
+      "all actors separated",
+      "all evidence replay-ready",
+      "AAOS retains final authority"
+    ],
+    "execution_trace_ref": "traces/open-tag/responsibility-workflow-001/execution-trace.json",
+    "replay_target_ref": "replays/open-tag/responsibility-workflow-001/replay-target.json",
+    "activity_hash": "sha256:responsibility-workflow-001",
+    "prior_activity_hash": "sha256:responsibility-workflow-000",
+    "decision_contract_ref": "decision-contracts/open-tag/decision-responsibility-workflow-001.json",
+    "advisor_invocation": {
+      "required": true,
+      "contract_ref": "advisor_invocation_boundary",
+      "trigger_types": [
+        "high_risk_task",
+        "governance_sensitive_workspace_event"
+      ],
+      "review_reason": "Responsibility workflow specimen models governance-sensitive workspace coordination.",
+      "status": "pending",
+      "decision_owner": "AAOS"
+    },
+    "not_authority_statement": "open-tag provides responsibility workflow context only; it is not AAOS policy, identity, routing, rollback, sealing, audit, or final governance authority.",
+    "sovereignty_statement": "AAOS retains purpose, policy authority, identity trust, decision routing, rollback policy, Decision Proof sealing logic, audit final judgment, and final governance authority."
+  },
+  "not_authority_statement": "open-tag is a governed workspace specimen, not a model runtime, governance core, policy authority, identity authority, verification authority, memory/reconstruction authority, decision router, rollback authority, fail-closed authority, Decision Proof sealing authority, audit closure authority, or final governance authority.",
+  "sovereignty_statement": "AAOS retains all final governance authority over responsibility workflows."
+}

@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/workspace-decision-contract-injection.schema.json",
+  "title": "AAOS Workspace Decision Contract Injection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision_id",
+    "intent",
+    "actor",
+    "authority_source",
+    "risk_class",
+    "allowed_tools",
+    "approval_required",
+    "rollback_plan",
+    "evidence_required",
+    "completion_criteria",
+    "execution_trace",
+    "replay_target",
+    "workspace_binding",
+    "channel_binding",
+    "thread_binding",
+    "task_binding",
+    "runtime_adapter_binding",
+    "approval_binding",
+    "rollback_binding",
+    "decision_proof_binding",
+    "sovereignty_statement"
+  ],
+  "properties": {
+    "decision_id": {
+      "type": "string"
+    },
+    "intent": {
+      "type": "string"
+    },
+    "actor": {
+      "type": "string"
+    },
+    "authority_source": {
+      "type": "string"
+    },
+    "risk_class": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "allowed_tools": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "rollback_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "plan_ref",
+        "owner"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "plan_ref": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string",
+          "const": "AAOS"
+        }
+      }
+    },
+    "evidence_required": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "completion_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "execution_trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "trace_ref"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "trace_ref": {
+          "type": "string"
+        }
+      }
+    },
+    "replay_target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "target_ref"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "target_ref": {
+          "type": "string"
+        }
+      }
+    },
+    "workspace_binding": {
+      "type": "string"
+    },
+    "channel_binding": {
+      "type": "string"
+    },
+    "thread_binding": {
+      "type": "string"
+    },
+    "task_binding": {
+      "type": "string"
+    },
+    "runtime_adapter_binding": {
+      "type": "string"
+    },
+    "approval_binding": {
+      "type": "string"
+    },
+    "rollback_binding": {
+      "type": "string"
+    },
+    "decision_proof_binding": {
+      "type": "string"
+    },
+    "advisor_invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "contract_ref",
+        "trigger_types",
+        "status",
+        "decision_owner"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "contract_ref": {
+          "type": "string",
+          "const": "advisor_invocation_boundary"
+        },
+        "trigger_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "completed",
+            "not_required"
+          ]
+        },
+        "decision_owner": {
+          "type": "string",
+          "const": "AAOS"
+        }
+      }
+    },
+    "sovereignty_statement": {
+      "type": "string"
+    }
+  }
+}

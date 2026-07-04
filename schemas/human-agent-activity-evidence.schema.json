@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/human-agent-activity-evidence.schema.json",
+  "title": "AAOS Human-Agent Activity Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workspace_id",
+    "workspace_ref",
+    "channel_id",
+    "thread_id",
+    "task_id",
+    "decision_id",
+    "actor",
+    "actor_type",
+    "authority_source",
+    "agent_id",
+    "agent_runtime",
+    "daemon_id",
+    "event_type",
+    "event_timestamp",
+    "task_state",
+    "intent",
+    "risk_class",
+    "allowed_tools",
+    "approval_required",
+    "approval_state",
+    "rollback_plan_ref",
+    "evidence_required",
+    "completion_criteria",
+    "execution_trace_ref",
+    "replay_target_ref",
+    "activity_hash",
+    "prior_activity_hash",
+    "not_authority_statement",
+    "sovereignty_statement"
+  ],
+  "properties": {
+    "workspace_id": {
+      "type": "string"
+    },
+    "workspace_ref": {
+      "type": "string"
+    },
+    "channel_id": {
+      "type": "string"
+    },
+    "thread_id": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "decision_id": {
+      "type": "string"
+    },
+    "actor": {
+      "type": "string"
+    },
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "human",
+        "agent",
+        "daemon",
+        "runtime_adapter"
+      ]
+    },
+    "authority_source": {
+      "type": "string"
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "agent_runtime": {
+      "type": "string"
+    },
+    "daemon_id": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "human_message",
+        "agent_message",
+        "daemon_event",
+        "task_created",
+        "task_assigned",
+        "task_execution_started",
+        "task_execution_completed",
+        "runtime_adapter_event",
+        "agent_lifecycle_event",
+        "start_event",
+        "stop_event",
+        "sleep_event",
+        "resume_event",
+        "approval_request",
+        "rollback_request",
+        "execution_trace_recorded",
+        "decision_contract_injected",
+        "governance_sensitive_workspace_event"
+      ]
+    },
+    "event_timestamp": {
+      "type": "string"
+    },
+    "task_state": {
+      "type": "string",
+      "enum": [
+        "open",
+        "assigned",
+        "in_progress",
+        "blocked",
+        "sleeping",
+        "completed",
+        "cancelled"
+      ]
+    },
+    "intent": {
+      "type": "string"
+    },
+    "risk_class": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "allowed_tools": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "approval_required": {
+      "type": "boolean"
+    },
+    "approval_state": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "pending",
+        "approved",
+        "rejected",
+        "missing"
+      ]
+    },
+    "rollback_plan_ref": {
+      "type": "string"
+    },
+    "evidence_required": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "completion_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "execution_trace_ref": {
+      "type": "string"
+    },
+    "replay_target_ref": {
+      "type": "string"
+    },
+    "activity_hash": {
+      "type": "string"
+    },
+    "prior_activity_hash": {
+      "type": "string"
+    },
+    "decision_contract_ref": {
+      "type": "string"
+    },
+    "advisor_invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "contract_ref",
+        "trigger_types",
+        "review_reason",
+        "status",
+        "decision_owner"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "contract_ref": {
+          "type": "string",
+          "const": "advisor_invocation_boundary"
+        },
+        "trigger_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "review_reason": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "completed",
+            "not_required"
+          ]
+        },
+        "decision_owner": {
+          "type": "string",
+          "const": "AAOS"
+        }
+      }
+    },
+    "not_authority_statement": {
+      "type": "string"
+    },
+    "sovereignty_statement": {
+      "type": "string"
+    }
+  }
+}
