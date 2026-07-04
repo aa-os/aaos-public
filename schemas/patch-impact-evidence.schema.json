@@ -1,0 +1,445 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/patch-impact-evidence.schema.json",
+  "title": "AAOS Patch Impact Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "change_id",
+    "repository_ref",
+    "base_commit_sha",
+    "proposed_commit_sha",
+    "changed_files",
+    "changed_symbols",
+    "affected_symbols",
+    "affected_routes",
+    "affected_tests",
+    "dependency_edges_touched",
+    "call_paths_touched",
+    "auth_surface_touched",
+    "payment_surface_touched",
+    "security_surface_touched",
+    "data_pipeline_surface_touched",
+    "governance_sensitive_surface_touched",
+    "blast_radius",
+    "rollback_surface",
+    "replay_ready",
+    "trace_refs",
+    "policy_precheck",
+    "advisor_invocation",
+    "aaos_decision_state",
+    "not_authority_statement",
+    "sovereignty_statement"
+  ],
+  "properties": {
+    "change_id": {
+      "type": "string"
+    },
+    "repository_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_full_name",
+        "branch",
+        "remote_url"
+      ],
+      "properties": {
+        "repository_full_name": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "remote_url": {
+          "type": "string"
+        }
+      }
+    },
+    "base_commit_sha": {
+      "type": "string"
+    },
+    "proposed_commit_sha": {
+      "type": "string"
+    },
+    "changed_files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "change_type",
+          "file_role"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "change_type": {
+            "type": "string",
+            "enum": [
+              "added",
+              "modified",
+              "deleted",
+              "renamed"
+            ]
+          },
+          "file_role": {
+            "type": "string",
+            "enum": [
+              "route",
+              "api",
+              "auth",
+              "payment",
+              "security",
+              "data_pipeline",
+              "governance",
+              "test",
+              "general"
+            ]
+          }
+        }
+      }
+    },
+    "changed_symbols": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/symbol"
+      }
+    },
+    "affected_symbols": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/symbol"
+      }
+    },
+    "affected_routes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "affected_tests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "dependency_edges_touched": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "from",
+          "to",
+          "edge_type"
+        ],
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "edge_type": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "call_paths_touched": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "entrypoint",
+          "path_ref"
+        ],
+        "properties": {
+          "entrypoint": {
+            "type": "string"
+          },
+          "path_ref": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "auth_surface_touched": {
+      "type": "boolean"
+    },
+    "payment_surface_touched": {
+      "type": "boolean"
+    },
+    "security_surface_touched": {
+      "type": "boolean"
+    },
+    "data_pipeline_surface_touched": {
+      "type": "boolean"
+    },
+    "governance_sensitive_surface_touched": {
+      "type": "boolean"
+    },
+    "blast_radius": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rating",
+        "scope_summary",
+        "affected_file_count",
+        "confidence"
+      ],
+      "properties": {
+        "rating": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "scope_summary": {
+          "type": "string"
+        },
+        "affected_file_count": {
+          "type": "integer"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        }
+      }
+    },
+    "rollback_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "complete",
+        "rollback_ready",
+        "candidate_refs",
+        "owner",
+        "notes"
+      ],
+      "properties": {
+        "complete": {
+          "type": "boolean"
+        },
+        "rollback_ready": {
+          "type": "boolean"
+        },
+        "candidate_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "owner": {
+          "type": "string",
+          "const": "AAOS"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "replay_ready": {
+      "type": "boolean"
+    },
+    "trace_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "policy_precheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "checks"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "incomplete"
+          ]
+        },
+        "checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "graph_evidence_present",
+            "affected_symbol_map_present",
+            "affected_test_surface_present",
+            "rollback_surface_present",
+            "replay_trace_present",
+            "authority_boundary_check_present"
+          ],
+          "properties": {
+            "graph_evidence_present": {
+              "type": "boolean"
+            },
+            "affected_symbol_map_present": {
+              "type": "boolean"
+            },
+            "affected_test_surface_present": {
+              "type": "boolean"
+            },
+            "rollback_surface_present": {
+              "type": "boolean"
+            },
+            "replay_trace_present": {
+              "type": "boolean"
+            },
+            "authority_boundary_check_present": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "advisor_invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "contract_ref",
+        "trigger_types",
+        "review_reason",
+        "status",
+        "decision_owner"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "contract_ref": {
+          "type": "string",
+          "const": "advisor_invocation_boundary"
+        },
+        "trigger_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "high_blast_radius",
+              "auth_surface_touched",
+              "payment_surface_touched",
+              "security_surface_touched",
+              "data_pipeline_surface_touched",
+              "governance_sensitive_surface_touched",
+              "rollback_surface_incomplete",
+              "replay_trace_missing",
+              "stale_graph_evidence",
+              "adapter_authority_claim",
+              "final_risk_classification_attempt",
+              "decision_proof_sealing_attempt"
+            ]
+          }
+        },
+        "review_reason": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "completed",
+            "not_required"
+          ]
+        },
+        "decision_owner": {
+          "type": "string",
+          "const": "AAOS"
+        }
+      }
+    },
+    "aaos_decision_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_owner",
+        "code_change_decision",
+        "final_risk_classification",
+        "decision_proof_state"
+      ],
+      "properties": {
+        "decision_owner": {
+          "type": "string",
+          "const": "AAOS"
+        },
+        "code_change_decision": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "allowed",
+            "blocked",
+            "escalated",
+            "replay_required",
+            "rollback_required",
+            "not_decided_by_adapter"
+          ]
+        },
+        "final_risk_classification": {
+          "type": "string",
+          "enum": [
+            "pending_aaos_classification",
+            "classified_by_aaos",
+            "not_classified_by_adapter"
+          ]
+        },
+        "decision_proof_state": {
+          "type": "string",
+          "enum": [
+            "pending_aaos_seal",
+            "sealed_by_aaos",
+            "not_sealed_by_adapter"
+          ]
+        }
+      }
+    },
+    "not_authority_statement": {
+      "type": "string"
+    },
+    "sovereignty_statement": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "symbol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "file_path",
+        "symbol_type"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "file_path": {
+          "type": "string"
+        },
+        "symbol_type": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
