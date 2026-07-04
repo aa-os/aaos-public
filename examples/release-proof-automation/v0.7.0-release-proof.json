@@ -1,0 +1,88 @@
+{
+  "release_id": "v0.7.0",
+  "release_title": "v0.7.0 — M8 Release Governance Hardening and Cross-Adapter Regression",
+  "tracker_issue": "#80",
+  "closing_prs": [
+    {
+      "pr": "#86",
+      "title": "Add M8 release governance and cross-adapter regression pack",
+      "merged": true
+    },
+    {
+      "pr": "#92",
+      "title": "Update README for v0.7.0 M8 completion",
+      "merged": true
+    }
+  ],
+  "release_tag": {
+    "tag": "v0.7.0",
+    "present": true
+  },
+  "readme_version_status": {
+    "version": "v0.7.0",
+    "present": true,
+    "status_text": "M1, M2, M3, M4, M5, M6, M7, and M8 are complete."
+  },
+  "release_title_consistency": {
+    "readme_title": "v0.7.0 — M8 Release Governance Hardening and Cross-Adapter Regression",
+    "release_title": "v0.7.0 — M8 Release Governance Hardening and Cross-Adapter Regression",
+    "matches": true
+  },
+  "release_body_consistency": {
+    "governance_boundary_preserved": true,
+    "body_summary": "Release governance checks, regression packs, adapter registries, CI checks, and deterministic evaluators are evidence-producing systems, not authorities."
+  },
+  "next_phase_declaration": {
+    "expected": "M9 — Decision Proof Runtime Replay and Governance CI Expansion",
+    "actual": "M9 — Decision Proof Runtime Replay and Governance CI Expansion",
+    "matches_expected": true
+  },
+  "decision_proof_replay_packet": {
+    "packet_ref": "examples/decision-proof-runtime-replay/release-governance-replay.json",
+    "present": true,
+    "replay_ready": true
+  },
+  "governance_boundary_preservation": {
+    "preserved": true,
+    "aaos_retained_authority": [
+      "purpose_and_business_intent",
+      "risk_appetite",
+      "approval_doctrine",
+      "identity_trust_chain",
+      "policy_authority",
+      "decision_router_logic",
+      "escalation_semantics",
+      "fail_closed_policy",
+      "rollback_policy",
+      "final_risk_classification",
+      "decision_proof_sealing_logic",
+      "audit_final_judgment",
+      "final_governance_authority"
+    ]
+  },
+  "automation_checks": {
+    "readme_version_status": true,
+    "tracker_issue_closure": true,
+    "pr_merge_status": true,
+    "release_tag_presence": true,
+    "release_title_consistency": true,
+    "release_body_consistency": true,
+    "next_phase_declaration": true,
+    "decision_proof_replay_packet_presence": true,
+    "governance_boundary_preservation": true
+  },
+  "evaluator_outputs": [
+    "replay_packet_valid",
+    "replay_packet_invalid",
+    "replay_findings",
+    "missing_evidence",
+    "authority_boundary_violation",
+    "release_proof_consistency_passed",
+    "release_proof_consistency_failed",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "not_authority_statement": "Release proof automation may prepare auditable release evidence but must not approve releases, publish releases, accept risk, close audits, seal Decision Proof, or make final governance judgments.",
+  "sovereignty_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, and final governance authority."
+}
