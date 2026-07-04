@@ -1,0 +1,221 @@
+contract_id: open_tag_workspace_boundary
+contract_version: 0.1.0
+status: candidate
+owner: AAOS
+
+adapter:
+  name: open-tag
+  role: human_agent_workspace_adapter
+  specimen_role:
+    - Human-agent workspace adapter
+    - Multi-runtime agent coordination surface
+    - Responsibility workflow specimen
+  purpose: >
+    open-tag provides a governed collaboration surface for channels, threads,
+    tasks, DMs, persistent workspaces, agent lifecycle events, runtime adapter
+    events, activity logs, execution traces, and replayable collaboration
+    context.
+
+layer_mapping:
+  candidate:
+    - L2 Control Plane
+  secondary:
+    - L4 Tool / Data Execution Substrate
+  specimen:
+    - Human-agent workspace adapter
+    - Multi-runtime agent coordination surface
+    - Responsibility workflow specimen
+  must_not_replace:
+    - L0 Governance / Business Intent
+    - L1 Policy & Identity Plane
+    - L5 Memory & Reconstruction Graph
+    - L6 Verification Layer
+
+allowed_open_tag_outputs:
+  - channel_context
+  - thread_context
+  - dm_context
+  - task_context
+  - task_board_state
+  - workspace_state
+  - human_message_log
+  - agent_message_log
+  - daemon_event_log
+  - runtime_adapter_event
+  - agent_lifecycle_event
+  - start_stop_sleep_resume_event
+  - activity_log
+  - execution_trace
+  - approval_request_context
+  - rollback_request_context
+  - collaboration_replay_context
+  - responsibility_workflow_context
+
+forbidden_open_tag_outputs:
+  - business_intent_changed
+  - risk_appetite_changed
+  - approval_doctrine_changed
+  - identity_trust_changed
+  - policy_authority_changed
+  - decision_route_changed
+  - escalation_semantics_changed
+  - fail_closed_policy_changed
+  - rollback_decision
+  - final_risk_classification
+  - decision_proof_sealed
+  - audit_closed
+  - final_governance_judgment
+
+required_human_agent_activity_evidence_fields:
+  - workspace_id
+  - workspace_ref
+  - channel_id
+  - thread_id
+  - task_id
+  - decision_id
+  - actor
+  - actor_type
+  - authority_source
+  - agent_id
+  - agent_runtime
+  - daemon_id
+  - event_type
+  - event_timestamp
+  - task_state
+  - intent
+  - risk_class
+  - allowed_tools
+  - approval_required
+  - approval_state
+  - rollback_plan_ref
+  - evidence_required
+  - completion_criteria
+  - execution_trace_ref
+  - replay_target_ref
+  - activity_hash
+  - prior_activity_hash
+  - not_authority_statement
+  - sovereignty_statement
+
+required_decision_contract_injection_fields:
+  - decision_id
+  - intent
+  - actor
+  - authority_source
+  - risk_class
+  - allowed_tools
+  - approval_required
+  - rollback_plan
+  - evidence_required
+  - completion_criteria
+  - execution_trace
+  - replay_target
+  - workspace_binding
+  - channel_binding
+  - thread_binding
+  - task_binding
+  - runtime_adapter_binding
+  - approval_binding
+  - rollback_binding
+  - decision_proof_binding
+  - sovereignty_statement
+
+required_controls:
+  authority_boundary_checks: required
+  replay_ready_activity_evidence: required
+  actor_agent_daemon_separation: required
+  approval_mapping: required
+  rollback_mapping: required
+  decision_proof_traceability: required
+  aaos_decision_owner: required
+
+policy_bound_workspace_gate_checks:
+  - missing_decision_id
+  - missing_intent
+  - missing_actor
+  - missing_authority_source
+  - missing_risk_class
+  - missing_allowed_tools
+  - missing_approval_required
+  - missing_rollback_plan
+  - missing_evidence_required
+  - missing_completion_criteria
+  - missing_execution_trace
+  - missing_replay_target
+  - missing_actor_agent_daemon_separation
+  - runtime_adapter_event_without_task_binding
+  - task_execution_without_decision_contract
+  - approval_required_but_missing_approval_state
+  - rollback_required_but_missing_rollback_plan
+  - high_risk_task_without_advisor_invocation
+  - governance_sensitive_workspace_event
+  - open_tag_claims_policy_authority
+  - open_tag_claims_decision_router_authority
+  - open_tag_claims_rollback_authority
+  - open_tag_claims_decision_proof_sealing_authority
+
+advisor_invocation:
+  contract_ref: advisor_invocation_boundary
+  review_hook_only: true
+  required_when:
+    - risk_class_is_high_or_critical
+    - approval_required_is_true_but_approval_state_is_missing
+    - rollback_plan_is_missing_or_incomplete
+    - execution_trace_is_missing
+    - replay_target_is_missing
+    - runtime_adapter_event_is_not_bound_to_task
+    - task_execution_occurs_without_decision_contract_fields
+    - governance_sensitive_workspace_event_occurs
+    - open_tag_output_appears_to_claim_aaos_authority
+    - policy_authority_is_attempted_by_open_tag
+    - decision_router_authority_is_attempted_by_open_tag
+    - rollback_authority_is_attempted_by_open_tag
+    - decision_proof_sealing_is_attempted_by_open_tag
+  permitted_recommendations:
+    - review
+    - escalation
+    - approval_mapping_review
+    - rollback_mapping_review
+    - replay
+    - fail_closed_handling
+  forbidden_authority:
+    - model_runtime_authority
+    - governance_core_authority
+    - policy_authority
+    - identity_authority
+    - verification_authority
+    - memory_reconstruction_authority
+    - decision_router_authority
+    - rollback_authority
+    - fail_closed_authority
+    - decision_proof_sealing_authority
+    - audit_closure_authority
+    - final_governance_authority
+
+aaos_retained_authority:
+  - purpose_and_business_intent
+  - risk_appetite
+  - approval_doctrine
+  - identity_trust_chain
+  - policy_authority
+  - decision_router_logic
+  - escalation_semantics
+  - fail_closed_policy
+  - rollback_policy
+  - final_risk_classification
+  - decision_proof_sealing_logic
+  - audit_final_judgment
+  - final_governance_authority
+
+not_authority_statement: >
+  open-tag is not a model runtime, governance core, policy authority,
+  identity authority, verification authority, memory/reconstruction authority,
+  decision router, rollback authority, fail-closed authority, Decision Proof
+  sealing authority, audit closure authority, or final governance authority.
+
+sovereignty_statement: >
+  AAOS retains purpose and business intent, risk appetite, approval doctrine,
+  identity trust chain, policy authority, decision router logic, escalation
+  semantics, fail-closed policy, rollback policy, final risk classification,
+  Decision Proof sealing logic, audit final judgment, and final governance
+  authority.
