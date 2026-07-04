@@ -75,16 +75,17 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 - v0.3.0 — L6 Security Verification & Deterministic CI Gates
 - v0.4.0 — M5 Evaluator Expansion, Adapter Regression Packs, and Governed Specimens
 - v0.5.0 — M6 Decision Proof Reconstruction Layer and Codebase Memory Adapter
+- v0.6.0 — M7 Human-Agent Control Surface and Workspace Adapter
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, and the M6 software Decision Proof reconstruction workflow.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, and the M7 Human-Agent Control Surface pattern.
 
-v0.5.0 adds the first AAOS software Decision Proof reconstruction workflow and introduces a governed Codebase Memory & Reconstruction Adapter pattern. External tools continue to be admitted as governed evidence sources, not authorities.
+v0.6.0 adds the first AAOS Human-Agent Control Surface pattern and introduces a governed Human-Agent Workspace Adapter pattern. External workspaces and collaboration systems continue to be admitted as governed collaboration surfaces and evidence sources, not authorities.
 
 ## Current Status
 
-M1, M2, M3, M4, M5, and M6 are complete.
+M1, M2, M3, M4, M5, M6, and M7 are complete.
 
 M5 completed:
 
@@ -97,6 +98,11 @@ M6 completed:
 
 - #62 M6: Decision Proof Reconstruction Layer and Codebase Memory Adapter
 - #32 codebase-memory-mcp Codebase Memory & Reconstruction Adapter
+
+M7 completed:
+
+- #68 M7: Human-Agent Control Surface and Workspace Adapter
+- #31 open-tag Human-Agent Workspace Adapter
 
 AAOS Public now has:
 
@@ -118,6 +124,11 @@ AAOS Public now has:
 - codebase graph evidence schema
 - patch impact / blast-radius evidence schema
 - software Decision Proof reconstruction example
+- open-tag Human-Agent Workspace Adapter
+- human-agent activity evidence schema
+- Decision Contract injection map
+- workspace activity replay example
+- responsibility workflow specimen
 
 ## M5 Additions
 
@@ -178,7 +189,66 @@ Purpose: Adds governed patch impact evidence for changed files, changed symbols,
 
 Boundary: Patch impact evidence may inform AAOS review, escalation, replay, rollback-surface review, or fail-closed handling, but it must not approve, block, classify, roll back, seal Decision Proof, or close audit by itself.
 
+## M7 Additions
+
+### open-tag Human-Agent Workspace Adapter (#31)
+
+Purpose: Adds open-tag as a governed collaboration surface for channels, threads, DMs, tasks, task boards, agent workspaces, runtime adapter events, human-agent messages, activity logs, execution traces, workspace state, and replayable collaboration context.
+
+Layer mapping:
+
+- Candidate: L2 Control Plane
+- Secondary: L4 Tool / Data Execution Substrate
+- Specimen: Human-agent workspace adapter, multi-runtime agent coordination surface, responsibility workflow specimen
+
+Boundary: open-tag may host the work, but AAOS governs the decision.
+
+open-tag must not act as a model runtime, governance core, policy authority, identity authority, verification authority, memory/reconstruction authority, decision router, rollback authority, fail-closed authority, Decision Proof sealing authority, audit closure authority, or final governance authority.
+
+### Human-Agent Activity Evidence
+
+Purpose: Adds governed evidence for workspace, channel, thread, task, decision, actor, agent, daemon, event type, task state, intent, risk class, allowed tools, approval state, rollback plan, required evidence, completion criteria, execution trace, replay target, and activity hashes.
+
+Boundary: Human-agent activity evidence may support review, escalation, replay, approval mapping review, rollback mapping review, or fail-closed handling, but it must not approve, block, classify, route, roll back, seal Decision Proof, close audit, or make final governance judgments by itself.
+
+### Decision Contract Injection Map
+
+Purpose: Defines how AAOS Decision Contract fields can be injected into open-tag tasks, threads, channels, runtime adapter events, and activity logs.
+
+Required Decision Contract fields include:
+
+- decision_id
+- intent
+- actor
+- authority_source
+- risk_class
+- allowed_tools
+- approval_required
+- rollback_plan
+- evidence_required
+- completion_criteria
+- execution_trace
+- replay_target
+
+### Workspace Activity Replay and Responsibility Workflow Specimen
+
+Purpose: Adds replay-ready collaboration context and responsibility workflow examples for human-agent task execution.
+
+AAOS uses this to ask:
+
+- Who initiated the task?
+- Which agent or runtime adapter acted?
+- What authority source allowed the action?
+- Was approval required?
+- Was approval present?
+- Was rollback defined?
+- Is execution trace available?
+- Can the workspace activity be replayed?
+- Can Decision Proof be generated without giving the workspace final authority?
+
 ## Next Phase
 
-- M7 — Human-Agent Control Surface
-  - #31 open-tag Human-Agent Workspace Adapter
+- M8 — Release Governance Hardening and Cross-Adapter Regression
+  - Expand regression coverage across Cloudflare, AITBM, Heretic, SkillOpt, codebase-memory-mcp, and open-tag.
+  - Strengthen README / release / issue closure consistency.
+  - Prepare adapter registry hardening if appropriate.
