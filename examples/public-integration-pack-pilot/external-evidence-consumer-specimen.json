@@ -1,0 +1,147 @@
+{
+  "consumer_id": "m11-external-evidence-consumer-specimen",
+  "consumer_name": "M11 External Evidence Consumer Specimen",
+  "consumer_type": "external_evidence_consumer",
+  "status": "specimen_active_not_authority",
+  "sealed_artifacts": {
+    "description": "AAOS-sealed Decision Proof artifacts may be read, referenced, inspected, or reported as sealed AAOS outputs.",
+    "authority_boundary": "Sealed status is consumed as AAOS output and must not be re-sealed or converted into external final governance judgment."
+  },
+  "non_sealed_artifacts": {
+    "description": "Unsealed, replay-ready, evidence-complete, sealing-eligible, sealing-rejected, sealing-deferred, and sealing-blocked artifacts may be consumed according to status.",
+    "authority_boundary": "Non-sealed status remains evidence state and must not be converted into final governance judgment."
+  },
+  "replayable_evidence": [
+    "examples/decision-proof-runtime-replay/release-governance-replay.json",
+    "examples/decision-proof-runtime-replay/cross-adapter-regression-replay.json"
+  ],
+  "evaluator_findings": [
+    "runtime/decision_proof_replay_evaluator.py",
+    "runtime/decision_proof_sealing_evaluator.py",
+    "runtime/public_integration_pack_evaluator.py"
+  ],
+  "release_proof_evidence": [
+    "examples/release-proof-automation/v0.8.0-release-proof.json"
+  ],
+  "governance_ci_findings": [
+    "docs/governance/governance-ci-expansion.md"
+  ],
+  "human_review_state": "human_review_required_before_promotion_or_sealing",
+  "sealing_eligibility": "represented_as_evidence_state_only",
+  "final_aaos_owned_sealing_authority": {
+    "owner": "AAOS",
+    "delegated": false,
+    "statement": "Final Decision Proof sealing authority remains AAOS-owned."
+  },
+  "artifact_consumption_semantics": {
+    "unsealed_evidence": {
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report"
+      ],
+      "authority_boundary": "Unsealed evidence is not final governance judgment."
+    },
+    "replay_ready_packets": {
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "replay",
+        "inspect",
+        "report"
+      ],
+      "authority_boundary": "Replay readiness supports inspection and must not approve or seal."
+    },
+    "evidence_complete_packets": {
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "replay",
+        "inspect",
+        "report"
+      ],
+      "authority_boundary": "Evidence completeness is not release approval, risk acceptance, audit closure, or final judgment."
+    },
+    "evaluator_findings": {
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report"
+      ],
+      "authority_boundary": "Evaluator findings may recommend review, escalation, or fail-closed handling but must not become final authority."
+    },
+    "sealing_eligible_evidence": {
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report"
+      ],
+      "authority_boundary": "Sealing eligibility is not sealing."
+    },
+    "aaos_sealed_decision_proof_artifacts": {
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report"
+      ],
+      "authority_boundary": "Only AAOS may seal Decision Proof; consumers must not reclassify or supersede AAOS sealing."
+    },
+    "sealing_rejected_artifacts": {
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report"
+      ],
+      "authority_boundary": "Rejection state is AAOS-owned status and must not be overridden by the consumer."
+    },
+    "sealing_deferred_artifacts": {
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report"
+      ],
+      "authority_boundary": "Deferred state requires AAOS review and must not be converted into approval."
+    },
+    "sealing_blocked_artifacts": {
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report"
+      ],
+      "authority_boundary": "Blocked state must not be bypassed by the consumer."
+    }
+  },
+  "allowed_consumer_outputs": [
+    "external_consumer_valid",
+    "external_consumer_invalid",
+    "artifact_consumption_semantics_present",
+    "artifact_consumption_semantics_missing",
+    "release_proof_linkage_present",
+    "release_proof_linkage_missing",
+    "authority_boundary_preserved",
+    "authority_boundary_violation",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_consumer_outputs": [
+    "decision_proof_sealed",
+    "sealed_by_integration_pack",
+    "sealed_by_external_consumer",
+    "release_approved",
+    "risk_accepted",
+    "rollback_executed",
+    "audit_closed",
+    "final_governance_judgment"
+  ],
+  "not_authority_statement": "Consuming AAOS evidence does not transfer AAOS authority. The consumer must not seal Decision Proof, approve releases, accept risk, execute rollback, close audits, or make final governance judgments.",
+  "aaos_retained_authority_statement": "AAOS retains Decision Proof sealing, release authority, rollback authority, audit final judgment, approval doctrine, identity trust, policy authority, decision routing, and final governance authority.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
