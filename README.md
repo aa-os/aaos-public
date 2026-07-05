@@ -728,10 +728,17 @@ Forbidden evaluator outputs include:
 - audit_closed
 - final_governance_judgment
 
-## Next Phase
+## Current Work
 
-- M11 — Public Integration Pack and External Evidence Consumer Pilot
-  - Turn the public integration pack pattern into a concrete pilot package.
-  - Add an external evidence consumer specimen.
-  - Strengthen sealed vs non-sealed artifact consumption semantics.
-  - Prepare integration-facing examples that preserve AAOS final governance authority.
+- M11 — Public Integration Pack and External Evidence Consumer Pilot: active work in progress.
+  - Tracker: #120.
+  - First pilot merge: #121.
+  - #121 added the first M11 Public Integration Pack Pilot package.
+  - #121 added an external evidence consumer specimen.
+  - #121 added sealed vs non-sealed artifact consumption semantics.
+  - #121 added integration-facing examples.
+  - #121 added deterministic public integration pack evaluator coverage and tests.
+  - Public integration packs and external evidence consumers remain evidence-interface or evidence-consuming systems, not governance authorities.
+  - Decision Proof sealing remains AAOS-owned.
+  - AAOS remains the decision sovereignty layer.
+  - v0.10.0 is reserved for a future M11 completion release and must not be treated as released.
