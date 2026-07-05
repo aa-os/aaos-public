@@ -1,0 +1,67 @@
+{
+  "example_set_id": "m11-external-consumer-fail-closed-consumption-examples",
+  "example_set_name": "M11 External Consumer Fail-Closed Consumption Examples",
+  "milestone": "M11",
+  "status": "active_work_in_progress_not_released",
+  "m11_tracker_issue": "#120",
+  "tracker_issue_linkage": "Refs #120",
+  "tracker_issue_closure_state": "open_not_closed",
+  "related_prs": [
+    "#121",
+    "#131",
+    "#134"
+  ],
+  "v0_10_0_release_state": "reserved_future_completion_not_released",
+  "allowed_consumer_actions": [
+    "surface_fail_closed_recommended",
+    "preserve_evidence_link",
+    "preserve_sealing_boundary",
+    "escalate_to_aaos_review"
+  ],
+  "forbidden_consumer_actions": [
+    "execute_fail_closed",
+    "execute_rollback",
+    "approve_releases",
+    "accept_risk",
+    "seal_decision_proof",
+    "close_audits",
+    "make_final_governance_judgments"
+  ],
+  "examples": [
+    {
+      "example_id": "surface_fail_closed_without_execution",
+      "artifact_status": "sealing_blocked_artifacts",
+      "consumer_output": "fail_closed_recommended",
+      "evidence_link": "examples/public-integration-pack-pilot/m11-external-consumer-consumption-matrix.json#artifact_consumption_matrix.sealing_blocked_artifacts",
+      "escalation_target": "AAOS review",
+      "preserves_evidence_link": true,
+      "preserves_sealing_boundary": true,
+      "fail_closed_executed": false,
+      "rollback_executed": false,
+      "release_approved": false,
+      "risk_accepted": false,
+      "decision_proof_sealed": false,
+      "audit_closed": false,
+      "final_governance_judgment": false
+    },
+    {
+      "example_id": "surface_fail_closed_from_evaluator_findings",
+      "artifact_status": "evaluator_findings",
+      "consumer_output": "fail_closed_recommended",
+      "evidence_link": "runtime/public_integration_pack_evaluator.py",
+      "escalation_target": "AAOS review",
+      "preserves_evidence_link": true,
+      "preserves_sealing_boundary": true,
+      "fail_closed_executed": false,
+      "rollback_executed": false,
+      "release_approved": false,
+      "risk_accepted": false,
+      "decision_proof_sealed": false,
+      "audit_closed": false,
+      "final_governance_judgment": false
+    }
+  ],
+  "not_authority_statement": "External consumers may surface fail_closed_recommended, preserve evidence linkage, preserve the sealing boundary, and escalate to AAOS review, but must not execute fail-closed, rollback, release approval, risk acceptance, Decision Proof sealing, audit closure, or final governance judgment.",
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
