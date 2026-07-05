@@ -1,0 +1,310 @@
+{
+  "matrix_id": "m11-external-consumer-artifact-consumption-matrix",
+  "matrix_name": "M11 External Consumer Artifact Consumption Matrix",
+  "milestone": "M11",
+  "status": "active_work_in_progress_not_released",
+  "m11_tracker_issue": "#120",
+  "tracker_issue_linkage": "Refs #120",
+  "tracker_issue_closure_state": "open_not_closed",
+  "related_prs": [
+    "#121",
+    "#131",
+    "#134"
+  ],
+  "v0_10_0_release_state": "reserved_future_completion_not_released",
+  "artifact_consumption_matrix": {
+    "unsealed_evidence": {
+      "artifact_class": "non_sealed",
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage",
+        "surface_review_requirement"
+      ],
+      "forbidden_consumer_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "change_approval_doctrine",
+        "change_identity_trust",
+        "change_policy_authority",
+        "change_decision_routing",
+        "make_final_governance_judgments",
+        "convert_non_sealed_artifacts_into_sealed_artifacts",
+        "convert_sealing_eligibility_into_final_sealing"
+      ],
+      "authority_boundary": "Unsealed evidence may be consumed only as evidence state and must not be converted into sealed Decision Proof."
+    },
+    "replay_ready_packets": {
+      "artifact_class": "non_sealed",
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage",
+        "replay",
+        "surface_review_requirement"
+      ],
+      "forbidden_consumer_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "change_approval_doctrine",
+        "change_identity_trust",
+        "change_policy_authority",
+        "change_decision_routing",
+        "make_final_governance_judgments",
+        "convert_non_sealed_artifacts_into_sealed_artifacts",
+        "convert_sealing_eligibility_into_final_sealing"
+      ],
+      "authority_boundary": "Replay-ready packets may support inspection and replay, but replay readiness is not sealing or release approval."
+    },
+    "evidence_complete_packets": {
+      "artifact_class": "non_sealed",
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage",
+        "replay",
+        "surface_review_requirement"
+      ],
+      "forbidden_consumer_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "change_approval_doctrine",
+        "change_identity_trust",
+        "change_policy_authority",
+        "change_decision_routing",
+        "make_final_governance_judgments",
+        "convert_non_sealed_artifacts_into_sealed_artifacts",
+        "convert_sealing_eligibility_into_final_sealing"
+      ],
+      "authority_boundary": "Evidence completeness is not release approval, risk acceptance, audit closure, sealing, or final judgment."
+    },
+    "evaluator_findings": {
+      "artifact_class": "non_sealed",
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage",
+        "surface_review_requirement",
+        "surface_escalation_requirement",
+        "surface_fail_closed_recommendation"
+      ],
+      "forbidden_consumer_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "change_approval_doctrine",
+        "change_identity_trust",
+        "change_policy_authority",
+        "change_decision_routing",
+        "make_final_governance_judgments",
+        "convert_non_sealed_artifacts_into_sealed_artifacts",
+        "convert_sealing_eligibility_into_final_sealing"
+      ],
+      "authority_boundary": "Evaluator findings may surface review, escalation, or fail-closed recommendations, but they must not become final authority."
+    },
+    "sealing_eligible_evidence": {
+      "artifact_class": "non_sealed",
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage",
+        "surface_review_requirement"
+      ],
+      "forbidden_consumer_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "change_approval_doctrine",
+        "change_identity_trust",
+        "change_policy_authority",
+        "change_decision_routing",
+        "make_final_governance_judgments",
+        "convert_non_sealed_artifacts_into_sealed_artifacts",
+        "convert_sealing_eligibility_into_final_sealing"
+      ],
+      "authority_boundary": "Sealing eligibility is not sealing and must remain subject to AAOS-owned final sealing authority."
+    },
+    "aaos_sealed_decision_proof_artifacts": {
+      "artifact_class": "aaos_sealed",
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage"
+      ],
+      "forbidden_consumer_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "change_approval_doctrine",
+        "change_identity_trust",
+        "change_policy_authority",
+        "change_decision_routing",
+        "make_final_governance_judgments",
+        "convert_non_sealed_artifacts_into_sealed_artifacts",
+        "convert_sealing_eligibility_into_final_sealing"
+      ],
+      "authority_boundary": "AAOS-sealed Decision Proof artifacts may be consumed as AAOS-sealed artifacts and must not be re-sealed, superseded, or converted into external final judgment."
+    },
+    "sealing_rejected_artifacts": {
+      "artifact_class": "non_sealed",
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage",
+        "surface_review_requirement",
+        "surface_escalation_requirement"
+      ],
+      "forbidden_consumer_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "change_approval_doctrine",
+        "change_identity_trust",
+        "change_policy_authority",
+        "change_decision_routing",
+        "make_final_governance_judgments",
+        "convert_non_sealed_artifacts_into_sealed_artifacts",
+        "convert_sealing_eligibility_into_final_sealing"
+      ],
+      "authority_boundary": "Sealing-rejected artifacts may be reported as AAOS-owned rejection state and must not be overridden by an external consumer."
+    },
+    "sealing_deferred_artifacts": {
+      "artifact_class": "non_sealed",
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage",
+        "surface_review_requirement",
+        "surface_escalation_requirement"
+      ],
+      "forbidden_consumer_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "change_approval_doctrine",
+        "change_identity_trust",
+        "change_policy_authority",
+        "change_decision_routing",
+        "make_final_governance_judgments",
+        "convert_non_sealed_artifacts_into_sealed_artifacts",
+        "convert_sealing_eligibility_into_final_sealing"
+      ],
+      "authority_boundary": "Sealing-deferred artifacts require AAOS review and must not be converted into approval or sealing."
+    },
+    "sealing_blocked_artifacts": {
+      "artifact_class": "non_sealed",
+      "allowed_consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage",
+        "surface_review_requirement",
+        "surface_escalation_requirement",
+        "surface_fail_closed_recommendation"
+      ],
+      "forbidden_consumer_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "change_approval_doctrine",
+        "change_identity_trust",
+        "change_policy_authority",
+        "change_decision_routing",
+        "make_final_governance_judgments",
+        "convert_non_sealed_artifacts_into_sealed_artifacts",
+        "convert_sealing_eligibility_into_final_sealing"
+      ],
+      "authority_boundary": "Sealing-blocked artifacts may surface escalation or fail-closed recommendation, but consumers must not execute fail-closed or rollback."
+    }
+  },
+  "sealed_artifact_consumption_statement": "Sealed artifacts may be consumed as AAOS-sealed artifacts.",
+  "non_sealed_artifact_consumption_statement": "Non-sealed artifacts may be consumed only according to their status and must not be converted into sealed artifacts.",
+  "sealing_eligibility_statement": "Sealing eligibility is not sealing.",
+  "fail_closed_recommendation_boundary": "fail_closed_recommended may be surfaced as a recommendation only and must not become fail_closed_executed.",
+  "external_consumption_authority_statement": "External consumption is not authority transfer.",
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "allowed_consumer_outputs": [
+    "consumer_consumption_matrix_valid",
+    "consumer_consumption_matrix_invalid",
+    "artifact_status_coverage_complete",
+    "artifact_status_coverage_incomplete",
+    "allowed_consumption_actions_present",
+    "forbidden_authority_actions_present",
+    "authority_boundary_preserved",
+    "authority_boundary_violation",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_consumer_outputs": [
+    "decision_proof_sealed",
+    "sealed_by_external_consumer",
+    "release_approved",
+    "risk_accepted",
+    "rollback_executed",
+    "fail_closed_executed",
+    "audit_closed",
+    "final_governance_judgment",
+    "v0_10_0_released",
+    "m11_complete",
+    "closes_120"
+  ],
+  "not_authority_statement": "External evidence consumers must not seal Decision Proof, approve releases, accept risk, execute rollback, execute fail-closed, close audits, grant waivers, change approval doctrine, change identity trust, change policy authority, change decision routing, or make final governance judgments.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
