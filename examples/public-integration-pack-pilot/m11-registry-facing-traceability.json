@@ -1,0 +1,54 @@
+{
+  "registry_traceability_id": "m11-public-integration-pack-pilot-registry-traceability",
+  "registry_traceability_name": "M11 Public Integration Pack Pilot Registry-Facing Traceability",
+  "milestone": "M11",
+  "status": "active_work_in_progress_not_released",
+  "descriptive_evidence_linkage_only": true,
+  "pilot_identity": {
+    "pack_id": "m11-public-integration-pack-pilot",
+    "pack_ref": "examples/public-integration-pack-pilot/pilot-package.json",
+    "tracker_issue": "#120",
+    "first_pilot_pr": "#121",
+    "readme_wip_sync_pr": "#131"
+  },
+  "evidence_interface_role": "The public integration pack pilot shapes, references, replays, checks, and links evidence for AAOS review without becoming governance authority.",
+  "external_evidence_consumer_role": "The external evidence consumer specimen reads, references, replays, inspects, or reports on AAOS artifacts according to status without becoming AAOS authority.",
+  "release_proof_linkage": "examples/public-integration-pack-pilot/m11-pilot-release-proof-linkage.json#release_proof_linkage",
+  "replay_evaluator_linkage": {
+    "runtime_replay_example": "examples/decision-proof-runtime-replay/release-governance-replay.json",
+    "public_integration_pack_evaluator": "runtime/public_integration_pack_evaluator.py",
+    "evaluator_tests": "tests/test_public_integration_pack_evaluator.py"
+  },
+  "artifact_consumption_semantics_linkage": "examples/public-integration-pack-pilot/external-evidence-consumer-specimen.json#artifact_consumption_semantics",
+  "readme_current_work_status": "README.md#current-work",
+  "governance_boundary_statement": "Registry-facing traceability is descriptive and evidence-linking only. It may link evidence, replay, evaluator, artifact consumption, and release proof references, but it must not approve releases, accept risk, execute rollback, seal Decision Proof, close audits, or make final governance judgments.",
+  "aaos_owned_final_authority_statement": "Decision Proof sealing remains AAOS-owned. AAOS remains the decision sovereignty layer.",
+  "registry_not_authority_statement": "The registry-facing traceability specimen must not become governance authority, approval authority, release authority, rollback authority, Decision Proof sealing authority, audit closure authority, or final governance authority.",
+  "allowed_registry_traceability_outputs": [
+    "m11_pilot_traceability_valid",
+    "m11_pilot_traceability_invalid",
+    "release_proof_linkage_present",
+    "release_proof_linkage_missing",
+    "registry_traceability_present",
+    "registry_traceability_missing",
+    "authority_boundary_preserved",
+    "authority_boundary_violation",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_registry_traceability_outputs": [
+    "release_approved",
+    "v0_10_0_released",
+    "m11_complete",
+    "decision_proof_sealed",
+    "sealed_by_registry",
+    "sealed_by_integration_pack",
+    "sealed_by_external_consumer",
+    "risk_accepted",
+    "rollback_executed",
+    "audit_closed",
+    "final_governance_judgment"
+  ],
+  "v0_10_0_future_completion_release_reservation": "v0.10.0 is reserved for a future M11 completion release and must not be treated as released."
+}
