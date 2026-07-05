@@ -12,7 +12,9 @@ from runtime.public_integration_pack_evaluator import (  # noqa: E402
     detect_forbidden_authority_claims,
     evaluate_artifact_consumption_semantics,
     evaluate_external_evidence_consumer,
+    evaluate_m11_pilot_traceability,
     evaluate_public_integration_pack,
+    evaluate_registry_facing_traceability,
 )
 
 
@@ -25,6 +27,18 @@ CONSUMER_EXAMPLE_PATH = (
     / "public-integration-pack-pilot"
     / "external-evidence-consumer-specimen.json"
 )
+TRACEABILITY_EXAMPLE_PATH = (
+    ROOT
+    / "examples"
+    / "public-integration-pack-pilot"
+    / "m11-pilot-release-proof-linkage.json"
+)
+REGISTRY_TRACEABILITY_EXAMPLE_PATH = (
+    ROOT
+    / "examples"
+    / "public-integration-pack-pilot"
+    / "m11-registry-facing-traceability.json"
+)
 
 
 def load_json(path):
@@ -36,6 +50,8 @@ class PublicIntegrationPackEvaluatorTests(unittest.TestCase):
     def setUp(self):
         self.pack = load_json(PACK_EXAMPLE_PATH)
         self.consumer = load_json(CONSUMER_EXAMPLE_PATH)
+        self.traceability = load_json(TRACEABILITY_EXAMPLE_PATH)
+        self.registry_traceability = load_json(REGISTRY_TRACEABILITY_EXAMPLE_PATH)
 
     def test_examples_pass_evaluator(self):
         pack_result = evaluate_public_integration_pack(self.pack)
@@ -50,6 +66,23 @@ class PublicIntegrationPackEvaluatorTests(unittest.TestCase):
         self.assertTrue(pack_result["authority_boundary_preserved"])
         self.assertEqual(pack_result["integration_findings"], [])
         self.assertEqual(consumer_result["integration_findings"], [])
+
+    def test_m11_traceability_examples_pass_evaluator(self):
+        traceability_result = evaluate_m11_pilot_traceability(self.traceability)
+        registry_result = evaluate_registry_facing_traceability(
+            self.registry_traceability
+        )
+
+        self.assertTrue(traceability_result["m11_pilot_traceability_valid"])
+        self.assertTrue(traceability_result["release_proof_linkage_present"])
+        self.assertTrue(traceability_result["registry_traceability_present"])
+        self.assertTrue(traceability_result["authority_boundary_preserved"])
+        self.assertEqual(traceability_result["traceability_findings"], [])
+        self.assertTrue(registry_result["m11_pilot_traceability_valid"])
+        self.assertTrue(registry_result["release_proof_linkage_present"])
+        self.assertTrue(registry_result["registry_traceability_present"])
+        self.assertTrue(registry_result["authority_boundary_preserved"])
+        self.assertEqual(registry_result["traceability_findings"], [])
 
     def test_public_pack_detects_missing_required_references(self):
         record = copy.deepcopy(self.pack)
@@ -94,6 +127,59 @@ class PublicIntegrationPackEvaluatorTests(unittest.TestCase):
             result["integration_findings"],
         )
 
+    def test_m11_traceability_detects_missing_release_links(self):
+        record = copy.deepcopy(self.traceability)
+        record["first_m11_pilot_pr"] = ""
+        record["m11_readme_wip_sync_pr"] = ""
+        record["release_proof_linkage"]["present"] = False
+        record["registry_facing_traceability"] = ""
+
+        result = evaluate_m11_pilot_traceability(record)
+
+        self.assertTrue(result["m11_pilot_traceability_invalid"])
+        self.assertTrue(result["release_proof_linkage_missing"])
+        self.assertTrue(result["registry_traceability_missing"])
+        self.assertIn("missing_first_m11_pilot_pr_121", result["traceability_findings"])
+        self.assertIn(
+            "missing_m11_readme_wip_sync_pr_131",
+            result["traceability_findings"],
+        )
+
+    def test_m11_traceability_detects_tracker_closure_language(self):
+        record = copy.deepcopy(self.traceability)
+        record["tracker_issue_linkage"] = "Closes #120"
+
+        result = evaluate_m11_pilot_traceability(record)
+
+        self.assertTrue(result["m11_pilot_traceability_invalid"])
+        self.assertIn(
+            "tracker_issue_120_closure_claim_detected",
+            result["traceability_findings"],
+        )
+
+    def test_m11_traceability_detects_v010_release_claim(self):
+        record = copy.deepcopy(self.traceability)
+        record["v0_10_0_future_completion_release_reservation"] = "v0.10.0 is released."
+
+        result = evaluate_m11_pilot_traceability(record)
+
+        self.assertTrue(result["m11_pilot_traceability_invalid"])
+        self.assertTrue(result["authority_boundary_violation"])
+        self.assertIn(
+            "v0_10_0_release_claim_detected",
+            result["traceability_findings"],
+        )
+
+    def test_registry_traceability_detects_authority_claims(self):
+        record = copy.deepcopy(self.registry_traceability)
+        record["claimed_registry_output"] = "sealed_by_registry"
+
+        result = evaluate_registry_facing_traceability(record)
+
+        self.assertTrue(result["authority_boundary_violation"])
+        self.assertTrue(result["escalation_required"])
+        self.assertTrue(result["fail_closed_recommended"])
+
     def test_forbidden_authority_claims_are_detected(self):
         record = copy.deepcopy(self.pack)
         record["claimed_output"] = "decision_proof_sealed"
@@ -105,7 +191,7 @@ class PublicIntegrationPackEvaluatorTests(unittest.TestCase):
         self.assertTrue(result["fail_closed_recommended"])
 
     def test_forbidden_output_lists_are_safe_negative_context(self):
-        claims = detect_forbidden_authority_claims(self.pack)
+        claims = detect_forbidden_authority_claims(self.traceability)
 
         self.assertEqual(claims, set())
 
