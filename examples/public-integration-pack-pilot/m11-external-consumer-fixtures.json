@@ -1,0 +1,130 @@
+{
+  "fixture_set_id": "m11-external-consumer-consumption-fixtures",
+  "fixture_set_name": "M11 External Consumer Consumption Fixtures",
+  "milestone": "M11",
+  "status": "active_work_in_progress_not_released",
+  "m11_tracker_issue": "#120",
+  "tracker_issue_linkage": "Refs #120",
+  "tracker_issue_closure_state": "open_not_closed",
+  "related_prs": [
+    "#121",
+    "#131",
+    "#134"
+  ],
+  "v0_10_0_release_state": "reserved_future_completion_not_released",
+  "compliant_fixtures": [
+    {
+      "fixture_id": "compliant_replay_ready_reader",
+      "fixture_type": "positive",
+      "artifact_status": "replay_ready_packets",
+      "consumer_actions": [
+        "read",
+        "reference",
+        "replay",
+        "inspect",
+        "report",
+        "preserve_linkage"
+      ],
+      "consumer_outputs": [
+        "review_required"
+      ],
+      "final_governance_judgment": false,
+      "authority_boundary": "The consumer reads replay-ready evidence without sealing Decision Proof or making final judgment."
+    },
+    {
+      "fixture_id": "compliant_aaos_sealed_reader",
+      "fixture_type": "positive",
+      "artifact_status": "aaos_sealed_decision_proof_artifacts",
+      "consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage"
+      ],
+      "consumes_as": "aaos_sealed_artifact",
+      "reseals_artifact": false,
+      "final_governance_judgment": false,
+      "authority_boundary": "The consumer reads AAOS-sealed artifacts as AAOS outputs and does not re-seal, supersede, or override them."
+    },
+    {
+      "fixture_id": "compliant_review_required_surface",
+      "fixture_type": "positive",
+      "artifact_status": "evaluator_findings",
+      "consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage",
+        "surface_review_requirement"
+      ],
+      "consumer_outputs": [
+        "review_required"
+      ],
+      "final_governance_judgment": false,
+      "authority_boundary": "The consumer surfaces review_required without making a final governance judgment."
+    },
+    {
+      "fixture_id": "compliant_fail_closed_recommendation_surface",
+      "fixture_type": "positive",
+      "artifact_status": "sealing_blocked_artifacts",
+      "consumer_actions": [
+        "read",
+        "reference",
+        "inspect",
+        "report",
+        "preserve_linkage",
+        "surface_fail_closed_recommendation"
+      ],
+      "consumer_outputs": [
+        "fail_closed_recommended"
+      ],
+      "fail_closed_executed": false,
+      "rollback_executed": false,
+      "final_governance_judgment": false,
+      "authority_boundary": "The consumer surfaces fail_closed_recommended without executing fail-closed, rollback, or final judgment."
+    }
+  ],
+  "non_compliant_negative_fixtures": [
+    {
+      "fixture_id": "negative_attempt_external_sealing",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "attempted_forbidden_action": "seal_decision_proof",
+      "attempted_forbidden_output": "sealed_by_external_consumer",
+      "expected_evaluator_output": "authority_boundary_violation",
+      "presentation_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior."
+    },
+    {
+      "fixture_id": "negative_attempt_release_approval",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "attempted_forbidden_action": "approve_releases",
+      "attempted_forbidden_output": "release_approved",
+      "expected_evaluator_output": "authority_boundary_violation",
+      "presentation_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior."
+    },
+    {
+      "fixture_id": "negative_attempt_v0_10_0_released",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "attempted_forbidden_action": "treat_v0_10_0_as_released",
+      "attempted_forbidden_output": "v0_10_0_released",
+      "expected_evaluator_output": "authority_boundary_violation",
+      "presentation_boundary": "Negative fixture for deterministic evaluator tests only; v0.10.0 remains reserved for a future completion release."
+    },
+    {
+      "fixture_id": "negative_attempt_audit_close",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "attempted_forbidden_action": "close_audits",
+      "attempted_forbidden_output": "audit_closed",
+      "expected_evaluator_output": "authority_boundary_violation",
+      "presentation_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior."
+    }
+  ],
+  "not_authority_statement": "Compliant external consumers may read, reference, replay, inspect, report, preserve linkage, and surface review, escalation, or fail-closed recommendations, but they must not become AAOS authority.",
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
