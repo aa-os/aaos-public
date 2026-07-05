@@ -34,6 +34,40 @@ REQUIRED_CONSUMER_FIELDS = {
     "aaos_retained_authority_statement": "missing_aaos_retained_authority_statement",
 }
 
+REQUIRED_TRACEABILITY_FIELDS = {
+    "traceability_id": "missing_traceability_id",
+    "m11_tracker_issue": "missing_m11_tracker_issue_120",
+    "tracker_issue_closure_state": "missing_tracker_issue_120_open_state",
+    "tracker_issue_linkage": "missing_tracker_issue_120_reference",
+    "first_m11_pilot_pr": "missing_first_m11_pilot_pr_121",
+    "m11_readme_wip_sync_pr": "missing_m11_readme_wip_sync_pr_131",
+    "public_integration_pack_pilot_package": "missing_public_integration_pack_pilot_package",
+    "external_evidence_consumer_specimen": "missing_external_evidence_consumer_specimen",
+    "deterministic_public_integration_pack_evaluator": "missing_deterministic_public_integration_pack_evaluator",
+    "evaluator_tests": "missing_evaluator_tests",
+    "readme_current_work_status": "missing_readme_current_work_status",
+    "release_proof_linkage": "missing_release_proof_linkage",
+    "registry_facing_traceability": "missing_registry_traceability",
+    "aaos_retained_authority_statement": "missing_aaos_retained_authority_statement",
+    "decision_proof_sealing_boundary_preservation": "missing_decision_proof_sealing_boundary_preservation",
+    "v0_10_0_future_completion_release_reservation": "missing_v0_10_0_future_completion_release_reservation",
+    "not_authority_statement": "missing_not_authority_statement",
+    "sovereignty_statement": "missing_sovereignty_statement",
+}
+
+REQUIRED_REGISTRY_TRACEABILITY_FIELDS = {
+    "registry_traceability_id": "missing_registry_traceability_id",
+    "pilot_identity": "missing_public_integration_pack_pilot_identity",
+    "evidence_interface_role": "missing_evidence_interface_role",
+    "external_evidence_consumer_role": "missing_external_evidence_consumer_role",
+    "release_proof_linkage": "missing_release_proof_linkage",
+    "replay_evaluator_linkage": "missing_replay_evaluator_linkage",
+    "artifact_consumption_semantics_linkage": "missing_artifact_consumption_semantics_linkage",
+    "governance_boundary_statement": "missing_governance_boundary_statement",
+    "aaos_owned_final_authority_statement": "missing_aaos_owned_final_authority_statement",
+    "registry_not_authority_statement": "missing_registry_not_authority_statement",
+}
+
 REQUIRED_CONSUMPTION_STATUSES = {
     "unsealed_evidence",
     "replay_ready_packets",
@@ -48,9 +82,12 @@ REQUIRED_CONSUMPTION_STATUSES = {
 
 FORBIDDEN_AUTHORITY_OUTPUTS = {
     "decision_proof_sealed",
+    "sealed_by_registry",
     "sealed_by_integration_pack",
     "sealed_by_external_consumer",
     "release_approved",
+    "v0_10_0_released",
+    "m11_complete",
     "risk_accepted",
     "rollback_executed",
     "audit_closed",
@@ -60,30 +97,54 @@ FORBIDDEN_AUTHORITY_OUTPUTS = {
 FORBIDDEN_AUTHORITY_PHRASES = {
     "integration pack seals decision proof",
     "external consumer seals decision proof",
+    "registry seals decision proof",
     "integration pack approves release",
     "external consumer approves release",
+    "registry approves release",
     "integration pack accepts risk",
     "external consumer accepts risk",
+    "registry accepts risk",
     "integration pack executes rollback",
     "external consumer executes rollback",
+    "registry executes rollback",
     "integration pack closes audit",
     "external consumer closes audit",
+    "registry closes audit",
     "integration pack makes final governance judgment",
     "external consumer makes final governance judgment",
+    "registry makes final governance judgment",
+    "v0.10.0 is released",
+    "m11 is complete",
 }
 
 SAFE_NEGATIVE_CONTEXT_KEYS = {
     "forbidden_pack_outputs",
     "forbidden_consumer_outputs",
+    "forbidden_traceability_outputs",
+    "forbidden_registry_traceability_outputs",
     "forbidden_outputs",
     "forbidden_authority_outputs",
     "forbidden_authority_phrases",
     "not_authority_statement",
     "governance_boundary_language",
+    "governance_boundary_statement",
+    "registry_not_authority_statement",
     "authority_boundary",
     "authority_boundary_statement",
     "aaos_retained_authority_statement",
+    "aaos_owned_final_authority_statement",
     "sealing_boundary_statement",
+    "decision_proof_sealing_boundary_preservation",
+}
+
+TRACKER_120_CLOSURE_PHRASES = {
+    "closes #120",
+    "close #120",
+    "closed #120",
+    "fixes #120",
+    "fixed #120",
+    "resolves #120",
+    "resolved #120",
 }
 
 
@@ -108,6 +169,25 @@ def _has_value(record: dict[str, Any], field: str) -> bool:
 
 def _text(value: Any) -> str:
     return str(value).strip().lower()
+
+
+def _iter_claim_text(value: Any, parent_key: str | None = None) -> list[str]:
+    if isinstance(value, dict):
+        text: list[str] = []
+        for key, item in value.items():
+            text.extend(_iter_claim_text(item, str(key)))
+        return text
+
+    if isinstance(value, list):
+        text = []
+        for item in value:
+            text.extend(_iter_claim_text(item, parent_key))
+        return text
+
+    if parent_key in SAFE_NEGATIVE_CONTEXT_KEYS:
+        return []
+
+    return [_text(value)]
 
 
 def detect_forbidden_authority_claims(
@@ -241,6 +321,132 @@ def evaluate_artifact_consumption_semantics(record: dict[str, Any]) -> dict[str,
     )
 
 
+def evaluate_m11_pilot_traceability(record: dict[str, Any]) -> dict[str, Any]:
+    findings: list[str] = []
+    missing_evidence: list[str] = []
+
+    for field, finding in REQUIRED_TRACEABILITY_FIELDS.items():
+        if not _has_value(record, field):
+            findings.append(finding)
+            missing_evidence.append(field)
+
+    if record.get("m11_tracker_issue") != "#120":
+        findings.append("missing_m11_tracker_issue_120")
+        missing_evidence.append("m11_tracker_issue")
+    if record.get("first_m11_pilot_pr") != "#121":
+        findings.append("missing_first_m11_pilot_pr_121")
+        missing_evidence.append("first_m11_pilot_pr")
+    if record.get("m11_readme_wip_sync_pr") != "#131":
+        findings.append("missing_m11_readme_wip_sync_pr_131")
+        missing_evidence.append("m11_readme_wip_sync_pr")
+
+    tracker_state = _text(record.get("tracker_issue_closure_state"))
+    if "open" not in tracker_state or tracker_state == "closed":
+        findings.append("tracker_issue_120_not_marked_open")
+        missing_evidence.append("tracker_issue_closure_state")
+    if _has_tracker_120_closure_claim(record):
+        findings.append("tracker_issue_120_closure_claim_detected")
+
+    release_linkage = _as_dict(record.get("release_proof_linkage"))
+    release_present = (
+        bool(release_linkage)
+        and release_linkage.get("present") is True
+        and release_linkage.get("evidence_linkage_only") is True
+    )
+    if not release_present:
+        findings.append("release_proof_linkage_missing")
+        missing_evidence.append("release_proof_linkage")
+
+    registry_present = _has_value(record, "registry_facing_traceability")
+    if not registry_present:
+        findings.append("registry_traceability_missing")
+        missing_evidence.append("registry_facing_traceability")
+
+    reservation = _text(record.get("v0_10_0_future_completion_release_reservation"))
+    if "reserved" not in reservation or "not be treated as released" not in reservation:
+        findings.append("v0_10_0_future_completion_release_reservation_missing")
+        missing_evidence.append("v0_10_0_future_completion_release_reservation")
+
+    boundary_language = " ".join(
+        [
+            str(record.get("decision_proof_sealing_boundary_preservation", "")),
+            str(record.get("not_authority_statement", "")),
+            str(record.get("aaos_retained_authority_statement", "")),
+            str(record.get("sovereignty_statement", "")),
+        ]
+    ).lower()
+    for required_phrase in [
+        "decision proof sealing remains aaos-owned",
+        "must not seal decision proof",
+        "aaos remains the decision sovereignty layer",
+    ]:
+        if required_phrase not in boundary_language:
+            findings.append("missing_authority_boundary_statement")
+            missing_evidence.append("authority_boundary_statement")
+            break
+
+    claims = detect_forbidden_authority_claims(record)
+    authority_boundary_violation = bool(claims)
+    if "v0.10.0 is released" in reservation or reservation == "v0_10_0_released":
+        findings.append("v0_10_0_release_claim_detected")
+        authority_boundary_violation = True
+
+    return _traceability_result(
+        findings=findings,
+        missing_evidence=missing_evidence,
+        authority_boundary_violation=authority_boundary_violation,
+        release_proof_linkage_present=release_present,
+        registry_traceability_present=registry_present,
+    )
+
+
+def evaluate_registry_facing_traceability(record: dict[str, Any]) -> dict[str, Any]:
+    findings: list[str] = []
+    missing_evidence: list[str] = []
+
+    for field, finding in REQUIRED_REGISTRY_TRACEABILITY_FIELDS.items():
+        if not _has_value(record, field):
+            findings.append(finding)
+            missing_evidence.append(field)
+
+    release_present = _has_value(record, "release_proof_linkage")
+    registry_present = _has_value(record, "registry_traceability_id")
+
+    boundary_language = " ".join(
+        [
+            str(record.get("governance_boundary_statement", "")),
+            str(record.get("aaos_owned_final_authority_statement", "")),
+            str(record.get("registry_not_authority_statement", "")),
+        ]
+    ).lower()
+    for required_phrase in [
+        "descriptive",
+        "decision proof sealing remains aaos-owned",
+        "aaos remains the decision sovereignty layer",
+        "must not become governance authority",
+    ]:
+        if required_phrase not in boundary_language:
+            findings.append("missing_registry_governance_boundary_statement")
+            missing_evidence.append("governance_boundary_statement")
+            break
+
+    claims = detect_forbidden_authority_claims(record)
+    return _traceability_result(
+        findings=findings,
+        missing_evidence=missing_evidence,
+        authority_boundary_violation=bool(claims),
+        release_proof_linkage_present=release_present,
+        registry_traceability_present=registry_present,
+    )
+
+
+def _has_tracker_120_closure_claim(record: dict[str, Any]) -> bool:
+    for item in _iter_claim_text(record):
+        if any(phrase in item for phrase in TRACKER_120_CLOSURE_PHRASES):
+            return True
+    return False
+
+
 def _result(
     mode: str,
     findings: list[str],
@@ -263,6 +469,34 @@ def _result(
         "authority_boundary_preserved": not authority_boundary_violation,
         "authority_boundary_violation": authority_boundary_violation,
         "integration_findings": unique_findings,
+        "missing_evidence": unique_missing,
+        "review_required": failed,
+        "escalation_required": authority_boundary_violation,
+        "fail_closed_recommended": authority_boundary_violation,
+    }
+
+
+def _traceability_result(
+    findings: list[str],
+    missing_evidence: list[str],
+    authority_boundary_violation: bool,
+    release_proof_linkage_present: bool,
+    registry_traceability_present: bool,
+) -> dict[str, Any]:
+    unique_findings = sorted(set(findings))
+    unique_missing = sorted(set(missing_evidence))
+    failed = bool(unique_findings or unique_missing or authority_boundary_violation)
+
+    return {
+        "m11_pilot_traceability_valid": not failed,
+        "m11_pilot_traceability_invalid": failed,
+        "release_proof_linkage_present": release_proof_linkage_present and "release_proof_linkage_missing" not in unique_findings,
+        "release_proof_linkage_missing": not release_proof_linkage_present or "release_proof_linkage_missing" in unique_findings,
+        "registry_traceability_present": registry_traceability_present and "registry_traceability_missing" not in unique_findings,
+        "registry_traceability_missing": not registry_traceability_present or "registry_traceability_missing" in unique_findings,
+        "authority_boundary_preserved": not authority_boundary_violation,
+        "authority_boundary_violation": authority_boundary_violation,
+        "traceability_findings": unique_findings,
         "missing_evidence": unique_missing,
         "review_required": failed,
         "escalation_required": authority_boundary_violation,
