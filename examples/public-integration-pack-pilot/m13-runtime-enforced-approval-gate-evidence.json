@@ -1,0 +1,247 @@
+{
+  "artifact_id": "m13-runtime-enforced-approval-gate-evidence",
+  "artifact_name": "M13 Runtime-Enforced Approval Gate Evidence Pattern",
+  "artifact_scope": "post_release_operational_hardening_for_decision_proof_approval_gates",
+  "milestone": "M13",
+  "artifact_status": "active_operational_hardening",
+  "related_issue": "#176",
+  "runtime_approval_gate_issue": "#171",
+  "introduced_after_release": "v0.11.0",
+  "target_future_release": "v0.12.0",
+  "m11_status_boundary": "M11 remains complete and is not reopened by M13 operational hardening.",
+  "m12_status_boundary": "M12 remains complete and is not reopened by M13 operational hardening.",
+  "purpose": "Define evidence that proves whether runtime approval gates observed, advised, or enforced approval before a governed tool call executed.",
+  "approval_gate_modes": [
+    {
+      "mode": "observed",
+      "mode_state": "observation_only",
+      "description": "The runtime records approval-related state or events without blocking execution.",
+      "satisfies_enforced_approval": false,
+      "boundary": "Observed approval evidence is valid as observation only and must not satisfy enforced approval requirements."
+    },
+    {
+      "mode": "advisory",
+      "mode_state": "recommendation_only",
+      "description": "The runtime recommends approval handling or review but does not block execution.",
+      "satisfies_enforced_approval": false,
+      "boundary": "Advisory approval evidence must not satisfy enforced approval requirements."
+    },
+    {
+      "mode": "enforced",
+      "mode_state": "runtime_block_before_execution",
+      "description": "The runtime blocks the requested tool call, binds approval to that blocked call, releases the call after approval, and records execution after release.",
+      "satisfies_enforced_approval": true,
+      "boundary": "Enforced approval evidence is satisfied only when gate, approval, release, and execution ordering and binding evidence are complete."
+    }
+  ],
+  "required_enforced_gate_trace_fields": [
+    "blocked_tool_call_id",
+    "gate_event_id",
+    "gate_mode",
+    "gate_state",
+    "approval_event_id",
+    "approval_actor",
+    "approval_timestamp",
+    "tool_call_requested_at",
+    "tool_call_released_at",
+    "tool_call_executed_at"
+  ],
+  "verification_rules": [
+    {
+      "rule_id": "enforced_gate_event_before_execution",
+      "description": "Enforced approval must include a gate or block event before tool execution.",
+      "applies_to_gate_mode": "enforced",
+      "fail_closed_on_missing": true
+    },
+    {
+      "rule_id": "approval_before_release_and_execution",
+      "description": "Approval must occur before tool-call release and execution.",
+      "applies_to_gate_mode": "enforced",
+      "fail_closed_on_missing": true
+    },
+    {
+      "rule_id": "approval_bound_to_blocked_tool_call",
+      "description": "The approval event must be bound to the blocked tool call.",
+      "applies_to_gate_mode": "enforced",
+      "fail_closed_on_missing": true
+    },
+    {
+      "rule_id": "advisory_does_not_satisfy_enforced_approval",
+      "description": "Advisory approval evidence must not satisfy enforced approval requirements.",
+      "applies_to_gate_mode": "advisory",
+      "fail_closed_on_missing": false
+    },
+    {
+      "rule_id": "post_facto_approval_fails_enforced_verification",
+      "description": "Approval recorded after release or execution fails enforced-gate verification.",
+      "applies_to_gate_mode": "enforced",
+      "fail_closed_on_missing": true
+    },
+    {
+      "rule_id": "missing_ordering_or_binding_evidence_fails_closed",
+      "description": "Missing ordering or binding evidence should fail closed for enforced approval verification.",
+      "applies_to_gate_mode": "enforced",
+      "fail_closed_on_missing": true
+    }
+  ],
+  "regression_fixtures": [
+    {
+      "fixture_id": "valid_halt_approval_release_execution_trace",
+      "fixture_type": "positive_enforced_trace",
+      "negative_fixture": false,
+      "description": "Valid halt -> approval -> release -> execution trace.",
+      "trace": {
+        "blocked_tool_call_id": "tool-call-001",
+        "gate_event_id": "gate-event-001",
+        "gate_mode": "enforced",
+        "gate_state": "blocked",
+        "approval_event_id": "approval-event-001",
+        "approval_actor": "human:release-owner",
+        "approval_timestamp": "2026-07-07T09:30:00Z",
+        "tool_call_requested_at": "2026-07-07T09:29:00Z",
+        "tool_call_released_at": "2026-07-07T09:31:00Z",
+        "tool_call_executed_at": "2026-07-07T09:31:05Z",
+        "gate_event": {
+          "event_id": "gate-event-001",
+          "blocked_tool_call_id": "tool-call-001",
+          "occurred_at": "2026-07-07T09:29:05Z",
+          "state": "blocked"
+        },
+        "approval_binding": {
+          "approval_event_id": "approval-event-001",
+          "blocked_tool_call_id": "tool-call-001"
+        },
+        "release_event": {
+          "released_blocked_tool_call_id": "tool-call-001",
+          "released_after_approval_event_id": "approval-event-001",
+          "occurred_at": "2026-07-07T09:31:00Z"
+        }
+      },
+      "expected_evaluator_outputs": [
+        "enforced_gate_trace_valid",
+        "authority_boundary_preserved"
+      ]
+    },
+    {
+      "fixture_id": "observed_only_trace",
+      "fixture_type": "positive_observed_trace",
+      "negative_fixture": false,
+      "description": "Observed-only trace is valid as observation and not enforcement.",
+      "trace": {
+        "blocked_tool_call_id": "tool-call-002",
+        "gate_event_id": "gate-event-002",
+        "gate_mode": "observed",
+        "gate_state": "observed",
+        "tool_call_requested_at": "2026-07-07T10:00:00Z",
+        "tool_call_executed_at": "2026-07-07T10:00:05Z",
+        "satisfies_enforced_approval": false,
+        "observation_boundary": "Observed-only traces may support audit review but do not satisfy enforced approval."
+      },
+      "expected_evaluator_outputs": [
+        "observed_trace_valid",
+        "enforced_gate_trace_invalid"
+      ]
+    },
+    {
+      "fixture_id": "post_facto_advisory_approval",
+      "fixture_type": "negative_enforced_gate_fixture",
+      "negative_fixture": true,
+      "description": "Post-facto advisory approval must fail enforced-gate verification.",
+      "trace": {
+        "blocked_tool_call_id": "tool-call-003",
+        "gate_event_id": "gate-event-003",
+        "gate_mode": "advisory",
+        "gate_state": "advisory_only",
+        "approval_event_id": "approval-event-003",
+        "approval_actor": "human:reviewer",
+        "approval_timestamp": "2026-07-07T11:05:00Z",
+        "tool_call_requested_at": "2026-07-07T11:00:00Z",
+        "tool_call_released_at": "2026-07-07T11:00:01Z",
+        "tool_call_executed_at": "2026-07-07T11:00:05Z",
+        "satisfies_enforced_approval": false
+      },
+      "negative_fixture_boundary": "This is a deterministic negative fixture and not allowed behavior.",
+      "expected_evaluator_outputs": [
+        "enforced_gate_trace_invalid",
+        "fail_closed_recommended"
+      ]
+    },
+    {
+      "fixture_id": "approval_state_only_trace",
+      "fixture_type": "negative_enforced_gate_fixture",
+      "negative_fixture": true,
+      "description": "Approval-state-only trace must fail enforced-gate verification because it lacks gate, ordering, and binding evidence.",
+      "trace": {
+        "gate_mode": "enforced",
+        "approval_state": "approved"
+      },
+      "negative_fixture_boundary": "This is a deterministic negative fixture and not allowed behavior.",
+      "expected_evaluator_outputs": [
+        "enforced_gate_trace_invalid",
+        "fail_closed_recommended"
+      ]
+    }
+  ],
+  "allowed_evaluator_outputs": [
+    "runtime_approval_gate_evidence_valid",
+    "runtime_approval_gate_evidence_invalid",
+    "approval_gate_modes_present",
+    "required_enforced_gate_trace_fields_present",
+    "regression_fixture_coverage_complete",
+    "enforced_gate_trace_valid",
+    "enforced_gate_trace_invalid",
+    "observed_trace_valid",
+    "advisory_trace_valid",
+    "authority_boundary_preserved",
+    "authority_boundary_violation",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_evaluator_outputs": [
+    "execution_approved",
+    "release_approved",
+    "risk_accepted",
+    "decision_proof_sealed",
+    "rollback_executed",
+    "fail_closed_executed",
+    "audit_closed",
+    "final_governance_judgment"
+  ],
+  "authority_boundary": {
+    "may": [
+      "produce_evidence",
+      "consume_evidence",
+      "reference_evidence",
+      "inspect_evidence",
+      "replay_evidence",
+      "report_findings",
+      "check_evidence",
+      "link_evidence",
+      "prove_gate_observation",
+      "prove_gate_advice",
+      "prove_gate_enforcement",
+      "surface_review_required",
+      "surface_escalation_required",
+      "surface_fail_closed_recommended"
+    ],
+    "must_not": [
+      "approve_execution",
+      "accept_risk",
+      "seal_decision_proof",
+      "execute_rollback",
+      "execute_fail_closed",
+      "close_audits",
+      "grant_waivers",
+      "change_approval_doctrine",
+      "change_identity_trust",
+      "change_policy_authority",
+      "change_decision_routing",
+      "make_final_governance_judgments"
+    ]
+  },
+  "governance_boundary_statement": "Runtime approval evidence may prove whether a gate observed, advised, or enforced approval. It must not itself approve execution, accept risk, seal Decision Proof, execute rollback, execute fail-closed, close audits, or make final governance judgments.",
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "aaos_retained_authority_statement": "AAOS retains approval doctrine, identity trust chain, policy authority, decision routing, escalation semantics, fail-closed policy, rollback policy, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
