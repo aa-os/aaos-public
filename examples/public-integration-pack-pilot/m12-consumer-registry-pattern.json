@@ -1,0 +1,186 @@
+{
+  "registry_id": "m12-public-integration-pack-consumer-registry-pattern",
+  "registry_name": "M12 Public Integration Pack Consumer Registry Pattern",
+  "registry_scope": "external_evidence_consumer_registry_pattern",
+  "milestone": "M12",
+  "registry_status": "active_work_in_progress_not_released",
+  "m12_completion_status": "not_declared_complete",
+  "related_issue": "#168",
+  "tracker_issue_closure_state": "open_not_closed",
+  "tracker_issue_linkage": "Refs #168",
+  "introduced_after_release": "v0.10.0",
+  "target_future_release": "v0.11.0",
+  "release_status_path": {
+    "state": "future_target_release_only",
+    "v0_11_0_target_release_state": "v0.11.0 is a future target release and must not be treated as released.",
+    "m12_completion_boundary": "M12 is active work and must not be declared complete by this registry pattern."
+  },
+  "consumer_entries": [
+    {
+      "entry_id": "compliant_external_evidence_dashboard_consumer",
+      "entry_type": "compliant",
+      "allowed_behavior": true,
+      "consumer_identity": {
+        "consumer_id": "external-evidence-dashboard-consumer",
+        "consumer_name": "External Evidence Dashboard Consumer",
+        "consumer_owner": "external_system",
+        "identity_boundary": "External consumer identity is descriptive and does not grant AAOS authority."
+      },
+      "consumer_role": "evidence_consumer",
+      "consumed_artifact_types": [
+        "unsealed_evidence",
+        "replay_ready_packets",
+        "evidence_complete_packets",
+        "evaluator_findings",
+        "sealing_eligible_evidence",
+        "aaos_sealed_decision_proof_artifacts",
+        "sealing_rejected_artifacts",
+        "sealing_deferred_artifacts",
+        "sealing_blocked_artifacts"
+      ],
+      "allowed_consumption_actions": [
+        "read_aaos_artifacts",
+        "reference_aaos_artifacts",
+        "replay_replay_ready_packets",
+        "inspect_evaluator_findings",
+        "report_review_required",
+        "report_escalation_required",
+        "surface_fail_closed_recommended",
+        "preserve_evidence_linkage",
+        "preserve_release_proof_linkage",
+        "preserve_sealed_nonsealed_semantics"
+      ],
+      "forbidden_authority_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "change_approval_doctrine",
+        "change_identity_trust",
+        "change_policy_authority",
+        "change_decision_routing",
+        "make_final_governance_judgments"
+      ],
+      "sealed_artifact_consumption_semantics": "AAOS-sealed artifacts may be consumed as AAOS-sealed artifacts and must not be re-sealed, superseded, or converted into external final judgment.",
+      "non_sealed_artifact_consumption_semantics": "Non-sealed artifacts may be consumed only according to their status and must not be converted into sealed artifacts by external consumers.",
+      "replay_compatibility": {
+        "compatible": true,
+        "replay_packet_refs": [
+          "examples/decision-proof-runtime-replay/release-governance-replay.json",
+          "examples/public-integration-pack-pilot/m11-external-consumer-consumption-matrix.json"
+        ],
+        "boundary": "Replay compatibility supports inspection and must not approve, seal, or close audit."
+      },
+      "evaluator_compatibility": {
+        "compatible": true,
+        "evaluator_refs": [
+          "runtime/public_integration_pack_evaluator.py",
+          "runtime/m11_completion_readiness_evaluator.py",
+          "runtime/m12_consumer_registry_evaluator.py"
+        ],
+        "boundary": "Evaluator compatibility supports deterministic checks and must not make final governance judgments."
+      },
+      "release_proof_linkage": {
+        "present": true,
+        "evidence_linkage_only": true,
+        "release_approval": false,
+        "release_proof_refs": [
+          "examples/public-integration-pack-pilot/m11-pilot-release-proof-linkage.json",
+          "examples/public-integration-pack-pilot/m11-completion-readiness-checklist.json"
+        ]
+      },
+      "registry_entry_provenance": {
+        "introduced_by_issue": "#168",
+        "introduced_after_release": "v0.10.0",
+        "target_future_release": "v0.11.0",
+        "provenance_boundary": "Registry entry provenance is evidence linkage only and is not approval."
+      },
+      "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
+      "governance_boundary_statement": "The compliant consumer may read, reference, replay, inspect, report, surface review or escalation requirements, surface fail_closed_recommended, and preserve evidence and release proof linkage, but it must not seal Decision Proof, approve releases, accept risk, execute rollback, execute fail-closed, close audits, grant waivers, change approval doctrine, change identity trust, change policy authority, change decision routing, or make final governance judgments."
+    }
+  ],
+  "negative_consumer_registry_fixtures": [
+    {
+      "fixture_id": "negative_attempt_external_consumer_authority_transfer",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed registry behavior.",
+      "attempted_forbidden_actions": [
+        "seal_decision_proof",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "make_final_governance_judgments"
+      ],
+      "attempted_forbidden_outputs": [
+        "sealed_by_external_consumer",
+        "release_approved",
+        "risk_accepted",
+        "rollback_executed",
+        "fail_closed_executed",
+        "audit_closed",
+        "final_governance_judgment",
+        "v0_11_0_released",
+        "m12_complete",
+        "closes_168"
+      ],
+      "expected_evaluator_outputs": [
+        "consumer_registry_invalid",
+        "authority_boundary_violation",
+        "review_required",
+        "escalation_required",
+        "fail_closed_recommended"
+      ]
+    }
+  ],
+  "sealed_nonsealed_consumption_semantics": {
+    "sealed_artifacts": "AAOS-sealed artifacts may be consumed as AAOS-sealed artifacts.",
+    "non_sealed_artifacts": "Non-sealed artifacts may be consumed only according to their status.",
+    "sealing_eligibility_boundary": "sealing_eligible is not sealed.",
+    "external_consumption_boundary": "External consumption is not authority transfer.",
+    "non_sealed_conversion_boundary": "Non-sealed artifacts must not be converted into sealed artifacts by external consumers."
+  },
+  "registry_inclusion_boundary": "Registry inclusion is not approval.",
+  "ci_pass_boundary": "CI pass is not approval.",
+  "release_proof_boundary": "Release proof linkage is not release approval.",
+  "fail_closed_boundary": "fail_closed_recommended is not fail_closed_executed.",
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
+  "governance_boundary_statement": "Consumer registries are descriptive and auditable evidence-linking systems. Public integration packs and external evidence consumers may shape, reference, replay, inspect, report, check, or link evidence. They must not become governance authorities, approval authorities, release authorities, rollback authorities, fail-closed execution authorities, Decision Proof sealing authorities, audit closure authorities, or final governance authorities.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer.",
+  "allowed_evaluator_outputs": [
+    "consumer_registry_valid",
+    "consumer_registry_invalid",
+    "required_registry_fields_present",
+    "required_registry_fields_missing",
+    "compliant_consumer_entry_present",
+    "compliant_consumer_entry_missing",
+    "negative_consumer_fixture_present",
+    "negative_consumer_fixture_missing",
+    "authority_boundary_preserved",
+    "authority_boundary_violation",
+    "sealed_nonsealed_semantics_preserved",
+    "release_status_future_only",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_evaluator_outputs": [
+    "decision_proof_sealed",
+    "sealed_by_external_consumer",
+    "release_approved",
+    "risk_accepted",
+    "rollback_executed",
+    "fail_closed_executed",
+    "audit_closed",
+    "final_governance_judgment",
+    "v0_11_0_released",
+    "m12_complete",
+    "closes_168"
+  ]
+}
