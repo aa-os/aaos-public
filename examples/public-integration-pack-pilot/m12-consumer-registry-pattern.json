@@ -118,6 +118,7 @@
         "make_final_governance_judgments"
       ],
       "attempted_forbidden_outputs": [
+        "decision_proof_sealed",
         "sealed_by_external_consumer",
         "release_approved",
         "risk_accepted",
