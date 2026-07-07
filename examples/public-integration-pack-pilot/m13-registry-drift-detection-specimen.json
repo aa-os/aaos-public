@@ -1,0 +1,410 @@
+{
+  "artifact_id": "m13-registry-drift-detection-specimen",
+  "artifact_name": "M13 Registry Drift Detection Specimen",
+  "artifact_scope": "external_consumer_registry_hardening_and_operational_readiness",
+  "milestone": "M13",
+  "artifact_status": "active_work_in_progress_not_released",
+  "m13_completion_status": "active_work_not_complete",
+  "related_issue": "#176",
+  "tracker_issue_closure_state": "open_not_closed",
+  "tracker_issue_linkage": "Refs #176",
+  "runtime_approval_gate_evidence_pr": "#177",
+  "closed_runtime_approval_follow_up": "#171",
+  "closed_runtime_approval_follow_up_state": "closed_by_177",
+  "introduced_after_release": "v0.11.0",
+  "target_future_release": "v0.12.0",
+  "future_release_tag_path": {
+    "target_tag": "v0.12.0",
+    "state": "future_tag_path_only",
+    "released": false,
+    "boundary": "v0.12.0 is a future target release and must not be treated as released."
+  },
+  "release_status_path": {
+    "state": "future_target_release_only",
+    "readme_status_path": "README.md#next-phase",
+    "v0_12_0_target_release_state": "v0.12.0 is a future target release and must not be treated as released.",
+    "m13_completion_boundary": "M13 is active work and must not be declared complete by this drift detection specimen."
+  },
+  "m12_reference_artifacts": {
+    "consumer_registry_pattern": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json",
+    "integration_ci_check_specimen": "examples/public-integration-pack-pilot/m12-integration-ci-check-specimen.json",
+    "cross_consumer_traceability_examples": "examples/public-integration-pack-pilot/m12-cross-consumer-traceability-examples.json",
+    "multi_consumer_sealed_nonsealed_semantics": "examples/public-integration-pack-pilot/m12-multi-consumer-sealed-nonsealed-semantics.json",
+    "release_proof_linkage": "examples/public-integration-pack-pilot/m12-release-proof-linkage.json"
+  },
+  "m13_reference_artifacts": {
+    "runtime_enforced_approval_gate_evidence": "examples/public-integration-pack-pilot/m13-runtime-enforced-approval-gate-evidence.json",
+    "runtime_approval_gate_evaluator": "runtime/m13_runtime_approval_gate_evaluator.py"
+  },
+  "drift_detection_scope_statement": "Registry drift detection is deterministic evidence checking only. It may detect drift, report findings, surface review_required, surface escalation_required, or surface fail_closed_recommended, but it must not approve consumers, approve releases, accept risk, execute rollback, execute fail-closed, seal Decision Proof, close audits, grant waivers, transfer authority, or make final governance judgments.",
+  "drift_types": [
+    {
+      "drift_type_id": "consumer_identity_drift",
+      "description": "Detects changed consumer_id, consumer_name, owner, or identity boundary from the baseline registry entry."
+    },
+    {
+      "drift_type_id": "consumer_role_drift",
+      "description": "Detects changes to the consumer role or evidence-consumption role boundaries."
+    },
+    {
+      "drift_type_id": "consumed_artifact_type_drift",
+      "description": "Detects additions, removals, or changes in consumed artifact types."
+    },
+    {
+      "drift_type_id": "allowed_consumption_action_drift",
+      "description": "Detects changes to allowed read, reference, replay, inspect, report, or linkage actions."
+    },
+    {
+      "drift_type_id": "forbidden_authority_action_drift",
+      "description": "Detects changed or missing forbidden authority actions."
+    },
+    {
+      "drift_type_id": "sealed_artifact_handling_drift",
+      "description": "Detects changed handling for AAOS-sealed artifacts."
+    },
+    {
+      "drift_type_id": "non_sealed_artifact_handling_drift",
+      "description": "Detects changed handling for non-sealed artifacts."
+    },
+    {
+      "drift_type_id": "sealing_eligibility_semantics_drift",
+      "description": "Detects drift in the rule that sealing_eligible is not sealed."
+    },
+    {
+      "drift_type_id": "replay_compatibility_drift",
+      "description": "Detects changes in replay packet compatibility or replay reference linkage."
+    },
+    {
+      "drift_type_id": "evaluator_compatibility_drift",
+      "description": "Detects changes in deterministic evaluator compatibility or evaluator references."
+    },
+    {
+      "drift_type_id": "integration_ci_compatibility_drift",
+      "description": "Detects changes in integration CI check compatibility or check references."
+    },
+    {
+      "drift_type_id": "release_proof_linkage_drift",
+      "description": "Detects changes in release proof linkage references or boundary statements."
+    },
+    {
+      "drift_type_id": "registry_provenance_drift",
+      "description": "Detects changes in registry entry provenance, issue, PR, or release-introduction references."
+    },
+    {
+      "drift_type_id": "registry_version_drift",
+      "description": "Detects registry version changes that lack evidence linkage or review state."
+    },
+    {
+      "drift_type_id": "authority_boundary_drift",
+      "description": "Detects changes to retained AAOS authority or forbidden authority boundaries."
+    },
+    {
+      "drift_type_id": "aaos_retained_authority_statement_drift",
+      "description": "Detects changed or missing AAOS retained authority statements."
+    }
+  ],
+  "allowed_drift_outcomes": [
+    "no_drift_detected",
+    "registry_drift_detected",
+    "consumer_identity_drift_detected",
+    "consumer_role_drift_detected",
+    "artifact_scope_drift_detected",
+    "allowed_action_drift_detected",
+    "forbidden_authority_action_drift_detected",
+    "sealed_nonsealed_semantics_drift_detected",
+    "replay_compatibility_drift_detected",
+    "evaluator_compatibility_drift_detected",
+    "integration_ci_compatibility_drift_detected",
+    "release_proof_linkage_drift_detected",
+    "registry_provenance_drift_detected",
+    "authority_boundary_drift_detected",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_drift_outcomes": [
+    "registry_entry_approved",
+    "consumer_approved",
+    "release_approved",
+    "risk_accepted",
+    "decision_proof_sealed",
+    "sealed_by_registry",
+    "sealed_by_consumer",
+    "sealed_by_ci",
+    "rollback_executed",
+    "fail_closed_executed",
+    "audit_closed",
+    "waiver_granted",
+    "final_governance_judgment",
+    "authority_transferred",
+    "v0_12_0_released",
+    "m13_complete",
+    "closes_176"
+  ],
+  "positive_drift_examples": [
+    {
+      "example_id": "no_drift_detected_external_evidence_dashboard_consumer",
+      "example_type": "positive_no_drift",
+      "description": "Current external evidence dashboard consumer state matches its baseline registry entry.",
+      "baseline_registry_entry_ref": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json#consumer_entries.compliant_external_evidence_dashboard_consumer",
+      "current_registry_entry_ref": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json#consumer_entries.compliant_external_evidence_dashboard_consumer",
+      "baseline_state_hash": "consumer-registry-baseline-v1",
+      "current_state_hash": "consumer-registry-baseline-v1",
+      "detected_drift_types": [],
+      "drift_detected": false,
+      "authority_action_executed": false,
+      "release_status_path": "future_target_release_only",
+      "expected_outputs": [
+        "no_drift_detected",
+        "authority_boundary_preserved",
+        "release_status_future_only"
+      ]
+    },
+    {
+      "example_id": "drift_detected_authority_preserved_audit_export_consumer",
+      "example_type": "positive_drift_detected_authority_preserved",
+      "description": "Audit export consumer drift is detected and review/escalation is recommended without executing authority actions.",
+      "baseline_registry_entry_ref": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json#consumer_entries.audit_export_consumer_baseline",
+      "current_registry_entry_ref": "examples/public-integration-pack-pilot/m12-cross-consumer-traceability-examples.json#audit_export_consumer",
+      "baseline_state_hash": "audit-export-consumer-baseline-v1",
+      "current_state_hash": "audit-export-consumer-current-v2",
+      "detected_drift_types": [
+        "consumer_role_drift",
+        "release_proof_linkage_drift",
+        "registry_version_drift"
+      ],
+      "drift_detected": true,
+      "authority_action_executed": false,
+      "recommended_human_review": true,
+      "recommended_escalation": true,
+      "recommended_fail_closed": true,
+      "expected_outputs": [
+        "registry_drift_detected",
+        "review_required",
+        "escalation_required",
+        "fail_closed_recommended",
+        "authority_boundary_preserved"
+      ]
+    }
+  ],
+  "negative_drift_fixtures": [
+    {
+      "fixture_id": "registry_inclusion_as_approval",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Registry inclusion is approval.",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "no_drift_detected_as_release_approval",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "no_drift_detected is release approval.",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "fail_closed_recommended_as_fail_closed_executed",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "fail_closed_recommended is fail_closed_executed.",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "sealing_eligible_as_sealed",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "sealing_eligible is sealed.",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "non_sealed_artifact_converted_into_sealed_artifact",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Drift detector converts non-sealed artifact into sealed artifact.",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "aaos_sealed_artifact_resealed_by_registry",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Drift detector re-seals AAOS-sealed artifact.",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "authority_transferred_to_external_consumer",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Authority transferred to external consumer.",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "final_governance_judgment_output",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "final_governance_judgment",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "audit_closed_output",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "audit_closed",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "v0_12_0_treated_as_released",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "v0.12.0 is released.",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "m13_treated_as_complete",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "M13 is complete.",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "closes_176_language",
+      "fixture_type": "negative",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Closes #176",
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed drift detector behavior.",
+      "expected_evaluator_outputs": [
+        "registry_drift_specimen_invalid",
+        "authority_boundary_violation"
+      ]
+    }
+  ],
+  "semantic_boundaries": {
+    "registry_inclusion_boundary": "Registry inclusion is not approval.",
+    "no_drift_boundary": "no_drift_detected is not approval and is not release approval.",
+    "fail_closed_boundary": "fail_closed_recommended is not fail_closed_executed.",
+    "sealing_eligibility_boundary": "sealing_eligible is not sealed.",
+    "non_sealed_conversion_boundary": "Non-sealed artifacts are not converted into sealed artifacts by registry drift detection.",
+    "aaos_sealed_reseal_boundary": "AAOS-sealed artifacts are not re-sealed by consumers or registry checks.",
+    "authority_transfer_boundary": "External consumption and registry drift detection are not authority transfer."
+  },
+  "allowed_evaluator_outputs": [
+    "registry_drift_specimen_valid",
+    "registry_drift_specimen_invalid",
+    "no_drift_detected",
+    "registry_drift_detected",
+    "drift_type_coverage_complete",
+    "drift_type_coverage_incomplete",
+    "authority_boundary_preserved",
+    "authority_boundary_violation",
+    "release_status_future_only",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_evaluator_outputs": [
+    "registry_entry_approved",
+    "consumer_approved",
+    "release_approved",
+    "risk_accepted",
+    "decision_proof_sealed",
+    "sealed_by_registry",
+    "sealed_by_consumer",
+    "sealed_by_ci",
+    "rollback_executed",
+    "fail_closed_executed",
+    "audit_closed",
+    "waiver_granted",
+    "final_governance_judgment",
+    "authority_transferred",
+    "v0_12_0_released",
+    "m13_complete",
+    "closes_176"
+  ],
+  "authority_boundary": {
+    "may": [
+      "detect_drift",
+      "report_findings",
+      "surface_review_required",
+      "surface_escalation_required",
+      "surface_fail_closed_recommended",
+      "reference_evidence",
+      "inspect_evidence",
+      "replay_evidence",
+      "check_evidence",
+      "link_evidence"
+    ],
+    "must_not": [
+      "approve_consumers",
+      "approve_releases",
+      "accept_risk",
+      "execute_rollback",
+      "execute_fail_closed",
+      "seal_decision_proof",
+      "re_seal_aaos_sealed_artifacts",
+      "convert_non_sealed_artifacts_into_sealed_artifacts",
+      "close_audits",
+      "grant_waivers",
+      "transfer_authority",
+      "make_final_governance_judgments"
+    ]
+  },
+  "governance_boundary_statement": "Registry drift detection is evidence checking only. It may detect drift, report findings, surface review requirements, surface escalation requirements, or recommend fail-closed handling. It must not approve consumers, approve releases, accept risk, execute rollback, execute fail-closed, seal Decision Proof, re-seal AAOS-sealed artifacts, convert non-sealed artifacts into sealed artifacts, close audits, grant waivers, transfer authority, or make final governance judgments.",
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
