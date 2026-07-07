@@ -80,10 +80,11 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 - v0.8.0 — M9 Decision Proof Runtime Replay and Governance CI Expansion
 - v0.9.0 — M10 Decision Proof Sealing Boundary and External Integration Readiness
 - v0.10.0 — M11 Public Integration Pack and External Evidence Consumer Pilot
+- v0.11.0 — M12 Public Integration Pack Consumer Registry and Integration CI
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, the M9 Decision Proof Runtime Replay pattern, the M10 Decision Proof Sealing Boundary and External Integration Readiness pattern, and the M11 Public Integration Pack and External Evidence Consumer Pilot pattern.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, the M9 Decision Proof Runtime Replay pattern, the M10 Decision Proof Sealing Boundary and External Integration Readiness pattern, the M11 Public Integration Pack and External Evidence Consumer Pilot pattern, and the M12 Public Integration Pack Consumer Registry and Integration CI pattern.
 
 v0.9.0 adds AAOS Decision Proof Sealing Boundary.
 
@@ -99,17 +100,21 @@ v0.10.0 adds the M11 Public Integration Pack and External Evidence Consumer Pilo
 
 v0.10.0 declares M11 complete and prepares the repository for the v0.10.0 release state.
 
+v0.11.0 adds the M12 Public Integration Pack Consumer Registry and Integration CI pattern.
+
+v0.11.0 declares M12 complete and prepares the repository for the v0.11.0 release state.
+
 Decision Proof sealing remains AAOS-owned.
 
 AAOS remains the decision sovereignty layer.
 
-Public integration packs, external evidence consumers, registries, release proof linkage, runtime replay, deterministic evaluators, README status entries, and CI may produce, consume, reference, replay, inspect, report, or link evidence.
+Consumer registries, integration CI checks, public integration packs, external evidence consumers, cross-consumer traceability artifacts, release proof linkage, deterministic evaluators, runtime replay, README status entries, and CI may produce, consume, reference, replay, inspect, report, check, or link evidence.
 
-They must not seal Decision Proof, approve releases, accept risk, execute rollback, execute fail-closed, close audits, grant waivers, change approval doctrine, change identity trust, change policy authority, change decision routing, or make final governance judgments.
+They must not seal Decision Proof, re-seal AAOS-sealed artifacts, convert non-sealed artifacts into sealed artifacts, convert sealing eligibility into final sealing, approve releases, accept risk, execute rollback, execute fail-closed, close audits, grant waivers, change approval doctrine, change identity trust, change policy authority, change decision routing, or make final governance judgments.
 
 ## Current Status
 
-M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, and M11 are complete.
+M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, and M12 are complete.
 
 M5 completed:
 
@@ -151,6 +156,15 @@ M11 completed:
 - #134 Add M11 pilot release proof and registry traceability
 - #135 Add M11 external consumer consumption matrix and fail-closed examples
 - #166 Add M11 completion readiness checklist
+
+M12 completed:
+
+- #168 M12: Public Integration Pack Consumer Registry and Integration CI
+- #169 Add M12 consumer registry pattern
+- #170 Add M12 integration CI check specimen
+- #172 Add M12 cross-consumer traceability examples
+- #173 Add M12 multi-consumer sealed non-sealed semantics
+- #174 Add M12 release proof linkage and readiness checklist
 
 AAOS Public now has:
 
@@ -204,6 +218,13 @@ AAOS Public now has:
 - external consumer fixtures and fail-closed examples
 - M11 completion readiness checklist
 - deterministic M11 public integration pack and completion readiness evaluator coverage
+- Public Integration Pack Consumer Registry pattern
+- Integration CI Checks Specimen
+- Cross-Consumer Traceability Examples
+- Multi-Consumer Sealed vs Non-Sealed Consumption Semantics
+- M12 Release Proof Linkage
+- M12 Completion Readiness Checklist
+- deterministic M12 consumer registry, integration CI, cross-consumer traceability, multi-consumer semantics, and release readiness evaluator coverage
 
 ## M5 Additions
 
@@ -921,11 +942,169 @@ The checklist, deterministic evaluator, README status, release proof linkage, re
 
 They must not seal Decision Proof, approve releases, accept risk, execute rollback, execute fail-closed, close audits, grant waivers, change approval doctrine, change identity trust, change policy authority, change decision routing, or make final governance judgments.
 
+## M12 Additions
+
+### Public Integration Pack Consumer Registry Pattern
+
+Purpose:
+Adds a Public Integration Pack Consumer Registry pattern for external evidence consumers.
+
+The registry describes:
+
+- consumer identity
+- consumer role
+- consumed artifact types
+- allowed consumption actions
+- forbidden authority actions
+- sealed artifact consumption semantics
+- non-sealed artifact consumption semantics
+- replay compatibility
+- evaluator compatibility
+- release proof linkage
+- registry entry provenance
+- AAOS retained authority statement
+
+Boundary:
+Consumer registries are descriptive and auditable evidence-linking systems.
+
+Registry inclusion is not approval.
+
+The registry must not become governance authority, approval authority, release authority, rollback authority, fail-closed execution authority, Decision Proof sealing authority, audit closure authority, or final governance authority.
+
+### Integration CI Checks Specimen
+
+Purpose:
+Adds an integration-facing CI checks specimen for public integration pack consumer behavior.
+
+Integration CI checks may inspect:
+
+- required consumer registry fields
+- allowed consumer actions
+- forbidden authority claims
+- sealed vs non-sealed artifact semantics
+- release proof linkage presence
+- replay/evaluator linkage presence
+- fail_closed_recommended vs fail_closed_executed separation
+- sealing_eligible vs sealed separation
+- external consumption is not authority transfer
+- AAOS final governance authority preservation
+
+Boundary:
+Integration CI checks are deterministic evidence checks.
+
+CI pass is not approval.
+
+Integration CI must not approve releases, reject releases as final authority, accept risk, execute rollback, execute fail-closed, seal Decision Proof, close audits, grant waivers, or make final governance judgments.
+
+### Cross-Consumer Traceability Examples
+
+Purpose:
+Adds traceability examples across multiple external evidence consumers.
+
+Traceability connects:
+
+- consumer registry entry
+- public integration pack
+- consumed artifact status
+- evidence schema reference
+- replay packet reference
+- evaluator output reference
+- integration CI check reference
+- release proof linkage
+- README release/status path
+- tracker issue
+- PRs
+- release tag
+- AAOS retained authority statement
+
+Boundary:
+Cross-consumer traceability is evidence linkage only.
+
+Traceability linkage is not approval.
+
+It must not approve releases, accept risk, execute rollback, execute fail-closed, seal Decision Proof, close audits, grant waivers, convert sealing eligibility into final sealing, convert non-sealed artifacts into sealed artifacts, or make final governance judgments.
+
+### Multi-Consumer Sealed vs Non-Sealed Consumption Semantics
+
+Purpose:
+Adds sealed vs non-sealed artifact consumption semantics across multiple external consumers.
+
+M12 clarifies:
+
+- AAOS-sealed artifacts may be consumed as AAOS-sealed artifacts.
+- AAOS-sealed artifacts must not be re-sealed by consumers.
+- Non-sealed artifacts may be consumed only according to their status.
+- Non-sealed artifacts must not be converted into sealed artifacts.
+- sealing_eligible is not sealed.
+- evidence_complete is not sealed.
+- replay_ready is not sealed.
+- evaluator findings are not sealing.
+- governance CI findings are not sealing.
+- external consumption is not authority transfer.
+
+Boundary:
+Sealed vs non-sealed semantics are evidence consumption rules only.
+
+Consumers must not re-seal AAOS-sealed artifacts, convert non-sealed artifacts into sealed artifacts, convert sealing eligibility into final sealing, approve releases, accept risk, execute rollback, execute fail-closed, close audits, grant waivers, or make final governance judgments.
+
+### M12 Release Proof Linkage
+
+Purpose:
+Adds release proof linkage for the M12 consumer registry pattern.
+
+The release proof linkage connects:
+
+- M12 tracker issue
+- consumer registry PR
+- integration CI check specimen PR
+- cross-consumer traceability PR
+- multi-consumer sealed/non-sealed semantics PR
+- release readiness PR
+- consumer registry pattern artifact
+- integration CI check specimen artifact
+- cross-consumer traceability examples artifact
+- multi-consumer semantics artifact
+- deterministic evaluator references
+- test references
+- README release/status path
+- release tag path
+- AAOS retained authority statement
+
+Boundary:
+Release proof linkage is evidence linkage only.
+
+Release proof linkage is not release approval.
+
+It must not approve releases, accept risk, execute rollback, execute fail-closed, seal Decision Proof, close audits, grant waivers, or make final governance judgments.
+
+### M12 Completion Readiness Checklist
+
+Purpose:
+Adds a completion readiness checklist that verifies whether #168 Expected M12 Output is represented.
+
+The checklist verifies:
+
+- Public Integration Pack Consumer Registry pattern
+- compliant external consumer registry entry
+- negative/non-compliant consumer registry fixture
+- integration-facing CI checks for consumer registry entries
+- cross-consumer traceability examples
+- sealed vs non-sealed consumption semantics across multiple consumers
+- release proof linkage for the M12 registry pattern
+- deterministic checks
+- README release/status update path for v0.11.0
+- preservation of AAOS final governance authority
+
+Boundary:
+Completion readiness checking is evidence review only.
+
+Readiness checklist results must not become release approval, risk acceptance, Decision Proof sealing, audit closure, waiver grant, rollback execution, fail-closed execution, or final governance judgment.
+
 ## Next Phase
 
-- M12 — Public Integration Pack Consumer Registry and Integration CI
-  - Extend the M11 pilot into a broader external consumer registry pattern.
-  - Add integration-facing CI checks for public integration pack consumption.
-  - Strengthen cross-consumer traceability and release proof consistency.
-  - Preserve sealed vs non-sealed artifact semantics across multiple external consumers.
-  - Keep AAOS final governance authority, Decision Proof sealing, audit final judgment, rollback policy, and release authority AAOS-owned.
+- M13 — External Consumer Registry Hardening and Operational Readiness
+  - Harden external consumer registry entries for broader operational use.
+  - Add stronger registry drift detection and authority-boundary regression checks.
+  - Prepare integration-facing documentation for consumer onboarding.
+  - Strengthen release proof consistency across external consumer registry updates.
+  - Preserve AAOS-owned Decision Proof sealing, audit final judgment, rollback policy, release authority, and final governance authority.
