@@ -1,0 +1,256 @@
+{
+  "specimen_id": "m12-integration-ci-check-specimen",
+  "specimen_name": "M12 Integration CI Checks Specimen",
+  "specimen_scope": "public_integration_pack_consumer_registry_behavior",
+  "milestone": "M12",
+  "specimen_status": "active_work_in_progress_not_released",
+  "m12_completion_status": "not_declared_complete",
+  "related_issue": "#168",
+  "tracker_issue_closure_state": "open_not_closed",
+  "tracker_issue_linkage": "Refs #168",
+  "first_m12_consumer_registry_pr": "#169",
+  "consumer_registry_pattern_artifact": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json",
+  "consumer_registry_evaluator": "runtime/m12_consumer_registry_evaluator.py",
+  "integration_ci_evaluator": "runtime/m12_integration_ci_check_evaluator.py",
+  "target_future_release": "v0.11.0",
+  "release_status_path": {
+    "state": "future_target_release_only",
+    "v0_11_0_target_release_state": "v0.11.0 is a future target release and must not be treated as released.",
+    "m12_completion_boundary": "M12 is active work and must not be declared complete by this specimen."
+  },
+  "integration_ci_scope_statement": "Integration CI checks are deterministic evidence checks only. They may surface findings, review_required, escalation_required, or fail_closed_recommended, but must not execute authority actions.",
+  "integration_ci_check_catalog": {
+    "consumer_registry_required_fields": "Check that consumer registry required fields are present.",
+    "compliant_consumer_registry_entries": "Check that at least one compliant consumer registry entry is represented.",
+    "negative_consumer_registry_fixtures": "Check that at least one negative or non-compliant consumer registry fixture is represented.",
+    "allowed_consumption_actions": "Check that allowed consumption actions are represented.",
+    "forbidden_authority_actions": "Check that forbidden authority actions are present only as forbidden actions or negative fixtures.",
+    "sealed_nonsealed_artifact_consumption_semantics": "Check that sealed vs non-sealed artifact consumption semantics are preserved.",
+    "registry_inclusion_boundary": "Registry inclusion is not approval.",
+    "ci_pass_boundary": "CI pass is not approval.",
+    "release_proof_boundary": "Release proof linkage is not release approval.",
+    "fail_closed_boundary": "fail_closed_recommended is not fail_closed_executed.",
+    "sealing_eligibility_boundary": "sealing_eligible is not sealed.",
+    "external_consumption_boundary": "External consumption is not authority transfer.",
+    "decision_proof_sealing_boundary": "Decision Proof sealing remains AAOS-owned.",
+    "sovereignty_boundary": "AAOS remains the decision sovereignty layer."
+  },
+  "allowed_integration_ci_actions": [
+    "check_registry_required_fields",
+    "check_compliant_consumer_entries",
+    "check_negative_consumer_fixtures",
+    "check_allowed_consumption_actions",
+    "check_forbidden_authority_actions",
+    "check_sealed_nonsealed_semantics",
+    "check_release_status_future_only",
+    "surface_findings",
+    "recommend_review_required",
+    "recommend_escalation_required",
+    "recommend_fail_closed_recommended"
+  ],
+  "forbidden_integration_ci_actions": [
+    "approve_releases",
+    "reject_releases_as_final_authority",
+    "accept_risk",
+    "execute_rollback",
+    "execute_fail_closed",
+    "seal_decision_proof",
+    "close_audits",
+    "grant_waivers",
+    "make_final_governance_judgments"
+  ],
+  "positive_ci_check_examples": [
+    {
+      "example_id": "positive_compliant_registry_entry_passes",
+      "example_type": "positive",
+      "allowed_behavior": true,
+      "input_registry_ref": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json#consumer_entries.compliant_external_evidence_dashboard_consumer",
+      "deterministic_checks": [
+        "consumer_registry_required_fields",
+        "compliant_consumer_registry_entries",
+        "negative_consumer_registry_fixtures",
+        "allowed_consumption_actions",
+        "forbidden_authority_actions",
+        "sealed_nonsealed_artifact_consumption_semantics",
+        "release_status_future_only"
+      ],
+      "ci_outputs": [
+        "integration_ci_check_passed",
+        "consumer_registry_fields_valid",
+        "compliant_consumer_entry_detected",
+        "negative_fixture_detected",
+        "authority_boundary_preserved",
+        "sealed_nonsealed_semantics_preserved",
+        "release_status_future_only",
+        "review_not_required"
+      ],
+      "forbidden_outputs_present": false,
+      "authority_boundary": "The positive example passes deterministic checks without approval, release, risk acceptance, rollback, fail-closed execution, sealing, audit closure, waiver, or final governance judgment."
+    }
+  ],
+  "negative_ci_check_examples": [
+    {
+      "example_id": "negative_missing_required_registry_fields",
+      "example_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior.",
+      "scenario": "missing_required_registry_fields",
+      "expected_ci_outputs": [
+        "integration_ci_check_failed",
+        "consumer_registry_fields_invalid",
+        "review_required"
+      ]
+    },
+    {
+      "example_id": "negative_consumer_attempts_to_seal_decision_proof",
+      "example_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior.",
+      "scenario": "consumer_attempts_to_seal_decision_proof",
+      "attempted_forbidden_output": "decision_proof_sealed",
+      "expected_ci_outputs": [
+        "integration_ci_check_failed",
+        "authority_boundary_violation",
+        "escalation_required",
+        "fail_closed_recommended"
+      ]
+    },
+    {
+      "example_id": "negative_registry_inclusion_as_approval",
+      "example_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior.",
+      "scenario": "registry_inclusion_as_approval",
+      "invalid_claim": "Registry inclusion is approval.",
+      "expected_ci_outputs": [
+        "integration_ci_check_failed",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "example_id": "negative_ci_pass_as_approval",
+      "example_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior.",
+      "scenario": "ci_pass_as_approval",
+      "invalid_claim": "CI pass is approval.",
+      "expected_ci_outputs": [
+        "integration_ci_check_failed",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "example_id": "negative_release_proof_linkage_as_release_approval",
+      "example_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior.",
+      "scenario": "release_proof_linkage_as_release_approval",
+      "invalid_claim": "Release proof linkage is release approval.",
+      "expected_ci_outputs": [
+        "integration_ci_check_failed",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "example_id": "negative_fail_closed_recommended_as_executed",
+      "example_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior.",
+      "scenario": "fail_closed_recommended_as_fail_closed_executed",
+      "invalid_claim": "fail_closed_recommended is fail_closed_executed.",
+      "expected_ci_outputs": [
+        "integration_ci_check_failed",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "example_id": "negative_sealing_eligible_as_sealed",
+      "example_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior.",
+      "scenario": "sealing_eligible_as_sealed",
+      "invalid_claim": "sealing_eligible is sealed.",
+      "expected_ci_outputs": [
+        "integration_ci_check_failed",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "example_id": "negative_v0_11_0_treated_as_released",
+      "example_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior.",
+      "scenario": "v0_11_0_treated_as_released",
+      "attempted_forbidden_output": "v0_11_0_released",
+      "expected_ci_outputs": [
+        "integration_ci_check_failed",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "example_id": "negative_m12_treated_as_complete",
+      "example_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior.",
+      "scenario": "m12_treated_as_complete",
+      "attempted_forbidden_output": "m12_complete",
+      "expected_ci_outputs": [
+        "integration_ci_check_failed",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "example_id": "negative_closes_168_language",
+      "example_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed behavior.",
+      "scenario": "closes_168_language",
+      "attempted_forbidden_output": "closes_168",
+      "expected_ci_outputs": [
+        "integration_ci_check_failed",
+        "authority_boundary_violation"
+      ]
+    }
+  ],
+  "integration_ci_boundary_statement": "Integration CI checks are deterministic evidence checks. They may surface findings, review_required, escalation_required, or fail_closed_recommended. They must not approve releases, reject releases as final authority, accept risk, execute rollback, execute fail-closed, seal Decision Proof, close audits, grant waivers, or make final governance judgments.",
+  "registry_inclusion_boundary": "Registry inclusion is not approval.",
+  "ci_pass_boundary": "CI pass is not approval.",
+  "release_proof_boundary": "Release proof linkage is not release approval.",
+  "fail_closed_boundary": "fail_closed_recommended is not fail_closed_executed.",
+  "sealing_eligibility_boundary": "sealing_eligible is not sealed.",
+  "external_consumption_boundary": "External consumption is not authority transfer.",
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer.",
+  "allowed_evaluator_outputs": [
+    "integration_ci_specimen_valid",
+    "integration_ci_specimen_invalid",
+    "integration_ci_check_passed",
+    "integration_ci_check_failed",
+    "consumer_registry_fields_valid",
+    "consumer_registry_fields_invalid",
+    "authority_boundary_preserved",
+    "authority_boundary_violation",
+    "sealed_nonsealed_semantics_preserved",
+    "release_status_future_only",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_evaluator_outputs": [
+    "release_approved",
+    "release_rejected_as_final_authority",
+    "risk_accepted",
+    "decision_proof_sealed",
+    "sealed_by_ci",
+    "sealed_by_registry",
+    "sealed_by_external_consumer",
+    "rollback_executed",
+    "fail_closed_executed",
+    "audit_closed",
+    "waiver_granted",
+    "final_governance_judgment",
+    "v0_11_0_released",
+    "m12_complete",
+    "closes_168"
+  ]
+}
