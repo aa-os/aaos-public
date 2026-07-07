@@ -1,0 +1,527 @@
+{
+  "artifact_id": "m12-multi-consumer-sealed-nonsealed-semantics",
+  "artifact_name": "M12 Multi-Consumer Sealed vs Non-Sealed Consumption Semantics",
+  "artifact_scope": "public_integration_pack_multi_consumer_artifact_semantics",
+  "milestone": "M12",
+  "artifact_status": "active_work_in_progress_not_released",
+  "m12_completion_status": "not_declared_complete",
+  "related_issue": "#168",
+  "tracker_issue_closure_state": "open_not_closed",
+  "tracker_issue_linkage": "Refs #168",
+  "m12_consumer_registry_pr": "#169",
+  "m12_integration_ci_check_specimen_pr": "#170",
+  "m12_cross_consumer_traceability_pr": "#172",
+  "consumer_registry_pattern_artifact": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json",
+  "integration_ci_check_specimen_ref": "examples/public-integration-pack-pilot/m12-integration-ci-check-specimen.json",
+  "cross_consumer_traceability_examples_ref": "examples/public-integration-pack-pilot/m12-cross-consumer-traceability-examples.json",
+  "multi_consumer_semantics_evaluator": "runtime/m12_multi_consumer_semantics_evaluator.py",
+  "target_future_release": "v0.11.0",
+  "future_release_tag_path": {
+    "target_tag": "v0.11.0",
+    "state": "future_tag_path_only",
+    "released": false,
+    "boundary": "v0.11.0 is reserved for a future M12 completion release and must not be treated as released."
+  },
+  "release_status_path": {
+    "state": "future_target_release_only",
+    "readme_status_path": "README.md#current-work",
+    "v0_11_0_target_release_state": "v0.11.0 is a future target release and must not be treated as released.",
+    "m12_completion_boundary": "M12 is active work and must not be declared complete by this semantics artifact."
+  },
+  "readme_release_status_path": "README.md#current-work",
+  "semantics_scope_statement": "This artifact defines sealed vs non-sealed artifact consumption semantics across multiple external evidence consumers. The semantics are evidence consumption rules only.",
+  "required_semantics": {
+    "aaos_sealed_artifact_consumption": "AAOS-sealed artifacts may be consumed as AAOS-sealed artifacts.",
+    "aaos_sealed_artifact_reseal_boundary": "AAOS-sealed artifacts must not be re-sealed by consumers.",
+    "non_sealed_status_consumption": "Non-sealed artifacts may be consumed only according to their status.",
+    "non_sealed_conversion_boundary": "Non-sealed artifacts must not be converted into sealed artifacts.",
+    "sealing_eligibility_boundary": "sealing_eligible is not sealed.",
+    "evidence_complete_boundary": "evidence_complete is not sealed.",
+    "replay_ready_boundary": "replay_ready is not sealed.",
+    "evaluator_findings_boundary": "evaluator_findings are not sealing; evaluator findings are not sealing.",
+    "governance_ci_findings_boundary": "governance CI findings are not sealing.",
+    "release_proof_boundary": "Release proof linkage is not release approval.",
+    "registry_inclusion_boundary": "Registry inclusion is not approval.",
+    "ci_pass_boundary": "CI pass is not approval.",
+    "traceability_linkage_boundary": "Traceability linkage is not approval.",
+    "external_consumption_boundary": "External consumption is not authority transfer.",
+    "fail_closed_boundary": "fail_closed_recommended is not fail_closed_executed.",
+    "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+    "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+  },
+  "artifact_status_semantics": {
+    "aaos_sealed_decision_proof_artifacts": {
+      "artifact_status": "aaos_sealed_decision_proof_artifacts",
+      "consumer_handling": "Consume as AAOS-sealed artifacts for reference, inspection, reporting, and linkage preservation only.",
+      "sealed": true,
+      "consumer_may_reseal": false,
+      "consumer_may_convert_status": false,
+      "consumer_may_make_final_judgment": false
+    },
+    "unsealed_evidence": {
+      "artifact_status": "unsealed_evidence",
+      "consumer_handling": "Consume only as unsealed evidence and preserve evidence linkage.",
+      "sealed": false,
+      "consumer_may_convert_to_sealed": false
+    },
+    "replay_ready_packets": {
+      "artifact_status": "replay_ready_packets",
+      "consumer_handling": "Replay for inspection where permitted; replay_ready is not sealed.",
+      "sealed": false,
+      "consumer_may_convert_to_sealed": false
+    },
+    "evidence_complete_packets": {
+      "artifact_status": "evidence_complete_packets",
+      "consumer_handling": "Inspect or reference as evidence-complete packets; evidence_complete is not sealed.",
+      "sealed": false,
+      "consumer_may_convert_to_sealed": false
+    },
+    "evaluator_findings": {
+      "artifact_status": "evaluator_findings",
+      "consumer_handling": "Inspect evaluator findings as deterministic evidence checks; evaluator_findings are not sealing.",
+      "sealed": false,
+      "consumer_may_convert_to_sealed": false
+    },
+    "governance_ci_findings": {
+      "artifact_status": "governance_ci_findings",
+      "consumer_handling": "Inspect governance CI findings as evidence check outputs; governance CI findings are not sealing.",
+      "sealed": false,
+      "consumer_may_convert_to_sealed": false
+    },
+    "release_proof_evidence": {
+      "artifact_status": "release_proof_evidence",
+      "consumer_handling": "Inspect release proof evidence as evidence linkage; release proof linkage is not release approval.",
+      "sealed": false,
+      "consumer_may_convert_to_release_approval": false
+    },
+    "sealing_eligible_evidence": {
+      "artifact_status": "sealing_eligible_evidence",
+      "consumer_handling": "Surface sealing eligibility as review context only; sealing_eligible is not sealed.",
+      "sealed": false,
+      "consumer_may_convert_to_sealed": false
+    },
+    "sealing_rejected_artifacts": {
+      "artifact_status": "sealing_rejected_artifacts",
+      "consumer_handling": "Report rejected status and preserve linkage without overriding AAOS decision state.",
+      "sealed": false,
+      "consumer_may_convert_to_sealed": false
+    },
+    "sealing_deferred_artifacts": {
+      "artifact_status": "sealing_deferred_artifacts",
+      "consumer_handling": "Surface review_required or escalation_required while preserving deferred status.",
+      "sealed": false,
+      "consumer_may_convert_to_sealed": false
+    },
+    "sealing_blocked_artifacts": {
+      "artifact_status": "sealing_blocked_artifacts",
+      "consumer_handling": "Surface escalation_required or fail_closed_recommended while preserving blocked status.",
+      "sealed": false,
+      "consumer_may_convert_to_sealed": false
+    }
+  },
+  "multi_consumer_matrix": [
+    {
+      "consumer_type": "evidence_dashboard_consumer",
+      "consumer_role": "evidence_dashboard_consumer",
+      "consumer_registry_entry_ref": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json#consumer_entries.compliant_external_evidence_dashboard_consumer",
+      "allowed_artifact_statuses": [
+        "aaos_sealed_decision_proof_artifacts",
+        "unsealed_evidence",
+        "replay_ready_packets",
+        "evidence_complete_packets",
+        "evaluator_findings",
+        "governance_ci_findings",
+        "release_proof_evidence",
+        "sealing_eligible_evidence",
+        "sealing_deferred_artifacts",
+        "sealing_blocked_artifacts"
+      ],
+      "allowed_consumption_actions": [
+        "read_artifacts",
+        "reference_artifacts",
+        "replay_replay_ready_packets",
+        "inspect_evaluator_findings",
+        "inspect_governance_ci_findings",
+        "inspect_release_proof_evidence",
+        "preserve_evidence_linkage",
+        "preserve_release_proof_linkage",
+        "surface_review_required",
+        "surface_escalation_required",
+        "surface_fail_closed_recommended"
+      ],
+      "forbidden_authority_actions": [
+        "seal_decision_proof",
+        "reseal_aaos_sealed_artifact",
+        "convert_non_sealed_artifact_into_sealed_artifact",
+        "convert_sealing_eligibility_into_final_sealing",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "make_final_governance_judgments"
+      ],
+      "sealed_artifact_handling": "AAOS-sealed artifacts may be consumed as AAOS-sealed artifacts for dashboard display and must not be re-sealed by consumers.",
+      "non_sealed_artifact_handling": "Non-sealed artifacts may be consumed only according to their status and must not be converted into sealed artifacts.",
+      "sealing_eligibility_handling": "sealing_eligible is not sealed; display only as review context.",
+      "escalation_behavior": "May surface review_required or escalation_required without making a final judgment.",
+      "fail_closed_recommendation_behavior": "May surface fail_closed_recommended but must not execute fail-closed.",
+      "semantics_outputs": [
+        "sealed_nonsealed_semantics_preserved",
+        "authority_boundary_preserved",
+        "release_status_future_only"
+      ],
+      "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority."
+    },
+    {
+      "consumer_type": "audit_export_consumer",
+      "consumer_role": "audit_trace_export_consumer",
+      "consumer_registry_entry_ref": "examples/public-integration-pack-pilot/m12-cross-consumer-traceability-examples.json#compliant_audit_export_consumer_traceability",
+      "allowed_artifact_statuses": [
+        "aaos_sealed_decision_proof_artifacts",
+        "evidence_complete_packets",
+        "evaluator_findings",
+        "governance_ci_findings",
+        "release_proof_evidence",
+        "sealing_rejected_artifacts",
+        "sealing_deferred_artifacts",
+        "sealing_blocked_artifacts"
+      ],
+      "allowed_consumption_actions": [
+        "read_artifacts",
+        "reference_artifacts",
+        "replay_replay_ready_packets",
+        "inspect_evaluator_findings",
+        "inspect_governance_ci_findings",
+        "inspect_release_proof_evidence",
+        "preserve_evidence_linkage",
+        "preserve_release_proof_linkage",
+        "surface_review_required",
+        "surface_escalation_required",
+        "surface_fail_closed_recommended"
+      ],
+      "forbidden_authority_actions": [
+        "seal_decision_proof",
+        "reseal_aaos_sealed_artifact",
+        "convert_non_sealed_artifact_into_sealed_artifact",
+        "convert_sealing_eligibility_into_final_sealing",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "make_final_governance_judgments"
+      ],
+      "sealed_artifact_handling": "AAOS-sealed artifacts may be exported as AAOS-sealed artifacts and must not be re-sealed by consumers or treated as audit closure.",
+      "non_sealed_artifact_handling": "Non-sealed artifacts may be exported only according to their status and must not be converted into sealed artifacts.",
+      "sealing_eligibility_handling": "sealing_eligible is not sealed; export only as pending AAOS review context.",
+      "escalation_behavior": "May surface review_required or escalation_required without closing audit.",
+      "fail_closed_recommendation_behavior": "May surface fail_closed_recommended but must not execute fail-closed or rollback.",
+      "semantics_outputs": [
+        "sealed_nonsealed_semantics_preserved",
+        "authority_boundary_preserved",
+        "review_required"
+      ],
+      "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority."
+    },
+    {
+      "consumer_type": "registry_observer_consumer",
+      "consumer_role": "registry_observer_consumer",
+      "consumer_registry_entry_ref": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json#registry_observer_consumer",
+      "allowed_artifact_statuses": [
+        "aaos_sealed_decision_proof_artifacts",
+        "unsealed_evidence",
+        "replay_ready_packets",
+        "evidence_complete_packets",
+        "evaluator_findings",
+        "governance_ci_findings",
+        "release_proof_evidence",
+        "sealing_eligible_evidence",
+        "sealing_rejected_artifacts",
+        "sealing_deferred_artifacts",
+        "sealing_blocked_artifacts"
+      ],
+      "allowed_consumption_actions": [
+        "read_artifacts",
+        "reference_artifacts",
+        "replay_replay_ready_packets",
+        "inspect_evaluator_findings",
+        "inspect_governance_ci_findings",
+        "inspect_release_proof_evidence",
+        "preserve_evidence_linkage",
+        "preserve_release_proof_linkage",
+        "surface_review_required",
+        "surface_escalation_required",
+        "surface_fail_closed_recommended"
+      ],
+      "forbidden_authority_actions": [
+        "seal_decision_proof",
+        "reseal_aaos_sealed_artifact",
+        "convert_non_sealed_artifact_into_sealed_artifact",
+        "convert_sealing_eligibility_into_final_sealing",
+        "approve_releases",
+        "accept_risk",
+        "execute_rollback",
+        "execute_fail_closed",
+        "close_audits",
+        "grant_waivers",
+        "make_final_governance_judgments"
+      ],
+      "sealed_artifact_handling": "AAOS-sealed artifacts may be observed as AAOS-sealed artifacts and must not be re-sealed by consumers.",
+      "non_sealed_artifact_handling": "Non-sealed artifacts may be observed only according to their status and must not be converted into sealed artifacts.",
+      "sealing_eligibility_handling": "sealing_eligible is not sealed; registry observation is not final sealing.",
+      "escalation_behavior": "May surface review_required or escalation_required without changing routing or policy authority.",
+      "fail_closed_recommendation_behavior": "May surface fail_closed_recommended but must not execute fail-closed.",
+      "semantics_outputs": [
+        "sealed_nonsealed_semantics_preserved",
+        "authority_boundary_preserved",
+        "escalation_required"
+      ],
+      "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority."
+    }
+  ],
+  "negative_semantics_fixtures": [
+    {
+      "fixture_id": "negative_consumer_reseals_aaos_sealed_artifact",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "consumer_reseals_aaos_sealed_artifact",
+      "invalid_claim": "Consumer re-seals AAOS-sealed artifact.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "sealed_nonsealed_semantics_violation",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_consumer_converts_nonsealed_to_sealed",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "consumer_converts_non_sealed_artifact_into_sealed_artifact",
+      "invalid_claim": "Consumer converts non-sealed artifact into sealed artifact.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "sealed_nonsealed_semantics_violation",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_sealing_eligible_as_sealed",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "sealing_eligible_as_sealed",
+      "invalid_claim": "sealing_eligible is sealed.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "sealed_nonsealed_semantics_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_evidence_complete_as_sealed",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "evidence_complete_as_sealed",
+      "invalid_claim": "evidence_complete is sealed.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "sealed_nonsealed_semantics_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_replay_ready_as_sealed",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "replay_ready_as_sealed",
+      "invalid_claim": "replay_ready is sealed.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "sealed_nonsealed_semantics_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_evaluator_findings_as_sealing",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "evaluator_findings_as_sealing",
+      "invalid_claim": "evaluator findings are sealing.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "sealed_nonsealed_semantics_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_governance_ci_findings_as_sealing",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "governance_ci_findings_as_sealing",
+      "invalid_claim": "governance CI findings are sealing.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "sealed_nonsealed_semantics_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_release_proof_linkage_as_release_approval",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "release_proof_linkage_as_release_approval",
+      "invalid_claim": "Release proof linkage is release approval.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_registry_inclusion_as_approval",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "registry_inclusion_as_approval",
+      "invalid_claim": "Registry inclusion is approval.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_ci_pass_as_approval",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "ci_pass_as_approval",
+      "invalid_claim": "CI pass is approval.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_traceability_linkage_as_approval",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "traceability_linkage_as_approval",
+      "invalid_claim": "Traceability linkage is approval.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_fail_closed_recommended_as_executed",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "fail_closed_recommended_as_fail_closed_executed",
+      "invalid_claim": "fail_closed_recommended is fail_closed_executed.",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_v0_11_0_treated_as_released",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "v0_11_0_treated_as_released",
+      "attempted_forbidden_output": "v0_11_0_released",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_m12_treated_as_complete",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "m12_treated_as_complete",
+      "attempted_forbidden_output": "m12_complete",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_closes_168_language",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "closes_168_language",
+      "attempted_forbidden_output": "closes_168",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_final_governance_judgment_output",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "final_governance_judgment_output",
+      "attempted_forbidden_output": "final_governance_judgment",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "authority_boundary_violation"
+      ]
+    },
+    {
+      "fixture_id": "negative_audit_closed_output",
+      "fixture_type": "negative",
+      "allowed_behavior": false,
+      "negative_fixture_boundary": "Negative fixture for deterministic evaluator tests only; not allowed semantics behavior.",
+      "scenario": "audit_closed_output",
+      "attempted_forbidden_output": "audit_closed",
+      "expected_evaluator_outputs": [
+        "multi_consumer_semantics_invalid",
+        "authority_boundary_violation"
+      ]
+    }
+  ],
+  "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
+  "governance_boundary_statement": "Multi-consumer sealed vs non-sealed semantics are evidence consumption rules only. External evidence consumers, consumer registries, integration CI checks, public integration packs, evaluator outputs, replay packet references, release proof linkage, traceability artifacts, and README status paths may reference, inspect, replay, report, check, or link evidence. They must not seal Decision Proof, re-seal AAOS-sealed artifacts, convert non-sealed artifacts into sealed artifacts, convert sealing eligibility into final sealing, approve releases, accept risk, execute rollback, execute fail-closed, close audits, grant waivers, or make final governance judgments.",
+  "allowed_evaluator_outputs": [
+    "multi_consumer_semantics_valid",
+    "multi_consumer_semantics_invalid",
+    "sealed_nonsealed_semantics_preserved",
+    "sealed_nonsealed_semantics_violation",
+    "consumer_matrix_complete",
+    "consumer_matrix_incomplete",
+    "authority_boundary_preserved",
+    "authority_boundary_violation",
+    "release_status_future_only",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_evaluator_outputs": [
+    "decision_proof_sealed",
+    "resealed_by_consumer",
+    "sealed_by_consumer",
+    "sealed_by_registry",
+    "sealed_by_ci",
+    "sealed_by_traceability",
+    "release_approved",
+    "risk_accepted",
+    "rollback_executed",
+    "fail_closed_executed",
+    "audit_closed",
+    "waiver_granted",
+    "final_governance_judgment",
+    "v0_11_0_released",
+    "m12_complete",
+    "closes_168"
+  ]
+}
