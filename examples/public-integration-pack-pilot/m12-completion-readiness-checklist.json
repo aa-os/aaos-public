@@ -1,0 +1,183 @@
+{
+  "checklist_id": "m12-completion-readiness-checklist",
+  "checklist_name": "M12 Completion Readiness Checklist",
+  "checklist_scope": "expected_m12_output_readiness_review",
+  "milestone": "M12",
+  "checklist_status": "completion_readiness_candidate",
+  "m12_completion_status": "not_declared_complete",
+  "related_issue": "#168",
+  "tracker_issue_closure_state": "open_not_closed",
+  "tracker_issue_linkage": "Refs #168",
+  "consumer_registry_pr": "#169",
+  "integration_ci_check_specimen_pr": "#170",
+  "cross_consumer_traceability_pr": "#172",
+  "multi_consumer_semantics_pr": "#173",
+  "release_proof_linkage_artifact": "examples/public-integration-pack-pilot/m12-release-proof-linkage.json",
+  "consumer_registry_pattern_artifact": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json",
+  "integration_ci_check_specimen_artifact": "examples/public-integration-pack-pilot/m12-integration-ci-check-specimen.json",
+  "cross_consumer_traceability_examples_artifact": "examples/public-integration-pack-pilot/m12-cross-consumer-traceability-examples.json",
+  "multi_consumer_semantics_artifact": "examples/public-integration-pack-pilot/m12-multi-consumer-sealed-nonsealed-semantics.json",
+  "target_future_release": "v0.11.0",
+  "future_release_tag_path": {
+    "target_tag": "v0.11.0",
+    "state": "future_tag_path_only",
+    "released": false,
+    "boundary": "v0.11.0 is a future target release and must not be treated as released."
+  },
+  "release_status_path": {
+    "state": "future_target_release_only",
+    "readme_status_path": "README.md#current-work",
+    "v0_11_0_target_release_state": "v0.11.0 is a future target release and must not be treated as released.",
+    "m12_completion_boundary": "M12 is active work and must not be declared complete by this readiness checklist."
+  },
+  "readme_release_status_path": "README.md#current-work",
+  "expected_m12_output_checklist": [
+    {
+      "item_id": "public_integration_pack_consumer_registry_pattern",
+      "expected_output": "Public Integration Pack Consumer Registry pattern",
+      "represented": true,
+      "evidence_refs": [
+        "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json"
+      ]
+    },
+    {
+      "item_id": "compliant_external_consumer_registry_entry",
+      "expected_output": "At least one compliant external consumer registry entry",
+      "represented": true,
+      "evidence_refs": [
+        "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json#consumer_entries"
+      ]
+    },
+    {
+      "item_id": "negative_consumer_registry_fixture",
+      "expected_output": "At least one negative or non-compliant consumer registry fixture",
+      "represented": true,
+      "evidence_refs": [
+        "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json#negative_consumer_registry_fixtures"
+      ]
+    },
+    {
+      "item_id": "integration_facing_ci_checks",
+      "expected_output": "Integration-facing CI checks for consumer registry entries",
+      "represented": true,
+      "evidence_refs": [
+        "examples/public-integration-pack-pilot/m12-integration-ci-check-specimen.json",
+        "runtime/m12_integration_ci_check_evaluator.py"
+      ]
+    },
+    {
+      "item_id": "cross_consumer_traceability_examples",
+      "expected_output": "Cross-consumer traceability examples",
+      "represented": true,
+      "evidence_refs": [
+        "examples/public-integration-pack-pilot/m12-cross-consumer-traceability-examples.json"
+      ]
+    },
+    {
+      "item_id": "multi_consumer_sealed_nonsealed_semantics",
+      "expected_output": "Sealed vs non-sealed consumption semantics preserved across multiple consumers",
+      "represented": true,
+      "evidence_refs": [
+        "examples/public-integration-pack-pilot/m12-multi-consumer-sealed-nonsealed-semantics.json"
+      ]
+    },
+    {
+      "item_id": "m12_registry_release_proof_linkage",
+      "expected_output": "Release proof linkage for the M12 registry pattern",
+      "represented": true,
+      "evidence_refs": [
+        "examples/public-integration-pack-pilot/m12-release-proof-linkage.json"
+      ]
+    },
+    {
+      "item_id": "deterministic_checks",
+      "expected_output": "Deterministic checks if appropriate",
+      "represented": true,
+      "evidence_refs": [
+        "runtime/m12_consumer_registry_evaluator.py",
+        "runtime/m12_integration_ci_check_evaluator.py",
+        "runtime/m12_cross_consumer_traceability_evaluator.py",
+        "runtime/m12_multi_consumer_semantics_evaluator.py",
+        "runtime/m12_release_readiness_evaluator.py"
+      ]
+    },
+    {
+      "item_id": "readme_release_status_update_path",
+      "expected_output": "README release/status update path for v0.11.0",
+      "represented": true,
+      "evidence_refs": [
+        "README.md#current-work"
+      ],
+      "future_only": true
+    },
+    {
+      "item_id": "aaos_final_governance_authority_preserved",
+      "expected_output": "Clear preservation of AAOS final governance authority",
+      "represented": true,
+      "evidence_refs": [
+        "examples/public-integration-pack-pilot/m12-release-proof-linkage.json#aaos_retained_authority_statement",
+        "examples/public-integration-pack-pilot/m12-multi-consumer-sealed-nonsealed-semantics.json#aaos_retained_authority_statement"
+      ]
+    }
+  ],
+  "deterministic_test_references": [
+    "tests/test_m12_consumer_registry_evaluator.py",
+    "tests/test_m12_integration_ci_check_evaluator.py",
+    "tests/test_m12_cross_consumer_traceability_evaluator.py",
+    "tests/test_m12_multi_consumer_semantics_evaluator.py",
+    "tests/test_m12_release_readiness_evaluator.py"
+  ],
+  "readiness_summary": {
+    "state": "completion_readiness_candidate",
+    "expected_output_coverage": "represented",
+    "final_sync_required": true,
+    "final_sync_boundary": "A future README or release synchronization step is required before completion can be declared."
+  },
+  "authority_boundary": {
+    "may": [
+      "produce_evidence",
+      "consume_evidence",
+      "reference_evidence",
+      "replay_evidence",
+      "inspect_evidence",
+      "report_findings",
+      "check_evidence",
+      "link_evidence",
+      "surface_review_required",
+      "surface_escalation_required",
+      "surface_fail_closed_recommended"
+    ],
+    "must_not": [
+      "seal_decision_proof",
+      "re_seal_aaos_sealed_artifacts",
+      "convert_non_sealed_artifacts_into_sealed_artifacts",
+      "convert_sealing_eligibility_into_final_sealing",
+      "approve_releases",
+      "accept_risk",
+      "execute_rollback",
+      "execute_fail_closed",
+      "close_audits",
+      "grant_waivers",
+      "change_approval_doctrine",
+      "change_identity_trust",
+      "change_policy_authority",
+      "change_decision_routing",
+      "make_final_governance_judgments"
+    ]
+  },
+  "semantic_boundaries": {
+    "registry_inclusion_boundary": "Registry inclusion is not approval.",
+    "ci_pass_boundary": "CI pass is not approval.",
+    "traceability_linkage_boundary": "Traceability linkage is not approval.",
+    "release_proof_boundary": "Release proof linkage is not release approval.",
+    "fail_closed_boundary": "fail_closed_recommended is not fail_closed_executed.",
+    "sealing_eligibility_boundary": "sealing_eligible is not sealed.",
+    "evidence_complete_boundary": "evidence_complete is not sealed.",
+    "replay_ready_boundary": "replay_ready is not sealed.",
+    "evaluator_findings_boundary": "evaluator_findings are not sealing; evaluator findings are not sealing.",
+    "governance_ci_findings_boundary": "governance CI findings are not sealing."
+  },
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
