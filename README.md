@@ -79,10 +79,11 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 - v0.7.0 — M8 Release Governance Hardening and Cross-Adapter Regression
 - v0.8.0 — M9 Decision Proof Runtime Replay and Governance CI Expansion
 - v0.9.0 — M10 Decision Proof Sealing Boundary and External Integration Readiness
+- v0.10.0 — M11 Public Integration Pack and External Evidence Consumer Pilot
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, the M9 Decision Proof Runtime Replay pattern, and the M10 Decision Proof Sealing Boundary and External Integration Readiness pattern.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, the M9 Decision Proof Runtime Replay pattern, the M10 Decision Proof Sealing Boundary and External Integration Readiness pattern, and the M11 Public Integration Pack and External Evidence Consumer Pilot pattern.
 
 v0.9.0 adds AAOS Decision Proof Sealing Boundary.
 
@@ -94,13 +95,21 @@ v0.9.0 introduces Adapter-to-Release Proof Traceability.
 
 v0.9.0 introduces the Public Integration Pack Pattern.
 
+v0.10.0 adds the M11 Public Integration Pack and External Evidence Consumer Pilot pattern.
+
+v0.10.0 declares M11 complete and prepares the repository for the v0.10.0 release state.
+
 Decision Proof sealing remains AAOS-owned.
 
-Adapters, external tools, runtime replay packets, release proof automation, governance CI checks, deterministic evaluators, registries, and public integration packs remain evidence-producing or evidence-consuming systems, not authorities.
+AAOS remains the decision sovereignty layer.
+
+Public integration packs, external evidence consumers, registries, release proof linkage, runtime replay, deterministic evaluators, README status entries, and CI may produce, consume, reference, replay, inspect, report, or link evidence.
+
+They must not seal Decision Proof, approve releases, accept risk, execute rollback, execute fail-closed, close audits, grant waivers, change approval doctrine, change identity trust, change policy authority, change decision routing, or make final governance judgments.
 
 ## Current Status
 
-M1, M2, M3, M4, M5, M6, M7, M8, M9, and M10 are complete.
+M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, and M11 are complete.
 
 M5 completed:
 
@@ -133,6 +142,15 @@ M10 completed:
 
 - #106 M10: Decision Proof Sealing Boundary and External Integration Readiness
 - #107 Add M10 Decision Proof sealing boundary and integration readiness
+
+M11 completed:
+
+- #120 M11: Public Integration Pack and External Evidence Consumer Pilot
+- #121 Add M11 public integration pack pilot and external evidence consumer specimen
+- #131 Update README for M11 active pilot status
+- #134 Add M11 pilot release proof and registry traceability
+- #135 Add M11 external consumer consumption matrix and fail-closed examples
+- #166 Add M11 completion readiness checklist
 
 AAOS Public now has:
 
@@ -178,6 +196,14 @@ AAOS Public now has:
 - Public Integration Pack Pattern
 - v0.8.0 release proof linkage
 - deterministic Decision Proof sealing evaluator coverage
+- Public Integration Pack Pilot package
+- External Evidence Consumer Specimen
+- sealed vs non-sealed artifact consumption semantics
+- M11 pilot release proof linkage
+- registry-facing M11 pilot traceability
+- external consumer fixtures and fail-closed examples
+- M11 completion readiness checklist
+- deterministic M11 public integration pack and completion readiness evaluator coverage
 
 ## M5 Additions
 
@@ -728,17 +754,178 @@ Forbidden evaluator outputs include:
 - audit_closed
 - final_governance_judgment
 
-## Current Work
+## M11 Additions
 
-- M11 — Public Integration Pack and External Evidence Consumer Pilot: active work in progress.
-  - Tracker: #120.
-  - First pilot merge: #121.
-  - #121 added the first M11 Public Integration Pack Pilot package.
-  - #121 added an external evidence consumer specimen.
-  - #121 added sealed vs non-sealed artifact consumption semantics.
-  - #121 added integration-facing examples.
-  - #121 added deterministic public integration pack evaluator coverage and tests.
-  - Public integration packs and external evidence consumers remain evidence-interface or evidence-consuming systems, not governance authorities.
-  - Decision Proof sealing remains AAOS-owned.
-  - AAOS remains the decision sovereignty layer.
-  - v0.10.0 is reserved for a future M11 completion release and must not be treated as released.
+### Public Integration Pack Pilot
+
+Purpose:
+Adds a concrete Public Integration Pack pilot package for external systems that need to provide evidence to AAOS or consume AAOS artifacts.
+
+The pilot package demonstrates:
+
+- integration boundary contract
+- evidence schema reference
+- replay packet example
+- release proof linkage
+- sealing boundary statement
+- adapter registry entry reference
+- evaluator check reference
+- governance boundary language
+
+Boundary:
+Public integration packs are evidence-interface packages.
+
+They may shape, reference, replay, check, inspect, report, or link evidence.
+
+They must not become governance authorities, approval authorities, release authorities, rollback authorities, Decision Proof sealing authorities, audit closure authorities, or final governance authorities.
+
+### External Evidence Consumer Specimen
+
+Purpose:
+Adds an external evidence consumer specimen that demonstrates how external systems may consume AAOS artifacts without becoming AAOS authority.
+
+The specimen distinguishes:
+
+- sealed artifacts
+- non-sealed artifacts
+- replayable evidence
+- evaluator findings
+- release proof evidence
+- governance CI findings
+- human review state
+- sealing eligibility
+- final AAOS-owned sealing authority
+
+Boundary:
+External evidence consumers may read, reference, replay, inspect, report on, or preserve linkage to artifacts according to artifact status.
+
+External consumption is not authority transfer.
+
+### Sealed vs Non-Sealed Artifact Consumption Semantics
+
+Purpose:
+Adds explicit consumption semantics for sealed and non-sealed artifacts.
+
+M11 defines how external consumers may handle:
+
+- unsealed evidence
+- replay-ready packets
+- evidence-complete packets
+- evaluator findings
+- sealing-eligible evidence
+- AAOS-sealed Decision Proof artifacts
+- sealing-rejected artifacts
+- sealing-deferred artifacts
+- sealing-blocked artifacts
+
+Boundary:
+Sealing eligibility is not sealing.
+
+Non-sealed artifacts must not be converted into sealed artifacts by external consumers.
+
+AAOS-sealed artifacts may be consumed as AAOS-sealed artifacts, but must not be re-sealed, superseded, or converted into external final judgment.
+
+### M11 Pilot Release Proof Linkage
+
+Purpose:
+Adds release proof linkage for the M11 pilot package.
+
+The linkage connects:
+
+- M11 tracker issue
+- first M11 pilot PR
+- README WIP sync PR
+- release proof and registry traceability PR
+- external consumer matrix and fail-closed PR
+- completion readiness checklist PR
+- public integration pack pilot package
+- external evidence consumer specimen
+- deterministic evaluator coverage
+- README release/status path
+
+Boundary:
+Release proof linkage is evidence linkage only.
+
+It must not approve releases, accept risk, execute rollback, seal Decision Proof, close audits, or make final governance judgments.
+
+### Registry-Facing Pilot Traceability
+
+Purpose:
+Adds registry-facing traceability for the M11 public integration pack pilot.
+
+The registry-facing traceability describes:
+
+- public integration pack pilot identity
+- evidence-interface role
+- external evidence consumer role
+- release proof linkage
+- replay/evaluator linkage
+- artifact consumption semantics linkage
+- governance boundary statement
+- AAOS-owned final authority statement
+
+Boundary:
+Registry-facing traceability is descriptive and evidence-linking only.
+
+The registry must not become governance authority, release authority, rollback authority, Decision Proof sealing authority, audit closure authority, or final governance authority.
+
+### External Consumer Fixtures and Fail-Closed Examples
+
+Purpose:
+Adds compliant and non-compliant external consumer fixtures and fail-closed consumption examples.
+
+The examples demonstrate that external consumers may:
+
+- surface review_required
+- surface escalation_required
+- surface fail_closed_recommended
+- preserve evidence linkage
+- preserve the sealing boundary
+- escalate to AAOS review
+
+But must not:
+
+- execute fail-closed
+- execute rollback
+- approve releases
+- accept risk
+- seal Decision Proof
+- close audits
+- make final governance judgments
+
+Boundary:
+fail_closed_recommended does not imply fail_closed_executed.
+
+External consumers may surface recommendations, but AAOS retains final governance authority.
+
+### M11 Completion Readiness Checklist
+
+Purpose:
+Adds a completion readiness checklist that verifies whether #120 Expected M11 Output is represented.
+
+The checklist verifies:
+
+- concrete Public Integration Pack pilot package
+- external evidence consumer specimen
+- sealed vs non-sealed artifact consumption semantics
+- integration-facing examples
+- release proof linkage for the pilot package
+- deterministic checks
+- README release/status update path for v0.10.0
+- clear preservation of AAOS final governance authority
+
+Boundary:
+Completion readiness is evidence review.
+
+The checklist, deterministic evaluator, README status, release proof linkage, registry-facing traceability, public integration packs, and external consumers may reference, inspect, report, replay, check, or link evidence.
+
+They must not seal Decision Proof, approve releases, accept risk, execute rollback, execute fail-closed, close audits, grant waivers, change approval doctrine, change identity trust, change policy authority, change decision routing, or make final governance judgments.
+
+## Next Phase
+
+- M12 — Public Integration Pack Consumer Registry and Integration CI
+  - Extend the M11 pilot into a broader external consumer registry pattern.
+  - Add integration-facing CI checks for public integration pack consumption.
+  - Strengthen cross-consumer traceability and release proof consistency.
+  - Preserve sealed vs non-sealed artifact semantics across multiple external consumers.
+  - Keep AAOS final governance authority, Decision Proof sealing, audit final judgment, rollback policy, and release authority AAOS-owned.
