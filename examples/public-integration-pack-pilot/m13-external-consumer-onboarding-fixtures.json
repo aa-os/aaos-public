@@ -1,0 +1,265 @@
+{
+  "fixture_id": "m13-external-consumer-onboarding-fixtures",
+  "fixture_name": "M13 External Consumer Onboarding Fixtures",
+  "fixture_scope": "external_consumer_registry_hardening_operational_readiness_onboarding",
+  "documentation_path": "docs/public-integration-pack/m13-external-consumer-onboarding.md",
+  "milestone": "M13",
+  "artifact_status": "active_work_in_progress_not_released",
+  "m13_completion_status": "active_work_not_complete",
+  "related_issue": "#176",
+  "tracker_issue_closure_state": "open_not_closed",
+  "tracker_issue_linkage": "Refs #176",
+  "runtime_approval_gate_evidence_pr": "#177",
+  "registry_drift_detection_pr": "#178",
+  "authority_boundary_regression_fixtures_pr": "#194",
+  "operational_readiness_checklist_pr": "#195",
+  "introduced_after_release": "v0.11.0",
+  "target_future_release": "v0.12.0",
+  "future_release_tag_path": {
+    "target_tag": "v0.12.0",
+    "state": "future_tag_path_only",
+    "released": false,
+    "boundary": "v0.12.0 is a future target release and must not be treated as released."
+  },
+  "release_status_path": {
+    "state": "future_target_release_only",
+    "readme_status_path": "README.md#next-phase",
+    "release_proof_linkage": "evidence_linkage_only",
+    "release_approval": false,
+    "m13_completion_boundary": "M13 is active work and must not be declared complete by onboarding documentation."
+  },
+  "onboarding_status": "ready_for_review_not_approved",
+  "external_consumer_role": {
+    "role_id": "external_evidence_consumer",
+    "description": "External consumers may consume AAOS evidence artifacts according to registry status without becoming governance authorities.",
+    "authority_granting": false
+  },
+  "documentation_sections": [
+    "external_consumer_role",
+    "registry_inclusion_boundary",
+    "evidence_consumption_boundary",
+    "runtime_approval_evidence_boundary",
+    "registry_drift_review_boundary",
+    "authority_boundary_regression_boundary",
+    "operational_readiness_review_boundary",
+    "onboarding_checklist",
+    "required_evidence_fields",
+    "prohibited_claims",
+    "fail_closed_and_escalation_handling",
+    "reviewer_handoff",
+    "future_only_v0_12_0_release_path",
+    "m13_active_work_status",
+    "aaos_owned_decision_proof_sealing",
+    "aaos_final_governance_authority"
+  ],
+  "onboarding_checklist": [
+    {
+      "check_id": "identify_external_consumer",
+      "description": "Identify the external consumer and registry entry.",
+      "ready_for_review": true,
+      "approved": false
+    },
+    {
+      "check_id": "record_consumer_role_and_artifact_scope",
+      "description": "Record consumer role and consumed artifact types.",
+      "ready_for_review": true,
+      "approved": false
+    },
+    {
+      "check_id": "record_allowed_and_forbidden_actions",
+      "description": "Record allowed evidence consumption actions and prohibited authority claims.",
+      "ready_for_review": true,
+      "approved": false
+    },
+    {
+      "check_id": "link_runtime_approval_evidence",
+      "description": "Link runtime approval evidence from #177 when relevant.",
+      "ready_for_review": true,
+      "approved": false
+    },
+    {
+      "check_id": "link_registry_drift_review",
+      "description": "Link registry drift detection from #178.",
+      "ready_for_review": true,
+      "approved": false
+    },
+    {
+      "check_id": "link_authority_boundary_regression_fixtures",
+      "description": "Link authority-boundary regression fixtures from #194.",
+      "ready_for_review": true,
+      "approved": false
+    },
+    {
+      "check_id": "link_operational_readiness_checklist",
+      "description": "Link operational readiness checklist evidence from #195.",
+      "ready_for_review": true,
+      "approved": false
+    },
+    {
+      "check_id": "confirm_future_only_release_path",
+      "description": "Confirm release proof linkage is future-only for v0.12.0.",
+      "ready_for_review": true,
+      "approved": false
+    },
+    {
+      "check_id": "prepare_reviewer_handoff",
+      "description": "Prepare reviewer handoff for AAOS review.",
+      "ready_for_review": true,
+      "approved": false
+    }
+  ],
+  "required_evidence_fields": [
+    "consumer_id",
+    "consumer_name",
+    "consumer_role",
+    "registry_entry_id",
+    "consumed_artifact_types",
+    "allowed_consumption_actions",
+    "forbidden_authority_actions",
+    "evidence_artifact_refs",
+    "artifact_status",
+    "sealed_status",
+    "runtime_approval_evidence_ref",
+    "registry_drift_review_ref",
+    "authority_boundary_regression_ref",
+    "operational_readiness_ref",
+    "release_proof_linkage_ref",
+    "reviewer_handoff",
+    "aaos_retained_authority_statement"
+  ],
+  "prohibited_claims": [
+    "consumer_approved",
+    "registry_entry_approved",
+    "onboarding_approved",
+    "execution_approved_by_documentation",
+    "release_approved",
+    "risk_accepted",
+    "decision_proof_sealed",
+    "sealed_by_documentation",
+    "audit_closed",
+    "waiver_granted",
+    "final_governance_judgment",
+    "authority_transferred",
+    "v0_12_0_released",
+    "m13_complete",
+    "closes_176"
+  ],
+  "required_boundary_statements": [
+    "External consumer onboarding documentation does not grant authority.",
+    "Registry inclusion is not approval.",
+    "Evidence consumption is not approval.",
+    "Runtime approval evidence is not execution approval.",
+    "Registry drift detection is not approval.",
+    "Operational readiness is not approval.",
+    "Release proof linkage is not release approval.",
+    "ready_for_review is not approval.",
+    "evidence_complete is not sealed.",
+    "replay_ready is not sealed.",
+    "onboarding_complete is not approved.",
+    "onboarding documentation must not close audits.",
+    "onboarding documentation must not grant waivers.",
+    "onboarding documentation must not make final governance judgments.",
+    "Decision Proof sealing remains AAOS-owned.",
+    "AAOS remains the decision sovereignty layer."
+  ],
+  "semantic_boundaries": {
+    "onboarding_documentation_boundary": "External consumer onboarding documentation does not grant authority.",
+    "registry_inclusion_boundary": "Registry inclusion is not approval.",
+    "evidence_consumption_boundary": "Evidence consumption is not approval.",
+    "runtime_approval_evidence_boundary": "Runtime approval evidence is not execution approval.",
+    "registry_drift_detection_boundary": "Registry drift detection is not approval.",
+    "operational_readiness_boundary": "Operational readiness is not approval.",
+    "release_proof_boundary": "Release proof linkage is not release approval.",
+    "ready_for_review_boundary": "ready_for_review is not approval.",
+    "evidence_complete_boundary": "evidence_complete is not sealed.",
+    "replay_ready_boundary": "replay_ready is not sealed.",
+    "onboarding_complete_boundary": "onboarding_complete is not approved.",
+    "audit_boundary": "onboarding documentation must not close audits.",
+    "waiver_boundary": "onboarding documentation must not grant waivers.",
+    "final_governance_boundary": "onboarding documentation must not make final governance judgments.",
+    "decision_proof_sealing_boundary": "Decision Proof sealing remains AAOS-owned.",
+    "sovereignty_boundary": "AAOS remains the decision sovereignty layer."
+  },
+  "fail_closed_and_escalation_handling": {
+    "may_surface_review_required": true,
+    "may_surface_escalation_required": true,
+    "may_surface_fail_closed_recommended": true,
+    "execute_fail_closed": false,
+    "execute_rollback": false,
+    "boundary": "not_ready is not fail_closed_executed. fail_closed_recommended is not fail_closed_executed."
+  },
+  "reviewer_handoff": {
+    "required": true,
+    "handoff_to": "AAOS reviewer",
+    "includes_registry_entry": true,
+    "includes_evidence_refs": true,
+    "includes_runtime_approval_evidence": true,
+    "includes_registry_drift_review": true,
+    "includes_authority_boundary_regression": true,
+    "includes_operational_readiness_checklist": true,
+    "includes_future_release_linkage": true,
+    "approval_granted": false
+  },
+  "allowed_evaluator_outputs": [
+    "onboarding_documentation_valid",
+    "onboarding_documentation_invalid",
+    "onboarding_boundary_preserved",
+    "onboarding_boundary_violation",
+    "onboarding_ready_for_review",
+    "onboarding_not_ready",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_evaluator_outputs": [
+    "consumer_approved",
+    "registry_entry_approved",
+    "onboarding_approved",
+    "execution_approved_by_documentation",
+    "release_approved",
+    "risk_accepted",
+    "decision_proof_sealed",
+    "sealed_by_documentation",
+    "audit_closed",
+    "waiver_granted",
+    "final_governance_judgment",
+    "authority_transferred",
+    "v0_12_0_released",
+    "m13_complete",
+    "closes_176"
+  ],
+  "authority_boundary": {
+    "may": [
+      "describe_required_evidence",
+      "describe_onboarding_steps",
+      "surface_review_required",
+      "surface_escalation_required",
+      "surface_fail_closed_recommended",
+      "reference_registry_entries",
+      "reference_runtime_approval_evidence",
+      "reference_registry_drift_review",
+      "reference_authority_boundary_regression",
+      "reference_operational_readiness",
+      "link_release_proof_evidence",
+      "hand_off_to_reviewer"
+    ],
+    "must_not": [
+      "approve_consumers",
+      "approve_registry_entries",
+      "approve_execution",
+      "approve_releases",
+      "accept_risk",
+      "execute_rollback",
+      "execute_fail_closed",
+      "seal_decision_proof",
+      "close_audits",
+      "grant_waivers",
+      "transfer_authority",
+      "make_final_governance_judgments"
+    ]
+  },
+  "governance_boundary_statement": "External consumer onboarding documentation is guidance and evidence structure only. It must not approve consumers, approve registry entries, approve execution, accept risk, approve releases, execute rollback, execute fail-closed, seal Decision Proof, close audits, grant waivers, transfer authority, or make final governance judgments.",
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
