@@ -509,7 +509,7 @@ Packet fields include:
 - replay_steps
 - replay_result
 - sealing_status
-- not_authority_statement
+- not-authority_statement
 - sovereignty_statement
 
 Boundary: The packet is replay evidence.
@@ -1103,8 +1103,24 @@ Readiness checklist results must not become release approval, risk acceptance, D
 ## Next Phase
 
 - M13 — External Consumer Registry Hardening and Operational Readiness
-  - Harden external consumer registry entries for broader operational use.
-  - Add stronger registry drift detection and authority-boundary regression checks.
-  - Prepare integration-facing documentation for consumer onboarding.
-  - Strengthen release proof consistency across external consumer registry updates.
-  - Preserve AAOS-owned Decision Proof sealing, audit final judgment, rollback policy, release authority, and final governance authority.
+  - M13 remains active work; final completion has not been declared.
+  - Tracker: #176 remains open.
+  - Future target release path: v0.12.0 has not been released and is not listed in released versions.
+  - Future README status path: v0.12.0 / M13 remains a future-only path until a final completion PR.
+  - Current M13 hardening evidence links:
+    - #177 Runtime-Enforced Approval Gate Evidence for Decision Proof.
+    - #178 Registry Drift Detection Specimen.
+    - #194 Authority-Boundary Regression Fixtures.
+    - #195 Operational Readiness Checklist.
+    - #196 External Consumer Onboarding Documentation.
+    - #197 Release Proof Linkage Specimen.
+  - Completion readiness is not completion.
+  - README future status path is not release publication.
+  - README future status path is not M13 completion.
+  - Release proof linkage is not release approval.
+  - completion_ready_for_review is not m13_complete.
+  - readme_future_path_present is not released.
+  - evidence_complete is not sealed.
+  - replay_ready is not sealed.
+  - Decision Proof sealing remains AAOS-owned.
+  - AAOS remains the decision sovereignty layer.
