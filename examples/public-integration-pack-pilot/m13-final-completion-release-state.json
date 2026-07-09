@@ -165,7 +165,7 @@
     ]
   },
   "governance_boundary_statement": "M13 completion does not transfer governance authority. External consumer registries, onboarding documents, release proof linkage, deterministic evaluators, README status entries, and evidence artifacts may link, report, inspect, replay, and preserve evidence, but they must not seal Decision Proof, accept risk, close audits independently, grant waivers, transfer authority, or make final governance judgments.",
-  "release_boundary_statement": "This artifact prepares repository release state for v0.12.0 but does not create the GitHub Release or create a release tag directly. GitHub Release v0.12.0 must be created manually after this PR is merged.",
+  "release_boundary_statement": "This artifact prepares repository release state for v0.12.0. It does not create the GitHub Release. It does not create a release tag directly. GitHub Release v0.12.0 must be created manually after this PR is merged.",
   "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
   "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
   "sovereignty_statement": "AAOS remains the decision sovereignty layer."
