@@ -509,7 +509,7 @@ Packet fields include:
 - replay_steps
 - replay_result
 - sealing_status
-- not-authority_statement
+- not_authority_statement
 - sovereignty_statement
 
 Boundary: The packet is replay evidence.
