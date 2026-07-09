@@ -1,0 +1,250 @@
+{
+  "checklist_id": "m13-operational-readiness-checklist",
+  "checklist_name": "M13 Operational Readiness Checklist",
+  "checklist_scope": "external_consumer_registry_hardening_operational_readiness_review",
+  "milestone": "M13",
+  "artifact_status": "active_work_in_progress_not_released",
+  "m13_completion_status": "active_work_not_complete",
+  "related_issue": "#176",
+  "tracker_issue_closure_state": "open_not_closed",
+  "tracker_issue_linkage": "Refs #176",
+  "runtime_approval_gate_evidence_pr": "#177",
+  "registry_drift_detection_pr": "#178",
+  "authority_boundary_regression_fixtures_pr": "#194",
+  "introduced_after_release": "v0.11.0",
+  "target_future_release": "v0.12.0",
+  "future_release_tag_path": {
+    "target_tag": "v0.12.0",
+    "state": "future_tag_path_only",
+    "released": false,
+    "boundary": "v0.12.0 is a future target release and must not be treated as released."
+  },
+  "release_status_path": {
+    "state": "future_target_release_only",
+    "readme_status_path": "README.md#next-phase",
+    "release_proof_linkage": "evidence_linkage_only",
+    "release_approval": false,
+    "v0_12_0_target_release_state": "v0.12.0 is a future target release and must not be treated as released.",
+    "m13_completion_boundary": "M13 is active work and must not be declared complete by this operational readiness checklist."
+  },
+  "m13_reference_artifacts": {
+    "runtime_enforced_approval_gate_evidence": "examples/public-integration-pack-pilot/m13-runtime-enforced-approval-gate-evidence.json",
+    "registry_drift_detection_specimen": "examples/public-integration-pack-pilot/m13-registry-drift-detection-specimen.json",
+    "authority_boundary_regression_fixtures": "examples/public-integration-pack-pilot/m13-authority-boundary-regression-fixtures.json",
+    "runtime_approval_gate_evaluator": "runtime/m13_runtime_approval_gate_evaluator.py",
+    "registry_drift_evaluator": "runtime/m13_registry_drift_evaluator.py",
+    "authority_boundary_regression_evaluator": "runtime/m13_authority_boundary_regression_evaluator.py"
+  },
+  "readiness_outcome": {
+    "state": "ready_for_review",
+    "approval": false,
+    "release_approval": false,
+    "decision_proof_sealing": false,
+    "audit_closure": false,
+    "tracker_closure": false,
+    "boundary": "ready_for_review is not approval."
+  },
+  "readiness_domains": [
+    {
+      "domain_id": "m13_tracker_issue_176_remains_open",
+      "description": "M13 tracker issue #176 remains open and is referenced with Refs only.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": ["#176"],
+      "authority_granting": false
+    },
+    {
+      "domain_id": "runtime_enforced_approval_evidence_from_177_present",
+      "description": "Runtime-enforced approval evidence from #177 is present.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": [
+        "#177",
+        "examples/public-integration-pack-pilot/m13-runtime-enforced-approval-gate-evidence.json"
+      ],
+      "runtime_approval_state": "enforced_gate_evidence_present",
+      "authority_granting": false
+    },
+    {
+      "domain_id": "registry_drift_detection_from_178_present",
+      "description": "Registry drift detection from #178 is present.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": [
+        "#178",
+        "examples/public-integration-pack-pilot/m13-registry-drift-detection-specimen.json"
+      ],
+      "authority_granting": false
+    },
+    {
+      "domain_id": "authority_boundary_regression_fixtures_from_194_present",
+      "description": "Authority-boundary regression fixtures from #194 are present.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": [
+        "#194",
+        "examples/public-integration-pack-pilot/m13-authority-boundary-regression-fixtures.json"
+      ],
+      "authority_granting": false
+    },
+    {
+      "domain_id": "external_consumer_registry_entry_stable",
+      "description": "External consumer registry entry is stable for readiness review.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": [
+        "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json"
+      ],
+      "authority_granting": false
+    },
+    {
+      "domain_id": "registry_drift_checks_available",
+      "description": "Registry drift checks are available for external consumer registry hardening.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": [
+        "runtime/m13_registry_drift_evaluator.py",
+        "tests/test_m13_registry_drift_evaluator.py"
+      ],
+      "authority_granting": false
+    },
+    {
+      "domain_id": "runtime_approval_evidence_enforced_or_explicitly_not_ready",
+      "description": "Runtime approval evidence is enforced or explicitly marked not-ready.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": [
+        "examples/public-integration-pack-pilot/m13-runtime-enforced-approval-gate-evidence.json",
+        "runtime/m13_runtime_approval_gate_evaluator.py"
+      ],
+      "runtime_approval_state": "enforced",
+      "explicit_not_ready": false,
+      "authority_granting": false
+    },
+    {
+      "domain_id": "onboarding_documentation_required_not_authority_granting",
+      "description": "Consumer onboarding documentation is required before completion, and onboarding documentation does not grant authority.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": ["#176"],
+      "documentation_required": true,
+      "authority_granting": false,
+      "boundary": "Onboarding documentation does not grant authority."
+    },
+    {
+      "domain_id": "release_proof_linkage_future_only_for_v0_12_0",
+      "description": "Release proof linkage remains future-only for v0.12.0.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": ["README.md#next-phase"],
+      "release_proof_linkage": "evidence_linkage_only",
+      "release_approval": false,
+      "authority_granting": false
+    },
+    {
+      "domain_id": "v0_12_0_not_released",
+      "description": "v0.12.0 is not released.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": ["README.md#next-phase"],
+      "released": false,
+      "authority_granting": false
+    },
+    {
+      "domain_id": "m13_not_complete",
+      "description": "M13 is active work and is not complete.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": ["#176"],
+      "m13_complete": false,
+      "authority_granting": false
+    },
+    {
+      "domain_id": "decision_proof_sealing_remains_aaos_owned",
+      "description": "Decision Proof sealing remains AAOS-owned.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": ["#176"],
+      "authority_granting": false
+    },
+    {
+      "domain_id": "aaos_remains_decision_sovereignty_layer",
+      "description": "AAOS remains the decision sovereignty layer.",
+      "represented": true,
+      "ready_for_review": true,
+      "evidence_refs": ["#176"],
+      "authority_granting": false
+    }
+  ],
+  "semantic_boundaries": {
+    "operational_readiness_boundary": "Operational readiness checks are evidence checks only.",
+    "ready_for_review_boundary": "ready_for_review is not approval.",
+    "not_ready_boundary": "not_ready is not fail_closed_executed.",
+    "review_required_boundary": "review_required is not audit closure.",
+    "release_proof_boundary": "Release proof linkage is not release approval.",
+    "onboarding_documentation_boundary": "Onboarding documentation does not grant authority.",
+    "decision_proof_sealing_boundary": "Decision Proof sealing remains AAOS-owned.",
+    "sovereignty_boundary": "AAOS remains the decision sovereignty layer."
+  },
+  "allowed_evaluator_outputs": [
+    "operational_readiness_checklist_valid",
+    "operational_readiness_checklist_invalid",
+    "readiness_domain_coverage_complete",
+    "readiness_domain_coverage_incomplete",
+    "ready_for_review",
+    "not_ready",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_evaluator_outputs": [
+    "consumer_approved",
+    "registry_entry_approved",
+    "release_approved",
+    "execution_approved_by_evaluator",
+    "risk_accepted",
+    "decision_proof_sealed",
+    "sealed_by_registry",
+    "sealed_by_consumer",
+    "sealed_by_ci",
+    "sealed_by_evaluator",
+    "rollback_executed",
+    "fail_closed_executed",
+    "audit_closed",
+    "waiver_granted",
+    "final_governance_judgment",
+    "authority_transferred",
+    "v0_12_0_released",
+    "m13_complete",
+    "closes_176"
+  ],
+  "authority_boundary": {
+    "may": [
+      "report_readiness_gaps",
+      "surface_review_required",
+      "surface_escalation_required",
+      "surface_fail_closed_recommended",
+      "reference_evidence",
+      "inspect_evidence",
+      "check_evidence",
+      "link_evidence"
+    ],
+    "must_not": [
+      "approve_consumers",
+      "approve_releases",
+      "approve_execution",
+      "accept_risk",
+      "execute_rollback",
+      "execute_fail_closed",
+      "seal_decision_proof",
+      "close_audits",
+      "grant_waivers",
+      "transfer_authority",
+      "make_final_governance_judgments"
+    ]
+  },
+  "governance_boundary_statement": "Operational readiness checks are evidence checks only. They may report readiness gaps, surface review requirements, surface escalation requirements, or recommend fail-closed handling. They must not approve consumers, approve releases, approve execution, accept risk, execute rollback, execute fail-closed, seal Decision Proof, close audits, grant waivers, transfer authority, or make final governance judgments.",
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
