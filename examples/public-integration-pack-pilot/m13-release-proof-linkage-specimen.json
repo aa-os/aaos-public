@@ -171,7 +171,7 @@
       "close_tracker_issue_176"
     ]
   },
-  "governance_boundary_statement": "Release proof linkage is evidence linkage only. It may link artifacts, report coverage, surface review requirements, surface escalation requirements, or recommend fail-closed handling. It must not approve releases, create releases, create tags, publish release notes, accept risk, seal Decision Proof, close audits, grant waivers, transfer authority, declare M13 complete, declare v0.12.0 released, close #176, or make final governance judgments.",
+  "governance_boundary_statement": "Release proof linkage is evidence linkage only. It may link artifacts, report coverage, surface review requirements, surface escalation requirements, or recommend fail-closed handling. It must not approve releases, create releases, create tags, publish release notes, accept risk, seal Decision Proof, close audits, grant waivers, transfer authority, declare M13 complete, declare v0.12.0 released, close the M13 tracker issue, or make final governance judgments.",
   "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
   "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
   "sovereignty_statement": "AAOS remains the decision sovereignty layer."
