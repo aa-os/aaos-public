@@ -1,0 +1,454 @@
+{
+  "fixture_set_id": "m13-authority-boundary-regression-fixtures",
+  "fixture_set_name": "M13 Authority-Boundary Regression Fixture Set",
+  "fixture_set_scope": "external_consumer_registry_hardening_and_operational_readiness_authority_boundary_regression",
+  "milestone": "M13",
+  "artifact_status": "active_work_in_progress_not_released",
+  "m13_completion_status": "active_work_not_complete",
+  "related_issue": "#176",
+  "tracker_issue_closure_state": "open_not_closed",
+  "tracker_issue_linkage": "Refs #176",
+  "runtime_approval_gate_evidence_pr": "#177",
+  "registry_drift_detection_pr": "#178",
+  "closed_runtime_approval_follow_up": "#171",
+  "closed_runtime_approval_follow_up_state": "closed_by_177",
+  "introduced_after_release": "v0.11.0",
+  "target_future_release": "v0.12.0",
+  "future_release_tag_path": {
+    "target_tag": "v0.12.0",
+    "state": "future_tag_path_only",
+    "released": false,
+    "boundary": "v0.12.0 is a future target release and must not be treated as released."
+  },
+  "release_status_path": {
+    "state": "future_target_release_only",
+    "readme_status_path": "README.md#next-phase",
+    "v0_12_0_target_release_state": "v0.12.0 is a future target release and must not be treated as released.",
+    "m13_completion_boundary": "M13 is active work and must not be declared complete by this authority-boundary regression fixture set."
+  },
+  "m12_reference_artifacts": {
+    "consumer_registry_pattern": "examples/public-integration-pack-pilot/m12-consumer-registry-pattern.json",
+    "integration_ci_check_specimen": "examples/public-integration-pack-pilot/m12-integration-ci-check-specimen.json",
+    "cross_consumer_traceability_examples": "examples/public-integration-pack-pilot/m12-cross-consumer-traceability-examples.json",
+    "multi_consumer_sealed_nonsealed_semantics": "examples/public-integration-pack-pilot/m12-multi-consumer-sealed-nonsealed-semantics.json",
+    "release_proof_linkage": "examples/public-integration-pack-pilot/m12-release-proof-linkage.json"
+  },
+  "m13_reference_artifacts": {
+    "runtime_enforced_approval_gate_evidence": "examples/public-integration-pack-pilot/m13-runtime-enforced-approval-gate-evidence.json",
+    "registry_drift_detection_specimen": "examples/public-integration-pack-pilot/m13-registry-drift-detection-specimen.json",
+    "runtime_approval_gate_evaluator": "runtime/m13_runtime_approval_gate_evaluator.py",
+    "registry_drift_evaluator": "runtime/m13_registry_drift_evaluator.py"
+  },
+  "authority_boundary_scope_statement": "Authority-boundary regression fixtures are evidence checks only. They may detect authority-boundary violations, report findings, surface review_required, surface escalation_required, or surface fail_closed_recommended, but they must not approve consumers, approve releases, approve execution, accept risk, execute rollback, execute fail-closed, seal Decision Proof, re-seal AAOS-sealed artifacts, convert non-sealed artifacts into sealed artifacts, close audits, grant waivers, transfer authority, or make final governance judgments.",
+  "authority_domains": [
+    "external_consumer_registry",
+    "registry_drift_detection",
+    "runtime_enforced_approval_evidence",
+    "integration_ci_checks",
+    "cross_consumer_traceability",
+    "multi_consumer_sealed_nonsealed_semantics",
+    "release_proof_linkage",
+    "deterministic_evaluators",
+    "runtime_replay_evidence",
+    "governance_ci_findings",
+    "onboarding_documents",
+    "readme_status_entries",
+    "external_evidence_consumers"
+  ],
+  "positive_authority_boundary_fixtures": [
+    {
+      "fixture_id": "registry_drift_detection_preserves_authority",
+      "fixture_type": "positive_registry_drift_authority_boundary",
+      "description": "Registry drift detection reports drift and recommends review, escalation, and fail-closed handling without executing authority actions.",
+      "authority_domain": "registry_drift_detection",
+      "allowed_outputs": [
+        "registry_drift_detected",
+        "review_required",
+        "escalation_required",
+        "fail_closed_recommended",
+        "authority_boundary_preserved"
+      ],
+      "forbidden_outputs": [
+        "consumer_approved",
+        "release_approved",
+        "risk_accepted",
+        "fail_closed_executed",
+        "final_governance_judgment"
+      ],
+      "authority_action_executed": false,
+      "authority_boundary_preserved": true
+    },
+    {
+      "fixture_id": "runtime_enforced_approval_evidence_preserves_authority",
+      "fixture_type": "positive_runtime_approval_authority_boundary",
+      "description": "Runtime approval evidence verifies gate ordering and binding without approving execution or sealing Decision Proof.",
+      "authority_domain": "runtime_enforced_approval_evidence",
+      "allowed_outputs": [
+        "enforced_gate_verified",
+        "approval_ordering_valid",
+        "approval_binding_valid",
+        "runtime_handoff_evidence_present",
+        "authority_boundary_preserved"
+      ],
+      "forbidden_outputs": [
+        "execution_approved_by_evaluator",
+        "risk_accepted",
+        "decision_proof_sealed",
+        "audit_closed",
+        "final_governance_judgment"
+      ],
+      "authority_action_executed": false,
+      "authority_boundary_preserved": true
+    },
+    {
+      "fixture_id": "release_proof_linkage_preserves_authority",
+      "fixture_type": "positive_release_proof_linkage_authority_boundary",
+      "description": "Release proof linkage preserves evidence linkage and future release status without approving release or completing M13.",
+      "authority_domain": "release_proof_linkage",
+      "allowed_outputs": [
+        "release_proof_linkage_present",
+        "release_status_future_only",
+        "evidence_linkage_preserved",
+        "authority_boundary_preserved"
+      ],
+      "forbidden_outputs": [
+        "release_approved",
+        "v0_12_0_released",
+        "m13_complete",
+        "audit_closed",
+        "final_governance_judgment"
+      ],
+      "authority_action_executed": false,
+      "authority_boundary_preserved": true
+    }
+  ],
+  "negative_regression_fixtures": [
+    {
+      "fixture_id": "registry_inclusion_as_approval",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Registry inclusion is approval.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "no_drift_detected_as_approval",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "no_drift_detected is approval.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "registry_drift_detector_approves_consumer",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "consumer_approved",
+      "invalid_claim": "Registry drift detector approves a consumer.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "registry_drift_detector_approves_release",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "release_approved",
+      "invalid_claim": "Registry drift detector approves a release.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "registry_drift_detector_accepts_risk",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "risk_accepted",
+      "invalid_claim": "Registry drift detector accepts risk.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "registry_drift_detector_executes_fail_closed",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "fail_closed_executed",
+      "invalid_claim": "Registry drift detector executes fail-closed.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "runtime_approval_evidence_approves_execution",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "execution_approved_by_evaluator",
+      "invalid_claim": "Runtime approval evidence approves execution.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "runtime_approval_evidence_accepts_risk",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "risk_accepted",
+      "invalid_claim": "Runtime approval evidence accepts risk.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "runtime_approval_evidence_seals_decision_proof",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "decision_proof_sealed",
+      "invalid_claim": "Runtime approval evidence seals Decision Proof.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "runtime_approval_evidence_closes_audit",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "audit_closed",
+      "invalid_claim": "Runtime approval evidence closes audit.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "integration_ci_pass_as_approval",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "CI pass is approval.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "traceability_linkage_as_approval",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Traceability linkage is approval.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "release_proof_linkage_as_release_approval",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Release proof linkage is release approval.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "fail_closed_recommended_as_fail_closed_executed",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "fail_closed_recommended is fail_closed_executed.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "sealing_eligible_as_sealed",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "sealing_eligible is sealed.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "evidence_complete_as_sealed",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "evidence_complete is sealed.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "replay_ready_as_sealed",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "replay_ready is sealed.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "evaluator_findings_as_sealing",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Evaluator findings are sealing.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "governance_ci_findings_as_sealing",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Governance CI findings are sealing.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "non_sealed_artifact_converted_into_sealed_artifact",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Non-sealed artifact is converted into sealed artifact.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "aaos_sealed_artifact_resealed",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "AAOS-sealed artifact is re-sealed by a registry, consumer, CI, evaluator, or traceability system.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "onboarding_documentation_grants_authority",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Onboarding documentation grants authority.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "readme_status_entry_grants_authority",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "README status entry grants authority.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "external_consumer_final_governance_authority",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "External consumer becomes final governance authority.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "final_governance_judgment_output",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "final_governance_judgment",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "audit_closed_output",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "attempted_forbidden_output": "audit_closed",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "v0_12_0_treated_as_released",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "v0.12.0 is released.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "m13_treated_as_complete",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "M13 is complete.",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    },
+    {
+      "fixture_id": "closes_176_language",
+      "fixture_type": "negative_authority_regression",
+      "negative_fixture": true,
+      "allowed_behavior": false,
+      "invalid_claim": "Closes #176",
+      "negative_fixture_boundary": "Deterministic evaluator regression fixture only; not allowed behavior."
+    }
+  ],
+  "semantic_boundaries": {
+    "registry_inclusion_boundary": "Registry inclusion is not approval.",
+    "no_drift_boundary": "no_drift_detected is not approval.",
+    "ci_pass_boundary": "CI pass is not approval.",
+    "traceability_linkage_boundary": "Traceability linkage is not approval.",
+    "release_proof_boundary": "Release proof linkage is not release approval.",
+    "runtime_approval_boundary": "Runtime approval evidence is not execution approval.",
+    "fail_closed_boundary": "fail_closed_recommended is not fail_closed_executed.",
+    "sealing_eligibility_boundary": "sealing_eligible is not sealed.",
+    "evidence_complete_boundary": "evidence_complete is not sealed.",
+    "replay_ready_boundary": "replay_ready is not sealed.",
+    "evaluator_findings_boundary": "evaluator findings are not sealing.",
+    "governance_ci_findings_boundary": "governance CI findings are not sealing.",
+    "non_sealed_conversion_boundary": "Non-sealed artifacts are not converted into sealed artifacts.",
+    "aaos_sealed_reseal_boundary": "AAOS-sealed artifacts are not re-sealed.",
+    "onboarding_documentation_boundary": "Onboarding documentation does not grant authority.",
+    "readme_status_boundary": "README status entries do not grant authority.",
+    "external_consumer_boundary": "External consumers do not become final governance authorities."
+  },
+  "allowed_evaluator_outputs": [
+    "authority_boundary_regression_fixtures_valid",
+    "authority_boundary_regression_fixtures_invalid",
+    "authority_domain_coverage_complete",
+    "authority_domain_coverage_incomplete",
+    "authority_boundary_preserved",
+    "authority_boundary_violation",
+    "release_status_future_only",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended"
+  ],
+  "forbidden_evaluator_outputs": [
+    "consumer_approved",
+    "registry_entry_approved",
+    "release_approved",
+    "execution_approved_by_evaluator",
+    "risk_accepted",
+    "decision_proof_sealed",
+    "sealed_by_registry",
+    "sealed_by_consumer",
+    "sealed_by_ci",
+    "sealed_by_evaluator",
+    "sealed_by_traceability",
+    "sealed_by_documentation",
+    "rollback_executed",
+    "fail_closed_executed",
+    "audit_closed",
+    "waiver_granted",
+    "final_governance_judgment",
+    "authority_transferred",
+    "v0_12_0_released",
+    "m13_complete",
+    "closes_176"
+  ],
+  "authority_boundary": {
+    "may": [
+      "detect_authority_boundary_violations",
+      "report_findings",
+      "surface_review_required",
+      "surface_escalation_required",
+      "surface_fail_closed_recommended",
+      "reference_evidence",
+      "inspect_evidence",
+      "replay_evidence",
+      "check_evidence",
+      "link_evidence"
+    ],
+    "must_not": [
+      "approve_consumers",
+      "approve_releases",
+      "approve_execution",
+      "accept_risk",
+      "execute_rollback",
+      "execute_fail_closed",
+      "seal_decision_proof",
+      "re_seal_aaos_sealed_artifacts",
+      "convert_non_sealed_artifacts_into_sealed_artifacts",
+      "close_audits",
+      "grant_waivers",
+      "transfer_authority",
+      "make_final_governance_judgments"
+    ]
+  },
+  "governance_boundary_statement": "Authority-boundary regression fixtures are evidence checks only. They may detect authority-boundary violations, report findings, surface review requirements, surface escalation requirements, or recommend fail-closed handling. They must not approve consumers, approve releases, approve execution, accept risk, execute rollback, execute fail-closed, seal Decision Proof, re-seal AAOS-sealed artifacts, convert non-sealed artifacts into sealed artifacts, close audits, grant waivers, transfer authority, or make final governance judgments.",
+  "decision_proof_sealing_boundary_statement": "Decision Proof sealing remains AAOS-owned.",
+  "aaos_retained_authority_statement": "AAOS retains purpose and business intent, risk appetite, approval doctrine, identity trust chain, policy authority, decision router logic, escalation semantics, fail-closed policy, rollback policy, final risk classification, Decision Proof sealing logic, audit final judgment, release authority, and final governance authority.",
+  "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+}
