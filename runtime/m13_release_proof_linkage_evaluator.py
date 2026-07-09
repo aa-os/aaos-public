@@ -171,6 +171,13 @@ TRACKER_176_CLOSURE_PHRASES = {
     "resolved #176",
 }
 
+SAFE_TRACKER_BOUNDARY_PHRASES = {
+    "must not close #176",
+    "not close #176",
+    "must not close tracker issue 176",
+    "close_tracker_issue_176",
+}
+
 SAFE_CONTEXT_KEYS = {
     "allowed_evaluator_outputs",
     "forbidden_evaluator_outputs",
@@ -480,7 +487,11 @@ def _required_boundary_language_present(boundary_language: str) -> bool:
 
 def _has_tracker_176_closure_claim(specimen: dict[str, Any]) -> bool:
     for item in _iter_claim_text(specimen):
-        if item == "closes_176" or any(phrase in item for phrase in TRACKER_176_CLOSURE_PHRASES):
+        if item == "closes_176":
+            return True
+        if any(safe_phrase in item for safe_phrase in SAFE_TRACKER_BOUNDARY_PHRASES):
+            continue
+        if any(phrase in item for phrase in TRACKER_176_CLOSURE_PHRASES):
             return True
     return False
 
