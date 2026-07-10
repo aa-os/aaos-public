@@ -393,29 +393,75 @@ jobs:
           """
 
 
+          def is_trusted_workflow_comment(comment):
+              if not isinstance(comment, dict):
+                  return False
+              user = comment.get("user") or {}
+              app = comment.get("performed_via_github_app") or {}
+              return (
+                  app.get("slug") == "github-actions"
+                  or (
+                      user.get("login") == "github-actions[bot]"
+                      and user.get("type") == "Bot"
+                  )
+              )
+
+
           def upsert_comment(repo_path, number, body):
               comments, complete = read_list(
                   f"{repo_path}/issues/{number}/comments", "provenance_comment_read_failed"
               )
               if not complete:
                   return "warning"
-              existing = [
+              marker_comments = [
                   comment
                   for comment in comments
                   if isinstance(comment, dict) and MARKER in str(comment.get("body") or "")
               ]
-              if existing:
-                  comment_id = existing[0].get("id")
-                  if not comment_id:
-                      warning("provenance_comment_missing_id")
-                      return "warning"
+              trusted_marker_comments = [
+                  comment
+                  for comment in marker_comments
+                  if is_trusted_workflow_comment(comment)
+              ]
+              untrusted_marker_comments = [
+                  comment
+                  for comment in marker_comments
+                  if not is_trusted_workflow_comment(comment)
+              ]
+              if untrusted_marker_comments:
+                  warning("untrusted_provenance_marker_comment_ignored")
+
+              trusted_with_id = sorted(
+                  (
+                      comment
+                      for comment in trusted_marker_comments
+                      if isinstance(comment.get("id"), int) and comment.get("id") > 0
+                  ),
+                  key=lambda comment: comment["id"],
+              )
+              if len(trusted_with_id) != len(trusted_marker_comments):
+                  warning("trusted_provenance_comment_missing_id")
+
+              if trusted_with_id:
+                  canonical_comment = trusted_with_id[0]
+                  comment_id = canonical_comment["id"]
                   _, updated = mutate(
                       "PATCH",
                       f"{repo_path}/issues/comments/{comment_id}",
                       {"body": body},
                       "provenance_comment_update_failed",
                   )
-                  return "updated" if updated else "warning"
+                  cleanup_ok = True
+                  for duplicate in trusted_with_id[1:]:
+                      _, deleted = mutate(
+                          "DELETE",
+                          f"{repo_path}/issues/comments/{duplicate['id']}",
+                          None,
+                          "duplicate_trusted_provenance_comment_delete_failed",
+                      )
+                      cleanup_ok = cleanup_ok and deleted
+                  return "updated" if updated and cleanup_ok else "warning"
+
               _, created = mutate(
                   "POST",
                   f"{repo_path}/issues/{number}/comments",

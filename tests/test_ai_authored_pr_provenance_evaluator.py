@@ -14,6 +14,7 @@ from runtime.ai_authored_pr_provenance_evaluator import (  # noqa: E402
     REQUIRED_WORKFLOW_OUTPUTS,
     evaluate_ai_authored_pr_provenance_fixture,
     evaluate_workflow_text,
+    is_trusted_workflow_comment,
 )
 
 
@@ -46,6 +47,13 @@ class AIAuthoredPRProvenanceEvaluatorTests(unittest.TestCase):
         return next(
             case
             for case in result["case_results"]
+            if case["case_type"] == case_type
+        )
+
+    def fixture_case(self, fixture_set, case_type):
+        return next(
+            case
+            for case in fixture_set["fixture_cases"]
             if case["case_type"] == case_type
         )
 
@@ -290,6 +298,115 @@ class AIAuthoredPRProvenanceEvaluatorTests(unittest.TestCase):
         marker = "<!-- aaos:m14-ai-pr-provenance -->"
         self.assertEqual(self.workflow_text.count(marker), 1)
         self.assertEqual(self.fixture_set["sticky_comment_marker"], marker)
+
+    def test_workflow_checks_github_actions_comment_ownership(self):
+        self.assertIn("def is_trusted_workflow_comment(comment):", self.workflow_text)
+        self.assertIn("performed_via_github_app", self.workflow_text)
+        self.assertIn('app.get("slug") == "github-actions"', self.workflow_text)
+        self.assertIn(
+            'user.get("login") == "github-actions[bot]"', self.workflow_text
+        )
+        self.assertIn('user.get("type") == "Bot"', self.workflow_text)
+        self.assertTrue(
+            is_trusted_workflow_comment(
+                {"performed_via_github_app": {"slug": "github-actions"}}
+            )
+        )
+        self.assertTrue(
+            is_trusted_workflow_comment(
+                {"user": {"login": "github-actions[bot]", "type": "Bot"}}
+            )
+        )
+
+    def test_untrusted_pr_author_marker_comment_is_ignored(self):
+        case = self.case_result(
+            self.evaluate(),
+            "untrusted_marker_comment_does_not_suppress_workflow_comment",
+        )
+
+        self.assertTrue(case["case_valid"])
+        self.assertEqual(case["trusted_marker_comment_count"], 0)
+        self.assertEqual(case["untrusted_marker_comment_count"], 1)
+        self.assertTrue(case["untrusted_marker_comments_ignored"])
+        self.assertIn(
+            "untrusted_provenance_marker_comment_ignored", self.workflow_text
+        )
+
+    def test_untrusted_marker_does_not_suppress_authentic_comment_creation(self):
+        case = self.case_result(
+            self.evaluate(),
+            "untrusted_marker_comment_does_not_suppress_workflow_comment",
+        )
+
+        self.assertEqual(case["comment_action"], "create")
+        self.assertIsNone(case["selected_comment_id"])
+        self.assertEqual(case["resulting_sticky_comment_count"], 1)
+
+    def test_untrusted_marker_comment_is_never_selected_for_patch(self):
+        case = self.case_result(
+            self.evaluate(),
+            "untrusted_marker_comment_does_not_suppress_workflow_comment",
+        )
+
+        self.assertEqual(case["patched_comment_ids"], [])
+        self.assertFalse(case["untrusted_comments_patched"])
+        self.assertNotIn("existing[0]", self.workflow_text)
+        self.assertRegex(
+            self.workflow_text,
+            r"(?s)canonical_comment\s*=\s*trusted_with_id\[0\].*?comment_id\s*=\s*canonical_comment\[\"id\"\].*?\"PATCH\"",
+        )
+
+    def test_trusted_workflow_owned_marker_comment_is_updated(self):
+        case = self.case_result(
+            self.evaluate(), "trusted_workflow_marker_comment_is_updated"
+        )
+
+        self.assertTrue(case["case_valid"])
+        self.assertEqual(case["trusted_marker_comment_count"], 1)
+        self.assertEqual(case["untrusted_marker_comment_count"], 0)
+        self.assertEqual(case["comment_action"], "update")
+        self.assertEqual(case["selected_comment_id"], 9022)
+        self.assertEqual(case["patched_comment_ids"], [9022])
+
+    def test_marker_text_alone_is_insufficient_to_establish_ownership(self):
+        marker = self.fixture_set["sticky_comment_marker"]
+        untrusted_comment = {
+            "id": 9100,
+            "body": marker,
+            "user": {"login": "pull-request-author", "type": "User"},
+        }
+
+        self.assertFalse(is_trusted_workflow_comment(untrusted_comment))
+        self.assertFalse(
+            self.fixture_set["sticky_comment_ownership"][
+                "marker_text_alone_establishes_ownership"
+            ]
+        )
+
+    def test_missing_comment_ownership_data_remains_non_blocking(self):
+        fixture_set = copy.deepcopy(self.fixture_set)
+        fixture_case = self.fixture_case(
+            fixture_set,
+            "untrusted_marker_comment_does_not_suppress_workflow_comment",
+        )
+        fixture_case["existing_marker_comments"] = [
+            {
+                "id": 9101,
+                "body": fixture_set["sticky_comment_marker"],
+            }
+        ]
+
+        result = self.evaluate(fixture_set)
+        case = self.case_result(
+            result,
+            "untrusted_marker_comment_does_not_suppress_workflow_comment",
+        )
+
+        self.assertTrue(result["ai_pr_provenance_valid"])
+        self.assertTrue(case["ownership_data_missing"])
+        self.assertEqual(case["comment_action"], "create")
+        self.assertEqual(case["patched_comment_ids"], [])
+        self.assertTrue(case["non_blocking"])
 
     def test_concurrency_serializes_sticky_comment_updates(self):
         self.assertIn(

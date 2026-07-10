@@ -107,6 +107,8 @@ REQUIRED_CASE_TYPES = {
     "ai_authored_pr_changing_only_non_sensitive_documentation",
     "ordinary_human_pr_with_no_ai_signal",
     "repeated_workflow_run_updates_sticky_comment_without_duplication",
+    "untrusted_marker_comment_does_not_suppress_workflow_comment",
+    "trusted_workflow_marker_comment_is_updated",
     "missing_reviewer_configuration_remains_non_blocking",
     "reviewer_api_failure_remains_non_blocking",
     "attempt_to_treat_pr_by_ai_as_approval",
@@ -243,6 +245,17 @@ def _dedupe(values: list[str]) -> list[str]:
     return list(dict.fromkeys(values))
 
 
+def is_trusted_workflow_comment(comment: Any) -> bool:
+    """Return whether GitHub server metadata identifies workflow ownership."""
+
+    record = _as_dict(comment)
+    user = _as_dict(record.get("user"))
+    app = _as_dict(record.get("performed_via_github_app"))
+    return app.get("slug") == "github-actions" or (
+        user.get("login") == "github-actions[bot]" and user.get("type") == "Bot"
+    )
+
+
 def _sensitive_path(path: Any) -> bool:
     normalized = str(path or "").replace("\\", "/").lstrip("./")
     lowered = normalized.casefold()
@@ -355,13 +368,37 @@ def _computed_case_state(case: dict[str, Any]) -> dict[str, Any]:
         else:
             reviewer_status = "reviewer_request_succeeded"
 
-    prior_comments = case.get("prior_sticky_comment_count", 0)
-    prior_comments = prior_comments if isinstance(prior_comments, int) else 0
+    marker_comments = [
+        _as_dict(comment)
+        for comment in _as_list(case.get("existing_marker_comments"))
+        if STICKY_MARKER in str(_as_dict(comment).get("body") or "")
+    ]
+    trusted_marker_comments = [
+        comment for comment in marker_comments if is_trusted_workflow_comment(comment)
+    ]
+    untrusted_marker_comments = [
+        comment for comment in marker_comments if not is_trusted_workflow_comment(comment)
+    ]
+    trusted_ids = sorted(
+        comment["id"]
+        for comment in trusted_marker_comments
+        if isinstance(comment.get("id"), int) and comment["id"] > 0
+    )
+    selected_comment_id = trusted_ids[0] if trusted_ids else None
     comment_action = "none"
-    resulting_comments = prior_comments
+    resulting_comments = len(trusted_marker_comments)
+    patched_comment_ids: list[int] = []
     if detected:
-        comment_action = "update" if prior_comments else "create"
+        comment_action = "update" if selected_comment_id is not None else "create"
         resulting_comments = 1
+        if selected_comment_id is not None:
+            patched_comment_ids = [selected_comment_id]
+
+    ownership_data_missing = any(
+        not _as_dict(comment.get("user"))
+        and not _as_dict(comment.get("performed_via_github_app"))
+        for comment in marker_comments
+    )
 
     return {
         "detected": detected,
@@ -373,6 +410,14 @@ def _computed_case_state(case: dict[str, Any]) -> dict[str, Any]:
         "add_human_review_required": review_routing_required,
         "comment_action": comment_action,
         "resulting_sticky_comment_count": resulting_comments,
+        "trusted_marker_comment_count": len(trusted_marker_comments),
+        "untrusted_marker_comment_count": len(untrusted_marker_comments),
+        "selected_comment_id": selected_comment_id,
+        "patched_comment_ids": patched_comment_ids,
+        "untrusted_marker_comments_ignored": detected
+        and bool(untrusted_marker_comments),
+        "untrusted_comments_patched": False,
+        "ownership_data_missing": ownership_data_missing,
         "review_routing_required": review_routing_required,
         "reviewer_request_status": reviewer_status,
         "pr_modified": detected,
@@ -454,6 +499,15 @@ def evaluate_workflow_text(workflow_text: Any) -> list[str]:
         "review_team_variable_missing": "AAOS_AI_PR_REVIEW_TEAMS",
         "review_request_endpoint_missing": "requested_reviewers",
         "comment_update_endpoint_missing": "issues/comments/",
+        "trusted_comment_helper_missing": "def is_trusted_workflow_comment(comment):",
+        "github_app_ownership_check_missing": "performed_via_github_app",
+        "github_actions_app_slug_check_missing": 'app.get("slug") == "github-actions"',
+        "github_actions_bot_login_check_missing": 'user.get("login") == "github-actions[bot]"',
+        "github_actions_bot_type_check_missing": 'user.get("type") == "Bot"',
+        "trusted_marker_partition_missing": "trusted_marker_comments = [",
+        "untrusted_marker_partition_missing": "untrusted_marker_comments = [",
+        "untrusted_marker_warning_missing": "untrusted_provenance_marker_comment_ignored",
+        "canonical_trusted_comment_selection_missing": "canonical_comment = trusted_with_id[0]",
     }
     for finding, token in required_security_tokens.items():
         if token not in workflow_text:
@@ -468,6 +522,13 @@ def evaluate_workflow_text(workflow_text: Any) -> list[str]:
         findings.append("sticky_comment_marker_not_unique_in_workflow")
     if '"PATCH"' not in workflow_text or '"POST"' not in workflow_text:
         findings.append("sticky_comment_upsert_behavior_incomplete")
+    if "existing[0]" in workflow_text:
+        findings.append("marker_text_alone_used_for_comment_ownership")
+    if not re.search(
+        r"(?s)canonical_comment\s*=\s*trusted_with_id\[0\].*?comment_id\s*=\s*canonical_comment\[\"id\"\].*?\"PATCH\"",
+        workflow_text,
+    ):
+        findings.append("patch_target_not_bound_to_trusted_workflow_comment")
 
     for output_name in REQUIRED_WORKFLOW_OUTPUTS:
         output_pattern = rf"(?m)^\s{{6}}{re.escape(output_name)}:\s*\$\{{\{{"
@@ -520,6 +581,20 @@ def _validate_fixture_contract(fixture_set: dict[str, Any]) -> list[str]:
 
     if fixture_set.get("sticky_comment_marker") != STICKY_MARKER:
         findings.append("sticky_comment_marker_invalid")
+    ownership = _as_dict(fixture_set.get("sticky_comment_ownership"))
+    ownership_expectations = {
+        "trusted_github_app_slug": "github-actions",
+        "trusted_bot_login": "github-actions[bot]",
+        "trusted_bot_type": "Bot",
+        "marker_text_alone_establishes_ownership": False,
+        "untrusted_marker_comments_ignored": True,
+        "untrusted_marker_comments_patched": False,
+        "canonical_workflow_owned_comment_count": 1,
+        "ownership_data_missing_is_non_blocking": True,
+    }
+    for field, expected in ownership_expectations.items():
+        if ownership.get(field) != expected:
+            findings.append(f"sticky_comment_ownership_invalid:{field}")
     if _string_set(fixture_set.get("recognized_agents")) != REQUIRED_AGENTS:
         findings.append("recognized_agents_incomplete")
     if _string_set(fixture_set.get("recognized_branch_prefixes")) != REQUIRED_BRANCH_PREFIXES:
@@ -619,6 +694,13 @@ def _evaluate_case(case: dict[str, Any]) -> dict[str, Any]:
         "pr_modified",
         "author_requested_as_reviewer",
         "unrelated_labels_preserved",
+        "trusted_marker_comment_count",
+        "untrusted_marker_comment_count",
+        "selected_comment_id",
+        "patched_comment_ids",
+        "untrusted_marker_comments_ignored",
+        "untrusted_comments_patched",
+        "ownership_data_missing",
     }:
         if optional_field in expected and expected[optional_field] != computed[optional_field]:
             findings.append(f"expected_field_mismatch:{optional_field}")
@@ -631,8 +713,14 @@ def _evaluate_case(case: dict[str, Any]) -> dict[str, Any]:
         computed["detected"] and computed["sensitive_change"]
     ):
         findings.append("human_review_routing_condition_invalid")
-    if computed["comment_action"] == "create" and case.get("prior_sticky_comment_count", 0):
-        findings.append("duplicate_sticky_comment_would_be_created")
+    if computed["comment_action"] == "create" and computed["selected_comment_id"] is not None:
+        findings.append("trusted_workflow_comment_suppressed_by_create")
+    if computed["comment_action"] == "update" and computed["selected_comment_id"] is None:
+        findings.append("comment_update_without_trusted_owner")
+    if computed["untrusted_comments_patched"]:
+        findings.append("untrusted_marker_comment_selected_for_patch")
+    if computed["detected"] and computed["resulting_sticky_comment_count"] != 1:
+        findings.append("canonical_workflow_owned_comment_count_invalid")
 
     return {
         "case_id": case_id,
@@ -717,4 +805,5 @@ __all__ = [
     "detect_agent_pr",
     "evaluate_ai_authored_pr_provenance_fixture",
     "evaluate_workflow_text",
+    "is_trusted_workflow_comment",
 ]
