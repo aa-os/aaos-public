@@ -1,0 +1,718 @@
+{
+  "fixture_id": "m14-moda-ai-risk-decision-proof-fixtures",
+  "fixture_name": "M14 MODA AI Risk Framework To AAOS Decision Proof Fixtures",
+  "fixture_scope": "m14_external_regulatory_risk_taxonomy_mapping_and_sector_decision_proof_controls",
+  "fixture_status": "m14_active_work_not_complete",
+  "related_issue": "#181",
+  "tracker_issue": "#201",
+  "tracker_issue_linkage": "Refs #201",
+  "related_voice_runtime_pr": "#202",
+  "related_public_output_gate_pr": "#204",
+  "source_framework": "Taiwan MODA AI Risk Classification Framework",
+  "source_framework_version": "v1.0",
+  "source_framework_role": "external_regulatory_risk_taxonomy_reference",
+  "source_framework_is_aaos_governance_authority": false,
+  "source_provenance": {
+    "issuing_authority": "Taiwan Ministry of Digital Affairs",
+    "publication_date": "2026-07-07",
+    "notice_number": "數位策略字第 1150015933 號",
+    "official_notice_url": "https://moda.gov.tw/press/bulletin/20086",
+    "official_pdf_url": "https://www-api.moda.gov.tw/File/Get/moda/zh-tw/UieEfux5Yv0iJuR",
+    "taxonomy_location": "Table 1, AI 風險類型表, printed pages 4-6",
+    "provenance_policy": "source_label_zh_tw preserves the official MODA label; source_label is an AAOS working English label; B6 source_label is fixed exactly by issue #181"
+  },
+  "m14_completion_status": "active_work_not_complete",
+  "target_future_release": "v0.13.0",
+  "future_release_tag_path": {
+    "released": false
+  },
+  "legal_approval_claimed": false,
+  "regulatory_certification_claimed": false,
+  "full_compliance_claimed": false,
+  "legal_advice_provided": false,
+  "decision_proof_sealed_by_fixture": false,
+  "final_risk_classification_made_by_fixture": false,
+  "required_boundary_statements": [
+    "The MODA framework is treated as an external regulatory-risk taxonomy reference, not an AAOS governance authority.",
+    "Regulatory mapping is not legal approval.",
+    "Taxonomy mapping is not compliance certification.",
+    "Risk-code coverage is not regulatory clearance.",
+    "Control coverage complete is not deployment approval.",
+    "Serious-harm screening is not final legal determination.",
+    "inherent_risk_screened is not risk accepted.",
+    "ready_for_review is not regulated deployment approval.",
+    "human_review_required is not audit closure.",
+    "fail_closed_recommended is not fail_closed_executed.",
+    "rollback_recommended is not rollback_executed.",
+    "Decision Proof sealing remains AAOS-owned.",
+    "AAOS remains the decision sovereignty layer."
+  ],
+  "semantic_boundaries": {
+    "external_reference_boundary": "MODA v1.0 supplies taxonomy provenance and does not receive AAOS policy, approval, sealing, or final-risk authority.",
+    "legal_boundary": "Regulatory mapping is not legal approval and this fixture is not legal advice.",
+    "certification_boundary": "Taxonomy and control coverage are not compliance certification.",
+    "deployment_boundary": "ready_for_review is not regulated deployment approval.",
+    "serious_harm_boundary": "Serious-harm screening is evidence for authorized review, not final legal determination or clearance.",
+    "risk_boundary": "inherent_risk_screened is not risk accepted.",
+    "review_boundary": "human_review_required is not audit closure.",
+    "fail_closed_boundary": "fail_closed_recommended is not fail_closed_executed.",
+    "rollback_boundary": "rollback_recommended is not rollback_executed.",
+    "sealing_boundary": "Decision Proof sealing remains AAOS-owned.",
+    "sovereignty_boundary": "AAOS remains the decision sovereignty layer."
+  },
+  "allowed_evaluator_outputs": [
+    "moda_ai_risk_mapping_valid",
+    "moda_ai_risk_mapping_invalid",
+    "taxonomy_coverage_complete",
+    "taxonomy_coverage_incomplete",
+    "decision_proof_checklist_complete",
+    "decision_proof_checklist_incomplete",
+    "b6_first_class_control_present",
+    "sector_coverage_complete",
+    "sector_coverage_incomplete",
+    "serious_harm_screening_required",
+    "human_review_required",
+    "public_output_gate_required",
+    "periodic_reassessment_required",
+    "ready_for_review",
+    "fail_closed_recommended",
+    "rollback_recommended",
+    "replay_required",
+    "escalation_required"
+  ],
+  "forbidden_evaluator_outputs": [
+    "legal_approval_granted",
+    "regulatory_compliance_certified",
+    "full_compliance_certified",
+    "regulated_deployment_approved",
+    "diagnosis_approved",
+    "treatment_approved",
+    "trade_approved",
+    "payment_approved",
+    "credit_decision_approved",
+    "hiring_decision_approved",
+    "termination_approved",
+    "government_eligibility_approved",
+    "public_disclosure_approved",
+    "risk_accepted",
+    "serious_harm_cleared",
+    "final_risk_classification",
+    "fail_closed_executed",
+    "rollback_executed",
+    "audit_closed",
+    "waiver_granted",
+    "decision_proof_sealed",
+    "sealed_by_regulatory_mapping",
+    "sealed_by_evaluator",
+    "authority_transferred",
+    "final_governance_judgment",
+    "m14_complete",
+    "v0_13_0_released",
+    "closes_201"
+  ],
+  "taxonomy_source_types": [
+    {
+      "prefix": "A",
+      "source_type_label_zh_tw": "AI 系統本身之技術設計缺陷",
+      "required_codes": ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"]
+    },
+    {
+      "prefix": "B",
+      "source_type_label_zh_tw": "部署後操作及人機互動問題",
+      "required_codes": ["B1", "B2", "B3", "B4", "B5", "B6"]
+    },
+    {
+      "prefix": "C",
+      "source_type_label_zh_tw": "社會結構與環境衝擊",
+      "required_codes": ["C1", "C2", "C3", "C4", "C5", "C6"]
+    }
+  ],
+  "decision_proof_checklist": {
+    "capture": [
+      {
+        "field": "application_scenario",
+        "required": true,
+        "purpose": "Record the intended use, affected process, and decision context."
+      },
+      {
+        "field": "stakeholders",
+        "required": true,
+        "purpose": "Record operators, decision subjects, reviewers, and affected parties."
+      },
+      {
+        "field": "model_tool_stack",
+        "required": true,
+        "purpose": "Record models, agents, tools, adapters, and runtime versions."
+      },
+      {
+        "field": "permission_scope",
+        "required": true,
+        "purpose": "Record available data, tool, repository, and action permissions."
+      },
+      {
+        "field": "data_sources",
+        "required": true,
+        "purpose": "Record provenance, sensitivity, allowed use, and freshness."
+      },
+      {
+        "field": "deployment_context",
+        "required": true,
+        "purpose": "Record environment, output channels, jurisdiction, and operating mode."
+      },
+      {
+        "field": "output_channel",
+        "required": true,
+        "purpose": "Record destination, audience, visibility, and publication boundary."
+      },
+      {
+        "field": "source_taxonomy_provenance",
+        "required": true,
+        "purpose": "Bind mapped risk codes and labels to the official MODA v1.0 source."
+      }
+    ],
+    "verify": [
+      {
+        "field": "taxonomy_risk_codes",
+        "required": true,
+        "purpose": "Map applicable A, B, and C codes without making a final classification."
+      },
+      {
+        "field": "inherent_risk_screening",
+        "required": true,
+        "purpose": "Screen objective inherent risk before crediting mitigating controls."
+      },
+      {
+        "field": "serious_harm_screening",
+        "required": true,
+        "purpose": "Surface potential serious harm for authorized review without clearing it."
+      },
+      {
+        "field": "existing_control_coverage",
+        "required": true,
+        "purpose": "Record control coverage and gaps without certifying compliance."
+      },
+      {
+        "field": "b6_authorization_boundary",
+        "required": true,
+        "purpose": "Verify permission, authorization, target, output channel, and trace bindings."
+      },
+      {
+        "field": "human_review_requirement",
+        "required": true,
+        "purpose": "Record required reviewer role and pre-action or pre-output handoff."
+      },
+      {
+        "field": "appealability_requirement",
+        "required": true,
+        "purpose": "Record challenge, correction, and remedy paths for affected people."
+      }
+    ],
+    "accumulate": [
+      {
+        "field": "trace_logs",
+        "required": true,
+        "purpose": "Retain replayable model, agent, tool, authorization, and output events."
+      },
+      {
+        "field": "review_evidence",
+        "required": true,
+        "purpose": "Retain reviewer identity, scope, findings, and handoff state."
+      },
+      {
+        "field": "rollback_records",
+        "required": true,
+        "purpose": "Retain rollback recommendations and separately recorded execution evidence."
+      },
+      {
+        "field": "incident_examples",
+        "required": true,
+        "purpose": "Retain incidents, near misses, detected drift, and control failures."
+      },
+      {
+        "field": "periodic_reassessment_record",
+        "required": true,
+        "purpose": "Retain scheduled and event-triggered reassessment evidence."
+      },
+      {
+        "field": "framework_version_history",
+        "required": true,
+        "purpose": "Retain source-version changes and code-label provenance."
+      },
+      {
+        "field": "replay_packet_id",
+        "required": true,
+        "purpose": "Bind the record to a replayable AAOS evidence packet."
+      }
+    ]
+  },
+  "taxonomy_mappings": [
+    {
+      "risk_code": "A1",
+      "source_risk_type": "A",
+      "source_label": "AI system security vulnerabilities and attacks",
+      "source_label_zh_tw": "AI 系統的安全漏洞與攻擊",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "system_security_and_adversarial_resilience",
+      "decision_proof_control_refs": {
+        "capture": ["model_tool_stack", "permission_scope", "deployment_context"],
+        "verify": ["taxonomy_risk_codes", "existing_control_coverage"],
+        "accumulate": ["trace_logs", "incident_examples", "periodic_reassessment_record"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "A2",
+      "source_risk_type": "A",
+      "source_label": "lack of transparency or explainability",
+      "source_label_zh_tw": "缺乏透明性或可解釋性",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "transparency_explainability_and_traceability",
+      "decision_proof_control_refs": {
+        "capture": ["application_scenario", "model_tool_stack"],
+        "verify": ["taxonomy_risk_codes", "human_review_requirement"],
+        "accumulate": ["trace_logs", "review_evidence", "replay_packet_id"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "A3",
+      "source_risk_type": "A",
+      "source_label": "AI behavior deviating from human intent and social values",
+      "source_label_zh_tw": "AI 行為偏離人類意圖與社會價值",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "intent_alignment_and_value_boundary",
+      "decision_proof_control_refs": {
+        "capture": ["application_scenario", "stakeholders", "deployment_context"],
+        "verify": ["taxonomy_risk_codes", "serious_harm_screening"],
+        "accumulate": ["trace_logs", "incident_examples", "rollback_records"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "A4",
+      "source_risk_type": "A",
+      "source_label": "AI with dangerous capabilities",
+      "source_label_zh_tw": "AI 具有危險的能力",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "dangerous_capability_and_containment",
+      "decision_proof_control_refs": {
+        "capture": ["model_tool_stack", "permission_scope", "deployment_context"],
+        "verify": ["inherent_risk_screening", "serious_harm_screening", "existing_control_coverage"],
+        "accumulate": ["trace_logs", "incident_examples", "rollback_records"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "A5",
+      "source_risk_type": "A",
+      "source_label": "privacy impacts and personal-data protection violations",
+      "source_label_zh_tw": "影響隱私與違反個人資料保護法規",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "privacy_and_personal_data_governance",
+      "decision_proof_control_refs": {
+        "capture": ["data_sources", "permission_scope", "stakeholders"],
+        "verify": ["taxonomy_risk_codes", "existing_control_coverage"],
+        "accumulate": ["trace_logs", "review_evidence", "periodic_reassessment_record"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "A6",
+      "source_risk_type": "A",
+      "source_label": "intellectual property infringement concerns",
+      "source_label_zh_tw": "侵害智慧財產權疑慮",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "intellectual_property_provenance",
+      "decision_proof_control_refs": {
+        "capture": ["data_sources", "model_tool_stack", "source_taxonomy_provenance"],
+        "verify": ["taxonomy_risk_codes", "existing_control_coverage"],
+        "accumulate": ["trace_logs", "framework_version_history", "review_evidence"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "A7",
+      "source_risk_type": "A",
+      "source_label": "unfair discrimination or bias",
+      "source_label_zh_tw": "不公平的歧視或偏見",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "fairness_bias_and_non_discrimination",
+      "decision_proof_control_refs": {
+        "capture": ["stakeholders", "data_sources", "application_scenario"],
+        "verify": ["taxonomy_risk_codes", "human_review_requirement", "appealability_requirement"],
+        "accumulate": ["review_evidence", "incident_examples", "periodic_reassessment_record"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "A8",
+      "source_risk_type": "A",
+      "source_label": "false or misleading information",
+      "source_label_zh_tw": "錯誤或誤導訊息",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "information_integrity_and_misleading_output",
+      "decision_proof_control_refs": {
+        "capture": ["application_scenario", "data_sources", "deployment_context"],
+        "verify": ["taxonomy_risk_codes", "human_review_requirement"],
+        "accumulate": ["trace_logs", "incident_examples", "review_evidence"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "B1",
+      "source_risk_type": "B",
+      "source_label": "overreliance and unsafe use",
+      "source_label_zh_tw": "過度依賴與不安全使用",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "human_reliance_and_safe_use",
+      "decision_proof_control_refs": {
+        "capture": ["application_scenario", "stakeholders", "deployment_context"],
+        "verify": ["human_review_requirement", "serious_harm_screening"],
+        "accumulate": ["review_evidence", "incident_examples", "periodic_reassessment_record"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "B2",
+      "source_risk_type": "B",
+      "source_label": "loss of human autonomy",
+      "source_label_zh_tw": "喪失人類自主性",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "human_autonomy_and_override",
+      "decision_proof_control_refs": {
+        "capture": ["stakeholders", "permission_scope", "application_scenario"],
+        "verify": ["human_review_requirement", "appealability_requirement"],
+        "accumulate": ["review_evidence", "rollback_records", "replay_packet_id"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "B3",
+      "source_risk_type": "B",
+      "source_label": "generation of illegal content",
+      "source_label_zh_tw": "生成違法內容",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "illegal_content_prevention_and_escalation",
+      "decision_proof_control_refs": {
+        "capture": ["application_scenario", "deployment_context", "output_channel"],
+        "verify": ["taxonomy_risk_codes", "existing_control_coverage", "human_review_requirement"],
+        "accumulate": ["trace_logs", "incident_examples", "review_evidence"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "B4",
+      "source_risk_type": "B",
+      "source_label": "fraud and deepfake technology misuse",
+      "source_label_zh_tw": "詐欺與深偽技術濫用",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "identity_provenance_and_deepfake_misuse",
+      "decision_proof_control_refs": {
+        "capture": ["model_tool_stack", "stakeholders", "deployment_context"],
+        "verify": ["taxonomy_risk_codes", "existing_control_coverage", "human_review_requirement"],
+        "accumulate": ["trace_logs", "review_evidence", "replay_packet_id"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "B5",
+      "source_risk_type": "B",
+      "source_label": "use in cyberattacks",
+      "source_label_zh_tw": "用於網路攻擊",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "cyber_misuse_and_tool_boundary",
+      "decision_proof_control_refs": {
+        "capture": ["model_tool_stack", "permission_scope", "deployment_context"],
+        "verify": ["inherent_risk_screening", "existing_control_coverage"],
+        "accumulate": ["trace_logs", "incident_examples", "rollback_records"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "B6",
+      "source_risk_type": "B",
+      "source_label": "AI autonomous agent unauthorized behavior",
+      "source_label_zh_tw": "AI 自主代理之授權外行為",
+      "source_provenance_ref": "official_moda_v1_0_table_1_and_issue_181_exact_english_label",
+      "aaos_control_category": "agent_authorization_and_action_boundary",
+      "decision_proof_control_refs": {
+        "capture": ["model_tool_stack", "permission_scope", "deployment_context"],
+        "verify": ["b6_authorization_boundary", "human_review_requirement", "serious_harm_screening"],
+        "accumulate": ["trace_logs", "review_evidence", "replay_packet_id"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "C1",
+      "source_risk_type": "C",
+      "source_label": "imbalance in competition between enterprises and countries",
+      "source_label_zh_tw": "企業及國家間競爭秩序失衡",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "competitive_pressure_and_safe_deployment",
+      "decision_proof_control_refs": {
+        "capture": ["application_scenario", "stakeholders", "deployment_context"],
+        "verify": ["inherent_risk_screening", "existing_control_coverage"],
+        "accumulate": ["framework_version_history", "periodic_reassessment_record", "review_evidence"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "C2",
+      "source_risk_type": "C",
+      "source_label": "concentration of power and unfair distribution of benefits",
+      "source_label_zh_tw": "權力集中與利益分配不公平",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "power_concentration_and_distributional_impact",
+      "decision_proof_control_refs": {
+        "capture": ["stakeholders", "application_scenario", "deployment_context"],
+        "verify": ["taxonomy_risk_codes", "appealability_requirement"],
+        "accumulate": ["review_evidence", "incident_examples", "periodic_reassessment_record"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "C3",
+      "source_risk_type": "C",
+      "source_label": "increased inequality and reduced job quality",
+      "source_label_zh_tw": "不平等加劇、就業品質下降",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "inequality_employment_quality_and_appeal",
+      "decision_proof_control_refs": {
+        "capture": ["stakeholders", "application_scenario", "data_sources"],
+        "verify": ["human_review_requirement", "appealability_requirement"],
+        "accumulate": ["review_evidence", "incident_examples", "periodic_reassessment_record"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "C4",
+      "source_risk_type": "C",
+      "source_label": "damage to the economic and cultural value of human creation",
+      "source_label_zh_tw": "人類在經濟與文化上之創作價值受損",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "human_creation_value_and_cultural_diversity",
+      "decision_proof_control_refs": {
+        "capture": ["stakeholders", "data_sources", "application_scenario"],
+        "verify": ["taxonomy_risk_codes", "existing_control_coverage"],
+        "accumulate": ["review_evidence", "framework_version_history", "periodic_reassessment_record"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "C5",
+      "source_risk_type": "C",
+      "source_label": "environmental harm",
+      "source_label_zh_tw": "環境傷害",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "environmental_impact_and_resource_use",
+      "decision_proof_control_refs": {
+        "capture": ["model_tool_stack", "deployment_context", "data_sources"],
+        "verify": ["inherent_risk_screening", "existing_control_coverage"],
+        "accumulate": ["periodic_reassessment_record", "framework_version_history", "review_evidence"]
+      },
+      "periodic_reassessment_required": true
+    },
+    {
+      "risk_code": "C6",
+      "source_risk_type": "C",
+      "source_label": "cognitive warfare and information sovereignty",
+      "source_label_zh_tw": "認知作戰與資訊主權",
+      "source_provenance_ref": "official_moda_v1_0_table_1",
+      "aaos_control_category": "cognitive_security_and_information_sovereignty",
+      "decision_proof_control_refs": {
+        "capture": ["application_scenario", "deployment_context", "stakeholders"],
+        "verify": ["taxonomy_risk_codes", "human_review_requirement", "serious_harm_screening"],
+        "accumulate": ["trace_logs", "incident_examples", "replay_packet_id"]
+      },
+      "periodic_reassessment_required": true
+    }
+  ],
+  "first_class_control_categories": [
+    {
+      "risk_code": "B6",
+      "source_label": "AI autonomous agent unauthorized behavior",
+      "source_label_zh_tw": "AI 自主代理之授權外行為",
+      "aaos_control_category": "agent_authorization_and_action_boundary",
+      "required_decision_proof_fields": [
+        "permission_scope",
+        "authorization_decision",
+        "action_target",
+        "output_channel",
+        "execution_trace_id"
+      ],
+      "requirements": {
+        "permission_scope_required": true,
+        "authorization_decision_required": true,
+        "action_target_binding_required": true,
+        "output_channel_binding_required": true,
+        "execution_trace_required": true
+      },
+      "boundary_statement": "Agent capability is not action authorization; B6 control evidence is not deployment approval or final governance judgment."
+    }
+  ],
+  "serious_harm_screening_boundary": {
+    "screening_required": true,
+    "screening_output": "serious_harm_screening_required",
+    "inherent_risk_screening_status": "inherent_risk_screened",
+    "final_legal_determination_made": false,
+    "risk_acceptance_made": false,
+    "human_review_required": true,
+    "reviewer_handoff": "authorized_domain_and_regulatory_review_required"
+  },
+  "periodic_reassessment_policy": {
+    "reassessment_required": true,
+    "required_fields": [
+      "reassessment_required",
+      "reassessment_cadence",
+      "last_assessment_recorded_at",
+      "next_assessment_due",
+      "reassessment_triggers",
+      "source_framework_version_at_assessment",
+      "changed_risk_codes",
+      "reviewer_handoff",
+      "replay_packet_id"
+    ],
+    "minimum_triggers": [
+      "source_framework_revision",
+      "model_or_tool_change",
+      "permission_change",
+      "new_data_source",
+      "incident_or_near_miss",
+      "serious_harm_signal",
+      "output_channel_change",
+      "material_deployment_context_change"
+    ],
+    "boundary_statement": "Periodic reassessment records evidence and does not certify continuing compliance."
+  },
+  "sector_scenarios": [
+    {
+      "scenario_id": "moda-sector-healthcare-001",
+      "sector": "healthcare",
+      "scenario": "AI-assisted clinical prioritization and recommendation support",
+      "mapped_risk_codes": ["A2", "A5", "A7", "A8", "B1", "B2", "B6"],
+      "sensitive_data_scope": "restricted_health_and_personal_data",
+      "serious_harm_screening": "required_not_cleared_by_mapping",
+      "human_review_required": true,
+      "appealability_required": true,
+      "decision_authority_boundary": "diagnosis_and_treatment_remain_with_authorized_human_clinicians",
+      "public_output_gate_required": false,
+      "related_control_pattern": "#202 high-risk runtime permission boundary",
+      "decision_proof_status": "ready_for_review",
+      "periodic_reassessment": {
+        "reassessment_required": true,
+        "reassessment_cadence": "quarterly_and_event_triggered",
+        "last_assessment_recorded_at": "fixture_baseline_2026-07-10",
+        "next_assessment_due": "quarterly_or_on_trigger",
+        "reassessment_triggers": ["model_or_tool_change", "new_data_source", "incident_or_near_miss", "serious_harm_signal"],
+        "source_framework_version_at_assessment": "v1.0",
+        "changed_risk_codes": [],
+        "reviewer_handoff": "clinical_safety_privacy_and_governance_review",
+        "replay_packet_id": "replay-moda-healthcare-001"
+      }
+    },
+    {
+      "scenario_id": "moda-sector-finance-001",
+      "sector": "finance",
+      "scenario": "AI-assisted financial analysis without transaction execution authority",
+      "mapped_risk_codes": ["A5", "A7", "A8", "B1", "B2", "B6", "C2"],
+      "sensitive_data_scope": "restricted_financial_and_personal_data",
+      "serious_harm_screening": "required_not_cleared_by_mapping",
+      "human_review_required": true,
+      "appealability_required": true,
+      "analysis_capability": "analysis_and_recommendation_only",
+      "transaction_authority": "not_granted_by_analysis_capability_or_mapping",
+      "transaction_execution_requires_separate_authorization": true,
+      "decision_authority_boundary": "trade_payment_and_credit_actions_require_separate_identity_bound_authorization",
+      "public_output_gate_required": false,
+      "related_control_pattern": "B6 agent authorization and action boundary",
+      "decision_proof_status": "ready_for_review",
+      "periodic_reassessment": {
+        "reassessment_required": true,
+        "reassessment_cadence": "quarterly_and_event_triggered",
+        "last_assessment_recorded_at": "fixture_baseline_2026-07-10",
+        "next_assessment_due": "quarterly_or_on_trigger",
+        "reassessment_triggers": ["permission_change", "model_or_tool_change", "incident_or_near_miss", "material_deployment_context_change"],
+        "source_framework_version_at_assessment": "v1.0",
+        "changed_risk_codes": [],
+        "reviewer_handoff": "financial_risk_transaction_authority_and_governance_review",
+        "replay_packet_id": "replay-moda-finance-001"
+      }
+    },
+    {
+      "scenario_id": "moda-sector-education-001",
+      "sector": "education",
+      "scenario": "AI-assisted learner support and education decision recommendations",
+      "mapped_risk_codes": ["A5", "A7", "A8", "B1", "B2", "B6", "C3"],
+      "sensitive_data_scope": "restricted_learner_and_education_records",
+      "serious_harm_screening": "required_not_cleared_by_mapping",
+      "human_review_required": true,
+      "appealability_required": true,
+      "decision_authority_boundary": "grading_admission_discipline_and_accommodation_decisions_require_human_authority",
+      "public_output_gate_required": false,
+      "related_control_pattern": "B2 human autonomy and B6 action boundary",
+      "decision_proof_status": "ready_for_review",
+      "periodic_reassessment": {
+        "reassessment_required": true,
+        "reassessment_cadence": "term_based_and_event_triggered",
+        "last_assessment_recorded_at": "fixture_baseline_2026-07-10",
+        "next_assessment_due": "next_term_or_on_trigger",
+        "reassessment_triggers": ["model_or_tool_change", "new_data_source", "incident_or_near_miss", "source_framework_revision"],
+        "source_framework_version_at_assessment": "v1.0",
+        "changed_risk_codes": [],
+        "reviewer_handoff": "education_equity_appeal_and_governance_review",
+        "replay_packet_id": "replay-moda-education-001"
+      }
+    },
+    {
+      "scenario_id": "moda-sector-labor-001",
+      "sector": "labor",
+      "scenario": "AI-assisted workforce analysis and employment decision recommendations",
+      "mapped_risk_codes": ["A5", "A7", "A8", "B1", "B2", "B6", "C3"],
+      "sensitive_data_scope": "restricted_worker_and_employment_records",
+      "serious_harm_screening": "required_not_cleared_by_mapping",
+      "human_review_required": true,
+      "appealability_required": true,
+      "decision_authority_boundary": "hiring_evaluation_scheduling_discipline_and_termination_require_human_authority",
+      "public_output_gate_required": false,
+      "related_control_pattern": "B2 human autonomy and B6 action boundary",
+      "decision_proof_status": "ready_for_review",
+      "periodic_reassessment": {
+        "reassessment_required": true,
+        "reassessment_cadence": "quarterly_and_event_triggered",
+        "last_assessment_recorded_at": "fixture_baseline_2026-07-10",
+        "next_assessment_due": "quarterly_or_on_trigger",
+        "reassessment_triggers": ["permission_change", "new_data_source", "incident_or_near_miss", "serious_harm_signal"],
+        "source_framework_version_at_assessment": "v1.0",
+        "changed_risk_codes": [],
+        "reviewer_handoff": "labor_rights_appeal_and_governance_review",
+        "replay_packet_id": "replay-moda-labor-001"
+      }
+    },
+    {
+      "scenario_id": "moda-sector-government-service-001",
+      "sector": "government_service",
+      "scenario": "AI-assisted government service response and eligibility explanation drafting",
+      "mapped_risk_codes": ["A5", "A7", "A8", "B2", "B3", "B4", "B6", "C6"],
+      "sensitive_data_scope": "restricted_citizen_and_government_service_data",
+      "serious_harm_screening": "required_not_cleared_by_mapping",
+      "human_review_required": true,
+      "appealability_required": true,
+      "decision_authority_boundary": "government_eligibility_and_service_determinations_require_authorized_human_or_statutory_process",
+      "public_output_gate_required": true,
+      "related_control_pattern": "#204 public issue exfiltration and public-output gate",
+      "public_output_gate_result": "ready_for_review",
+      "decision_proof_status": "ready_for_review",
+      "periodic_reassessment": {
+        "reassessment_required": true,
+        "reassessment_cadence": "quarterly_and_event_triggered",
+        "last_assessment_recorded_at": "fixture_baseline_2026-07-10",
+        "next_assessment_due": "quarterly_or_on_trigger",
+        "reassessment_triggers": ["output_channel_change", "permission_change", "incident_or_near_miss", "source_framework_revision"],
+        "source_framework_version_at_assessment": "v1.0",
+        "changed_risk_codes": [],
+        "reviewer_handoff": "public_output_privacy_eligibility_and_governance_review",
+        "replay_packet_id": "replay-moda-government-service-001"
+      }
+    }
+  ]
+}
