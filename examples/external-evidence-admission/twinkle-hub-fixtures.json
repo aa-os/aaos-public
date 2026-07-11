@@ -1,0 +1,294 @@
+{
+  "fixture_set_id": "twinkle-hub-external-evidence-admission-v1",
+  "fixture_policy_version": "aaos-external-evidence-admission-v1",
+  "deterministic": true,
+  "live_hub_calls": false,
+  "upstream_issue_references": [
+    "https://github.com/ai-twinkle/Hub/issues/6",
+    "https://github.com/ai-twinkle/Hub/issues/7",
+    "https://github.com/ai-twinkle/Hub/issues/8"
+  ],
+  "fixture_cases": [
+    {
+      "evidence_id": "hub-admission-verified-baseline-001",
+      "source_identity": {
+        "source_id": "ai-twinkle-hub",
+        "source_name": "ai-twinkle/Hub",
+        "source_type": "mcp",
+        "endpoint_reference": "https://api.twinkleai.tw/mcp/",
+        "client_type": "aaos-deterministic-fixture",
+        "authentication_mode": "fixture_no_live_auth"
+      },
+      "evidence_kind": "dataset",
+      "dataset_or_paper_identifier": "fixture-current-dataset",
+      "retrieved_at": "2026-07-07T10:31:55Z",
+      "source_published_at": "2026-07-05T00:00:00Z",
+      "source_batch_or_version": "fixture-current-20260705",
+      "authoritative_source_reference": "urn:aaos:fixture:authoritative:current-dataset",
+      "retrieval_succeeded": true,
+      "connection_status": "ready",
+      "freshness_required": true,
+      "freshness_threshold_seconds": 604800,
+      "freshness_status": "current",
+      "extraction_attempted": true,
+      "extraction_status": "complete",
+      "extraction_metrics": {
+        "item_count_reported": 2,
+        "item_count_verified": 2,
+        "missing_fields": [],
+        "schema_valid": true,
+        "structured_evidence_available": true,
+        "raw_source_available": true
+      },
+      "admission_result": "verified",
+      "policy_version": "aaos-external-evidence-admission-v1",
+      "admission_policy": {
+        "stale_freshness_result": "degraded",
+        "unknown_freshness_result": "rejected",
+        "partial_extraction_result": "degraded",
+        "fallback_required_result": "degraded"
+      },
+      "sanitized_error_category": "none",
+      "explicit_warnings": [],
+      "raw_or_pdf_fallback_reference": "fixture://hub/verified-baseline/raw-source.json",
+      "replay_failure_classification": {
+        "source_failure": "none",
+        "extraction_failure": "none",
+        "model_failure": "none",
+        "governance_failure": "none"
+      },
+      "decision_path_eligible": true,
+      "decision_proof_sealing_eligible": true,
+      "storage_disposition": "verified_evidence"
+    },
+    {
+      "evidence_id": "hub-issue-6-partial-extraction-001",
+      "source_identity": {
+        "source_id": "ai-twinkle-hub",
+        "source_name": "ai-twinkle/Hub",
+        "source_type": "mcp",
+        "endpoint_reference": "https://api.twinkleai.tw/mcp/",
+        "client_type": "aaos-deterministic-fixture",
+        "authentication_mode": "fixture_no_live_auth"
+      },
+      "evidence_kind": "paper",
+      "dataset_or_paper_identifier": "170565:109_109030_104_01",
+      "retrieved_at": "2026-07-03T10:51:16Z",
+      "source_published_at": null,
+      "source_batch_or_version": "paper-109_109030_104_01",
+      "authoritative_source_reference": "urn:aaos:fixture:hub-6:109_109030_104_01",
+      "retrieval_succeeded": true,
+      "connection_status": "ready",
+      "freshness_required": false,
+      "freshness_threshold_seconds": 0,
+      "freshness_status": "not_applicable",
+      "extraction_attempted": true,
+      "extraction_status": "partial",
+      "extraction_metrics": {
+        "item_count_reported": 3,
+        "item_count_verified": 3,
+        "missing_fields": [
+          "questions[3-42]",
+          "questions.options",
+          "questions.answer"
+        ],
+        "schema_valid": true,
+        "structured_evidence_available": true,
+        "raw_source_available": true
+      },
+      "admission_result": "degraded",
+      "policy_version": "aaos-external-evidence-admission-v1",
+      "admission_policy": {
+        "stale_freshness_result": "degraded",
+        "unknown_freshness_result": "rejected",
+        "partial_extraction_result": "degraded",
+        "fallback_required_result": "degraded"
+      },
+      "sanitized_error_category": "extraction_integrity_failed",
+      "explicit_warnings": [
+        "structured_questions_partial",
+        "missing_multiple_choice_options",
+        "missing_answer",
+        "raw_pdf_fallback_required"
+      ],
+      "raw_or_pdf_fallback_reference": "fixture://hub-issue-6/109_109030_104_01/question-and-answer.pdf",
+      "replay_failure_classification": {
+        "source_failure": "none",
+        "extraction_failure": "partial_extraction",
+        "model_failure": "none",
+        "governance_failure": "none"
+      },
+      "decision_path_eligible": false,
+      "decision_proof_sealing_eligible": false,
+      "storage_disposition": "inspection_only"
+    },
+    {
+      "evidence_id": "hub-issue-6-empty-extraction-001",
+      "source_identity": {
+        "source_id": "ai-twinkle-hub",
+        "source_name": "ai-twinkle/Hub",
+        "source_type": "mcp",
+        "endpoint_reference": "https://api.twinkleai.tw/mcp/",
+        "client_type": "aaos-deterministic-fixture",
+        "authentication_mode": "fixture_no_live_auth"
+      },
+      "evidence_kind": "paper",
+      "dataset_or_paper_identifier": "170565:110_110110_104_03",
+      "retrieved_at": "2026-07-03T10:51:16Z",
+      "source_published_at": null,
+      "source_batch_or_version": "paper-110_110110_104_03",
+      "authoritative_source_reference": "urn:aaos:fixture:hub-6:110_110110_104_03",
+      "retrieval_succeeded": true,
+      "connection_status": "ready",
+      "freshness_required": false,
+      "freshness_threshold_seconds": 0,
+      "freshness_status": "not_applicable",
+      "extraction_attempted": true,
+      "extraction_status": "empty",
+      "extraction_metrics": {
+        "item_count_reported": 0,
+        "item_count_verified": 0,
+        "missing_fields": [
+          "questions",
+          "questions.options",
+          "questions.answer"
+        ],
+        "schema_valid": true,
+        "structured_evidence_available": true,
+        "raw_source_available": true
+      },
+      "admission_result": "rejected",
+      "policy_version": "aaos-external-evidence-admission-v1",
+      "admission_policy": {
+        "stale_freshness_result": "degraded",
+        "unknown_freshness_result": "rejected",
+        "partial_extraction_result": "degraded",
+        "fallback_required_result": "degraded"
+      },
+      "sanitized_error_category": "extraction_integrity_failed",
+      "explicit_warnings": [
+        "structured_questions_empty",
+        "raw_pdf_fallback_required"
+      ],
+      "raw_or_pdf_fallback_reference": "fixture://hub-issue-6/110_110110_104_03/question-and-answer.pdf",
+      "replay_failure_classification": {
+        "source_failure": "none",
+        "extraction_failure": "empty_extraction",
+        "model_failure": "none",
+        "governance_failure": "none"
+      },
+      "decision_path_eligible": false,
+      "decision_proof_sealing_eligible": false,
+      "storage_disposition": "replay_metadata_only"
+    },
+    {
+      "evidence_id": "hub-issue-7-stale-dataset-001",
+      "source_identity": {
+        "source_id": "ai-twinkle-hub",
+        "source_name": "ai-twinkle/Hub",
+        "source_type": "mcp",
+        "endpoint_reference": "https://api.twinkleai.tw/mcp/",
+        "client_type": "aaos-deterministic-fixture",
+        "authentication_mode": "fixture_no_live_auth"
+      },
+      "evidence_kind": "dataset",
+      "dataset_or_paper_identifier": "pcc-tender",
+      "retrieved_at": "2026-07-07T10:31:55Z",
+      "source_published_at": "2026-03-15T00:00:00Z",
+      "source_batch_or_version": "20260302",
+      "authoritative_source_reference": "https://web.pcc.gov.tw/",
+      "retrieval_succeeded": true,
+      "connection_status": "ready",
+      "freshness_required": true,
+      "freshness_threshold_seconds": 2678400,
+      "freshness_status": "stale",
+      "extraction_attempted": true,
+      "extraction_status": "complete",
+      "extraction_metrics": {
+        "item_count_reported": 439,
+        "item_count_verified": 439,
+        "missing_fields": [],
+        "schema_valid": true,
+        "structured_evidence_available": true,
+        "raw_source_available": true
+      },
+      "admission_result": "degraded",
+      "policy_version": "aaos-external-evidence-admission-v1",
+      "admission_policy": {
+        "stale_freshness_result": "degraded",
+        "unknown_freshness_result": "rejected",
+        "partial_extraction_result": "degraded",
+        "fallback_required_result": "degraded"
+      },
+      "sanitized_error_category": "freshness_check_failed",
+      "explicit_warnings": [
+        "source_batch_stale",
+        "authoritative_source_refresh_required"
+      ],
+      "raw_or_pdf_fallback_reference": "fixture://hub-issue-7/pcc-tender/20260302.json",
+      "replay_failure_classification": {
+        "source_failure": "freshness_failure",
+        "extraction_failure": "none",
+        "model_failure": "none",
+        "governance_failure": "none"
+      },
+      "decision_path_eligible": false,
+      "decision_proof_sealing_eligible": false,
+      "storage_disposition": "inspection_only"
+    },
+    {
+      "evidence_id": "hub-issue-8-oauth-failure-001",
+      "source_identity": {
+        "source_id": "ai-twinkle-hub",
+        "source_name": "ai-twinkle/Hub",
+        "source_type": "mcp",
+        "endpoint_reference": "https://api.twinkleai.tw/mcp/",
+        "client_type": "mcp-remote-fixture",
+        "authentication_mode": "oauth_metadata_flow_observed"
+      },
+      "evidence_kind": "endpoint",
+      "dataset_or_paper_identifier": "hub-oauth-pre-retrieval",
+      "retrieved_at": "2026-07-09T02:57:57Z",
+      "source_published_at": null,
+      "source_batch_or_version": "not_observed",
+      "authoritative_source_reference": "https://github.com/ai-twinkle/Hub/issues/8",
+      "retrieval_succeeded": false,
+      "connection_status": "auth_failed",
+      "freshness_required": false,
+      "freshness_threshold_seconds": 0,
+      "freshness_status": "not_applicable",
+      "extraction_attempted": false,
+      "extraction_status": "fallback_required",
+      "extraction_metrics": {
+        "item_count_reported": 0,
+        "item_count_verified": 0,
+        "missing_fields": [],
+        "schema_valid": false,
+        "structured_evidence_available": false,
+        "raw_source_available": false
+      },
+      "admission_result": "rejected",
+      "policy_version": "aaos-external-evidence-admission-v1",
+      "admission_policy": {
+        "stale_freshness_result": "degraded",
+        "unknown_freshness_result": "rejected",
+        "partial_extraction_result": "degraded",
+        "fallback_required_result": "degraded"
+      },
+      "sanitized_error_category": "oauth_token_exchange_failed",
+      "explicit_warnings": [
+        "oauth_failure_before_retrieval"
+      ],
+      "raw_or_pdf_fallback_reference": "not_available:authentication_failed_before_retrieval",
+      "replay_failure_classification": {
+        "source_failure": "authentication_failure",
+        "extraction_failure": "none",
+        "model_failure": "none",
+        "governance_failure": "none"
+      },
+      "decision_path_eligible": false,
+      "decision_proof_sealing_eligible": false,
+      "storage_disposition": "replay_metadata_only"
+    }
+  ]
+}
