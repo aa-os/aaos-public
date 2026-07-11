@@ -43,11 +43,42 @@ REQUIRED_CANDIDATE_STATES = {
 
 REQUIRED_IMMUTABLE_BINDINGS = {
     "source_commit", "source_artifact_digest", "version",
-    "reviewed_permission_declaration", "reviewed_evidence_set",
+    "reviewed_permission_declaration", "reviewed_permission_scope",
+    "reviewed_evidence_set",
     "admission_policy_version",
 }
 
 REQUIRED_PERMISSION_AXES = {"shell", "network", "file", "mcp", "secret"}
+
+ACCESS_ENUMS = {
+    "network": {"none", "restricted_outbound"},
+    "file": {"none", "read_only", "restricted_read_write"},
+    "shell": {"none", "restricted_command_classes"},
+    "mcp": {"none", "restricted_mcp"},
+    "secret": {"none", "named_secret_classes"},
+}
+
+REQUIRED_PERMISSION_SCOPE_FIELDS = {
+    "required_tools", "network_domains", "file_scopes", "command_classes",
+    "mcp_server_identities", "environment_variable_names", "secret_classes",
+    "data_classifications", "activation_triggers",
+}
+
+PERMISSION_SCOPE_MIRRORS = {
+    "required_tools": "required_tools",
+    "network_domains": "allowed_network_domains",
+    "file_scopes": "allowed_file_scopes",
+    "command_classes": "allowed_command_classes",
+    "mcp_server_identities": "required_mcp_servers",
+    "environment_variable_names": "environment_variables",
+    "activation_triggers": "activation_triggers",
+}
+
+PERMISSION_SCOPE_BLOCK_MIRRORS = {
+    "network_domains": "blocked_network_domains",
+    "file_scopes": "blocked_file_scopes",
+    "command_classes": "blocked_command_classes",
+}
 
 REQUIRED_FAIL_CLOSED_RULES = {
     "unknown_skill_source", "missing_source_owner", "missing_source_commit",
@@ -60,7 +91,9 @@ REQUIRED_FAIL_CLOSED_RULES = {
     "signature_verification_evidence_missing", "required_scan_missing",
     "high_risk_evaluation_evidence_missing", "artifact_digest_drift",
     "skill_expired_or_stale", "reassessment_overdue",
-    "mutable_reference_without_binding",
+    "mutable_reference_without_binding", "malformed_optional_evidence",
+    "contradictory_evidence_requirements", "permission_scope_unbounded",
+    "blocked_scope_collision", "reviewed_permission_scope_binding_mismatch",
 }
 
 REQUIRED_FAIL_CLOSED_OUTCOMES = {
@@ -71,6 +104,7 @@ REQUIRED_FAIL_CLOSED_OUTCOMES = {
             "missing_artifact_digest", "missing_version", "missing_license",
             "missing_skill_owner", "undefined_output_contract", "required_signature_missing",
             "signature_verification_evidence_missing", "required_scan_missing",
+            "malformed_optional_evidence", "contradictory_evidence_requirements",
         }
         else "stale_reassessment_required"
         if rule in {"skill_expired_or_stale", "reassessment_overdue"}
@@ -87,7 +121,7 @@ REQUIRED_FAIL_CLOSED_CONDITIONS = {
     "missing_version": "version is missing", "missing_license": "license is missing",
     "missing_skill_owner": "skill owner is missing",
     "incomplete_permission_declaration": "permission declaration is incomplete",
-    "permission_escalation": "actual required permission exceeds declared permission",
+    "permission_escalation": "an observed coarse permission or detailed scope exceeds its reviewed declaration",
     "undeclared_shell_access": "shell access is undeclared",
     "undeclared_network_access": "network access is undeclared",
     "undeclared_file_access": "file access is undeclared",
@@ -99,12 +133,17 @@ REQUIRED_FAIL_CLOSED_CONDITIONS = {
     "insufficient_runtime_isolation": "runtime isolation is insufficient",
     "required_signature_missing": "signature is required but missing",
     "signature_verification_evidence_missing": "signature verification evidence is required but missing",
-    "required_scan_missing": "scan evidence is required but missing",
-    "high_risk_evaluation_evidence_missing": "high-risk use lacks benchmark or evaluation evidence",
+    "required_scan_missing": "scan evidence is required but its report, tool, timestamp, or artifact binding is missing",
+    "high_risk_evaluation_evidence_missing": "high-risk or critical use lacks either benchmark evidence or evaluation evidence",
     "artifact_digest_drift": "artifact digest no longer matches the reviewed artifact",
     "skill_expired_or_stale": "skill is expired or stale",
     "reassessment_overdue": "reassessment is overdue",
     "mutable_reference_without_binding": "source uses only a mutable branch or tag without immutable binding",
+    "malformed_optional_evidence": "optional signature or scan evidence is partial or malformed",
+    "contradictory_evidence_requirements": "evidence requirement flags contradict supplied or not-required evidence state",
+    "permission_scope_unbounded": "an allowed or observed permission scope contains a wildcard or unbounded value",
+    "blocked_scope_collision": "a requested or observed permission scope collides with a blocked scope",
+    "reviewed_permission_scope_binding_mismatch": "the declared detailed permission scope differs from its immutable reviewed binding",
 }
 
 REQUIRED_DEFAULT_POSTURE = {
@@ -235,13 +274,12 @@ EXPECTED_INTENDED_FILES = {
 
 EXPECTED_JETSON_SKILL_ID = "synthetic-jetson-read-only-diagnostic-skill"
 
-REQUIRED_EVIDENCE_POLICY = {
-    "signature_required": True,
-    "signature_verification_evidence_required": True,
-    "scan_required": True,
-    "benchmark_required": False,
-    "evaluation_required": False,
+EVIDENCE_REQUIREMENT_FIELDS = {
+    "signature_required", "signature_verification_evidence_required",
+    "scan_required", "benchmark_required", "evaluation_required",
 }
+
+NOT_REQUIRED_EVIDENCE = "not_required_by_policy"
 
 REGISTRY_FORBIDDEN_TRUE_FIELDS = {
     "final_approval", "execution_approved", "deployment_approved",
@@ -292,6 +330,189 @@ def _safe_string_set(value: Any) -> set[str]:
     return set(value) if _string_list(value) else set()
 
 
+def _evidence_absent(value: Any) -> bool:
+    return value is None or value == NOT_REQUIRED_EVIDENCE
+
+
+def _evidence_present(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip()) and value != NOT_REQUIRED_EVIDENCE
+
+
+def _evidence_value_well_formed(value: Any) -> bool:
+    return _evidence_absent(value) or _evidence_present(value)
+
+
+def _evidence_reference_list(value: Any, *, nonempty: bool = False) -> bool:
+    return (
+        _string_list(value, nonempty=nonempty)
+        and all(_evidence_present(reference) for reference in value)
+    )
+
+
+def _unbounded_scope_token(value: str) -> bool:
+    normalized = value.strip().casefold()
+    return (
+        "*" in value
+        or normalized in {"all", "any", "unbounded", "unrestricted"}
+        or normalized.startswith("all_")
+        or normalized.endswith("_all")
+        or normalized.endswith("://all")
+    )
+
+
+def _valid_environment_name(value: str) -> bool:
+    return (
+        bool(value)
+        and value == value.upper()
+        and value[0] != "_"
+        and not value[0].isdigit()
+        and all(character.isalnum() or character == "_" for character in value)
+        and "=" not in value
+    )
+
+
+def _valid_secret_class(value: str) -> bool:
+    normalized = value.casefold()
+    return (
+        bool(value)
+        and "=" not in value
+        and not any(character.isspace() for character in value)
+        and not normalized.startswith(("sk-", "ghp_", "bearer"))
+        and "secret_value" not in normalized
+        and "-----begin" not in normalized
+    )
+
+
+def _blocked_scope_match(value: str, blocked: set[str]) -> bool:
+    """Match exact deny identifiers; wildcard deny patterns never grant access."""
+
+    for pattern in blocked:
+        if pattern == "*" or value == pattern:
+            return True
+        if pattern.endswith("*") and value.startswith(pattern[:-1]):
+            return True
+    return False
+
+
+def _access_relation(axis: str, declared: Any, observed: Any) -> str:
+    """Return equal, escalation, overdeclaration, or invalid for coarse enums."""
+
+    allowed = ACCESS_ENUMS[axis]
+    if declared not in allowed or observed not in allowed:
+        return "invalid"
+    if declared == observed:
+        return "equal"
+    if observed == "none":
+        return "overdeclaration"
+    if declared == "none":
+        return "escalation"
+    if axis == "file":
+        if declared == "restricted_read_write" and observed == "read_only":
+            return "overdeclaration"
+        if declared == "read_only" and observed == "restricted_read_write":
+            return "escalation"
+    return "escalation"
+
+
+def _detailed_permission_scope_reasons(item: dict[str, Any]) -> list[str]:
+    """Compare observed scope to the immutable declared scope without execution."""
+
+    reasons: list[str] = []
+    scope = item.get("permission_scope")
+    if not isinstance(scope, dict) or set(scope) != {"declared", "observed"}:
+        return ["detailed_permission_scope_invalid"]
+    declared = scope.get("declared")
+    observed = scope.get("observed")
+    if (
+        not isinstance(declared, dict)
+        or not isinstance(observed, dict)
+        or set(declared) != REQUIRED_PERMISSION_SCOPE_FIELDS
+        or set(observed) != REQUIRED_PERMISSION_SCOPE_FIELDS
+    ):
+        return ["detailed_permission_scope_invalid"]
+
+    escalation = False
+    overdeclaration = False
+    for field in sorted(REQUIRED_PERMISSION_SCOPE_FIELDS):
+        declaration = declared.get(field)
+        observed_values = observed.get(field)
+        if (
+            not isinstance(declaration, dict)
+            or set(declaration) != {"allowed", "blocked"}
+            or not _string_list(declaration.get("allowed"))
+            or not _string_list(declaration.get("blocked"))
+            or not _string_list(observed_values)
+        ):
+            reasons.append(f"permission_scope_invalid:{field}")
+            continue
+        allowed_list = declaration["allowed"]
+        blocked_list = declaration["blocked"]
+        if (
+            len(allowed_list) != len(set(allowed_list))
+            or len(blocked_list) != len(set(blocked_list))
+            or len(observed_values) != len(set(observed_values))
+        ):
+            reasons.append(f"permission_scope_duplicate:{field}")
+            continue
+
+        if any(_unbounded_scope_token(value) for value in allowed_list + observed_values):
+            reasons.append(f"unbounded_permission_scope:{field}")
+            escalation = True
+
+        if field == "environment_variable_names" and any(
+            not _valid_environment_name(value)
+            for value in allowed_list + blocked_list + observed_values
+        ):
+            reasons.append("environment_variable_name_invalid")
+        if field == "secret_classes" and any(
+            not _valid_secret_class(value)
+            for value in allowed_list + blocked_list + observed_values
+        ):
+            reasons.append("secret_class_metadata_invalid")
+
+        allowed = set(allowed_list)
+        blocked = set(blocked_list)
+        observed_set = set(observed_values)
+        if any(_blocked_scope_match(value, blocked) for value in observed_set):
+            reasons.append(f"blocked_permission_scope:{field}")
+            escalation = True
+        if observed_set - allowed:
+            reasons.append(f"permission_scope_escalation:{field}")
+            escalation = True
+        if allowed - observed_set:
+            overdeclaration = True
+
+    for field, top_level in PERMISSION_SCOPE_MIRRORS.items():
+        declaration = declared.get(field)
+        if isinstance(declaration, dict) and item.get(top_level) != declaration.get("allowed"):
+            reasons.append(f"permission_scope_mirror_mismatch:{field}")
+    for field, top_level in PERMISSION_SCOPE_BLOCK_MIRRORS.items():
+        declaration = declared.get(field)
+        if isinstance(declaration, dict) and item.get(top_level) != declaration.get("blocked"):
+            reasons.append(f"permission_scope_block_mirror_mismatch:{field}")
+
+    classifications = declared.get("data_classifications")
+    if isinstance(classifications, dict) and classifications.get("allowed") != [
+        item.get("data_classification")
+    ]:
+        reasons.append("permission_scope_mirror_mismatch:data_classifications")
+
+    secret_classes = declared.get("secret_classes")
+    secret_allowed = (
+        secret_classes.get("allowed") if isinstance(secret_classes, dict) else None
+    )
+    if item.get("secret_access") == "none" and secret_allowed != []:
+        reasons.append("secret_scope_contradiction")
+    if item.get("secret_access") == "named_secret_classes" and not secret_allowed:
+        reasons.append("secret_scope_incomplete")
+
+    if escalation:
+        reasons.append("permission_escalation")
+    elif overdeclaration:
+        reasons.append("permission_overdeclaration")
+    return _dedupe(reasons)
+
+
 def _contains_forbidden_true_claim(value: Any) -> bool:
     """Reject affirmative governance/execution claims in registry records."""
 
@@ -329,8 +550,7 @@ def _contract_semantic_reasons(item: dict[str, Any], existing: list[str]) -> lis
         "skill_id", "skill_name", "source_repo", "source_owner", "source_commit",
         "source_artifact_digest", "version", "license", "description", "network_access",
         "file_access", "shell_access", "mcp_access", "secret_access", "data_classification",
-        "risk_level", "owner_contact", "scan_tool", "scan_timestamp", "signature_identity",
-        "signature_verification_method", "reassessment_interval", "last_reassessment",
+        "risk_level", "owner_contact", "reassessment_interval", "last_reassessment",
         "expiration_date", "admission_policy_version",
     }
     list_fields = {
@@ -362,7 +582,7 @@ def _contract_semantic_reasons(item: dict[str, Any], existing: list[str]) -> lis
             valid = _string_list(value, nonempty=field in nonempty_lists)
         elif field in dict_fields:
             valid = isinstance(value, dict) and bool(value)
-        elif field in {"scan_report", "signature"}:
+        elif field in {"scan_report", "signature", "benchmark_report"}:
             valid = value is None or (isinstance(value, str) and bool(value.strip()))
         if not valid and specific_fields.get(field) not in existing:
             reasons.append(f"required_contract_field_invalid:{field}")
@@ -383,10 +603,16 @@ def _contract_semantic_reasons(item: dict[str, Any], existing: list[str]) -> lis
                 reasons.append(f"permission_access_type_invalid:{axis}")
             if isinstance(declared_value, str) and isinstance(access_value, str) and declared_value != access_value:
                 reasons.append(f"permission_access_field_mismatch:{axis}")
+            if isinstance(declared_value, str) and declared_value not in ACCESS_ENUMS[axis]:
+                reasons.append(f"permission_access_enum_invalid:{axis}")
+            if isinstance(access_value, str) and access_value not in ACCESS_ENUMS[axis]:
+                reasons.append(f"permission_access_enum_invalid:{axis}")
     if not isinstance(observed, dict) or set(observed) != REQUIRED_PERMISSION_AXES or any(
         not isinstance(observed.get(axis), str) or not observed.get(axis)
         for axis in REQUIRED_PERMISSION_AXES
     ):
+        reasons.append("observed_permission_axes_invalid")
+    elif any(observed.get(axis) not in ACCESS_ENUMS[axis] for axis in REQUIRED_PERMISSION_AXES):
         reasons.append("observed_permission_axes_invalid")
 
     scope_fields = {
@@ -431,7 +657,7 @@ def _contract_semantic_reasons(item: dict[str, Any], existing: list[str]) -> lis
         ):
             reasons.append(f"permission_scope_allow_block_collision:{allowed_field}")
     if item.get("network_access") == "none" and (
-        item.get("allowed_network_domains") != [] or "*" not in (item.get("blocked_network_domains") or [])
+        item.get("allowed_network_domains") != []
     ):
         reasons.append("network_scope_contradiction")
     if isinstance(item.get("network_access"), str) and item.get("network_access") != "none" and (
@@ -439,12 +665,14 @@ def _contract_semantic_reasons(item: dict[str, Any], existing: list[str]) -> lis
         or not _string_list(item.get("blocked_network_domains"), nonempty=True)
     ):
         reasons.append("network_scope_incomplete")
+    if item.get("file_access") == "none" and item.get("allowed_file_scopes") != []:
+        reasons.append("file_scope_contradiction")
     if item.get("file_access") != "none" and (
         not item.get("allowed_file_scopes") or not item.get("blocked_file_scopes")
     ):
         reasons.append("file_scope_incomplete")
     if item.get("shell_access") == "none" and (
-        item.get("allowed_command_classes") != [] or "*" not in (item.get("blocked_command_classes") or [])
+        item.get("allowed_command_classes") != []
     ):
         reasons.append("shell_scope_contradiction")
     if isinstance(item.get("shell_access"), str) and item.get("shell_access") != "none" and (
@@ -458,22 +686,23 @@ def _contract_semantic_reasons(item: dict[str, Any], existing: list[str]) -> lis
         item.get("required_mcp_servers"), nonempty=True
     ):
         reasons.append("mcp_scope_incomplete")
-    if item.get("secret_access") == "none" and item.get("environment_variables") != []:
-        reasons.append("secret_scope_contradiction")
-    if isinstance(item.get("secret_access"), str) and item.get("secret_access") != "none" and not _string_list(
-        item.get("environment_variables"), nonempty=True
-    ):
-        reasons.append("secret_scope_incomplete")
-    if str(item.get("risk_level") or "").casefold() == "low":
+    if str(item.get("risk_level") or "").strip().casefold() == "low":
         low_maximum = {
             "shell": "none", "network": "none",
-            "file": "read_only_synthetic_fixture_scope", "mcp": "none", "secret": "none",
+            "file": "read_only", "mcp": "none", "secret": "none",
         }
-        if declared != low_maximum and not any(
+        low_risk_envelope_exceeded = not isinstance(declared, dict) or any(
+            _access_relation(axis, maximum, declared.get(axis))
+                in {"escalation", "invalid"}
+            for axis, maximum in low_maximum.items()
+        )
+        if low_risk_envelope_exceeded and not any(
             reason.startswith(("undeclared_", "permission_", "excessive_", "reviewed_permission_"))
             for reason in existing + reasons
         ):
             reasons.extend(["low_risk_permission_envelope_exceeded", "excessive_permissions"])
+
+    reasons.extend(_detailed_permission_scope_reasons(item))
 
     output = item.get("output_contract")
     if isinstance(output, dict) and (
@@ -520,14 +749,6 @@ def _contract_semantic_reasons(item: dict[str, Any], existing: list[str]) -> lis
     }
     if isinstance(contract_rules, list) and not required_contract_rules <= _safe_string_set(contract_rules):
         reasons.append("contract_fail_closed_rules_invalid")
-    if _parse_time(item.get("scan_timestamp")) is None:
-        reasons.append("invalid_scan_timestamp")
-    if _present(item.get("signature")) and (
-        not _present(item.get("signature_identity"))
-        or not _present(item.get("signature_verification_method"))
-    ):
-        reasons.append("signature_metadata_invalid")
-
     if item.get("skill_id") == "synthetic-jetson-read-only-diagnostic-skill":
         specimen = item.get("synthetic_specimen")
         true_flags = {
@@ -555,7 +776,7 @@ def _contract_semantic_reasons(item: dict[str, Any], existing: list[str]) -> lis
             reasons.append("jetson_prohibited_use_incomplete")
         expected_permissions = {
             "shell": "none", "network": "none",
-            "file": "read_only_synthetic_fixture_scope", "mcp": "none", "secret": "none",
+            "file": "read_only", "mcp": "none", "secret": "none",
         }
         permission_related = any(
             reason.startswith(("undeclared_", "permission_", "excessive_", "reviewed_permission_"))
@@ -654,21 +875,92 @@ def evaluate_skill_admission(
 
     evidence = item.get("evidence_requirements")
     evidence = evidence if isinstance(evidence, dict) else {}
-    evidence_boolean_fields = set(REQUIRED_EVIDENCE_POLICY)
     if (
-        set(evidence) != evidence_boolean_fields
-        or any(not isinstance(evidence.get(field), bool) for field in evidence_boolean_fields)
-        or any(evidence.get(field) is not True for field in (
-            "signature_required", "signature_verification_evidence_required", "scan_required"
-        ))
+        set(evidence) != EVIDENCE_REQUIREMENT_FIELDS
+        or any(
+            not isinstance(evidence.get(field), bool)
+            for field in EVIDENCE_REQUIREMENT_FIELDS
+        )
     ):
         reasons.append("evidence_requirement_policy_invalid")
-    if not _present(item.get("signature")):
+
+    signature_required = evidence.get("signature_required") is True
+    verification_required = (
+        evidence.get("signature_verification_evidence_required") is True
+    )
+    scan_required = evidence.get("scan_required") is True
+    signature = item.get("signature")
+    signature_identity = item.get("signature_identity")
+    signature_method = item.get("signature_verification_method")
+    signature_verification = item.get("signature_verification_evidence")
+    signature_present = _evidence_present(signature)
+    verification_present = _evidence_present(signature_verification)
+
+    if signature_required and not signature_present:
         reasons.append("required_signature_missing")
-    if not _present(item.get("signature_verification_evidence")):
-        reasons.append("signature_verification_evidence_missing")
-    if not _present(item.get("scan_report")):
+    if verification_required:
+        if not signature_present and not signature_required:
+            reasons.append("contradictory_evidence_requirements")
+            reasons.append("required_signature_missing")
+        if not verification_present:
+            reasons.append("signature_verification_evidence_missing")
+
+    signature_companions = (
+        signature_identity, signature_method, signature_verification,
+    )
+    if signature_present:
+        signature_metadata_complete = (
+            _evidence_present(signature_identity)
+            and _evidence_present(signature_method)
+        )
+        if not signature_metadata_complete:
+            reasons.append(
+                "optional_signature_evidence_malformed"
+                if not signature_required and not verification_required
+                else "signature_evidence_malformed"
+            )
+        if not _evidence_value_well_formed(signature_verification):
+            reasons.append(
+                "optional_signature_evidence_malformed"
+                if not verification_required
+                else "signature_evidence_malformed"
+            )
+    elif not signature_required and not verification_required:
+        if not all(
+            _evidence_absent(value)
+            for value in (signature, *signature_companions)
+        ):
+            reasons.append("optional_signature_evidence_malformed")
+
+    scan_report = item.get("scan_report")
+    scan_tool = item.get("scan_tool")
+    scan_timestamp = item.get("scan_timestamp")
+    scan_binding = item.get("scan_artifact_binding")
+    scan_parts_present = (
+        _evidence_present(scan_report),
+        _evidence_present(scan_tool),
+        _evidence_present(scan_timestamp),
+        isinstance(scan_binding, dict) and bool(scan_binding),
+    )
+    scan_bundle_absent = all(
+        _evidence_absent(value)
+        for value in (scan_report, scan_tool, scan_timestamp, scan_binding)
+    )
+    scan_binding_valid = isinstance(scan_binding, dict) and scan_binding == {
+        "source_commit": item.get("source_commit"),
+        "source_artifact_digest": item.get("source_artifact_digest"),
+        "version": item.get("version"),
+    }
+    scan_timestamp_valid = (
+        _parse_time(scan_timestamp) is not None
+        if _evidence_present(scan_timestamp)
+        else False
+    )
+    complete_scan = all(scan_parts_present) and scan_binding_valid and scan_timestamp_valid
+    if scan_required and not complete_scan:
         reasons.append("required_scan_missing")
+    elif not scan_required and not scan_bundle_absent and not complete_scan:
+        reasons.append("optional_scan_evidence_malformed")
 
     declared = item.get("required_permissions")
     declared = declared if isinstance(declared, dict) else {}
@@ -687,15 +979,22 @@ def evaluate_skill_admission(
             missing_axes.append(axis)
         actual = observed.get(axis)
         requested = declared.get(axis)
-        if isinstance(requested, str) and isinstance(actual, str) and actual != requested:
-            if actual == "none" and requested != "none":
-                overdeclared = True
-            elif actual != "none":
-                escalated = True
+        relation = _access_relation(axis, requested, actual)
+        if relation == "escalation":
+            escalated = True
+        elif relation == "overdeclaration":
+            overdeclared = True
+        elif (
+            relation == "invalid"
+            and _present(requested)
+            and isinstance(actual, str)
+            and actual != "none"
+        ):
+            escalated = True
         if (
             not _present(requested)
             and isinstance(actual, str)
-            and actual not in {"none", "read_only_synthetic_fixture_scope"}
+            and actual not in {"none", "read_only"}
         ):
             escalated = True
     if escalated:
@@ -717,6 +1016,17 @@ def evaluate_skill_admission(
                 reasons.append("reviewed_permission_binding_invalid")
             elif reviewed != declared:
                 reasons.append("reviewed_permission_binding_mismatch")
+            permission_scope = item.get("permission_scope")
+            declared_scope = (
+                permission_scope.get("declared")
+                if isinstance(permission_scope, dict)
+                else None
+            )
+            reviewed_scope = binding.get("reviewed_permission_scope")
+            if not isinstance(reviewed_scope, dict) or not reviewed_scope:
+                reasons.append("reviewed_permission_scope_binding_invalid")
+            elif reviewed_scope != declared_scope:
+                reasons.append("reviewed_permission_scope_binding_mismatch")
         identity_pairs = (
             ("source_commit", "source_commit"),
             ("source_artifact_digest", "source_artifact_digest"),
@@ -744,22 +1054,29 @@ def evaluate_skill_admission(
                 )
             )
             or (
-                str(item.get("risk_level") or "").casefold() in {"high", "critical"}
+                str(item.get("risk_level") or "").strip().casefold()
+                    in {"high", "critical"}
                 and (
-                    not _present(item.get("benchmark_report"))
-                    or not _string_list(item.get("evaluation_artifacts"), nonempty=True)
+                    not _evidence_present(item.get("benchmark_report"))
+                    or not _evidence_reference_list(
+                        item.get("evaluation_artifacts"), nonempty=True
+                    )
                 )
             )
         ):
             evaluation_artifacts = item.get("evaluation_artifacts")
-            safe_evaluations = evaluation_artifacts if _string_list(evaluation_artifacts) else []
+            safe_evaluations = (
+                evaluation_artifacts
+                if _evidence_reference_list(evaluation_artifacts)
+                else []
+            )
             current_evidence = {
                 value for value in (
                     item.get("signature"), item.get("scan_report"),
                     item.get("signature_verification_evidence"),
                     item.get("benchmark_report"), *safe_evaluations,
                 )
-                if isinstance(value, str) and value.strip()
+                if _evidence_present(value)
             }
             if set(reviewed_evidence) != current_evidence:
                 reasons.append("reviewed_evidence_binding_mismatch")
@@ -814,10 +1131,12 @@ def evaluate_skill_admission(
     elif overdue:
         reasons.append("reassessment_overdue")
 
-    high_risk = str(item.get("risk_level") or "").casefold() in {"high", "critical"}
+    high_risk = str(item.get("risk_level") or "").strip().casefold() in {
+        "high", "critical",
+    }
     if high_risk:
-        benchmark_missing = not _present(item.get("benchmark_report"))
-        evaluations_missing = not _string_list(
+        benchmark_missing = not _evidence_present(item.get("benchmark_report"))
+        evaluations_missing = not _evidence_reference_list(
             item.get("evaluation_artifacts"), nonempty=True
         )
         if (
@@ -865,6 +1184,8 @@ def evaluate_skill_admission(
     if any(reason in reasons for reason in (
         "permission_escalation", "permission_overdeclaration", "excessive_permissions",
         "reviewed_permission_binding_mismatch",
+        "reviewed_permission_scope_binding_mismatch",
+        "reviewed_permission_scope_binding_invalid",
     )):
         outputs.append("permission_mismatch_detected")
     if any(reason in reasons for reason in ("insufficient_runtime_isolation", "high_risk_sandbox_missing")):
@@ -1030,6 +1351,8 @@ def _fixture_findings(fixture: dict[str, Any]) -> list[str]:
             or not isinstance(contract_binding, dict)
             or artifact_identity.get("reviewed_permission_declaration")
                 != contract_binding.get("reviewed_permission_declaration")
+            or artifact_identity.get("reviewed_permission_scope")
+                != contract_binding.get("reviewed_permission_scope")
             or not _string_list(
                 artifact_identity.get("reviewed_evidence_set"), nonempty=True
             )
@@ -1047,11 +1370,48 @@ def _fixture_findings(fixture: dict[str, Any]) -> list[str]:
         findings.append("permission_policy_incomplete")
     else:
         expected_low_envelope = {
-            "shell": "none", "network": "none", "file": "read_only_synthetic_fixture_scope",
+            "shell": "none", "network": "none", "file": "read_only",
             "mcp": "none", "secret": "none",
         }
         if permission.get("low_risk_maximum_envelope") != expected_low_envelope:
             findings.append("low_risk_maximum_envelope_invalid")
+        expected_access_enums = {
+            axis: sorted(values) for axis, values in ACCESS_ENUMS.items()
+        }
+        actual_access_enums = permission.get("access_enums")
+        if not isinstance(actual_access_enums, dict) or {
+            axis: sorted(values) if _string_list(values) else values
+            for axis, values in actual_access_enums.items()
+        } != expected_access_enums:
+            findings.append("permission_policy_access_enums_invalid")
+        if (
+            _safe_string_set(permission.get("permission_scope_dimensions"))
+                != REQUIRED_PERMISSION_SCOPE_FIELDS
+            or permission.get("declared_scope_dimension_shape")
+                != {
+                    "allowed": "unique_bounded_string_list",
+                    "blocked": "unique_bounded_string_list",
+                }
+            or permission.get("observed_scope_dimension_shape")
+                != "unique_bounded_string_list"
+            or permission.get("observed_must_be_subset_of_reviewed_declared_allowed")
+                is not True
+            or permission.get("blocked_scope_precedence")
+                != "blocked_overrides_allowed"
+            or permission.get("narrower_observed_scope_is_permission_escalation")
+                is not False
+            or permission.get("permission_overdeclaration_may_be_reported")
+                is not True
+            or permission.get("wildcard_or_unbounded_allowed_or_observed_scope_outcome")
+                != "candidate_blocked"
+            or permission.get("environment_variable_names_imply_secret_access")
+                is not False
+            or permission.get("secret_access_uses_named_secret_classes")
+                is not True
+            or permission.get("raw_secret_values_allowed_in_fixture_metadata")
+                is not False
+        ):
+            findings.append("permission_policy_scope_semantics_invalid")
         if (
             permission.get("undeclared_permission_outcome") != "candidate_blocked"
             or permission.get("permission_escalation_outcome") != "candidate_blocked"
@@ -1095,6 +1455,8 @@ def _fixture_findings(fixture: dict[str, Any]) -> list[str]:
         not isinstance(high_policy, dict)
         or _safe_string_set(high_policy.get("risk_levels")) != {"high", "critical"}
         or _safe_string_set(high_policy.get("required_controls")) != required_high_controls
+        or high_policy.get("benchmark_and_evaluation_are_both_required") is not True
+        or high_policy.get("requirement_flags_cannot_disable_controls") is not True
         or high_policy.get("medical_skill_without_evaluation_outcome") != "candidate_blocked"
         or high_policy.get("physical_action_without_sandbox_or_review_outcome") != "candidate_blocked"
         or high_policy.get("risk_acceptance_by_evaluator") is not False
@@ -1120,7 +1482,7 @@ def _fixture_findings(fixture: dict[str, Any]) -> list[str]:
     contract_specimen = contract.get("synthetic_specimen")
     expected_permissions = {
         "shell": "none", "network": "none",
-        "file": "read_only_synthetic_fixture_scope", "mcp": "none", "secret": "none",
+        "file": "read_only", "mcp": "none", "secret": "none",
     }
     specimen_flag_pairs = {
         "synthetic": "synthetic",

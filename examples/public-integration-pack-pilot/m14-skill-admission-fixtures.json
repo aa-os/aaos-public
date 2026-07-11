@@ -103,33 +103,41 @@
     "required_permissions": {
       "shell": "none",
       "network": "none",
-      "file": "read_only_synthetic_fixture_scope",
+      "file": "read_only",
       "mcp": "none",
       "secret": "none"
     },
     "network_access": "none",
     "allowed_network_domains": [],
     "blocked_network_domains": [
-      "*"
+      "external-network-disabled.invalid"
     ],
-    "file_access": "read_only_synthetic_fixture_scope",
+    "file_access": "read_only",
     "allowed_file_scopes": [
       "fixture://synthetic-jetson-diagnostic-input/read-only"
     ],
     "blocked_file_scopes": [
-      "device://*",
-      "firmware://*",
-      "credentials://*",
-      "host://*"
+      "device://all",
+      "firmware://all",
+      "credentials://all",
+      "host://all"
     ],
     "shell_access": "none",
     "allowed_command_classes": [],
     "blocked_command_classes": [
-      "*"
+      "arbitrary_shell",
+      "credential_access",
+      "destructive",
+      "device_mutation",
+      "firmware_modification",
+      "package_installation",
+      "privileged"
     ],
     "mcp_access": "none",
     "required_mcp_servers": [],
-    "environment_variables": [],
+    "environment_variables": [
+      "LOG_LEVEL"
+    ],
     "secret_access": "none",
     "data_classification": "synthetic_non_sensitive_fixture_data",
     "risk_level": "low",
@@ -156,6 +164,11 @@
     "scan_report": "synthetic-scan-evidence-fixture-not-a-real-scan-result",
     "scan_tool": "synthetic-fixture-scanner-not-executed",
     "scan_timestamp": "2026-01-15T00:00:00Z",
+    "scan_artifact_binding": {
+      "source_commit": "synthetic-not-a-real-nvidia-commit-0001",
+      "source_artifact_digest": "synthetic-sha256-not-a-real-artifact-digest-0001",
+      "version": "0.0.0-synthetic-fixture"
+    },
     "signature": "synthetic-signature-placeholder-not-cryptographic",
     "signature_identity": "synthetic-fixture-signer@example.invalid",
     "signature_verification_method": "synthetic-fixture-binding-check-not-cryptographic-validation",
@@ -232,6 +245,111 @@
     "skill_owner": "synthetic-aaos-capability-owner",
     "source_reference_type": "external_reference_specimen_only",
     "artifact_reference_type": "immutable_commit_and_digest",
+    "permission_scope": {
+      "declared": {
+        "required_tools": {
+          "allowed": [
+            "declared-read-only-diagnostic-adapter-not-implemented-or-executed"
+          ],
+          "blocked": [
+            "arbitrary-tool-execution"
+          ]
+        },
+        "network_domains": {
+          "allowed": [],
+          "blocked": [
+            "external-network-disabled.invalid"
+          ]
+        },
+        "file_scopes": {
+          "allowed": [
+            "fixture://synthetic-jetson-diagnostic-input/read-only"
+          ],
+          "blocked": [
+            "device://all",
+            "firmware://all",
+            "credentials://all",
+            "host://all"
+          ]
+        },
+        "command_classes": {
+          "allowed": [],
+          "blocked": [
+            "arbitrary_shell",
+            "credential_access",
+            "destructive",
+            "device_mutation",
+            "firmware_modification",
+            "package_installation",
+            "privileged"
+          ]
+        },
+        "mcp_server_identities": {
+          "allowed": [],
+          "blocked": [
+            "all-mcp-servers-disabled"
+          ]
+        },
+        "environment_variable_names": {
+          "allowed": [
+            "LOG_LEVEL"
+          ],
+          "blocked": [
+            "API_KEY",
+            "AUTH_TOKEN",
+            "CREDENTIAL"
+          ]
+        },
+        "secret_classes": {
+          "allowed": [],
+          "blocked": [
+            "api_tokens",
+            "device_credentials",
+            "private_keys"
+          ]
+        },
+        "data_classifications": {
+          "allowed": [
+            "synthetic_non_sensitive_fixture_data"
+          ],
+          "blocked": [
+            "credentials",
+            "personal_data",
+            "real_device_data"
+          ]
+        },
+        "activation_triggers": {
+          "allowed": [
+            "manual_admission_review_fixture_only"
+          ],
+          "blocked": [
+            "automatic_activation",
+            "skill_self_activation"
+          ]
+        }
+      },
+      "observed": {
+        "required_tools": [
+          "declared-read-only-diagnostic-adapter-not-implemented-or-executed"
+        ],
+        "network_domains": [],
+        "file_scopes": [
+          "fixture://synthetic-jetson-diagnostic-input/read-only"
+        ],
+        "command_classes": [],
+        "mcp_server_identities": [],
+        "environment_variable_names": [
+          "LOG_LEVEL"
+        ],
+        "secret_classes": [],
+        "data_classifications": [
+          "synthetic_non_sensitive_fixture_data"
+        ],
+        "activation_triggers": [
+          "manual_admission_review_fixture_only"
+        ]
+      }
+    },
     "immutable_review_binding": {
       "source_commit": "synthetic-not-a-real-nvidia-commit-0001",
       "source_artifact_digest": "synthetic-sha256-not-a-real-artifact-digest-0001",
@@ -239,9 +357,91 @@
       "reviewed_permission_declaration": {
         "shell": "none",
         "network": "none",
-        "file": "read_only_synthetic_fixture_scope",
+        "file": "read_only",
         "mcp": "none",
         "secret": "none"
+      },
+      "reviewed_permission_scope": {
+        "required_tools": {
+          "allowed": [
+            "declared-read-only-diagnostic-adapter-not-implemented-or-executed"
+          ],
+          "blocked": [
+            "arbitrary-tool-execution"
+          ]
+        },
+        "network_domains": {
+          "allowed": [],
+          "blocked": [
+            "external-network-disabled.invalid"
+          ]
+        },
+        "file_scopes": {
+          "allowed": [
+            "fixture://synthetic-jetson-diagnostic-input/read-only"
+          ],
+          "blocked": [
+            "device://all",
+            "firmware://all",
+            "credentials://all",
+            "host://all"
+          ]
+        },
+        "command_classes": {
+          "allowed": [],
+          "blocked": [
+            "arbitrary_shell",
+            "credential_access",
+            "destructive",
+            "device_mutation",
+            "firmware_modification",
+            "package_installation",
+            "privileged"
+          ]
+        },
+        "mcp_server_identities": {
+          "allowed": [],
+          "blocked": [
+            "all-mcp-servers-disabled"
+          ]
+        },
+        "environment_variable_names": {
+          "allowed": [
+            "LOG_LEVEL"
+          ],
+          "blocked": [
+            "API_KEY",
+            "AUTH_TOKEN",
+            "CREDENTIAL"
+          ]
+        },
+        "secret_classes": {
+          "allowed": [],
+          "blocked": [
+            "api_tokens",
+            "device_credentials",
+            "private_keys"
+          ]
+        },
+        "data_classifications": {
+          "allowed": [
+            "synthetic_non_sensitive_fixture_data"
+          ],
+          "blocked": [
+            "credentials",
+            "personal_data",
+            "real_device_data"
+          ]
+        },
+        "activation_triggers": {
+          "allowed": [
+            "manual_admission_review_fixture_only"
+          ],
+          "blocked": [
+            "automatic_activation",
+            "skill_self_activation"
+          ]
+        }
       },
       "reviewed_evidence_set": [
         "synthetic-signature-placeholder-not-cryptographic",
@@ -256,7 +456,7 @@
     "observed_required_permissions": {
       "shell": "none",
       "network": "none",
-      "file": "read_only_synthetic_fixture_scope",
+      "file": "read_only",
       "mcp": "none",
       "secret": "none"
     },
@@ -356,9 +556,91 @@
       "reviewed_permission_declaration": {
         "shell": "none",
         "network": "none",
-        "file": "read_only_synthetic_fixture_scope",
+        "file": "read_only",
         "mcp": "none",
         "secret": "none"
+      },
+      "reviewed_permission_scope": {
+        "required_tools": {
+          "allowed": [
+            "declared-read-only-diagnostic-adapter-not-implemented-or-executed"
+          ],
+          "blocked": [
+            "arbitrary-tool-execution"
+          ]
+        },
+        "network_domains": {
+          "allowed": [],
+          "blocked": [
+            "external-network-disabled.invalid"
+          ]
+        },
+        "file_scopes": {
+          "allowed": [
+            "fixture://synthetic-jetson-diagnostic-input/read-only"
+          ],
+          "blocked": [
+            "device://all",
+            "firmware://all",
+            "credentials://all",
+            "host://all"
+          ]
+        },
+        "command_classes": {
+          "allowed": [],
+          "blocked": [
+            "arbitrary_shell",
+            "credential_access",
+            "destructive",
+            "device_mutation",
+            "firmware_modification",
+            "package_installation",
+            "privileged"
+          ]
+        },
+        "mcp_server_identities": {
+          "allowed": [],
+          "blocked": [
+            "all-mcp-servers-disabled"
+          ]
+        },
+        "environment_variable_names": {
+          "allowed": [
+            "LOG_LEVEL"
+          ],
+          "blocked": [
+            "API_KEY",
+            "AUTH_TOKEN",
+            "CREDENTIAL"
+          ]
+        },
+        "secret_classes": {
+          "allowed": [],
+          "blocked": [
+            "api_tokens",
+            "device_credentials",
+            "private_keys"
+          ]
+        },
+        "data_classifications": {
+          "allowed": [
+            "synthetic_non_sensitive_fixture_data"
+          ],
+          "blocked": [
+            "credentials",
+            "personal_data",
+            "real_device_data"
+          ]
+        },
+        "activation_triggers": {
+          "allowed": [
+            "manual_admission_review_fixture_only"
+          ],
+          "blocked": [
+            "automatic_activation",
+            "skill_self_activation"
+          ]
+        }
       },
       "reviewed_evidence_set": [
         "synthetic-signature-placeholder-not-cryptographic",
@@ -373,7 +655,7 @@
     "permission_envelope": {
       "shell": "none",
       "network": "none",
-      "file": "read_only_synthetic_fixture_scope",
+      "file": "read_only",
       "mcp": "none",
       "secret": "none"
     },
@@ -409,6 +691,7 @@
       "source_artifact_digest",
       "version",
       "reviewed_permission_declaration",
+      "reviewed_permission_scope",
       "reviewed_evidence_set",
       "admission_policy_version"
     ],
@@ -427,10 +710,57 @@
       "mcp",
       "secret"
     ],
+    "access_enums": {
+      "network": [
+        "none",
+        "restricted_outbound"
+      ],
+      "file": [
+        "none",
+        "read_only",
+        "restricted_read_write"
+      ],
+      "shell": [
+        "none",
+        "restricted_command_classes"
+      ],
+      "mcp": [
+        "none",
+        "restricted_mcp"
+      ],
+      "secret": [
+        "none",
+        "named_secret_classes"
+      ]
+    },
+    "permission_scope_dimensions": [
+      "required_tools",
+      "network_domains",
+      "file_scopes",
+      "command_classes",
+      "mcp_server_identities",
+      "environment_variable_names",
+      "secret_classes",
+      "data_classifications",
+      "activation_triggers"
+    ],
+    "declared_scope_dimension_shape": {
+      "allowed": "unique_bounded_string_list",
+      "blocked": "unique_bounded_string_list"
+    },
+    "observed_scope_dimension_shape": "unique_bounded_string_list",
+    "observed_must_be_subset_of_reviewed_declared_allowed": true,
+    "blocked_scope_precedence": "blocked_overrides_allowed",
+    "narrower_observed_scope_is_permission_escalation": false,
+    "permission_overdeclaration_may_be_reported": true,
+    "wildcard_or_unbounded_allowed_or_observed_scope_outcome": "candidate_blocked",
+    "environment_variable_names_imply_secret_access": false,
+    "secret_access_uses_named_secret_classes": true,
+    "raw_secret_values_allowed_in_fixture_metadata": false,
     "low_risk_maximum_envelope": {
       "shell": "none",
       "network": "none",
-      "file": "read_only_synthetic_fixture_scope",
+      "file": "read_only",
       "mcp": "none",
       "secret": "none"
     },
@@ -448,7 +778,7 @@
     {"rule_id": "missing_license", "condition": "license is missing", "outcome": "admission_not_ready"},
     {"rule_id": "missing_skill_owner", "condition": "skill owner is missing", "outcome": "admission_not_ready"},
     {"rule_id": "incomplete_permission_declaration", "condition": "permission declaration is incomplete", "outcome": "candidate_blocked"},
-    {"rule_id": "permission_escalation", "condition": "actual required permission exceeds declared permission", "outcome": "candidate_blocked"},
+    {"rule_id": "permission_escalation", "condition": "an observed coarse permission or detailed scope exceeds its reviewed declaration", "outcome": "candidate_blocked"},
     {"rule_id": "undeclared_shell_access", "condition": "shell access is undeclared", "outcome": "candidate_blocked"},
     {"rule_id": "undeclared_network_access", "condition": "network access is undeclared", "outcome": "candidate_blocked"},
     {"rule_id": "undeclared_file_access", "condition": "file access is undeclared", "outcome": "candidate_blocked"},
@@ -460,8 +790,13 @@
     {"rule_id": "insufficient_runtime_isolation", "condition": "runtime isolation is insufficient", "outcome": "candidate_blocked"},
     {"rule_id": "required_signature_missing", "condition": "signature is required but missing", "outcome": "admission_not_ready"},
     {"rule_id": "signature_verification_evidence_missing", "condition": "signature verification evidence is required but missing", "outcome": "admission_not_ready"},
-    {"rule_id": "required_scan_missing", "condition": "scan evidence is required but missing", "outcome": "admission_not_ready"},
-    {"rule_id": "high_risk_evaluation_evidence_missing", "condition": "high-risk use lacks benchmark or evaluation evidence", "outcome": "candidate_blocked"},
+    {"rule_id": "required_scan_missing", "condition": "scan evidence is required but its report, tool, timestamp, or artifact binding is missing", "outcome": "admission_not_ready"},
+    {"rule_id": "malformed_optional_evidence", "condition": "optional signature or scan evidence is partial or malformed", "outcome": "admission_not_ready"},
+    {"rule_id": "contradictory_evidence_requirements", "condition": "evidence requirement flags contradict supplied or not-required evidence state", "outcome": "admission_not_ready"},
+    {"rule_id": "permission_scope_unbounded", "condition": "an allowed or observed permission scope contains a wildcard or unbounded value", "outcome": "candidate_blocked"},
+    {"rule_id": "blocked_scope_collision", "condition": "a requested or observed permission scope collides with a blocked scope", "outcome": "candidate_blocked"},
+    {"rule_id": "reviewed_permission_scope_binding_mismatch", "condition": "the declared detailed permission scope differs from its immutable reviewed binding", "outcome": "candidate_blocked"},
+    {"rule_id": "high_risk_evaluation_evidence_missing", "condition": "high-risk or critical use lacks either benchmark evidence or evaluation evidence", "outcome": "candidate_blocked"},
     {"rule_id": "artifact_digest_drift", "condition": "artifact digest no longer matches the reviewed artifact", "outcome": "candidate_blocked"},
     {"rule_id": "skill_expired_or_stale", "condition": "skill is expired or stale", "outcome": "stale_reassessment_required"},
     {"rule_id": "reassessment_overdue", "condition": "reassessment is overdue", "outcome": "stale_reassessment_required"},
@@ -600,6 +935,8 @@
       "trace",
       "replay"
     ],
+    "benchmark_and_evaluation_are_both_required": true,
+    "requirement_flags_cannot_disable_controls": true,
     "medical_skill_without_evaluation_outcome": "candidate_blocked",
     "physical_action_without_sandbox_or_review_outcome": "candidate_blocked",
     "risk_acceptance_by_evaluator": false
@@ -666,8 +1003,8 @@
       "expected": {
         "ready_for_review": false,
         "candidate_admission_state": "candidate_blocked",
-        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
-        "reasons": ["missing_source_commit"]
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_scan", "fail_closed_recommended"],
+        "reasons": ["missing_source_commit", "required_scan_missing"]
       }
     },
     {
@@ -682,8 +1019,8 @@
       "expected": {
         "ready_for_review": false,
         "candidate_admission_state": "candidate_blocked",
-        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
-        "reasons": ["missing_artifact_digest"]
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_scan", "fail_closed_recommended"],
+        "reasons": ["missing_artifact_digest", "required_scan_missing"]
       }
     },
     {
@@ -699,8 +1036,8 @@
       "expected": {
         "ready_for_review": false,
         "candidate_admission_state": "candidate_blocked",
-        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
-        "reasons": ["mutable_reference_without_binding"]
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_scan", "fail_closed_recommended"],
+        "reasons": ["mutable_reference_without_binding", "required_scan_missing"]
       }
     },
     {
@@ -714,8 +1051,8 @@
       "expected": {
         "ready_for_review": false,
         "candidate_admission_state": "candidate_blocked",
-        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
-        "reasons": ["missing_version"]
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_scan", "fail_closed_recommended"],
+        "reasons": ["missing_version", "required_scan_missing"]
       }
     },
     {
@@ -879,7 +1216,7 @@
       "case_type": "declared_permissions_differ_from_observed_requirements",
       "description": "An observed shell requirement outside the declared no-shell envelope is a blocked escalation.",
       "contract_overrides": {
-        "observed_required_permissions.shell": "arbitrary_shell"
+        "observed_required_permissions.shell": "restricted_command_classes"
       },
       "evaluation_overrides": {},
       "expected": {
@@ -1053,17 +1390,22 @@
       "case_type": "signed_skill_with_excessive_permissions_remains_blocked",
       "description": "Synthetic signature evidence cannot cure an excessive permission envelope or reviewed-permission drift.",
       "contract_overrides": {
-        "required_permissions.network": "unrestricted",
-        "network_access": "unrestricted",
+        "required_permissions.network": "restricted_outbound",
+        "network_access": "restricted_outbound",
         "allowed_network_domains": ["*"],
-        "observed_required_permissions.network": "unrestricted"
+        "observed_required_permissions.network": "restricted_outbound"
       },
       "evaluation_overrides": {},
       "expected": {
         "ready_for_review": false,
         "candidate_admission_state": "candidate_blocked",
         "outputs": ["admission_not_ready", "candidate_blocked", "permission_mismatch_detected", "fail_closed_recommended"],
-        "reasons": ["excessive_permissions", "reviewed_permission_binding_mismatch"]
+        "reasons": [
+          "reviewed_permission_binding_mismatch",
+          "excessive_permissions",
+          "permission_scope_excessive",
+          "permission_scope_mirror_mismatch:network_domains"
+        ]
       }
     },
     {
@@ -1073,7 +1415,7 @@
       "contract_overrides": {
         "network_access": null,
         "required_permissions.network": null,
-        "observed_required_permissions.network": "outbound_https"
+        "observed_required_permissions.network": "restricted_outbound"
       },
       "evaluation_overrides": {},
       "expected": {

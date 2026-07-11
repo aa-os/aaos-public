@@ -242,6 +242,17 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
         self.assertTrue(result["reasons"])
         return result
 
+    def assert_detailed_scope_escalation(self, dimension, observed):
+        result = self.assert_contract_rejected(
+            {f"permission_scope.observed.{dimension}": observed}
+        )
+        self.assertIn(
+            f"permission_scope_escalation:{dimension}", result["reasons"]
+        )
+        self.assertIn("permission_escalation", result["reasons"])
+        self.assertIn("permission_mismatch_detected", result["outputs"])
+        return result
+
     def test_01_valid_top_level_m14_state(self):
         result = evaluate_skill_admission_fixture(copy.deepcopy(self.fixture))
 
@@ -626,6 +637,10 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
             contract["required_permissions"],
         )
         self.assertEqual(
+            binding["reviewed_permission_scope"],
+            contract["permission_scope"]["declared"],
+        )
+        self.assertEqual(
             binding["admission_policy_version"], contract["admission_policy_version"]
         )
         self.assertIn("reviewed_evidence_set", binding)
@@ -993,12 +1008,12 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
     def test_70_low_risk_candidate_cannot_exceed_maximum_permission_envelope(self):
         result = self.assert_contract_rejected(
             {
-                "required_permissions.network": "outbound_https",
-                "network_access": "outbound_https",
+                "required_permissions.network": "restricted_outbound",
+                "network_access": "restricted_outbound",
                 "allowed_network_domains": ["synthetic.example.invalid"],
-                "observed_required_permissions.network": "outbound_https",
+                "observed_required_permissions.network": "restricted_outbound",
                 "immutable_review_binding.reviewed_permission_declaration.network":
-                    "outbound_https",
+                    "restricted_outbound",
             }
         )
         self.assertIn("low_risk_permission_envelope_exceeded", result["reasons"])
@@ -1043,6 +1058,12 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
         self.assertIn("replay_execution_boundary_invalid", result["reasons"])
 
     def test_77_empty_required_contract_identity_and_description_fields_fail(self):
+        evidence_reason = {
+            "scan_tool": "required_scan_missing",
+            "scan_timestamp": "required_scan_missing",
+            "signature_identity": "signature_evidence_malformed",
+            "signature_verification_method": "signature_evidence_malformed",
+        }
         for field in (
             "skill_id",
             "skill_name",
@@ -1058,7 +1079,10 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
             with self.subTest(field=field):
                 result = self.assert_contract_rejected({field: ""})
                 self.assertIn(
-                    f"required_contract_field_invalid:{field}", result["reasons"]
+                    evidence_reason.get(
+                        field, f"required_contract_field_invalid:{field}"
+                    ),
+                    result["reasons"],
                 )
 
     def test_78_malformed_required_contract_collection_and_object_fields_fail(self):
@@ -1134,7 +1158,7 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
 
     def test_83_invalid_contract_timestamps_fail_closed(self):
         expected_reasons = {
-            "scan_timestamp": "invalid_scan_timestamp",
+            "scan_timestamp": "required_scan_missing",
             "last_reassessment": "invalid_last_reassessment",
             "expiration_date": "invalid_expiration_date",
         }
@@ -1149,7 +1173,7 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
 
     def test_84_missing_contract_timestamps_fail_closed(self):
         expected_reasons = {
-            "scan_timestamp": "invalid_scan_timestamp",
+            "scan_timestamp": "required_scan_missing",
             "last_reassessment": "invalid_last_reassessment",
             "expiration_date": "invalid_expiration_date",
         }
@@ -1340,21 +1364,36 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
             "permission_scope_invalid:allowed_network_domains", result["reasons"]
         )
 
-    def test_104_signature_and_scan_requirements_cannot_be_disabled(self):
-        result = self.assert_contract_rejected(
-            {
-                "evidence_requirements.signature_required": False,
-                "evidence_requirements.signature_verification_evidence_required": False,
-                "evidence_requirements.scan_required": False,
-                "signature": None,
-                "signature_verification_evidence": None,
-                "scan_report": None,
+    def test_104_optional_signature_absence_is_policy_valid(self):
+        reviewed = [
+            value
+            for value in self.fixture["skill_admission_contract"]
+                ["immutable_review_binding"]["reviewed_evidence_set"]
+            if value not in {
+                "synthetic-signature-placeholder-not-cryptographic",
+                "synthetic-signature-verification-evidence",
             }
-        )
-        self.assertIn("evidence_requirement_policy_invalid", result["reasons"])
-        self.assertIn("required_signature_missing", result["reasons"])
-        self.assertIn("signature_verification_evidence_missing", result["reasons"])
-        self.assertIn("required_scan_missing", result["reasons"])
+        ]
+        for absent in (None, "not_required_by_policy"):
+            with self.subTest(absent=absent):
+                result = evaluate_skill_admission(
+                    self.contract_with(
+                        {
+                            "evidence_requirements.signature_required": False,
+                            "evidence_requirements.signature_verification_evidence_required": False,
+                            "signature": absent,
+                            "signature_identity": absent,
+                            "signature_verification_method": absent,
+                            "signature_verification_evidence": absent,
+                            "immutable_review_binding.reviewed_evidence_set": reviewed,
+                        }
+                    )
+                )
+                self.assertTrue(result["ready_for_review"])
+                self.assertNotIn("required_signature_missing", result["reasons"])
+                self.assertNotIn(
+                    "signature_verification_evidence_missing", result["reasons"]
+                )
 
     def test_105_reviewed_evidence_binding_must_be_exact(self):
         binding = copy.deepcopy(
@@ -1373,6 +1412,10 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
             binding["reviewed_permission_declaration"],
         )
         self.assertEqual(
+            identity["reviewed_permission_scope"],
+            binding["reviewed_permission_scope"],
+        )
+        self.assertEqual(
             set(identity["reviewed_evidence_set"]),
             set(binding["reviewed_evidence_set"]),
         )
@@ -1388,6 +1431,354 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
             {"signature": "synthetic-changed-signature-not-cryptographic"}
         )
         self.assertIn("reviewed_evidence_binding_mismatch", result["reasons"])
+
+    def test_108_optional_scan_absence_is_policy_valid(self):
+        reviewed = [
+            value
+            for value in self.fixture["skill_admission_contract"]
+                ["immutable_review_binding"]["reviewed_evidence_set"]
+            if value != "synthetic-scan-evidence-fixture-not-a-real-scan-result"
+        ]
+        for absent in (None, "not_required_by_policy"):
+            with self.subTest(absent=absent):
+                result = evaluate_skill_admission(
+                    self.contract_with(
+                        {
+                            "evidence_requirements.scan_required": False,
+                            "scan_report": absent,
+                            "scan_tool": absent,
+                            "scan_timestamp": absent,
+                            "scan_artifact_binding": absent,
+                            "immutable_review_binding.reviewed_evidence_set": reviewed,
+                        }
+                    )
+                )
+                self.assertTrue(result["ready_for_review"])
+                self.assertNotIn("required_scan_missing", result["reasons"])
+
+    def test_109_required_signature_missing_under_true_flag_fails(self):
+        result = self.assert_contract_rejected({"signature": None})
+        self.assertIn("required_signature_missing", result["reasons"])
+
+    def test_110_required_signature_verification_evidence_missing_fails(self):
+        result = self.assert_contract_rejected(
+            {"signature_verification_evidence": None}
+        )
+        self.assertIn(
+            "signature_verification_evidence_missing", result["reasons"]
+        )
+
+    def test_111_required_scan_bundle_missing_fails(self):
+        result = self.assert_contract_rejected({"scan_tool": None})
+        self.assertIn("required_scan_missing", result["reasons"])
+
+    def test_112_malformed_optional_scan_evidence_fails(self):
+        reviewed = [
+            value
+            for value in self.fixture["skill_admission_contract"]
+                ["immutable_review_binding"]["reviewed_evidence_set"]
+            if value != "synthetic-scan-evidence-fixture-not-a-real-scan-result"
+        ]
+        result = self.assert_contract_rejected(
+            {
+                "evidence_requirements.scan_required": False,
+                "scan_report": "not_required_by_policy",
+                "scan_timestamp": None,
+                "scan_artifact_binding": None,
+                "immutable_review_binding.reviewed_evidence_set": reviewed,
+            }
+        )
+        self.assertIn("optional_scan_evidence_malformed", result["reasons"])
+
+    def test_113_contradictory_signature_evidence_flags_fail(self):
+        reviewed = [
+            value
+            for value in self.fixture["skill_admission_contract"]
+                ["immutable_review_binding"]["reviewed_evidence_set"]
+            if value not in {
+                "synthetic-signature-placeholder-not-cryptographic",
+                "synthetic-signature-verification-evidence",
+            }
+        ]
+        result = self.assert_contract_rejected(
+            {
+                "evidence_requirements.signature_required": False,
+                "evidence_requirements.signature_verification_evidence_required": True,
+                "signature": "not_required_by_policy",
+                "signature_identity": None,
+                "signature_verification_method": None,
+                "signature_verification_evidence": None,
+                "immutable_review_binding.reviewed_evidence_set": reviewed,
+            }
+        )
+        self.assertIn("contradictory_evidence_requirements", result["reasons"])
+        self.assertIn("required_signature_missing", result["reasons"])
+
+    def test_114_high_and_critical_risk_cannot_disable_required_evidence(self):
+        for risk_level in ("high", "critical"):
+            with self.subTest(risk_level=risk_level):
+                result = self.assert_contract_rejected(
+                    {
+                        "risk_level": risk_level,
+                        "benchmark_report": None,
+                        "evaluation_artifacts": [],
+                        "evidence_requirements.benchmark_required": False,
+                        "evidence_requirements.evaluation_required": False,
+                    }
+                )
+                self.assertIn(
+                    "evidence_requirement_policy_invalid", result["reasons"]
+                )
+                self.assertIn(
+                    "high_risk_evaluation_evidence_missing", result["reasons"]
+                )
+
+    def test_115_undeclared_network_domain_fails(self):
+        self.assert_detailed_scope_escalation(
+            "network_domains", ["undeclared.example.invalid"]
+        )
+
+    def test_116_undeclared_file_scope_fails(self):
+        self.assert_detailed_scope_escalation(
+            "file_scopes", ["fixture://undeclared-scope/read-only"]
+        )
+
+    def test_117_undeclared_command_class_fails(self):
+        self.assert_detailed_scope_escalation(
+            "command_classes", ["synthetic_read_only_diagnostic"]
+        )
+
+    def test_118_undeclared_mcp_server_fails(self):
+        self.assert_detailed_scope_escalation(
+            "mcp_server_identities", ["synthetic-undeclared-mcp-server"]
+        )
+
+    def test_119_undeclared_required_tool_fails(self):
+        self.assert_detailed_scope_escalation(
+            "required_tools", ["synthetic-undeclared-tool"]
+        )
+
+    def test_120_undeclared_environment_variable_fails(self):
+        self.assert_detailed_scope_escalation(
+            "environment_variable_names", ["UNDECLARED_SETTING"]
+        )
+
+    def test_121_undeclared_secret_class_fails(self):
+        self.assert_detailed_scope_escalation(
+            "secret_classes", ["synthetic_diagnostic_token_class"]
+        )
+
+    def test_122_data_classification_expansion_fails(self):
+        self.assert_detailed_scope_escalation(
+            "data_classifications", ["synthetic_restricted_fixture_data"]
+        )
+
+    def test_123_activation_trigger_expansion_fails(self):
+        self.assert_detailed_scope_escalation(
+            "activation_triggers", ["automatic_activation"]
+        )
+
+    def test_124_narrower_observed_scope_is_not_escalation(self):
+        baseline_tool = self.fixture["skill_admission_contract"]["required_tools"][0]
+        declared_tools = [baseline_tool, "synthetic-unused-read-only-tool"]
+        result = self.assert_contract_rejected(
+            {
+                "required_tools": declared_tools,
+                "permission_scope.declared.required_tools.allowed": declared_tools,
+                "immutable_review_binding.reviewed_permission_scope.required_tools.allowed":
+                    declared_tools,
+            }
+        )
+        self.assertIn("permission_overdeclaration", result["reasons"])
+        self.assertNotIn("permission_escalation", result["reasons"])
+        self.assertFalse(
+            any(
+                reason.startswith("permission_scope_escalation:")
+                for reason in result["reasons"]
+            )
+        )
+
+    def test_125_non_secret_environment_variable_does_not_imply_secret_access(self):
+        contract = copy.deepcopy(self.fixture["skill_admission_contract"])
+        result = evaluate_skill_admission(contract)
+        self.assertTrue(result["ready_for_review"])
+        self.assertEqual(contract["secret_access"], "none")
+        self.assertEqual(contract["environment_variables"], ["LOG_LEVEL"])
+        self.assertEqual(
+            contract["permission_scope"]["declared"]["secret_classes"]["allowed"],
+            [],
+        )
+
+    def test_126_scope_change_without_updated_immutable_binding_fails(self):
+        baseline_tool = self.fixture["skill_admission_contract"]["required_tools"][0]
+        changed_tools = [baseline_tool, "synthetic-new-reviewed-tool"]
+        result = self.assert_contract_rejected(
+            {
+                "required_tools": changed_tools,
+                "permission_scope.declared.required_tools.allowed": changed_tools,
+                "permission_scope.observed.required_tools": changed_tools,
+            }
+        )
+        self.assertIn(
+            "reviewed_permission_scope_binding_mismatch", result["reasons"]
+        )
+
+    def test_127_blocked_scope_overrides_allowlist_collision(self):
+        file_scope = self.fixture["skill_admission_contract"][
+            "allowed_file_scopes"
+        ][0]
+        blocked = copy.deepcopy(
+            self.fixture["skill_admission_contract"]["blocked_file_scopes"]
+        )
+        blocked.append(file_scope)
+        result = self.assert_contract_rejected(
+            {
+                "blocked_file_scopes": blocked,
+                "permission_scope.declared.file_scopes.blocked": blocked,
+                "immutable_review_binding.reviewed_permission_scope.file_scopes.blocked":
+                    blocked,
+            }
+        )
+        self.assertIn("blocked_permission_scope:file_scopes", result["reasons"])
+        self.assertIn("permission_escalation", result["reasons"])
+
+    def test_128_detailed_wildcard_scope_is_blocked(self):
+        result = self.assert_contract_rejected(
+            {
+                "required_tools": ["*"],
+                "permission_scope.declared.required_tools.allowed": ["*"],
+                "permission_scope.observed.required_tools": ["*"],
+                "immutable_review_binding.reviewed_permission_scope.required_tools.allowed":
+                    ["*"],
+            }
+        )
+        self.assertIn("unbounded_permission_scope:required_tools", result["reasons"])
+        self.assertIn("permission_escalation", result["reasons"])
+
+    def test_129_access_fields_use_explicit_string_enums(self):
+        policy = self.fixture["permission_policy"]
+        contract = self.fixture["skill_admission_contract"]
+        expected = {
+            "network": {"none", "restricted_outbound"},
+            "file": {"none", "read_only", "restricted_read_write"},
+            "shell": {"none", "restricted_command_classes"},
+            "mcp": {"none", "restricted_mcp"},
+            "secret": {"none", "named_secret_classes"},
+        }
+        self.assertEqual(
+            {axis: set(values) for axis, values in policy["access_enums"].items()},
+            expected,
+        )
+        for axis in expected:
+            self.assertIsInstance(contract[f"{axis}_access"], str)
+            self.assertIn(contract[f"{axis}_access"], expected[axis])
+        self.assertNotIn("network_access` — Boolean", self.document_text)
+        self.assertNotIn("shell_access` — Boolean", self.document_text)
+        self.assertNotIn("mcp_access` — Boolean", self.document_text)
+
+    def test_130_fixture_contains_no_raw_secret_values(self):
+        secret_classes = self.fixture["skill_admission_contract"][
+            "permission_scope"
+        ]["declared"]["secret_classes"]
+        for value in secret_classes["allowed"] + secret_classes["blocked"]:
+            normalized = value.casefold()
+            self.assertNotIn("=", value)
+            self.assertFalse(normalized.startswith(("sk-", "ghp_", "bearer")))
+            self.assertNotIn("-----begin", normalized)
+
+    def test_131_supplied_signature_does_not_require_optional_verification(self):
+        reviewed = [
+            value
+            for value in self.fixture["skill_admission_contract"]
+                ["immutable_review_binding"]["reviewed_evidence_set"]
+            if value != "synthetic-signature-verification-evidence"
+        ]
+        for signature_required in (False, True):
+            with self.subTest(signature_required=signature_required):
+                result = evaluate_skill_admission(
+                    self.contract_with(
+                        {
+                            "evidence_requirements.signature_required":
+                                signature_required,
+                            "evidence_requirements.signature_verification_evidence_required":
+                                False,
+                            "signature_verification_evidence": None,
+                            "immutable_review_binding.reviewed_evidence_set": reviewed,
+                        }
+                    )
+                )
+                self.assertTrue(result["ready_for_review"])
+                self.assertNotIn(
+                    "signature_verification_evidence_missing", result["reasons"]
+                )
+
+    def test_132_empty_optional_scan_binding_is_malformed_not_absent(self):
+        reviewed = [
+            value
+            for value in self.fixture["skill_admission_contract"]
+                ["immutable_review_binding"]["reviewed_evidence_set"]
+            if value != "synthetic-scan-evidence-fixture-not-a-real-scan-result"
+        ]
+        result = self.assert_contract_rejected(
+            {
+                "evidence_requirements.scan_required": False,
+                "scan_report": "not_required_by_policy",
+                "scan_tool": "not_required_by_policy",
+                "scan_timestamp": "not_required_by_policy",
+                "scan_artifact_binding": {},
+                "immutable_review_binding.reviewed_evidence_set": reviewed,
+            }
+        )
+        self.assertIn("optional_scan_evidence_malformed", result["reasons"])
+
+    def test_133_high_risk_not_required_markers_are_not_evidence(self):
+        result = self.assert_contract_rejected(
+            {
+                "risk_level": "high",
+                "benchmark_report": "not_required_by_policy",
+                "evaluation_artifacts": ["not_required_by_policy"],
+                "evidence_requirements.benchmark_required": True,
+                "evidence_requirements.evaluation_required": True,
+            }
+        )
+        self.assertIn(
+            "high_risk_evaluation_evidence_missing", result["reasons"]
+        )
+
+    def test_134_critical_risk_whitespace_cannot_bypass_controls(self):
+        result = self.assert_contract_rejected(
+            {
+                "risk_level": "critical ",
+                "benchmark_report": None,
+                "evaluation_artifacts": [],
+            }
+        )
+        self.assertIn(
+            "high_risk_evaluation_evidence_missing", result["reasons"]
+        )
+
+    def test_135_low_risk_explicit_denial_is_below_read_only_maximum(self):
+        result = evaluate_skill_admission(
+            self.contract_with(
+                {
+                    "skill_id": "synthetic-generic-low-risk-skill",
+                    "required_permissions.file": "none",
+                    "file_access": "none",
+                    "allowed_file_scopes": [],
+                    "observed_required_permissions.file": "none",
+                    "permission_scope.declared.file_scopes.allowed": [],
+                    "permission_scope.observed.file_scopes": [],
+                    "immutable_review_binding.reviewed_permission_declaration.file":
+                        "none",
+                    "immutable_review_binding.reviewed_permission_scope.file_scopes.allowed":
+                        [],
+                }
+            )
+        )
+        self.assertTrue(result["ready_for_review"])
+        self.assertNotIn(
+            "low_risk_permission_envelope_exceeded", result["reasons"]
+        )
 
 
 if __name__ == "__main__":

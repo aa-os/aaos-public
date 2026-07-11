@@ -69,7 +69,7 @@ External skills can supply capability descriptions to L3/L4 and evidence subject
 
 ## 5. Skill Admission Contract
 
-Every candidate must provide the following vendor-neutral 53-field Skill Admission Contract. Empty, omitted, ambiguous, or non-applicable values must be explicit and policy-valid; omission cannot be interpreted as denial or safety.
+Every candidate must provide the following 53 core fields in the vendor-neutral Skill Admission Contract. The fixture evaluation record also carries normalized policy, scope, observed-requirement, evidence-binding, and immutable-review fields used by the gate. Empty, omitted, ambiguous, or non-applicable values must be explicit and policy-valid; omission cannot be interpreted as denial or safety.
 
 1. `skill_id` — stable logical identifier for the capability.
 2. `skill_name` — human-readable name; never sufficient artifact identity by itself.
@@ -86,20 +86,20 @@ Every candidate must provide the following vendor-neutral 53-field Skill Admissi
 13. `supported_agents` — compatible agent interfaces or classes.
 14. `supported_runtimes` — compatible runtime identities and versions.
 15. `required_tools` — complete tool inventory, including an explicit empty list.
-16. `required_permissions` — normalized union of all permissions requested by the skill.
-17. `network_access` — explicit `true` or `false` declaration.
+16. `required_permissions` — normalized string-enum union of all permissions requested by the skill.
+17. `network_access` — explicit `none` or `restricted_outbound` declaration.
 18. `allowed_network_domains` — allowlist when network access is requested.
 19. `blocked_network_domains` — domains that remain prohibited.
-20. `file_access` — explicit `none`, `read_only`, or policy-supported access declaration.
+20. `file_access` — explicit `none`, `read_only`, or `restricted_read_write` declaration.
 21. `allowed_file_scopes` — least-privilege file allowlist.
 22. `blocked_file_scopes` — protected paths and categories.
-23. `shell_access` — explicit `true` or `false` declaration.
+23. `shell_access` — explicit `none` or `restricted_command_classes` declaration.
 24. `allowed_command_classes` — narrowly classified commands, never unbounded command text.
 25. `blocked_command_classes` — prohibited arbitrary, destructive, privileged, install, mutation, and credential commands.
-26. `mcp_access` — explicit `true` or `false` declaration.
+26. `mcp_access` — explicit `none` or `restricted_mcp` declaration.
 27. `required_mcp_servers` — exact server identities required, or an explicit empty list.
 28. `environment_variables` — names, purposes, and sensitivity only; never secret values.
-29. `secret_access` — explicit declaration of no access or named secret classes and purpose.
+29. `secret_access` — explicit `none` or `named_secret_classes` declaration; secret classes and purpose are separately scoped.
 30. `data_classification` — highest data sensitivity the skill can receive or produce.
 31. `risk_level` — policy-defined risk classification.
 32. `known_risks` — documented safety, security, privacy, authority, and operational risks.
@@ -127,6 +127,20 @@ Every candidate must provide the following vendor-neutral 53-field Skill Admissi
 
 The contract is a declaration and evidence index, not verified behavior or a grant of authority. Observed requirements are evaluated independently against it.
 
+Access declarations use one consistent vendor-neutral string-enum schema:
+
+| Axis | Allowed enum values |
+| --- | --- |
+| Network | `none`, `restricted_outbound` |
+| File | `none`, `read_only`, `restricted_read_write` |
+| Shell | `none`, `restricted_command_classes` |
+| MCP | `none`, `restricted_mcp` |
+| Secret | `none`, `named_secret_classes` |
+
+`required_permissions` must use the same enum value as the corresponding `network_access`, `file_access`, `shell_access`, `mcp_access`, or `secret_access` field. Every axis requires an explicit denial or bounded enum; booleans, omitted values, arbitrary strings, and unbounded access are invalid.
+
+The fixture also carries a deterministic `permission_scope` record. Its `declared` member contains nine dimensions, each represented as an object with explicit `allowed` and `blocked` string lists: `required_tools`, `network_domains`, `file_scopes`, `command_classes`, `mcp_server_identities`, `environment_variable_names`, `secret_classes`, `data_classifications`, and `activation_triggers`. Its `observed` member contains the same nine dimensions as string lists. The declared record is a normalized projection of the contract fields, while the observed record is inert synthetic evaluation evidence; neither authorizes use.
+
 ## 6. Capability registry model
 
 The capability registry may assign one or more routing states:
@@ -149,7 +163,7 @@ Each registry entry contains all 12 fields below:
 
 1. `registry_entry_id` — immutable identifier for this registry decision record.
 2. `skill_id` — link to the logical skill identity.
-3. `artifact_identity` — source commit, artifact digest, version, reviewed permission declaration, reviewed evidence set, and admission policy version.
+3. `artifact_identity` — source commit, artifact digest, version, reviewed permission declaration, reviewed detailed permission scope, reviewed evidence set, and admission policy version.
 4. `candidate_admission_state` — one or more candidate/routing states from the controlled vocabulary.
 5. `permission_envelope` — maximum permissions that later AAOS review may consider; never a grant.
 6. `evidence_status` — completeness, validity, binding, and freshness findings by evidence class.
@@ -170,27 +184,32 @@ The exact admitted artifact must be bound to all of the following as one review 
 - artifact digest
 - version
 - reviewed permission declaration
+- reviewed detailed permission scope
 - reviewed evidence set
 - admission policy version
 
 A branch name, mutable tag, repository URL, or skill name alone is insufficient artifact identity. A commit without an artifact digest is also insufficient because source identity and reviewed bytes are distinct claims.
 
-The digest is recomputed or supplied by a trusted offline fixture boundary and compared with the reviewed digest without executing the artifact. Any change to bytes, source commit, version, permissions, evidence, or policy version creates a new review subject. A digest mismatch is artifact drift and is blocked; it cannot inherit the prior candidate state. A mutable branch or tag may be recorded for context but cannot replace immutable binding.
+The digest is recomputed or supplied by a trusted offline fixture boundary and compared with the reviewed digest without executing the artifact. Any change to bytes, source commit, version, coarse permissions, detailed permission scope, evidence, or policy version creates a new review subject. A digest mismatch is artifact drift and is blocked; it cannot inherit the prior candidate state. A mutable branch or tag may be recorded for context but cannot replace immutable binding.
 
 Evidence references must themselves identify the artifact they assess. Evidence for another digest, version, permission envelope, runtime, or policy version is non-binding and cannot satisfy the gate.
 
 ## 8. Permission declaration and least-privilege rules
 
-The contract must explicitly declare tool, network, file, shell, MCP, environment-variable, secret, data, and device needs, including explicit denials and empty scopes. Undeclared permission is blocked, not inferred. The normalized `required_permissions` union must agree with every detailed permission field.
+The contract must explicitly declare tool, network, file, shell, MCP, environment-variable, secret, data, and device needs, including explicit denials and empty scopes. Undeclared permission is blocked, not inferred. The normalized `required_permissions` union must agree with every access enum, and the normalized `permission_scope.declared` record must agree with the corresponding contract allowlists, blocklists, tool list, environment-variable names, data classification, and activation triggers.
 
-AAOS computes a permission diff between the reviewed declaration and observed requirements recorded in synthetic evaluation evidence. Any required permission outside the declaration or registry envelope is permission escalation and is blocked. Narrower observed use does not widen future authority. A new tool, domain, file scope, command class, MCP server, secret class, data classification, device capability, activation trigger, or environment dependency requires a new review binding.
+AAOS computes a permission diff between the immutable `reviewed_permission_scope` and observed requirements recorded in synthetic evaluation evidence. For each of the nine dimensions, every observed value must be a member of the reviewed declared `allowed` set and must not match the reviewed declared `blocked` set. Any observed tool, domain, file scope, command class, MCP server identity, environment-variable name, secret class, data classification, or activation trigger outside the declaration is permission escalation and is blocked. A blocked entry overrides an allowlist collision.
+
+A strictly narrower observed set is not permission escalation. It may produce a `permission_overdeclaration` least-privilege finding, but that finding must not be mislabeled as escalation. Wildcards and other unbounded values are invalid in both allowed and observed scopes; wildcard deny patterns may be used only in a blocked list. A new or changed tool, domain, file scope, command class, MCP server, secret class, data classification, device capability, activation trigger, environment dependency, or blocked scope requires a new review binding. If the live declared scope differs from `immutable_review_binding.reviewed_permission_scope`, the prior review binding is invalid even when the observed scope is narrower.
+
+Environment-variable names and secret access remain separate dimensions. A non-secret configuration name such as `LOG_LEVEL` does not imply secret access. Secret access requires `secret_access: named_secret_classes` plus separately declared named secret classes. Fixture metadata may contain names, purposes, and sensitivity labels, but never raw environment-variable or secret values.
 
 Least privilege requires:
 
 - deny-by-default access and explicit allowlists;
 - the smallest resource scope, operation class, duration, and data classification needed for intended use;
 - separation of read, write, mutation, install, privileged, device-control, and arbitrary execution capabilities;
-- no wildcard network, filesystem, secret, MCP, or shell scope without an explicit policy rule and human escalation;
+- no wildcard or unbounded value in an allowed or observed network, filesystem, secret, MCP, shell, tool, environment-variable, data, or activation scope;
 - no credential values in metadata, traces, replay packets, or outputs;
 - blocked scopes that override an allowlist collision;
 - runtime enforcement independent of what the skill claims;
@@ -200,14 +219,27 @@ The evaluator treats skill metadata as inert fixture data. It never executes a s
 
 ## 9. Scan, signature, benchmark, and evaluation evidence
 
-Evidence requirements are determined by risk, provenance, permission scope, runtime, data classification, age, and policy version. Each evidence item must identify its artifact digest, source commit, version, producer or tool, method, timestamp, applicable runtime, declared limitations, and evidence artifact reference.
+Evidence requirements are determined by risk, provenance, permission scope, runtime, data classification, age, and policy version. Each supplied evidence item must identify its artifact digest, source commit, version, producer or tool, method, timestamp when applicable, applicable runtime, declared limitations, and evidence artifact reference. An evidence class that policy does not require may be absent; a nonexistent scan does not require a timestamp.
 
 - Signature evidence may support an identity/integrity claim. Artifact signature is not governance approval, and signature verification is not risk acceptance.
 - Scan evidence may report bounded static or dynamic findings. Scan passed is not risk accepted, does not prove behavior, and cannot excuse undeclared permissions.
 - Benchmark evidence measures only the declared scenario and method. Benchmark passed is not deployment approval.
 - Evaluation evidence reports bounded observed behavior under stated conditions. Evaluation evidence is not final approval and cannot replace runtime isolation or human review.
 
-When policy requires a signature, both signature and verification evidence must exist and bind to the exact artifact. A signature alone is insufficient. When policy requires a scan, the report, tool identity/version, timestamp, coverage, result, and binding must exist. High-risk use requires artifact-bound benchmark or evaluation evidence appropriate to the domain; physical-action capabilities additionally require sandbox evidence and a human-review route.
+The evaluator applies the evidence flags independently and conditionally:
+
+| Policy state | Required behavior |
+| --- | --- |
+| `signature_required: true` | A supplied signature must be present and must not be a not-required marker. |
+| `signature_verification_evidence_required: true` | Both a supplied signature and signature-verification evidence must be present. |
+| `signature_required: false` | Signature evidence may be absent or explicitly `not_required_by_policy`; absence does not produce `required_signature_missing`. |
+| `signature_verification_evidence_required: false` | Verification evidence may be absent; absence does not produce `signature_verification_evidence_missing`. |
+| `scan_required: true` | `scan_report`, `scan_tool`, `scan_timestamp`, and an exact `scan_artifact_binding` for source commit, artifact digest, and version must all be present and well formed. |
+| `scan_required: false` | The scan bundle may be wholly absent or explicitly `not_required_by_policy`; a nonexistent scan needs no timestamp and does not produce `required_scan_missing`. |
+
+Optional evidence is still validated when supplied. A partial signature or scan bundle, malformed optional record, not-required marker mixed with supplied companion fields, verification requirement paired with an absent and explicitly not-required signature, or scan not-required state paired with a partial scan record is contradictory and fails closed. A supplied signature does not require verification evidence when verification evidence is not required, but it must still have well-formed identity and method metadata. Required scan binding must exactly match the contract's source commit, artifact digest, and version, and the scan-report reference must remain in the reviewed evidence set.
+
+For `high` and `critical` risk, both artifact-bound benchmark evidence and artifact-bound evaluation evidence are mandatory. Setting `benchmark_required` or `evaluation_required` to false cannot waive either requirement. Physical-action capabilities additionally require sufficient sandbox evidence and a human-review route.
 
 All evidence in the fixture is synthetic and must be labeled as such. No real NVIDIA signature, scan, benchmark, commit, release, or evaluation is represented. The admission evaluator performs no network lookup and makes no endorsement, certification, security-approval, signature-validation, or deployment claim.
 
@@ -277,7 +309,7 @@ The evaluator must always return `candidate_blocked` or `admission_not_ready` wh
 6. License is missing.
 7. Skill owner is missing.
 8. Permission declaration is incomplete.
-9. Actual required permission exceeds declared permission.
+9. An observed coarse permission or detailed scope exceeds its reviewed declaration.
 10. Shell access is undeclared.
 11. Network access is undeclared.
 12. File access is undeclared.
@@ -288,13 +320,18 @@ The evaluator must always return `candidate_blocked` or `admission_not_ready` wh
 17. Replay evidence cannot be produced.
 18. Runtime isolation is insufficient.
 19. Signature is required but missing.
-20. Signature verification evidence is required but missing.
-21. Scan evidence is required but missing.
-22. High-risk use lacks benchmark or evaluation evidence.
+20. Signature verification evidence is required but the signature or verification evidence is missing.
+21. Scan evidence is required but its report, tool, timestamp, or exact artifact binding is missing.
+22. High-risk or critical use lacks either benchmark evidence or evaluation evidence.
 23. Artifact digest no longer matches the reviewed artifact.
 24. Skill is expired or stale.
 25. Reassessment is overdue.
 26. Source uses only a mutable branch or tag without immutable binding.
+27. Optional signature or scan evidence is partial or malformed.
+28. Evidence requirement flags and supplied evidence state contradict one another.
+29. An allowed or observed permission scope is wildcard or otherwise unbounded.
+30. A blocked scope collides with a requested or observed scope.
+31. The declared detailed scope differs from the immutable reviewed scope.
 
 Default posture:
 
@@ -318,7 +355,7 @@ Its bounded declaration is:
 - identity: a clearly synthetic fixture repository, synthetic immutable commit label, synthetic digest label, and `0.0.0-synthetic` version;
 - intent: read-only diagnostic interpretation of synthetic telemetry supplied as fixture input;
 - prohibited use: device mutation, firmware modification, package installation, credential access, arbitrary shell execution, network access, device access, safety control, and physical action;
-- permission envelope: fixture-input read only, no host file access, no shell, no network, no MCP, no secrets, no environment credentials, and no device interface;
+- permission envelope: fixture-input read only, no host file access, no shell, no network, no MCP, no secrets, one named non-secret `LOG_LEVEL` configuration variable, no environment credentials, and no device interface;
 - runtime: a synthetic isolated fixture runtime with process spawn, external filesystem, network, package manager, privileged operations, and device access disabled;
 - evidence: explicitly synthetic, artifact-bound admission evidence with no claim about real NVIDIA software or hardware;
 - output: a versioned read-only diagnostic schema using synthetic status observations, limitations, and trace correlation only;
@@ -329,7 +366,7 @@ The specimen requires immutable artifact identity and output schema validation. 
 
 ## 16. High-risk domain restrictions
 
-High-risk candidates require domain-appropriate, artifact-bound benchmark or evaluation evidence, sufficient runtime isolation, sandbox routing, explicit human review, trace and replay capability, and AAOS escalation. These conditions are cumulative and cannot be satisfied by a signature or scan alone.
+High-risk and critical candidates require both domain-appropriate artifact-bound benchmark evidence and artifact-bound evaluation evidence, sufficient runtime isolation, sandbox routing, explicit human review, trace and replay capability, and AAOS escalation. These conditions are cumulative, cannot be disabled by evidence flags, and cannot be satisfied by a signature or scan alone.
 
 - Medical skills must not diagnose, recommend treatment as an approved clinical action, access real patient data, or influence care without separate domain policy and human authority. Missing evaluation evidence blocks the candidate.
 - Physical-action, robotics, device-control, firmware, vehicle, industrial, or actuator skills require an enforceable sandbox and human-review route. Without both, the candidate is blocked.
