@@ -1,0 +1,1643 @@
+{
+  "fixture_id": "m14-skill-admission-fixtures",
+  "fixture_name": "M14 External Agent Skill Capability Supply Chain And Skill Admission Gate Fixtures",
+  "fixture_status": "m14_active_work_not_complete",
+  "related_issue": "#192",
+  "tracker_issue": "#201",
+  "tracker_issue_linkage": "Refs #201",
+  "related_voice_runtime_pr": "#202",
+  "related_public_output_gate_pr": "#204",
+  "related_moda_mapping_pr": "#205",
+  "related_ai_pr_provenance_pr": "#206",
+  "source_reference": "NVIDIA/skills",
+  "source_reference_role": "external_capability_supply_chain_reference_specimen",
+  "vendor_dependency_created": false,
+  "external_skill_downloaded": false,
+  "external_skill_installed": false,
+  "external_skill_executed": false,
+  "network_access_performed_by_fixture": false,
+  "shell_command_executed_by_fixture": false,
+  "fixture_evidence_is_synthetic": true,
+  "m14_completion_status": "active_work_not_complete",
+  "target_future_release": "v0.13.0",
+  "future_release_tag_path": {
+    "released": false,
+    "status": "future_release_only"
+  },
+  "final_admission_approval_made_by_fixture": false,
+  "execution_authorization_made_by_fixture": false,
+  "risk_accepted_by_fixture": false,
+  "decision_proof_sealed_by_fixture": false,
+  "evaluation_time": "2026-02-01T00:00:00Z",
+  "admission_policy_version": "aaos-skill-admission-policy-m14-synthetic-v1",
+  "evaluation_boundary": {
+    "fixture_data_only": true,
+    "third_party_packages_imported": false,
+    "external_network_access_performed": false,
+    "skill_download_performed": false,
+    "skill_install_performed": false,
+    "skill_import_performed": false,
+    "skill_execution_performed": false,
+    "shell_command_execution_performed": false,
+    "metadata_command_execution_performed": false,
+    "live_device_access_performed": false
+  },
+  "source_reference_claims": {
+    "nvidia_endorsement_claimed": false,
+    "nvidia_certification_claimed": false,
+    "real_signature_validation_claimed": false,
+    "security_approval_claimed": false,
+    "real_commit_claimed": false,
+    "real_release_claimed": false,
+    "real_benchmark_result_claimed": false,
+    "real_scan_result_claimed": false
+  },
+  "intended_files": [
+    "docs/capability-supply-chain/nvidia-skills-admission.md",
+    "examples/public-integration-pack-pilot/m14-skill-admission-fixtures.json",
+    "runtime/skill_admission_evaluator.py",
+    "tests/test_skill_admission_evaluator.py"
+  ],
+  "supply_chain_positioning": {
+    "external_artifact_role": "NVIDIA skills are external agent capability artifacts.",
+    "aaos_role": "AAOS is the capability admission, permission, evidence, replay, escalation, and decision-governance control plane.",
+    "dependency_status": "reference_specimen_only_not_an_aaos_dependency",
+    "vendor_governance": "AAOS governance remains model-agnostic and vendor-agnostic."
+  },
+  "skill_admission_contract": {
+    "skill_id": "synthetic-jetson-read-only-diagnostic-skill",
+    "skill_name": "Synthetic Jetson Read-Only Diagnostic Skill",
+    "source_repo": "NVIDIA/skills",
+    "source_owner": "NVIDIA",
+    "source_commit": "synthetic-not-a-real-nvidia-commit-0001",
+    "source_artifact_digest": "synthetic-sha256-not-a-real-artifact-digest-0001",
+    "version": "0.0.0-synthetic-fixture",
+    "license": "synthetic-license-metadata-for-fixture-only",
+    "description": "A synthetic, non-executing contract specimen for a read-only Jetson diagnostic capability; it contains no real NVIDIA skill code or device data.",
+    "intended_use": [
+      "admission-policy evaluation using synthetic fixture data",
+      "read-only diagnostic output contract review"
+    ],
+    "prohibited_use": [
+      "live device access during fixture evaluation",
+      "device mutation",
+      "firmware modification",
+      "package installation",
+      "credential access",
+      "arbitrary shell execution",
+      "network access",
+      "execution authorization"
+    ],
+    "activation_triggers": [
+      "manual_admission_review_fixture_only"
+    ],
+    "supported_agents": [
+      "vendor-neutral-aaos-test-agent"
+    ],
+    "supported_runtimes": [
+      "aaos-synthetic-read-only-fixture-runtime"
+    ],
+    "required_tools": [
+      "declared-read-only-diagnostic-adapter-not-implemented-or-executed"
+    ],
+    "required_permissions": {
+      "shell": "none",
+      "network": "none",
+      "file": "read_only",
+      "mcp": "none",
+      "secret": "none"
+    },
+    "network_access": "none",
+    "allowed_network_domains": [],
+    "blocked_network_domains": [
+      "external-network-disabled.invalid"
+    ],
+    "file_access": "read_only",
+    "allowed_file_scopes": [
+      "fixture://synthetic-jetson-diagnostic-input/read-only"
+    ],
+    "blocked_file_scopes": [
+      "device://all",
+      "firmware://all",
+      "credentials://all",
+      "host://all"
+    ],
+    "shell_access": "none",
+    "allowed_command_classes": [],
+    "blocked_command_classes": [
+      "arbitrary_shell",
+      "credential_access",
+      "destructive",
+      "device_mutation",
+      "firmware_modification",
+      "package_installation",
+      "privileged"
+    ],
+    "mcp_access": "none",
+    "required_mcp_servers": [],
+    "environment_variables": [
+      "LOG_LEVEL"
+    ],
+    "secret_access": "none",
+    "data_classification": "synthetic_non_sensitive_fixture_data",
+    "risk_level": "low",
+    "known_risks": [
+      "metadata may understate runtime behavior",
+      "permission declaration may drift from observed requirements",
+      "artifact identity may drift after review"
+    ],
+    "mitigations": [
+      "immutable review binding",
+      "least-privilege comparison",
+      "network-disabled and shell-disabled isolation",
+      "schema-validated output",
+      "trace and replay evidence",
+      "human admission review"
+    ],
+    "owner_contact": "synthetic-skill-owner@example.invalid",
+    "skill_card": {
+      "status": "synthetic_reference_only",
+      "contains_skill_code": false,
+      "behavior_verified_by_metadata": false,
+      "admission_ready_is_final_approval": false
+    },
+    "scan_report": "synthetic-scan-evidence-fixture-not-a-real-scan-result",
+    "scan_tool": "synthetic-fixture-scanner-not-executed",
+    "scan_timestamp": "2026-01-15T00:00:00Z",
+    "scan_artifact_binding": {
+      "source_commit": "synthetic-not-a-real-nvidia-commit-0001",
+      "source_artifact_digest": "synthetic-sha256-not-a-real-artifact-digest-0001",
+      "version": "0.0.0-synthetic-fixture"
+    },
+    "signature": "synthetic-signature-placeholder-not-cryptographic",
+    "signature_identity": "synthetic-fixture-signer@example.invalid",
+    "signature_verification_method": "synthetic-fixture-binding-check-not-cryptographic-validation",
+    "benchmark_report": null,
+    "evaluation_artifacts": [
+      "synthetic-output-schema-validation-evidence",
+      "synthetic-trace-replay-evaluation-evidence"
+    ],
+    "runtime_isolation_requirements": {
+      "supported": true,
+      "sandbox_required": true,
+      "network_disabled": true,
+      "shell_disabled": true,
+      "filesystem_read_only": true,
+      "device_access_disabled_during_evaluation": true,
+      "process_spawn_disabled": true,
+      "secrets_unavailable": true
+    },
+    "output_contract": {
+      "schema_id": "synthetic-jetson-diagnostic-output-v1",
+      "schema_validation_required": true,
+      "allowed_output": "structured_read_only_diagnostic_facts",
+      "side_effects_allowed": false,
+      "execution_or_approval_claims_allowed": false
+    },
+    "trace_requirements": {
+      "required": true,
+      "available": true,
+      "fields": [
+        "skill_id",
+        "artifact_identity",
+        "permission_envelope",
+        "input_digest",
+        "output_digest",
+        "policy_version",
+        "denied_conditions"
+      ]
+    },
+    "replay_requirements": {
+      "required": true,
+      "capable": true,
+      "evidence_can_be_produced": true,
+      "packet_format": "synthetic-aaos-skill-admission-replay-v1",
+      "skill_execution_in_replay": false
+    },
+    "rollback_requirements": {
+      "required": true,
+      "action": "revoke_candidate_registry_entry_and_restore_prior_policy_binding",
+      "runtime_mutation_performed": false,
+      "rollback_is_recommendation_only": true
+    },
+    "fail_closed_rules": [
+      "unknown_skill_source",
+      "missing_source_owner",
+      "missing_source_commit",
+      "missing_artifact_digest",
+      "missing_version",
+      "missing_license",
+      "missing_skill_owner",
+      "incomplete_permission_declaration",
+      "permission_escalation",
+      "missing_output_contract",
+      "missing_trace",
+      "missing_replay",
+      "insufficient_runtime_isolation",
+      "missing_required_evidence",
+      "artifact_identity_drift",
+      "stale_or_expired_evidence"
+    ],
+    "reassessment_interval": "P180D",
+    "last_reassessment": "2026-01-15T00:00:00Z",
+    "expiration_date": "2026-12-31T23:59:59Z",
+    "admission_policy_version": "aaos-skill-admission-policy-m14-synthetic-v1",
+    "skill_owner": "synthetic-aaos-capability-owner",
+    "source_reference_type": "external_reference_specimen_only",
+    "artifact_reference_type": "immutable_commit_and_digest",
+    "permission_scope": {
+      "declared": {
+        "required_tools": {
+          "allowed": [
+            "declared-read-only-diagnostic-adapter-not-implemented-or-executed"
+          ],
+          "blocked": [
+            "arbitrary-tool-execution"
+          ]
+        },
+        "network_domains": {
+          "allowed": [],
+          "blocked": [
+            "external-network-disabled.invalid"
+          ]
+        },
+        "file_scopes": {
+          "allowed": [
+            "fixture://synthetic-jetson-diagnostic-input/read-only"
+          ],
+          "blocked": [
+            "device://all",
+            "firmware://all",
+            "credentials://all",
+            "host://all"
+          ]
+        },
+        "command_classes": {
+          "allowed": [],
+          "blocked": [
+            "arbitrary_shell",
+            "credential_access",
+            "destructive",
+            "device_mutation",
+            "firmware_modification",
+            "package_installation",
+            "privileged"
+          ]
+        },
+        "mcp_server_identities": {
+          "allowed": [],
+          "blocked": [
+            "all-mcp-servers-disabled"
+          ]
+        },
+        "environment_variable_names": {
+          "allowed": [
+            "LOG_LEVEL"
+          ],
+          "blocked": [
+            "API_KEY",
+            "AUTH_TOKEN",
+            "CREDENTIAL"
+          ]
+        },
+        "secret_classes": {
+          "allowed": [],
+          "blocked": [
+            "api_tokens",
+            "device_credentials",
+            "private_keys"
+          ]
+        },
+        "data_classifications": {
+          "allowed": [
+            "synthetic_non_sensitive_fixture_data"
+          ],
+          "blocked": [
+            "credentials",
+            "personal_data",
+            "real_device_data"
+          ]
+        },
+        "activation_triggers": {
+          "allowed": [
+            "manual_admission_review_fixture_only"
+          ],
+          "blocked": [
+            "automatic_activation",
+            "skill_self_activation"
+          ]
+        }
+      },
+      "observed": {
+        "required_tools": [
+          "declared-read-only-diagnostic-adapter-not-implemented-or-executed"
+        ],
+        "network_domains": [],
+        "file_scopes": [
+          "fixture://synthetic-jetson-diagnostic-input/read-only"
+        ],
+        "command_classes": [],
+        "mcp_server_identities": [],
+        "environment_variable_names": [
+          "LOG_LEVEL"
+        ],
+        "secret_classes": [],
+        "data_classifications": [
+          "synthetic_non_sensitive_fixture_data"
+        ],
+        "activation_triggers": [
+          "manual_admission_review_fixture_only"
+        ]
+      }
+    },
+    "immutable_review_binding": {
+      "source_commit": "synthetic-not-a-real-nvidia-commit-0001",
+      "source_artifact_digest": "synthetic-sha256-not-a-real-artifact-digest-0001",
+      "version": "0.0.0-synthetic-fixture",
+      "reviewed_permission_declaration": {
+        "shell": "none",
+        "network": "none",
+        "file": "read_only",
+        "mcp": "none",
+        "secret": "none"
+      },
+      "reviewed_permission_scope": {
+        "required_tools": {
+          "allowed": [
+            "declared-read-only-diagnostic-adapter-not-implemented-or-executed"
+          ],
+          "blocked": [
+            "arbitrary-tool-execution"
+          ]
+        },
+        "network_domains": {
+          "allowed": [],
+          "blocked": [
+            "external-network-disabled.invalid"
+          ]
+        },
+        "file_scopes": {
+          "allowed": [
+            "fixture://synthetic-jetson-diagnostic-input/read-only"
+          ],
+          "blocked": [
+            "device://all",
+            "firmware://all",
+            "credentials://all",
+            "host://all"
+          ]
+        },
+        "command_classes": {
+          "allowed": [],
+          "blocked": [
+            "arbitrary_shell",
+            "credential_access",
+            "destructive",
+            "device_mutation",
+            "firmware_modification",
+            "package_installation",
+            "privileged"
+          ]
+        },
+        "mcp_server_identities": {
+          "allowed": [],
+          "blocked": [
+            "all-mcp-servers-disabled"
+          ]
+        },
+        "environment_variable_names": {
+          "allowed": [
+            "LOG_LEVEL"
+          ],
+          "blocked": [
+            "API_KEY",
+            "AUTH_TOKEN",
+            "CREDENTIAL"
+          ]
+        },
+        "secret_classes": {
+          "allowed": [],
+          "blocked": [
+            "api_tokens",
+            "device_credentials",
+            "private_keys"
+          ]
+        },
+        "data_classifications": {
+          "allowed": [
+            "synthetic_non_sensitive_fixture_data"
+          ],
+          "blocked": [
+            "credentials",
+            "personal_data",
+            "real_device_data"
+          ]
+        },
+        "activation_triggers": {
+          "allowed": [
+            "manual_admission_review_fixture_only"
+          ],
+          "blocked": [
+            "automatic_activation",
+            "skill_self_activation"
+          ]
+        }
+      },
+      "reviewed_evidence_set": [
+        "synthetic-signature-placeholder-not-cryptographic",
+        "synthetic-scan-evidence-fixture-not-a-real-scan-result",
+        "synthetic-signature-verification-evidence",
+        "synthetic-output-schema-validation-evidence",
+        "synthetic-trace-replay-evaluation-evidence"
+      ],
+      "admission_policy_version": "aaos-skill-admission-policy-m14-synthetic-v1"
+    },
+    "observed_artifact_digest": "synthetic-sha256-not-a-real-artifact-digest-0001",
+    "observed_required_permissions": {
+      "shell": "none",
+      "network": "none",
+      "file": "read_only",
+      "mcp": "none",
+      "secret": "none"
+    },
+    "permission_declaration_complete": true,
+    "signature_verification_evidence": "synthetic-signature-verification-evidence",
+    "evidence_requirements": {
+      "signature_required": true,
+      "signature_verification_evidence_required": true,
+      "scan_required": true,
+      "benchmark_required": false,
+      "evaluation_required": false
+    },
+    "runtime_isolation_sufficient": true,
+    "sandbox_required": true,
+    "human_review_required": true,
+    "human_review_route": "aaos-capability-admission-reviewers",
+    "synthetic_specimen": {
+      "synthetic": true,
+      "contains_real_nvidia_code": false,
+      "contains_real_device_data": false,
+      "skill_executed": false,
+      "shell_command_executed": false,
+      "device_accessed": false,
+      "network_accessed": false,
+      "read_only_diagnostic_intent": true,
+      "restricted_permission_envelope": true,
+      "device_mutation_prohibited": true,
+      "firmware_modification_prohibited": true,
+      "package_installation_prohibited": true,
+      "credential_access_prohibited": true,
+      "arbitrary_shell_execution_prohibited": true,
+      "output_schema_validation_required": true,
+      "trace_evidence_required": true,
+      "replay_evidence_required": true,
+      "immutable_artifact_identity_required": true,
+      "maximum_outcome": "admission_ready_for_review"
+    }
+  },
+  "capability_registry_schema": {
+    "schema_id": "aaos-capability-registry-candidate-v1",
+    "required_fields": [
+      "registry_entry_id",
+      "skill_id",
+      "artifact_identity",
+      "candidate_admission_state",
+      "permission_envelope",
+      "evidence_status",
+      "runtime_constraints",
+      "human_review_route",
+      "reassessment_status",
+      "trace_policy",
+      "replay_policy",
+      "governance_owner"
+    ],
+    "candidate_states": [
+      "candidate_allowed",
+      "candidate_restricted",
+      "candidate_blocked",
+      "needs_approval",
+      "needs_sandbox",
+      "needs_human_review",
+      "needs_replay_log",
+      "needs_signature_verification",
+      "needs_scan",
+      "needs_evaluation",
+      "stale_reassessment_required"
+    ],
+    "state_semantics": {
+      "candidate_allowed": "registry_classification_only",
+      "candidate_restricted": "registry_classification_only",
+      "candidate_blocked": "registry_classification_only",
+      "needs_approval": "routing_state_only",
+      "needs_sandbox": "routing_state_only",
+      "needs_human_review": "routing_state_only",
+      "needs_replay_log": "routing_state_only",
+      "needs_signature_verification": "routing_state_only",
+      "needs_scan": "routing_state_only",
+      "needs_evaluation": "routing_state_only",
+      "stale_reassessment_required": "routing_state_only"
+    },
+    "non_authoritative_for": [
+      "final_execution_approval",
+      "risk_acceptance",
+      "deployment_authorization",
+      "audit_closure",
+      "decision_proof_sealing",
+      "final_governance_judgment"
+    ]
+  },
+  "capability_registry_entry": {
+    "registry_entry_id": "synthetic-registry-entry-jetson-diagnostic-001",
+    "skill_id": "synthetic-jetson-read-only-diagnostic-skill",
+    "artifact_identity": {
+      "source_commit": "synthetic-not-a-real-nvidia-commit-0001",
+      "source_artifact_digest": "synthetic-sha256-not-a-real-artifact-digest-0001",
+      "version": "0.0.0-synthetic-fixture",
+      "reviewed_permission_declaration": {
+        "shell": "none",
+        "network": "none",
+        "file": "read_only",
+        "mcp": "none",
+        "secret": "none"
+      },
+      "reviewed_permission_scope": {
+        "required_tools": {
+          "allowed": [
+            "declared-read-only-diagnostic-adapter-not-implemented-or-executed"
+          ],
+          "blocked": [
+            "arbitrary-tool-execution"
+          ]
+        },
+        "network_domains": {
+          "allowed": [],
+          "blocked": [
+            "external-network-disabled.invalid"
+          ]
+        },
+        "file_scopes": {
+          "allowed": [
+            "fixture://synthetic-jetson-diagnostic-input/read-only"
+          ],
+          "blocked": [
+            "device://all",
+            "firmware://all",
+            "credentials://all",
+            "host://all"
+          ]
+        },
+        "command_classes": {
+          "allowed": [],
+          "blocked": [
+            "arbitrary_shell",
+            "credential_access",
+            "destructive",
+            "device_mutation",
+            "firmware_modification",
+            "package_installation",
+            "privileged"
+          ]
+        },
+        "mcp_server_identities": {
+          "allowed": [],
+          "blocked": [
+            "all-mcp-servers-disabled"
+          ]
+        },
+        "environment_variable_names": {
+          "allowed": [
+            "LOG_LEVEL"
+          ],
+          "blocked": [
+            "API_KEY",
+            "AUTH_TOKEN",
+            "CREDENTIAL"
+          ]
+        },
+        "secret_classes": {
+          "allowed": [],
+          "blocked": [
+            "api_tokens",
+            "device_credentials",
+            "private_keys"
+          ]
+        },
+        "data_classifications": {
+          "allowed": [
+            "synthetic_non_sensitive_fixture_data"
+          ],
+          "blocked": [
+            "credentials",
+            "personal_data",
+            "real_device_data"
+          ]
+        },
+        "activation_triggers": {
+          "allowed": [
+            "manual_admission_review_fixture_only"
+          ],
+          "blocked": [
+            "automatic_activation",
+            "skill_self_activation"
+          ]
+        }
+      },
+      "reviewed_evidence_set": [
+        "synthetic-signature-placeholder-not-cryptographic",
+        "synthetic-scan-evidence-fixture-not-a-real-scan-result",
+        "synthetic-signature-verification-evidence",
+        "synthetic-output-schema-validation-evidence",
+        "synthetic-trace-replay-evaluation-evidence"
+      ],
+      "admission_policy_version": "aaos-skill-admission-policy-m14-synthetic-v1"
+    },
+    "candidate_admission_state": "candidate_restricted",
+    "permission_envelope": {
+      "shell": "none",
+      "network": "none",
+      "file": "read_only",
+      "mcp": "none",
+      "secret": "none"
+    },
+    "evidence_status": {
+      "synthetic": true,
+      "scan_present": true,
+      "signature_present": true,
+      "signature_verification_evidence_present": true,
+      "evaluation_present": true,
+      "final_approval": false
+    },
+    "runtime_constraints": {
+      "sandbox_required": true,
+      "network_disabled": true,
+      "shell_disabled": true,
+      "read_only_fixture_input_only": true,
+      "skill_execution_by_evaluator": false
+    },
+    "human_review_route": "aaos-capability-admission-reviewers",
+    "reassessment_status": "current_at_fixed_evaluation_time",
+    "trace_policy": "trace_required_before_any_separately_authorized_execution",
+    "replay_policy": "replay_packet_required_without_skill_execution",
+    "governance_owner": "AAOS",
+    "routing_states": [
+      "needs_approval",
+      "needs_human_review",
+      "needs_replay_log"
+    ]
+  },
+  "immutable_review_rule": {
+    "required_bindings": [
+      "source_commit",
+      "source_artifact_digest",
+      "version",
+      "reviewed_permission_declaration",
+      "reviewed_permission_scope",
+      "reviewed_evidence_set",
+      "admission_policy_version"
+    ],
+    "insufficient_identity_inputs": [
+      "branch_name_alone",
+      "mutable_tag_alone",
+      "repository_url_alone",
+      "skill_name_alone"
+    ]
+  },
+  "permission_policy": {
+    "required_declaration_axes": [
+      "shell",
+      "network",
+      "file",
+      "mcp",
+      "secret"
+    ],
+    "access_enums": {
+      "network": [
+        "none",
+        "restricted_outbound"
+      ],
+      "file": [
+        "none",
+        "read_only",
+        "restricted_read_write"
+      ],
+      "shell": [
+        "none",
+        "restricted_command_classes"
+      ],
+      "mcp": [
+        "none",
+        "restricted_mcp"
+      ],
+      "secret": [
+        "none",
+        "named_secret_classes"
+      ]
+    },
+    "permission_scope_dimensions": [
+      "required_tools",
+      "network_domains",
+      "file_scopes",
+      "command_classes",
+      "mcp_server_identities",
+      "environment_variable_names",
+      "secret_classes",
+      "data_classifications",
+      "activation_triggers"
+    ],
+    "declared_scope_dimension_shape": {
+      "allowed": "unique_bounded_string_list",
+      "blocked": "unique_bounded_string_list"
+    },
+    "observed_scope_dimension_shape": "unique_bounded_string_list",
+    "observed_must_be_subset_of_reviewed_declared_allowed": true,
+    "blocked_scope_precedence": "blocked_overrides_allowed",
+    "narrower_observed_scope_is_permission_escalation": false,
+    "permission_overdeclaration_may_be_reported": true,
+    "wildcard_or_unbounded_allowed_or_observed_scope_outcome": "candidate_blocked",
+    "environment_variable_names_imply_secret_access": false,
+    "secret_access_uses_named_secret_classes": true,
+    "raw_secret_values_allowed_in_fixture_metadata": false,
+    "low_risk_maximum_envelope": {
+      "shell": "none",
+      "network": "none",
+      "file": "read_only",
+      "mcp": "none",
+      "secret": "none"
+    },
+    "undeclared_permission_outcome": "candidate_blocked",
+    "permission_escalation_outcome": "candidate_blocked",
+    "capability_availability_is_permission": false,
+    "installation_is_execution_authorization": false
+  },
+  "fail_closed_rules": [
+    {"rule_id": "unknown_skill_source", "condition": "skill source is unknown", "outcome": "admission_not_ready"},
+    {"rule_id": "missing_source_owner", "condition": "source owner is missing", "outcome": "admission_not_ready"},
+    {"rule_id": "missing_source_commit", "condition": "source commit is missing", "outcome": "admission_not_ready"},
+    {"rule_id": "missing_artifact_digest", "condition": "artifact digest is missing", "outcome": "admission_not_ready"},
+    {"rule_id": "missing_version", "condition": "version is missing", "outcome": "admission_not_ready"},
+    {"rule_id": "missing_license", "condition": "license is missing", "outcome": "admission_not_ready"},
+    {"rule_id": "missing_skill_owner", "condition": "skill owner is missing", "outcome": "admission_not_ready"},
+    {"rule_id": "incomplete_permission_declaration", "condition": "permission declaration is incomplete", "outcome": "candidate_blocked"},
+    {"rule_id": "permission_escalation", "condition": "an observed coarse permission or detailed scope exceeds its reviewed declaration", "outcome": "candidate_blocked"},
+    {"rule_id": "undeclared_shell_access", "condition": "shell access is undeclared", "outcome": "candidate_blocked"},
+    {"rule_id": "undeclared_network_access", "condition": "network access is undeclared", "outcome": "candidate_blocked"},
+    {"rule_id": "undeclared_file_access", "condition": "file access is undeclared", "outcome": "candidate_blocked"},
+    {"rule_id": "undeclared_mcp_access", "condition": "MCP access is undeclared", "outcome": "candidate_blocked"},
+    {"rule_id": "undeclared_secret_access", "condition": "secret access is undeclared", "outcome": "candidate_blocked"},
+    {"rule_id": "undefined_output_contract", "condition": "output contract is undefined", "outcome": "admission_not_ready"},
+    {"rule_id": "missing_trace_requirements", "condition": "trace requirements are missing", "outcome": "candidate_blocked"},
+    {"rule_id": "replay_evidence_unavailable", "condition": "replay evidence cannot be produced", "outcome": "candidate_blocked"},
+    {"rule_id": "insufficient_runtime_isolation", "condition": "runtime isolation is insufficient", "outcome": "candidate_blocked"},
+    {"rule_id": "required_signature_missing", "condition": "signature is required but missing", "outcome": "admission_not_ready"},
+    {"rule_id": "signature_verification_evidence_missing", "condition": "signature verification evidence is required but missing", "outcome": "admission_not_ready"},
+    {"rule_id": "required_scan_missing", "condition": "scan evidence is required but its report, tool, timestamp, or artifact binding is missing", "outcome": "admission_not_ready"},
+    {"rule_id": "malformed_optional_evidence", "condition": "optional signature or scan evidence is partial or malformed", "outcome": "admission_not_ready"},
+    {"rule_id": "contradictory_evidence_requirements", "condition": "evidence requirement flags contradict supplied or not-required evidence state", "outcome": "admission_not_ready"},
+    {"rule_id": "permission_scope_unbounded", "condition": "an allowed or observed permission scope contains a wildcard or unbounded value", "outcome": "candidate_blocked"},
+    {"rule_id": "blocked_scope_collision", "condition": "a requested or observed permission scope collides with a blocked scope", "outcome": "candidate_blocked"},
+    {"rule_id": "reviewed_permission_scope_binding_mismatch", "condition": "the declared detailed permission scope differs from its immutable reviewed binding", "outcome": "candidate_blocked"},
+    {"rule_id": "high_risk_evaluation_evidence_missing", "condition": "high-risk or critical use lacks either benchmark evidence or evaluation evidence", "outcome": "candidate_blocked"},
+    {"rule_id": "artifact_digest_drift", "condition": "artifact digest no longer matches the reviewed artifact", "outcome": "candidate_blocked"},
+    {"rule_id": "skill_expired_or_stale", "condition": "skill is expired or stale", "outcome": "stale_reassessment_required"},
+    {"rule_id": "reassessment_overdue", "condition": "reassessment is overdue", "outcome": "stale_reassessment_required"},
+    {"rule_id": "mutable_reference_without_binding", "condition": "source uses only a mutable branch or tag without immutable binding", "outcome": "candidate_blocked"}
+  ],
+  "default_posture": [
+    "Unverified skill = not executable",
+    "Undeclared permission = blocked",
+    "Permission escalation = blocked",
+    "Missing trace = blocked",
+    "Missing replay = blocked",
+    "High-risk domain without evaluation evidence = blocked",
+    "Artifact identity drift = blocked",
+    "Expired admission evidence = blocked"
+  ],
+  "required_boundary_statements": [
+    "External skill capability is not governance permission.",
+    "Skill metadata is not verified behavior.",
+    "Skill installation is not execution authorization.",
+    "Artifact signature is not governance approval.",
+    "Signature verification is not risk acceptance.",
+    "Scan passed is not risk accepted.",
+    "Benchmark passed is not deployment approval.",
+    "Evaluation evidence is not final approval.",
+    "candidate_allowed is not execution approval.",
+    "needs_approval is not approval granted.",
+    "admission_ready_for_review is not final admission approval.",
+    "fail_closed_recommended is not fail_closed_executed.",
+    "rollback_recommended is not rollback_executed.",
+    "human_review_required is not completed review.",
+    "evidence_complete is not Decision Proof sealing.",
+    "replay_ready is not Decision Proof sealing.",
+    "Registry classification is not final governance judgment.",
+    "NVIDIA skills remain external capability artifacts.",
+    "AAOS remains vendor-independent.",
+    "Decision Proof sealing remains AAOS-owned.",
+    "AAOS remains the decision sovereignty layer."
+  ],
+  "capture_verify_accumulate": {
+    "capture": [
+      "skill identity",
+      "source identity",
+      "immutable artifact identity",
+      "declared owner",
+      "intended use",
+      "prohibited use",
+      "runtime",
+      "supported agent",
+      "requested permissions",
+      "shell scope",
+      "network scope",
+      "file scope",
+      "MCP scope",
+      "secret scope",
+      "data classification",
+      "risk classification",
+      "output contract",
+      "activation trigger"
+    ],
+    "verify": [
+      "source binding",
+      "digest binding",
+      "version binding",
+      "owner presence",
+      "license presence",
+      "permission completeness",
+      "least-privilege check",
+      "permission mismatch check",
+      "signature requirement",
+      "signature evidence",
+      "scan requirement",
+      "scan evidence",
+      "benchmark requirement",
+      "evaluation evidence",
+      "runtime isolation",
+      "sandbox requirement",
+      "human-review requirement",
+      "trace availability",
+      "replay availability",
+      "output-contract validity",
+      "staleness",
+      "expiration",
+      "reassessment requirement",
+      "fail-closed decision"
+    ],
+    "accumulate": [
+      "admission evaluation trace",
+      "evidence artifact references",
+      "denied-condition trace",
+      "permission-diff record",
+      "reviewer handoff",
+      "registry decision record",
+      "runtime constraint record",
+      "execution trace policy",
+      "replay packet requirements",
+      "drift record",
+      "reassessment history",
+      "incident linkage",
+      "governance authority retention"
+    ]
+  },
+  "low_risk_jetson_diagnostic_specimen": {
+    "specimen_id": "synthetic-jetson-read-only-diagnostic-001",
+    "synthetic": true,
+    "contains_real_nvidia_code": false,
+    "contains_real_device_data": false,
+    "skill_execution_performed": false,
+    "shell_command_execution_performed": false,
+    "device_access_performed": false,
+    "network_access_performed": false,
+    "intent": "read_only_diagnostic",
+    "permission_envelope": "restricted",
+    "device_mutation_prohibited": true,
+    "firmware_modification_prohibited": true,
+    "package_installation_prohibited": true,
+    "credential_access_prohibited": true,
+    "arbitrary_shell_execution_prohibited": true,
+    "output_schema_validation_required": true,
+    "trace_evidence_required": true,
+    "replay_evidence_required": true,
+    "immutable_artifact_identity_required": true,
+    "maximum_outcome": "admission_ready_for_review",
+    "execution_approval": false
+  },
+  "high_risk_policy": {
+    "risk_levels": [
+      "high",
+      "critical"
+    ],
+    "required_controls": [
+      "benchmark_evidence",
+      "evaluation_evidence",
+      "supported_runtime_isolation",
+      "sandbox",
+      "human_review",
+      "trace",
+      "replay"
+    ],
+    "benchmark_and_evaluation_are_both_required": true,
+    "requirement_flags_cannot_disable_controls": true,
+    "medical_skill_without_evaluation_outcome": "candidate_blocked",
+    "physical_action_without_sandbox_or_review_outcome": "candidate_blocked",
+    "risk_acceptance_by_evaluator": false
+  },
+  "fixture_cases": [
+    {
+      "case_id": "case_01_complete_synthetic_low_risk_jetson_diagnostic",
+      "case_type": "complete_synthetic_low_risk_jetson_diagnostic_skill_ready_for_admission_review",
+      "description": "The complete synthetic, non-executing baseline is ready to be routed to admission review only.",
+      "contract_overrides": {},
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": true,
+        "candidate_admission_state": "candidate_restricted",
+        "outputs": [
+          "admission_ready_for_review",
+          "candidate_restricted",
+          "needs_approval",
+          "needs_human_review",
+          "needs_replay_log"
+        ],
+        "reasons": []
+      }
+    },
+    {
+      "case_id": "case_02_unknown_source_repository_blocked",
+      "case_type": "unknown_source_repository_is_blocked",
+      "description": "An unknown source cannot establish provenance or immutable review identity.",
+      "contract_overrides": {
+        "source_repo": "unknown",
+        "source_reference_type": "unknown"
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["unknown_skill_source"]
+      }
+    },
+    {
+      "case_id": "case_03_missing_source_owner_blocked",
+      "case_type": "missing_source_owner_is_blocked",
+      "description": "A source repository without a declared source owner is not reviewable.",
+      "contract_overrides": {
+        "source_owner": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["missing_source_owner"]
+      }
+    },
+    {
+      "case_id": "case_04_missing_source_commit_blocked",
+      "case_type": "missing_source_commit_is_blocked",
+      "description": "A repository name alone does not bind the reviewed artifact.",
+      "contract_overrides": {
+        "source_commit": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_scan", "fail_closed_recommended"],
+        "reasons": ["missing_source_commit", "required_scan_missing"]
+      }
+    },
+    {
+      "case_id": "case_05_missing_artifact_digest_blocked",
+      "case_type": "missing_artifact_digest_is_blocked",
+      "description": "A source commit without an artifact digest is incomplete artifact identity.",
+      "contract_overrides": {
+        "source_artifact_digest": null,
+        "observed_artifact_digest": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_scan", "fail_closed_recommended"],
+        "reasons": ["missing_artifact_digest", "required_scan_missing"]
+      }
+    },
+    {
+      "case_id": "case_06_mutable_tag_without_immutable_binding_blocked",
+      "case_type": "mutable_tag_without_immutable_binding_is_blocked",
+      "description": "A mutable tag is not an immutable review binding even when other metadata is present.",
+      "contract_overrides": {
+        "source_commit": "refs/tags/synthetic-latest",
+        "artifact_reference_type": "mutable_tag_only",
+        "immutable_review_binding": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_scan", "fail_closed_recommended"],
+        "reasons": ["mutable_reference_without_binding", "required_scan_missing"]
+      }
+    },
+    {
+      "case_id": "case_07_missing_version_blocked",
+      "case_type": "missing_version_is_blocked",
+      "description": "The reviewed version is required in addition to commit and digest.",
+      "contract_overrides": {
+        "version": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_scan", "fail_closed_recommended"],
+        "reasons": ["missing_version", "required_scan_missing"]
+      }
+    },
+    {
+      "case_id": "case_08_missing_license_blocked",
+      "case_type": "missing_license_is_blocked",
+      "description": "License metadata is required before candidate admission review.",
+      "contract_overrides": {
+        "license": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["missing_license"]
+      }
+    },
+    {
+      "case_id": "case_09_missing_skill_owner_blocked",
+      "case_type": "missing_skill_owner_is_blocked",
+      "description": "Admission requires an accountable skill owner distinct from source ownership.",
+      "contract_overrides": {
+        "skill_owner": null,
+        "owner_contact": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["missing_skill_owner"]
+      }
+    },
+    {
+      "case_id": "case_10_required_signature_missing_blocked",
+      "case_type": "required_signature_missing_is_blocked",
+      "description": "A policy-required signature must be present, while never becoming governance approval.",
+      "contract_overrides": {
+        "signature": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_signature_verification", "fail_closed_recommended"],
+        "reasons": ["required_signature_missing"]
+      }
+    },
+    {
+      "case_id": "case_11_signature_without_verification_evidence_blocked",
+      "case_type": "signature_present_but_verification_evidence_missing_is_blocked",
+      "description": "Signature metadata without the required verification evidence is insufficient.",
+      "contract_overrides": {
+        "signature_verification_evidence": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_signature_verification", "fail_closed_recommended"],
+        "reasons": ["signature_verification_evidence_missing"]
+      }
+    },
+    {
+      "case_id": "case_12_required_scan_report_missing_blocked",
+      "case_type": "required_scan_report_missing_is_blocked",
+      "description": "A required scan evidence reference must be present and remains non-authoritative for risk acceptance.",
+      "contract_overrides": {
+        "scan_report": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_scan", "fail_closed_recommended"],
+        "reasons": ["required_scan_missing"]
+      }
+    },
+    {
+      "case_id": "case_13_undeclared_shell_access_blocked",
+      "case_type": "undeclared_shell_access_is_blocked",
+      "description": "Shell access must be explicitly declared even when the declaration is none.",
+      "contract_overrides": {
+        "shell_access": null,
+        "required_permissions.shell": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["undeclared_shell_access", "incomplete_permission_declaration"]
+      }
+    },
+    {
+      "case_id": "case_14_undeclared_network_access_blocked",
+      "case_type": "undeclared_network_access_is_blocked",
+      "description": "Network access must be explicitly declared even when network is denied.",
+      "contract_overrides": {
+        "network_access": null,
+        "required_permissions.network": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["undeclared_network_access", "incomplete_permission_declaration"]
+      }
+    },
+    {
+      "case_id": "case_15_undeclared_file_access_blocked",
+      "case_type": "undeclared_file_access_is_blocked",
+      "description": "File access and its scope must be explicitly declared.",
+      "contract_overrides": {
+        "file_access": null,
+        "required_permissions.file": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["undeclared_file_access", "incomplete_permission_declaration"]
+      }
+    },
+    {
+      "case_id": "case_16_undeclared_mcp_access_blocked",
+      "case_type": "undeclared_mcp_access_is_blocked",
+      "description": "MCP access must be explicitly declared even when no MCP server is requested.",
+      "contract_overrides": {
+        "mcp_access": null,
+        "required_permissions.mcp": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["undeclared_mcp_access", "incomplete_permission_declaration"]
+      }
+    },
+    {
+      "case_id": "case_17_undeclared_secret_access_blocked",
+      "case_type": "undeclared_secret_access_is_blocked",
+      "description": "Secret access must be explicitly declared even when no secret may be accessed.",
+      "contract_overrides": {
+        "secret_access": null,
+        "required_permissions.secret": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["undeclared_secret_access", "incomplete_permission_declaration"]
+      }
+    },
+    {
+      "case_id": "case_18_declared_permissions_differ_from_observed_requirements",
+      "case_type": "declared_permissions_differ_from_observed_requirements",
+      "description": "An observed shell requirement outside the declared no-shell envelope is a blocked escalation.",
+      "contract_overrides": {
+        "observed_required_permissions.shell": "restricted_command_classes"
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "permission_mismatch_detected", "fail_closed_recommended"],
+        "reasons": ["permission_escalation"]
+      }
+    },
+    {
+      "case_id": "case_19_unsupported_runtime_isolation_blocked",
+      "case_type": "unsupported_runtime_isolation_is_blocked",
+      "description": "The candidate is blocked when required isolation cannot be provided.",
+      "contract_overrides": {
+        "runtime_isolation_requirements.supported": false,
+        "runtime_isolation_sufficient": false
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_sandbox", "fail_closed_recommended"],
+        "reasons": ["insufficient_runtime_isolation"]
+      }
+    },
+    {
+      "case_id": "case_20_undefined_output_contract_blocked",
+      "case_type": "undefined_output_contract_is_blocked",
+      "description": "Outputs without a schema and allowed-value contract cannot be evaluated safely.",
+      "contract_overrides": {
+        "output_contract": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["undefined_output_contract"]
+      }
+    },
+    {
+      "case_id": "case_21_missing_trace_requirements_blocked",
+      "case_type": "missing_trace_requirements_is_blocked",
+      "description": "Missing trace requirements prevent accountability and replay linkage.",
+      "contract_overrides": {
+        "trace_requirements": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "fail_closed_recommended"],
+        "reasons": ["missing_trace_requirements"]
+      }
+    },
+    {
+      "case_id": "case_22_missing_replay_capability_blocked",
+      "case_type": "missing_replay_capability_is_blocked",
+      "description": "The admission evaluator requires replay evidence production without executing the skill.",
+      "contract_overrides": {
+        "replay_requirements.capable": false,
+        "replay_requirements.evidence_can_be_produced": false
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_replay_log", "fail_closed_recommended"],
+        "reasons": ["replay_evidence_unavailable"]
+      }
+    },
+    {
+      "case_id": "case_23_stale_skill_requires_reassessment",
+      "case_type": "stale_skill_requires_reassessment",
+      "description": "A skill past its reassessment interval is routed for reassessment rather than approved.",
+      "contract_overrides": {
+        "last_reassessment": "2024-01-01T00:00:00Z",
+        "expiration_date": "2027-12-31T23:59:59Z"
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "stale_reassessment_required",
+        "outputs": ["admission_not_ready", "stale_reassessment_required", "needs_human_review", "fail_closed_recommended"],
+        "reasons": ["reassessment_overdue"]
+      }
+    },
+    {
+      "case_id": "case_24_expired_admission_evidence_blocked",
+      "case_type": "expired_admission_evidence_is_blocked",
+      "description": "Evidence expired before the fixed evaluation time cannot support admission review.",
+      "contract_overrides": {
+        "expiration_date": "2026-01-31T23:59:59Z"
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "stale_reassessment_required", "fail_closed_recommended"],
+        "reasons": ["skill_expired_or_stale"]
+      }
+    },
+    {
+      "case_id": "case_25_artifact_digest_drift_blocked",
+      "case_type": "artifact_digest_drift_is_blocked",
+      "description": "An observed artifact digest that differs from the reviewed digest invalidates admission evidence.",
+      "contract_overrides": {
+        "observed_artifact_digest": "synthetic-sha256-drifted-not-a-real-artifact-digest-0002"
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "artifact_drift_detected", "rollback_recommended", "fail_closed_recommended"],
+        "reasons": ["artifact_digest_drift"]
+      }
+    },
+    {
+      "case_id": "case_26_high_risk_medical_without_evaluation_blocked",
+      "case_type": "high_risk_medical_skill_without_evaluation_evidence_is_blocked",
+      "description": "A synthetic medical-domain candidate cannot proceed without required benchmark and evaluation evidence.",
+      "contract_overrides": {
+        "risk_level": "high",
+        "intended_use": ["synthetic_medical_domain_decision_support_specimen"],
+        "benchmark_report": null,
+        "evaluation_artifacts": [],
+        "evidence_requirements.benchmark_required": true,
+        "evidence_requirements.evaluation_required": true
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_evaluation", "needs_human_review", "fail_closed_recommended"],
+        "reasons": ["high_risk_evaluation_evidence_missing"]
+      }
+    },
+    {
+      "case_id": "case_27_high_risk_physical_action_without_sandbox_and_review_blocked",
+      "case_type": "high_risk_physical_action_skill_without_sandbox_and_human_review_is_blocked",
+      "description": "A synthetic physical-action candidate requires both sandboxing and human-review routing.",
+      "contract_overrides": {
+        "risk_level": "high",
+        "intended_use": ["synthetic_physical_action_specimen"],
+        "benchmark_report": "synthetic-high-risk-benchmark-evidence-not-a-real-result",
+        "evaluation_artifacts": ["synthetic-high-risk-evaluation-evidence-not-a-real-result"],
+        "immutable_review_binding.reviewed_evidence_set": [
+          "synthetic-signature-placeholder-not-cryptographic",
+          "synthetic-scan-evidence-fixture-not-a-real-scan-result",
+          "synthetic-signature-verification-evidence",
+          "synthetic-high-risk-benchmark-evidence-not-a-real-result",
+          "synthetic-high-risk-evaluation-evidence-not-a-real-result"
+        ],
+        "evidence_requirements.benchmark_required": true,
+        "evidence_requirements.evaluation_required": true,
+        "runtime_isolation_requirements.sandbox_required": false,
+        "sandbox_required": false,
+        "human_review_required": false,
+        "human_review_route": null
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "needs_sandbox", "needs_human_review", "escalation_required", "fail_closed_recommended"],
+        "reasons": ["high_risk_sandbox_missing", "high_risk_human_review_missing"]
+      }
+    },
+    {
+      "case_id": "case_28_signed_skill_with_excessive_permissions_blocked",
+      "case_type": "signed_skill_with_excessive_permissions_remains_blocked",
+      "description": "Synthetic signature evidence cannot cure an excessive permission envelope or reviewed-permission drift.",
+      "contract_overrides": {
+        "required_permissions.network": "restricted_outbound",
+        "network_access": "restricted_outbound",
+        "allowed_network_domains": ["*"],
+        "observed_required_permissions.network": "restricted_outbound"
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "permission_mismatch_detected", "fail_closed_recommended"],
+        "reasons": [
+          "reviewed_permission_binding_mismatch",
+          "excessive_permissions",
+          "permission_scope_excessive",
+          "permission_scope_mirror_mismatch:network_domains"
+        ]
+      }
+    },
+    {
+      "case_id": "case_29_scanned_skill_with_undeclared_network_access_blocked",
+      "case_type": "scanned_skill_with_undeclared_network_access_remains_blocked",
+      "description": "Synthetic scan evidence cannot cure undeclared outbound network requirements.",
+      "contract_overrides": {
+        "network_access": null,
+        "required_permissions.network": null,
+        "observed_required_permissions.network": "restricted_outbound"
+      },
+      "evaluation_overrides": {},
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "permission_mismatch_detected", "fail_closed_recommended"],
+        "reasons": ["undeclared_network_access", "permission_escalation"]
+      }
+    },
+    {
+      "case_id": "case_30_admission_ready_treated_as_execution_approval_rejected",
+      "case_type": "admission_ready_state_incorrectly_treated_as_execution_approval",
+      "description": "The evaluator must reject any conversion of admission readiness into execution approval.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "skill_execution_approved"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:skill_execution_approved"]
+      }
+    },
+    {
+      "case_id": "case_31_signature_verification_treated_as_governance_approval_rejected",
+      "case_type": "signature_verification_incorrectly_treated_as_governance_approval",
+      "description": "Signature verification evidence is an input, never governance approval.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "signature_is_governance_approval"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:signature_is_governance_approval"]
+      }
+    },
+    {
+      "case_id": "case_32_scan_passed_treated_as_risk_acceptance_rejected",
+      "case_type": "scan_passed_incorrectly_treated_as_risk_acceptance",
+      "description": "A scan result cannot accept risk on behalf of AAOS governance.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "scan_is_risk_acceptance"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:scan_is_risk_acceptance"]
+      }
+    },
+    {
+      "case_id": "case_33_benchmark_passed_treated_as_deployment_approval_rejected",
+      "case_type": "benchmark_passed_incorrectly_treated_as_deployment_approval",
+      "description": "Benchmark evidence cannot authorize deployment.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "benchmark_is_deployment_approval"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:benchmark_is_deployment_approval"]
+      }
+    },
+    {
+      "case_id": "case_34_evaluator_attempts_skill_execution_rejected",
+      "case_type": "evaluator_attempts_to_execute_the_skill",
+      "description": "The data-only evaluator must reject and never perform skill execution.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "skill_executed"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:skill_executed"]
+      }
+    },
+    {
+      "case_id": "case_35_evaluator_attempts_risk_acceptance_rejected",
+      "case_type": "evaluator_attempts_to_accept_risk",
+      "description": "Risk acceptance remains outside evaluator authority.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "risk_accepted"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:risk_accepted"]
+      }
+    },
+    {
+      "case_id": "case_36_evaluator_attempts_decision_proof_sealing_rejected",
+      "case_type": "evaluator_attempts_to_seal_decision_proof",
+      "description": "Decision Proof sealing remains AAOS-owned and cannot be performed by this evaluator.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "decision_proof_sealed"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:decision_proof_sealed"]
+      }
+    },
+    {
+      "case_id": "case_37_evaluator_attempts_authority_transfer_rejected",
+      "case_type": "evaluator_attempts_to_transfer_authority",
+      "description": "The evaluator cannot transfer AAOS governance authority.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "authority_transferred"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:authority_transferred"]
+      }
+    },
+    {
+      "case_id": "case_38_evaluator_attempts_close_tracker_201_rejected",
+      "case_type": "evaluator_attempts_to_close_201",
+      "description": "The M14 tracker remains open and the evaluator cannot close it.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "closes_201"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:closes_201"]
+      }
+    },
+    {
+      "case_id": "case_39_evaluator_attempts_m14_completion_rejected",
+      "case_type": "evaluator_attempts_to_declare_m14_complete",
+      "description": "M14 remains active work and cannot be declared complete by this fixture or evaluator.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "m14_complete"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:m14_complete"]
+      }
+    },
+    {
+      "case_id": "case_40_evaluator_attempts_v0_13_0_release_rejected",
+      "case_type": "evaluator_attempts_to_declare_v0_13_0_released",
+      "description": "v0.13.0 is a future target and cannot be declared released by this fixture or evaluator.",
+      "contract_overrides": {},
+      "evaluation_overrides": {
+        "simulated_evaluator_output": "v0_13_0_released"
+      },
+      "expected": {
+        "ready_for_review": false,
+        "candidate_admission_state": "candidate_blocked",
+        "outputs": ["admission_not_ready", "candidate_blocked", "escalation_required"],
+        "reasons": ["forbidden_output_claim:v0_13_0_released"]
+      }
+    }
+  ],
+  "allowed_evaluator_outputs": [
+    "skill_admission_fixture_valid",
+    "skill_admission_fixture_invalid",
+    "admission_ready_for_review",
+    "admission_not_ready",
+    "candidate_allowed",
+    "candidate_restricted",
+    "candidate_blocked",
+    "needs_approval",
+    "needs_sandbox",
+    "needs_human_review",
+    "needs_replay_log",
+    "needs_signature_verification",
+    "needs_scan",
+    "needs_evaluation",
+    "stale_reassessment_required",
+    "permission_mismatch_detected",
+    "artifact_drift_detected",
+    "fail_closed_recommended",
+    "rollback_recommended",
+    "escalation_required"
+  ],
+  "forbidden_evaluator_outputs": [
+    "skill_execution_approved",
+    "skill_executed",
+    "installation_approved",
+    "activation_approved",
+    "deployment_approved",
+    "capability_permission_granted",
+    "signature_is_governance_approval",
+    "scan_is_risk_acceptance",
+    "benchmark_is_deployment_approval",
+    "final_admission_approved",
+    "risk_accepted",
+    "fail_closed_executed",
+    "rollback_executed",
+    "audit_closed",
+    "waiver_granted",
+    "decision_proof_verified",
+    "decision_proof_sealed",
+    "sealed_by_skill",
+    "sealed_by_registry",
+    "sealed_by_evaluator",
+    "authority_transferred",
+    "final_governance_judgment",
+    "m14_complete",
+    "v0_13_0_released",
+    "closes_201"
+  ]
+}
