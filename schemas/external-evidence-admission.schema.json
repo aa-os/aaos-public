@@ -1,0 +1,483 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/external-evidence-admission.schema.json",
+  "title": "AAOS External Evidence Admission Record",
+  "description": "Replay-safe, fail-closed admission metadata for external MCP evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidence_id",
+    "source_identity",
+    "evidence_kind",
+    "dataset_or_paper_identifier",
+    "retrieved_at",
+    "source_published_at",
+    "source_batch_or_version",
+    "authoritative_source_reference",
+    "retrieval_succeeded",
+    "connection_status",
+    "freshness_required",
+    "freshness_threshold_seconds",
+    "freshness_status",
+    "extraction_attempted",
+    "extraction_status",
+    "extraction_metrics",
+    "admission_result",
+    "policy_version",
+    "admission_policy",
+    "sanitized_error_category",
+    "explicit_warnings",
+    "raw_or_pdf_fallback_reference",
+    "replay_failure_classification",
+    "decision_path_eligible",
+    "decision_proof_sealing_eligible",
+    "storage_disposition"
+  ],
+  "properties": {
+    "evidence_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^hub-[A-Za-z0-9._:-]{1,251}$"
+    },
+    "source_identity": {
+      "$ref": "#/$defs/sourceIdentity"
+    },
+    "evidence_kind": {
+      "type": "string",
+      "enum": [
+        "dataset",
+        "paper",
+        "document",
+        "endpoint"
+      ]
+    },
+    "dataset_or_paper_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/+-]{0,255}$"
+    },
+    "retrieved_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(\\d{4}-\\d{2}-\\d{2})[Tt]((?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d)(\\.\\d{1,6})?([Zz]|\\+(?:[01]\\d|2[0-3]):[0-5]\\d|-(?:(?:0[1-9]|1\\d|2[0-3]):[0-5]\\d|00:(?:0[1-9]|[1-5]\\d)))(?![\\s\\S])",
+      "description": "Strict known-offset RFC 3339 subset: timezone required, fractional precision is limited to 1-6 digits, and -00:00 and leap seconds are not allowed."
+    },
+    "source_published_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "pattern": "^(\\d{4}-\\d{2}-\\d{2})[Tt]((?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d)(\\.\\d{1,6})?([Zz]|\\+(?:[01]\\d|2[0-3]):[0-5]\\d|-(?:(?:0[1-9]|1\\d|2[0-3]):[0-5]\\d|00:(?:0[1-9]|[1-5]\\d)))(?![\\s\\S])",
+      "description": "Strict known-offset RFC 3339 subset when present: fractional precision is limited to 1-6 digits, and -00:00 and leap seconds are not allowed."
+    },
+    "source_batch_or_version": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/+-]{0,255}$"
+    },
+    "authoritative_source_reference": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?:[A-Za-z][A-Za-z0-9+.-]*:[^\\s?#{}\"'@]+|not_available:[A-Za-z0-9._:-]+)$"
+    },
+    "retrieval_succeeded": {
+      "type": "boolean"
+    },
+    "connection_status": {
+      "type": "string",
+      "enum": [
+        "ready",
+        "auth_failed",
+        "unreachable",
+        "misconfigured",
+        "unknown"
+      ]
+    },
+    "freshness_required": {
+      "type": "boolean"
+    },
+    "freshness_threshold_seconds": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Replay snapshot of the AAOS-owned threshold supplied to the evaluator."
+    },
+    "freshness_status": {
+      "type": "string",
+      "enum": [
+        "current",
+        "stale",
+        "unknown",
+        "not_applicable"
+      ]
+    },
+    "extraction_attempted": {
+      "type": "boolean"
+    },
+    "extraction_status": {
+      "type": "string",
+      "enum": [
+        "complete",
+        "partial",
+        "empty",
+        "schema_mismatch",
+        "fallback_required"
+      ]
+    },
+    "extraction_metrics": {
+      "$ref": "#/$defs/extractionMetrics"
+    },
+    "admission_result": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "degraded",
+        "rejected"
+      ]
+    },
+    "policy_version": {
+      "type": "string",
+      "const": "aaos-external-evidence-admission-v1"
+    },
+    "admission_policy": {
+      "$ref": "#/$defs/admissionPolicy",
+      "description": "Replay snapshot that must match the AAOS-owned trusted policy."
+    },
+    "sanitized_error_category": {
+      "type": "string",
+      "enum": [
+        "none",
+        "source_not_found",
+        "oauth_token_exchange_failed",
+        "authentication_rejected",
+        "source_unreachable",
+        "source_misconfigured",
+        "freshness_check_failed",
+        "extraction_integrity_failed",
+        "schema_validation_failed",
+        "model_interpretation_failed",
+        "governance_policy_failed",
+        "unknown_external_source_error"
+      ]
+    },
+    "explicit_warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "structured_questions_partial",
+          "structured_questions_empty",
+          "missing_multiple_choice_options",
+          "missing_answer",
+          "raw_pdf_fallback_required",
+          "source_batch_stale",
+          "authoritative_source_refresh_required",
+          "oauth_failure_before_retrieval",
+          "source_not_found",
+          "admission_record_rejected_by_gate"
+        ]
+      }
+    },
+    "raw_or_pdf_fallback_reference": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?:[A-Za-z][A-Za-z0-9+.-]*:[^\\s?#{}\"'@]+|not_available:[A-Za-z0-9._:-]+)$"
+    },
+    "replay_failure_classification": {
+      "$ref": "#/$defs/replayFailureClassification"
+    },
+    "decision_path_eligible": {
+      "type": "boolean"
+    },
+    "decision_proof_sealing_eligible": {
+      "type": "boolean"
+    },
+    "storage_disposition": {
+      "type": "string",
+      "enum": [
+        "verified_evidence",
+        "inspection_only",
+        "replay_metadata_only"
+      ]
+    }
+  },
+  "$defs": {
+    "sourceIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "source_name",
+        "source_type",
+        "endpoint_reference",
+        "client_type",
+        "authentication_mode"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "const": "ai-twinkle-hub"
+        },
+        "source_name": {
+          "type": "string",
+          "const": "ai-twinkle/Hub"
+        },
+        "source_type": {
+          "type": "string",
+          "const": "mcp"
+        },
+        "endpoint_reference": {
+          "type": "string",
+          "const": "https://api.twinkleai.tw/mcp/"
+        },
+        "client_type": {
+          "type": "string",
+          "enum": [
+            "aaos-deterministic-fixture",
+            "mcp-remote-fixture"
+          ]
+        },
+        "authentication_mode": {
+          "type": "string",
+          "enum": [
+            "fixture_no_live_auth",
+            "oauth_metadata_flow_observed"
+          ]
+        }
+      }
+    },
+    "extractionMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_count_reported",
+        "item_count_verified",
+        "missing_fields",
+        "schema_valid",
+        "structured_evidence_available",
+        "raw_source_available"
+      ],
+      "properties": {
+        "item_count_reported": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "item_count_verified": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.\\[\\]-]+$"
+          }
+        },
+        "schema_valid": {
+          "type": "boolean"
+        },
+        "structured_evidence_available": {
+          "type": "boolean"
+        },
+        "raw_source_available": {
+          "type": "boolean"
+        }
+      }
+    },
+    "admissionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stale_freshness_result",
+        "unknown_freshness_result",
+        "partial_extraction_result",
+        "fallback_required_result"
+      ],
+      "properties": {
+        "stale_freshness_result": {
+          "type": "string",
+          "enum": [
+            "degraded",
+            "rejected"
+          ]
+        },
+        "unknown_freshness_result": {
+          "type": "string",
+          "enum": [
+            "rejected"
+          ]
+        },
+        "partial_extraction_result": {
+          "type": "string",
+          "enum": [
+            "degraded",
+            "rejected"
+          ]
+        },
+        "fallback_required_result": {
+          "type": "string",
+          "enum": [
+            "degraded",
+            "rejected"
+          ]
+        }
+      }
+    },
+    "replayFailureClassification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_failure",
+        "extraction_failure",
+        "model_failure",
+        "governance_failure"
+      ],
+      "properties": {
+        "source_failure": {
+          "type": "string",
+          "enum": [
+            "none",
+            "source_absence",
+            "authentication_failure",
+            "connection_failure",
+            "configuration_failure",
+            "freshness_failure",
+            "unknown_source_failure"
+          ]
+        },
+        "extraction_failure": {
+          "type": "string",
+          "enum": [
+            "none",
+            "partial_extraction",
+            "empty_extraction",
+            "schema_mismatch",
+            "fallback_required"
+          ]
+        },
+        "model_failure": {
+          "type": "string",
+          "enum": [
+            "none",
+            "model_interpretation_failure",
+            "model_output_validation_failure"
+          ]
+        },
+        "governance_failure": {
+          "type": "string",
+          "enum": [
+            "none",
+            "governance_policy_failure",
+            "sealing_boundary_violation"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "evidence_kind": {
+            "const": "dataset"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "freshness_required": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "admission_result": {
+            "const": "verified"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "connection_status": {
+            "const": "ready"
+          },
+          "freshness_status": {
+            "enum": [
+              "current",
+              "not_applicable"
+            ]
+          },
+          "extraction_status": {
+            "const": "complete"
+          },
+          "storage_disposition": {
+            "const": "verified_evidence"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "admission_result": {
+            "const": "degraded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "explicit_warnings": {
+            "minItems": 1
+          },
+          "raw_or_pdf_fallback_reference": {
+            "minLength": 1,
+            "not": {
+              "pattern": "^not_available:"
+            }
+          },
+          "extraction_metrics": {
+            "properties": {
+              "raw_source_available": {
+                "const": true
+              }
+            }
+          },
+          "decision_path_eligible": {
+            "const": false
+          },
+          "decision_proof_sealing_eligible": {
+            "const": false
+          },
+          "storage_disposition": {
+            "const": "inspection_only"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "admission_result": {
+            "const": "rejected"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "decision_path_eligible": {
+            "const": false
+          },
+          "decision_proof_sealing_eligible": {
+            "const": false
+          },
+          "storage_disposition": {
+            "const": "replay_metadata_only"
+          }
+        }
+      }
+    }
+  ]
+}
