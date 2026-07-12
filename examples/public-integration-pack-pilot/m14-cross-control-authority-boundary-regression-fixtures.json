@@ -1,0 +1,626 @@
+{
+  "fixture_status": "m14_active_work_not_complete",
+  "tracker_issue": "#201",
+  "tracker_issue_linkage": "Refs #201",
+  "related_voice_runtime_pr": "#202",
+  "related_public_output_gate_pr": "#204",
+  "related_moda_mapping_pr": "#205",
+  "related_ai_pr_provenance_pr": "#206",
+  "related_skill_admission_pr": "#208",
+  "authority_boundary_scope": "cross_control_composition_regression",
+  "m14_completion_status": "active_work_not_complete",
+  "target_future_release": "v0.13.0",
+  "future_release_tag_path": {
+    "target_tag": "v0.13.0",
+    "state": "future_tag_path_only",
+    "released": false
+  },
+  "external_execution_performed": false,
+  "workflow_execution_performed": false,
+  "public_comment_posted": false,
+  "risk_accepted_by_fixture": false,
+  "final_action_approved_by_fixture": false,
+  "fail_closed_executed_by_fixture": false,
+  "rollback_executed_by_fixture": false,
+  "audit_closed_by_fixture": false,
+  "authority_transferred_by_fixture": false,
+  "final_governance_judgment_made_by_fixture": false,
+  "decision_proof_sealed_by_fixture": false,
+  "intended_files": [
+    "examples/public-integration-pack-pilot/m14-cross-control-authority-boundary-regression-fixtures.json",
+    "runtime/m14_cross_control_authority_boundary_evaluator.py",
+    "tests/test_m14_cross_control_authority_boundary_evaluator.py"
+  ],
+  "evaluation_boundary": {
+    "deterministic_regression_layer_only": true,
+    "source_artifacts_read_as_data_only": true,
+    "source_evaluators_imported_or_executed": false,
+    "workflow_executed": false,
+    "external_skill_executed": false,
+    "network_access_performed": false,
+    "fixture_derived_shell_command_executed": false,
+    "public_comment_posted": false
+  },
+  "source_artifact_manifest": [
+    {
+      "component_id": "voice_runtime_policy",
+      "source_pr": "#202",
+      "component_role": "governed_voice_runtime_policy_gate",
+      "source_paths": [
+        "examples/public-integration-pack-pilot/voxcpm-governed-voice-fixtures.json",
+        "runtime/voice_generation_policy_evaluator.py",
+        "tests/test_voice_generation_policy_evaluator.py"
+      ],
+      "component_specific_boundaries": [
+        "runtime capability is not governance permission",
+        "consent evidence is not approval",
+        "policy gate pass is not final governance judgment",
+        "ready_for_review is not approval"
+      ],
+      "source_boundary_requirements": [
+        "Runtime capability is not governance permission.",
+        "Consent evidence is not approval.",
+        "Policy gate pass is not final governance judgment.",
+        "ready_for_review is not approval.",
+        "Decision Proof sealing remains AAOS-owned.",
+        "AAOS remains the decision sovereignty layer."
+      ]
+    },
+    {
+      "component_id": "public_output_exfiltration_gate",
+      "source_pr": "#204",
+      "component_role": "public_output_exfiltration_gate",
+      "source_paths": [
+        "examples/public-integration-pack-pilot/m14-public-issue-exfiltration-gate-fixtures.json",
+        "runtime/public_issue_exfiltration_gate_evaluator.py",
+        "tests/test_public_issue_exfiltration_gate_evaluator.py"
+      ],
+      "component_specific_boundaries": [
+        "untrusted public input is not instruction authority",
+        "output_gate_pass is not public disclosure approval",
+        "human_review_required is not audit closure",
+        "fail_closed_recommended is not fail_closed_executed"
+      ],
+      "source_boundary_requirements": [
+        "Public issue bodies, PR comments, discussions, and external markdown are untrusted input.",
+        "A public trigger must not grant private repository or organization-wide read context by default.",
+        "output_gate_pass is not public disclosure approval.",
+        "human_review_required is not audit closure.",
+        "fail_closed_recommended is not fail_closed_executed.",
+        "Decision Proof sealing remains AAOS-owned.",
+        "AAOS remains the decision sovereignty layer."
+      ]
+    },
+    {
+      "component_id": "moda_risk_mapping",
+      "source_pr": "#205",
+      "component_role": "external_regulatory_risk_taxonomy_mapping",
+      "source_paths": [
+        "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md",
+        "examples/public-integration-pack-pilot/m14-moda-ai-risk-decision-proof-fixtures.json",
+        "runtime/moda_ai_risk_mapping_evaluator.py",
+        "tests/test_moda_ai_risk_mapping_evaluator.py"
+      ],
+      "component_specific_boundaries": [
+        "regulatory mapping is not legal approval",
+        "taxonomy coverage is not compliance certification",
+        "serious-harm screening is not final legal determination",
+        "risk-code mapping is not deployment approval"
+      ],
+      "source_boundary_requirements": [
+        "Regulatory mapping is not legal approval.",
+        "Taxonomy mapping is not compliance certification.",
+        "Control coverage complete is not deployment approval.",
+        "Serious-harm screening is not final legal determination.",
+        "ready_for_review is not regulated deployment approval.",
+        "Decision Proof sealing remains AAOS-owned.",
+        "AAOS remains the decision sovereignty layer."
+      ]
+    },
+    {
+      "component_id": "ai_pr_provenance",
+      "source_pr": "#206",
+      "component_role": "ai_pr_provenance_and_reviewer_routing",
+      "source_paths": [
+        ".github/workflows/m14-ai-pr-provenance.yml",
+        "examples/public-integration-pack-pilot/m14-ai-authored-pr-provenance-fixtures.json",
+        "runtime/ai_authored_pr_provenance_evaluator.py",
+        "tests/test_ai_authored_pr_provenance_evaluator.py"
+      ],
+      "component_specific_boundaries": [
+        "AI-authorship detection is heuristic evidence, not identity proof",
+        "pr-by-ai is not approval",
+        "human-review-required is not completed review",
+        "reviewer routing is not review approval",
+        "workflow success is not merge approval"
+      ],
+      "source_boundary_requirements": [
+        "AI-authored detection is provenance evidence, not identity proof.",
+        "pr-by-ai is not approval.",
+        "human-review-required is not completed review.",
+        "Reviewer routing is not review approval.",
+        "Workflow success is not merge approval.",
+        "Decision Proof sealing remains AAOS-owned.",
+        "AAOS remains the decision sovereignty layer."
+      ]
+    },
+    {
+      "component_id": "skill_admission",
+      "source_pr": "#208",
+      "component_role": "external_skill_capability_admission_gate",
+      "source_paths": [
+        "docs/capability-supply-chain/nvidia-skills-admission.md",
+        "examples/public-integration-pack-pilot/m14-skill-admission-fixtures.json",
+        "runtime/skill_admission_evaluator.py",
+        "tests/test_skill_admission_evaluator.py"
+      ],
+      "component_specific_boundaries": [
+        "external skill capability is not governance permission",
+        "skill installation is not execution authorization",
+        "artifact signature is not governance approval",
+        "scan passed is not risk accepted",
+        "admission_ready_for_review is not final admission approval"
+      ],
+      "source_boundary_requirements": [
+        "External skill capability is not governance permission.",
+        "Skill installation is not execution authorization.",
+        "Artifact signature is not governance approval.",
+        "Scan passed is not risk accepted.",
+        "admission_ready_for_review is not final admission approval.",
+        "Decision Proof sealing remains AAOS-owned.",
+        "AAOS remains the decision sovereignty layer."
+      ]
+    }
+  ],
+  "component_authority_matrix": [
+    {
+      "component_id": "voice_runtime_policy",
+      "source_pr": "#202",
+      "component_role": "governed_voice_runtime_policy_gate",
+      "source_paths": [
+        "examples/public-integration-pack-pilot/voxcpm-governed-voice-fixtures.json",
+        "runtime/voice_generation_policy_evaluator.py",
+        "tests/test_voice_generation_policy_evaluator.py"
+      ],
+      "input_evidence_classes": ["voice intent", "consent evidence", "provenance evidence", "runtime policy evidence"],
+      "permitted_operations": ["capture", "inspect", "classify", "validate structure", "detect risk", "detect policy mismatch", "recommend fail-closed", "recommend rollback", "request human review", "preserve trace", "preserve replay metadata", "report readiness for review"],
+      "advisory_outputs": ["voice_policy_case_pass", "ready_for_review", "human_review_required", "fail_closed_recommended", "rollback_recommended"],
+      "prohibited_operations": ["approve an action", "accept risk", "approve public disclosure", "approve impersonation", "approve regulated deployment", "approve installation or execution", "approve a merge or review", "execute fail-closed", "execute rollback", "close an audit", "grant a waiver", "transfer governance authority", "make a final governance judgment", "seal Decision Proof"],
+      "prohibited_authority_claims": ["voice_clone_approved", "impersonation_approved", "risk_accepted", "fail_closed_executed", "rollback_executed", "audit_closed", "decision_proof_sealed", "authority_transferred", "final_governance_judgment"],
+      "escalation_route": "AAOS governed voice runtime reviewers",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS"
+    },
+    {
+      "component_id": "public_output_exfiltration_gate",
+      "source_pr": "#204",
+      "component_role": "public_output_exfiltration_gate",
+      "source_paths": [
+        "examples/public-integration-pack-pilot/m14-public-issue-exfiltration-gate-fixtures.json",
+        "runtime/public_issue_exfiltration_gate_evaluator.py",
+        "tests/test_public_issue_exfiltration_gate_evaluator.py"
+      ],
+      "input_evidence_classes": ["public input trust evidence", "private context evidence", "redaction evidence", "output channel evidence"],
+      "permitted_operations": ["capture", "inspect", "classify", "validate structure", "detect risk", "detect policy mismatch", "block output", "recommend fail-closed", "recommend rollback", "request human review", "preserve trace", "preserve replay metadata", "report readiness for review"],
+      "advisory_outputs": ["output_gate_pass", "ready_for_review", "public_output_blocked", "human_review_required", "fail_closed_recommended", "rollback_recommended"],
+      "prohibited_operations": ["approve an action", "accept risk", "approve public disclosure", "approve impersonation", "approve regulated deployment", "approve installation or execution", "approve a merge or review", "execute fail-closed", "execute rollback", "close an audit", "grant a waiver", "transfer governance authority", "make a final governance judgment", "seal Decision Proof"],
+      "prohibited_authority_claims": ["public_disclosure_approved", "risk_accepted", "fail_closed_executed", "rollback_executed", "audit_closed", "decision_proof_sealed", "sealed_by_output_gate", "authority_transferred", "final_governance_judgment"],
+      "escalation_route": "AAOS public-output safety reviewers",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS"
+    },
+    {
+      "component_id": "moda_risk_mapping",
+      "source_pr": "#205",
+      "component_role": "external_regulatory_risk_taxonomy_mapping",
+      "source_paths": [
+        "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md",
+        "examples/public-integration-pack-pilot/m14-moda-ai-risk-decision-proof-fixtures.json",
+        "runtime/moda_ai_risk_mapping_evaluator.py",
+        "tests/test_moda_ai_risk_mapping_evaluator.py"
+      ],
+      "input_evidence_classes": ["taxonomy provenance", "risk-code mapping", "serious-harm screening", "control coverage evidence"],
+      "permitted_operations": ["capture", "inspect", "classify", "validate structure", "detect risk", "detect policy mismatch", "recommend fail-closed", "recommend rollback", "request human review", "preserve trace", "preserve replay metadata", "report readiness for review"],
+      "advisory_outputs": ["taxonomy_coverage_complete", "ready_for_review", "human_review_required", "serious_harm_screening_required", "fail_closed_recommended", "rollback_recommended"],
+      "prohibited_operations": ["approve an action", "accept risk", "approve public disclosure", "approve impersonation", "approve regulated deployment", "approve installation or execution", "approve a merge or review", "execute fail-closed", "execute rollback", "close an audit", "grant a waiver", "transfer governance authority", "make a final governance judgment", "seal Decision Proof"],
+      "prohibited_authority_claims": ["legal_approval_granted", "compliance_certified", "regulated_deployment_approved", "risk_accepted", "audit_closed", "decision_proof_sealed", "sealed_by_regulatory_mapping", "authority_transferred", "final_governance_judgment"],
+      "escalation_route": "AAOS regulatory-risk reviewers",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS"
+    },
+    {
+      "component_id": "ai_pr_provenance",
+      "source_pr": "#206",
+      "component_role": "ai_pr_provenance_and_reviewer_routing",
+      "source_paths": [
+        ".github/workflows/m14-ai-pr-provenance.yml",
+        "examples/public-integration-pack-pilot/m14-ai-authored-pr-provenance-fixtures.json",
+        "runtime/ai_authored_pr_provenance_evaluator.py",
+        "tests/test_ai_authored_pr_provenance_evaluator.py"
+      ],
+      "input_evidence_classes": ["AI-authorship heuristic evidence", "PR metadata", "sensitive-change evidence", "reviewer routing evidence"],
+      "permitted_operations": ["capture", "inspect", "classify", "validate structure", "detect risk", "detect policy mismatch", "request human review", "request reviewer routing", "preserve trace", "report readiness for review"],
+      "advisory_outputs": ["workflow_success", "reviewer_routing_required", "human_review_required", "ready_for_review"],
+      "prohibited_operations": ["approve an action", "accept risk", "approve public disclosure", "approve impersonation", "approve regulated deployment", "approve installation or execution", "approve a merge or review", "execute fail-closed", "execute rollback", "close an audit", "grant a waiver", "transfer governance authority", "make a final governance judgment", "seal Decision Proof"],
+      "prohibited_authority_claims": ["identity_proven", "review_approved", "merge_approved", "risk_accepted", "audit_closed", "decision_proof_sealed", "sealed_by_provenance_workflow", "authority_transferred", "final_governance_judgment"],
+      "escalation_route": "AAOS provenance and reviewer-routing reviewers",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS"
+    },
+    {
+      "component_id": "skill_admission",
+      "source_pr": "#208",
+      "component_role": "external_skill_capability_admission_gate",
+      "source_paths": [
+        "docs/capability-supply-chain/nvidia-skills-admission.md",
+        "examples/public-integration-pack-pilot/m14-skill-admission-fixtures.json",
+        "runtime/skill_admission_evaluator.py",
+        "tests/test_skill_admission_evaluator.py"
+      ],
+      "input_evidence_classes": ["artifact identity", "permission declaration", "signature evidence", "scan evidence", "benchmark and evaluation evidence"],
+      "permitted_operations": ["capture", "inspect", "classify", "validate structure", "detect risk", "detect policy mismatch", "recommend fail-closed", "recommend rollback", "request human review", "preserve trace", "preserve replay metadata", "report readiness for review"],
+      "advisory_outputs": ["admission_ready_for_review", "candidate_restricted", "needs_human_review", "fail_closed_recommended", "rollback_recommended"],
+      "prohibited_operations": ["approve an action", "accept risk", "approve public disclosure", "approve impersonation", "approve regulated deployment", "approve installation or execution", "approve a merge or review", "execute fail-closed", "execute rollback", "close an audit", "grant a waiver", "transfer governance authority", "make a final governance judgment", "seal Decision Proof"],
+      "prohibited_authority_claims": ["installation_approved", "skill_execution_approved", "deployment_approved", "risk_accepted", "audit_closed", "decision_proof_sealed", "sealed_by_skill_registry", "authority_transferred", "final_governance_judgment"],
+      "escalation_route": "AAOS skill-admission reviewers",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS"
+    }
+  ],
+  "composition_rules": [
+    "no_authority_by_aggregation",
+    "capability_is_not_permission",
+    "consent_evidence_is_not_approval",
+    "provenance_is_not_identity_proof",
+    "regulatory_mapping_is_not_legal_approval",
+    "taxonomy_coverage_is_not_compliance_certification",
+    "signature_is_not_governance_approval",
+    "scan_is_not_risk_acceptance",
+    "benchmark_is_not_deployment_approval",
+    "policy_gate_pass_is_scope_limited",
+    "ready_for_review_is_not_approval",
+    "reviewer_routing_is_not_review_approval",
+    "workflow_success_is_not_merge_approval",
+    "public_output_gate_pass_is_not_disclosure_approval",
+    "fail_closed_recommended_is_not_fail_closed_executed",
+    "rollback_recommended_is_not_rollback_executed",
+    "human_review_required_is_not_audit_closure",
+    "replay_ready_is_not_decision_proof_sealing",
+    "evidence_complete_is_not_decision_proof_sealing",
+    "most_restrictive_applicable_control_is_preserved",
+    "authority_cannot_be_transferred_by_field_renaming",
+    "forbidden_claims_remain_forbidden_when_nested",
+    "forbidden_claims_remain_forbidden_when_multiple_components_agree",
+    "decision_proof_sealing_remains_aaos_owned",
+    "aaos_remains_decision_sovereignty_layer"
+  ],
+  "result_precedence": ["passed_scope_limited", "ready_for_review", "restricted", "human_review_required", "escalation_required", "blocked"],
+  "baseline_component_results": [
+    {
+      "component_id": "voice_runtime_policy",
+      "control_result": "human_review_required",
+      "advisory_outputs": ["voice_policy_case_pass", "ready_for_review", "human_review_required"],
+      "claimed_operations": ["inspect", "report readiness for review", "request human review"],
+      "human_review_required": true,
+      "fail_closed_recommended": false,
+      "rollback_recommended": false,
+      "evidence": {"consent_evidence_present": true, "policy_gate_pass": true, "ready_for_review": true}
+    },
+    {
+      "component_id": "public_output_exfiltration_gate",
+      "control_result": "ready_for_review",
+      "advisory_outputs": ["output_gate_pass", "ready_for_review"],
+      "claimed_operations": ["inspect", "report readiness for review"],
+      "human_review_required": false,
+      "fail_closed_recommended": false,
+      "rollback_recommended": false,
+      "evidence": {"redaction_validated": true, "output_gate_pass": true, "ready_for_review": true}
+    },
+    {
+      "component_id": "moda_risk_mapping",
+      "control_result": "human_review_required",
+      "advisory_outputs": ["taxonomy_coverage_complete", "ready_for_review", "human_review_required"],
+      "claimed_operations": ["classify", "request human review", "report readiness for review"],
+      "human_review_required": true,
+      "fail_closed_recommended": false,
+      "rollback_recommended": false,
+      "evidence": {"taxonomy_coverage_complete": true, "serious_harm_screened": true, "ready_for_review": true}
+    },
+    {
+      "component_id": "ai_pr_provenance",
+      "control_result": "human_review_required",
+      "advisory_outputs": ["workflow_success", "reviewer_routing_required", "human_review_required"],
+      "claimed_operations": ["inspect", "request human review", "request reviewer routing"],
+      "human_review_required": true,
+      "fail_closed_recommended": false,
+      "rollback_recommended": false,
+      "evidence": {"heuristic_provenance_detected": true, "reviewer_routing_required": true, "workflow_success": true}
+    },
+    {
+      "component_id": "skill_admission",
+      "control_result": "human_review_required",
+      "advisory_outputs": ["admission_ready_for_review", "candidate_restricted", "needs_human_review"],
+      "claimed_operations": ["inspect", "request human review", "report readiness for review"],
+      "human_review_required": true,
+      "fail_closed_recommended": false,
+      "rollback_recommended": false,
+      "evidence": {"signature_evidence_present": true, "scan_evidence_present": true, "benchmark_evidence_present": true, "replay_ready": true}
+    }
+  ],
+  "cross_control_cases": [
+    {
+      "case_id": "case_01_all_five_valid_non_authoritative_outputs",
+      "case_type": "all_five_components_produce_valid_non_authoritative_outputs",
+      "description": "All five components remain bounded evidence and routing controls.",
+      "expected": {"required_outputs": ["ready_for_m14_readiness_review", "composition_not_authoritative"], "required_findings": []}
+    },
+    {
+      "case_id": "case_02_voice_consent_and_pass_as_clone_approval",
+      "case_type": "voice_consent_evidence_plus_policy_pass_incorrectly_treated_as_voice_clone_approval",
+      "description": "Consent and a gate pass cannot approve cloning.",
+      "active_claims": {"voice": {"consent_evidence": "present", "policy_gate_pass": true, "voice_clone_approved": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_03_voice_ready_as_public_release_approval",
+      "case_type": "voice_ready_for_review_incorrectly_treated_as_public_release_approval",
+      "description": "Review readiness cannot approve public release.",
+      "active_claims": {"release_state": {"ready_for_review": true, "public_release_approved": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_04_output_gate_and_redaction_as_disclosure_approval",
+      "case_type": "public_output_gate_pass_plus_redaction_incorrectly_treated_as_disclosure_approval",
+      "description": "A safe-output result cannot approve disclosure.",
+      "active_claims": {"output": {"output_gate_pass": true, "redaction_complete": true, "public_disclosure_approved": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_05_moda_coverage_as_legal_approval",
+      "case_type": "moda_taxonomy_coverage_plus_serious_harm_screening_incorrectly_treated_as_legal_approval",
+      "description": "Taxonomy and screening evidence cannot grant legal approval.",
+      "active_claims": {"moda": {"taxonomy_coverage_complete": true, "serious_harm_screened": true, "legal_approval_granted": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_06_moda_controls_as_deployment_approval",
+      "case_type": "moda_control_coverage_plus_human_review_incorrectly_treated_as_regulated_deployment_approval",
+      "description": "Control coverage and a review route cannot approve deployment.",
+      "active_claims": {"moda": {"control_coverage_complete": true, "human_review_required": true, "regulated_deployment_approved": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_07_provenance_and_routing_as_review_approval",
+      "case_type": "ai_provenance_detection_plus_reviewer_routing_incorrectly_treated_as_review_approval",
+      "description": "Heuristic provenance and routing do not prove identity or approve review.",
+      "active_claims": {"reviewer_state": {"provenance_detected": true, "reviewer_routing_required": true, "identity_proven": true, "review_approved": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_08_workflow_success_as_merge_approval",
+      "case_type": "workflow_success_plus_human_review_required_incorrectly_treated_as_merge_approval",
+      "description": "Workflow success cannot approve merge.",
+      "active_claims": {"workflow": {"workflow_success": true, "human_review_required": true, "merge_approved": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_09_skill_evidence_as_execution_approval",
+      "case_type": "skill_signature_scan_and_benchmark_incorrectly_treated_as_execution_approval",
+      "description": "Signature, scan, and benchmark evidence cannot accept risk or approve deployment or execution.",
+      "active_claims": {"skill": {"signature_present": true, "scan_passed": true, "benchmark_passed": true, "risk_accepted": true, "deployment_approved": true, "skill_execution_approved": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_10_candidate_allowed_as_installation_authorization",
+      "case_type": "skill_candidate_allowed_incorrectly_treated_as_installation_authorization",
+      "description": "Registry classification cannot authorize installation.",
+      "active_claims": {"registry": {"candidate_allowed": true, "installation_approved": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_11_five_successes_as_final_judgment",
+      "case_type": "five_successful_controls_incorrectly_aggregated_into_final_governance_judgment",
+      "description": "Five successful controls remain non-authoritative.",
+      "active_claims": {"aggregation": {"passed_control_count": 5, "final_governance_judgment": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_12_five_successes_as_decision_proof_sealing",
+      "case_type": "five_successful_controls_incorrectly_aggregated_into_decision_proof_sealing",
+      "description": "Aggregation cannot seal Decision Proof.",
+      "active_claims": {"aggregation": {"passed_control_count": 5, "decision_proof_sealed": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_13_recommendations_as_fail_closed_execution",
+      "case_type": "fail_closed_recommended_from_multiple_components_incorrectly_treated_as_executed",
+      "description": "Recommendations remain sticky routing evidence and are not execution.",
+      "fixture_overrides": {"baseline_component_results.0.fail_closed_recommended": true, "baseline_component_results.1.fail_closed_recommended": true},
+      "active_claims": {"recommendations": [{"fail_closed_recommended": true}, {"fail_closed_executed": true}]},
+      "expected": {"required_outputs": ["fail_closed_recommended", "authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_14_recommendations_as_rollback_execution",
+      "case_type": "rollback_recommended_from_multiple_components_incorrectly_treated_as_executed",
+      "description": "Rollback recommendations do not execute rollback.",
+      "fixture_overrides": {"baseline_component_results.0.rollback_recommended": true, "baseline_component_results.1.rollback_recommended": true},
+      "active_claims": {"recommendations": [{"rollback_recommended": true}, {"rollback_executed": true}]},
+      "expected": {"required_outputs": ["rollback_recommended", "authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_15_review_requirements_as_audit_closure",
+      "case_type": "human_review_requirements_incorrectly_aggregated_into_audit_closure",
+      "description": "Human review requirements do not close an audit.",
+      "active_claims": {"reviewer_state": [{"human_review_required": true}, {"audit_closed": true}]},
+      "expected": {"required_outputs": ["human_review_required", "authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_16_evidence_and_replay_as_sealing",
+      "case_type": "evidence_complete_plus_replay_ready_incorrectly_treated_as_sealing",
+      "description": "Evidence and replay readiness do not seal or verify Decision Proof.",
+      "active_claims": {"evidence": {"evidence_complete": true, "replay_ready": true, "decision_proof_verified": true, "decision_proof_sealed": true}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_17_nested_authority_transfer_attempt",
+      "case_type": "authority_transfer_attempt_hidden_in_nested_component_metadata",
+      "description": "Nested lists and dictionaries cannot hide authority transfer.",
+      "active_claims": {"component_metadata": {"nested": [{"evidence": {"authority_transferred": true}}]}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_18_renamed_authority_transfer_attempt",
+      "case_type": "authority_transfer_attempt_hidden_under_renamed_approval_field",
+      "description": "Field renaming cannot transfer authority.",
+      "active_claims": {"renamed_approval_field": {"state": "approved", "retained_authority_owner": "cross_control_evaluator"}},
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_19_permissive_override_attempt",
+      "case_type": "permissive_control_attempts_to_override_a_blocking_control",
+      "description": "A permissive override cannot erase a public-output block.",
+      "fixture_overrides": {"baseline_component_results.1.control_result": "blocked", "baseline_component_results.1.advisory_outputs": ["public_output_blocked"]},
+      "effective_control_result_override": "passed_scope_limited",
+      "expected": {"required_outputs": ["most_restrictive_control_preserved", "authority_violation_detected", "not_ready"], "required_findings": ["restrictive_control_override_attempt"]}
+    },
+    {
+      "case_id": "case_20_blocking_control_preserved",
+      "case_type": "blocking_control_is_preserved_as_the_effective_routing_result",
+      "description": "The blocking component remains the effective result.",
+      "fixture_overrides": {"baseline_component_results.1.control_result": "blocked", "baseline_component_results.1.advisory_outputs": ["public_output_blocked"]},
+      "expected": {"required_outputs": ["most_restrictive_control_preserved", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_21_missing_component_authority_declaration",
+      "case_type": "missing_component_authority_declaration_fails",
+      "description": "Every component requires a complete authority declaration.",
+      "fixture_overrides": {"component_authority_matrix.0.retained_authority_owner": {"$delete": true}},
+      "expected": {"required_outputs": ["component_boundary_invalid", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_22_missing_source_artifact_path",
+      "case_type": "missing_source_artifact_path_fails",
+      "description": "All source paths must remain represented.",
+      "fixture_overrides": {"source_artifact_manifest.0.source_paths.0": {"$delete": true}},
+      "expected": {"required_outputs": ["source_boundary_drift_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_23_component_claims_undeclared_operation",
+      "case_type": "component_claims_an_undeclared_operation",
+      "description": "A component may act only within its declared operation scope.",
+      "fixture_overrides": {"baseline_component_results.0.claimed_operations": ["approve action"]},
+      "expected": {"required_outputs": ["authority_violation_detected", "component_boundary_invalid", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_24_component_claims_local_aaos_authority",
+      "case_type": "component_declares_aaos_owned_authority_as_local_authority",
+      "description": "Retained authority and sealing ownership remain AAOS-owned.",
+      "fixture_overrides": {"component_authority_matrix.4.retained_authority_owner": "skill_registry", "component_authority_matrix.4.decision_proof_sealing_owner": "skill_registry"},
+      "expected": {"required_outputs": ["authority_violation_detected", "component_boundary_invalid", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_25_evaluator_attempts_tracker_closure",
+      "case_type": "evaluator_attempts_to_close_201",
+      "description": "The evaluator cannot close the M14 tracker.",
+      "simulated_evaluator_output": "closes_201",
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_26_evaluator_attempts_m14_completion",
+      "case_type": "evaluator_attempts_to_declare_m14_complete",
+      "description": "The evaluator cannot declare M14 complete.",
+      "simulated_evaluator_output": "m14_complete",
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_27_evaluator_attempts_future_release",
+      "case_type": "evaluator_attempts_to_release_v0_13_0",
+      "description": "The evaluator cannot release the future version.",
+      "simulated_evaluator_output": "v0_13_0_released",
+      "expected": {"required_outputs": ["authority_violation_detected", "not_ready"], "required_findings": []}
+    },
+    {
+      "case_id": "case_28_valid_readiness_review_only",
+      "case_type": "valid_cross_control_fixture_becomes_ready_for_m14_readiness_review_but_not_complete",
+      "description": "A valid regression fixture is ready only for M14 readiness review.",
+      "expected": {"required_outputs": ["ready_for_m14_readiness_review", "composition_not_authoritative"], "required_findings": []}
+    }
+  ],
+  "required_boundary_statements": [
+    "Multiple non-authoritative outputs do not aggregate into governance authority.",
+    "Five passed gates are not final approval.",
+    "Evidence accumulation does not create authority by aggregation.",
+    "Capability is not permission.",
+    "Consent evidence is not approval.",
+    "Provenance is not identity proof.",
+    "Regulatory mapping is not legal approval.",
+    "Taxonomy coverage is not compliance certification.",
+    "Artifact signature is not governance approval.",
+    "Scan passed is not risk accepted.",
+    "Benchmark passed is not deployment approval.",
+    "ready_for_review is not approval.",
+    "Reviewer routing is not review approval.",
+    "Workflow success is not merge approval.",
+    "output_gate_pass is not public disclosure approval.",
+    "fail_closed_recommended is not fail_closed_executed.",
+    "rollback_recommended is not rollback_executed.",
+    "human_review_required is not audit closure.",
+    "evidence_complete is not Decision Proof sealing.",
+    "replay_ready is not Decision Proof sealing.",
+    "Source evaluators remain bounded evidence evaluators.",
+    "Explicit negative governance evidence is not an affirmative authority claim.",
+    "Decision Proof sealing remains AAOS-owned.",
+    "AAOS remains the decision sovereignty layer."
+  ],
+  "allowed_evaluator_outputs": [
+    "m14_authority_boundary_fixture_valid",
+    "m14_authority_boundary_fixture_invalid",
+    "cross_control_boundary_valid",
+    "cross_control_boundary_invalid",
+    "component_boundary_valid",
+    "component_boundary_invalid",
+    "composition_not_authoritative",
+    "most_restrictive_control_preserved",
+    "human_review_required",
+    "fail_closed_recommended",
+    "rollback_recommended",
+    "source_boundary_drift_detected",
+    "authority_violation_detected",
+    "ready_for_m14_readiness_review",
+    "not_ready",
+    "escalation_required"
+  ],
+  "forbidden_evaluator_outputs": [
+    "voice_clone_approved",
+    "impersonation_approved",
+    "public_disclosure_approved",
+    "regulated_deployment_approved",
+    "legal_approval_granted",
+    "compliance_certified",
+    "risk_accepted",
+    "identity_proven",
+    "review_approved",
+    "merge_approved",
+    "installation_approved",
+    "skill_execution_approved",
+    "deployment_approved",
+    "final_action_approved",
+    "fail_closed_executed",
+    "rollback_executed",
+    "audit_closed",
+    "waiver_granted",
+    "decision_proof_verified",
+    "decision_proof_sealed",
+    "sealed_by_voice_runtime",
+    "sealed_by_output_gate",
+    "sealed_by_regulatory_mapping",
+    "sealed_by_provenance_workflow",
+    "sealed_by_skill_registry",
+    "sealed_by_evaluator",
+    "authority_transferred",
+    "final_governance_judgment",
+    "m14_complete",
+    "v0_13_0_released",
+    "closes_201"
+  ]
+}
