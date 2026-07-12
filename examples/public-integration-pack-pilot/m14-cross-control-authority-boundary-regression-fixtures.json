@@ -568,6 +568,7 @@
     "evidence_complete is not Decision Proof sealing.",
     "replay_ready is not Decision Proof sealing.",
     "Source evaluators remain bounded evidence evaluators.",
+    "Explicit negative governance evidence is not an affirmative authority claim.",
     "Decision Proof sealing remains AAOS-owned.",
     "AAOS remains the decision sovereignty layer."
   ],

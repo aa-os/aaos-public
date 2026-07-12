@@ -236,6 +236,7 @@ REQUIRED_BOUNDARY_STATEMENTS = {
     "evidence_complete is not Decision Proof sealing.",
     "replay_ready is not Decision Proof sealing.",
     "Source evaluators remain bounded evidence evaluators.",
+    "Explicit negative governance evidence is not an affirmative authority claim.",
     "Decision Proof sealing remains AAOS-owned.",
     "AAOS remains the decision sovereignty layer.",
 }
@@ -341,14 +342,116 @@ def _normalized_path(value: Any) -> str:
     return str(value).strip().replace("\\", "/")
 
 
-def _truthy_claim(value: Any) -> bool:
-    if value is True:
+_AFFIRMATIVE_AUTHORITY_STATES = frozenset(
+    {
+        "accepted",
+        "allowed",
+        "approved",
+        "authorized",
+        "closed",
+        "complete",
+        "completed",
+        "enabled",
+        "executed",
+        "final",
+        "granted",
+        "released",
+        "sealed",
+        "transferred",
+        "true",
+        "yes",
+    }
+)
+
+_EXPLICIT_NEGATIVE_AUTHORITY_STATES = frozenset(
+    {
+        "",
+        "0",
+        "aaos",
+        "blocked",
+        "denied",
+        "disabled",
+        "false",
+        "no",
+        "none",
+        "not_accepted",
+        "not_allowed",
+        "not_approved",
+        "not_authorized",
+        "not_certified",
+        "not_closed",
+        "not_complete",
+        "not_completed",
+        "not_executed",
+        "not_final",
+        "not_granted",
+        "not_released",
+        "not_sealed",
+        "not_transferred",
+        "null",
+        "rejected",
+    }
+)
+
+_APPROVAL_CONTEXT_TOKENS = frozenset(
+    {
+        "activation",
+        "approval",
+        "authority",
+        "decision",
+        "deployment",
+        "disclosure",
+        "execution",
+        "governance",
+        "installation",
+        "merge",
+        "permission",
+        "release",
+        "review",
+        "risk",
+        "waiver",
+    }
+)
+
+
+def _is_explicit_negative_authority_claim(value: Any) -> bool:
+    if value is None or value is False:
         return True
     if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return value == 0
+    if not isinstance(value, str):
+        return False
+    normalized = _normalized_operation(value)
+    return normalized in _EXPLICIT_NEGATIVE_AUTHORITY_STATES
+
+
+def _is_affirmative_authority_claim(value: Any) -> bool:
+    """Classify scalar authority evidence without treating containers as claims."""
+
+    if value is True:
+        return True
+    if value is None or value is False:
+        return False
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
         return value != 0
-    if isinstance(value, str):
-        return value.strip().casefold() not in {"", "false", "none", "not_granted", "aaos"}
-    return bool(value)
+    if not isinstance(value, str):
+        return False
+
+    normalized = _normalized_operation(value)
+    if _is_explicit_negative_authority_claim(value):
+        return False
+    if normalized in _AFFIRMATIVE_AUTHORITY_STATES:
+        return True
+    if normalized in FORBIDDEN_EVALUATOR_OUTPUTS:
+        return True
+    if (
+        normalized.endswith("_approved")
+        or normalized.endswith("_approval_granted")
+        or normalized.endswith("_certified")
+        or normalized.startswith("sealed_by_")
+    ):
+        return True
+    return bool(normalized)
 
 
 def _walk(value: Any, path: str = "$"):
@@ -380,13 +483,14 @@ def detect_authority_violations(value: Any) -> list[str]:
         normalized_value = (
             _normalized_operation(child) if isinstance(child, str) else ""
         )
+        affirmative = _is_affirmative_authority_claim(child)
 
-        if normalized_key in FORBIDDEN_EVALUATOR_OUTPUTS:
+        if normalized_key in FORBIDDEN_EVALUATOR_OUTPUTS and affirmative:
             findings.append(f"forbidden_authority_key:{path}:{normalized_key}")
         if normalized_value in FORBIDDEN_EVALUATOR_OUTPUTS:
             findings.append(f"forbidden_authority_value:{path}:{normalized_value}")
         if isinstance(child, str):
-            if (
+            if affirmative and (
                 normalized_value.endswith("_approved")
                 or normalized_value.endswith("_approval_granted")
                 or normalized_value.endswith("_certified")
@@ -400,33 +504,33 @@ def detect_authority_violations(value: Any) -> list[str]:
                 "local_final_authority",
             }:
                 findings.append(f"renamed_authority_transfer_value:{path}")
-            approval_context_tokens = {
-                "activation",
-                "approval",
-                "authority",
-                "decision",
-                "deployment",
-                "disclosure",
-                "execution",
-                "governance",
-                "installation",
-                "merge",
-                "permission",
-                "release",
-                "review",
-                "risk",
-                "state",
-                "status",
-                "waiver",
-            }
             if normalized_value in {"approved", "granted"} and (
-                set(normalized_path.split("_")) & approval_context_tokens
+                set(normalized_path.split("_")) & _APPROVAL_CONTEXT_TOKENS
             ):
                 findings.append(
                     f"renamed_approval_value:{path}:{normalized_value}"
                 )
 
-        if key is not None and _truthy_claim(child):
+        if (
+            key is not None
+            and normalized_key.endswith("authority_owner")
+            and isinstance(child, str)
+            and child.strip()
+            and normalized_value != "aaos"
+            and not _is_explicit_negative_authority_claim(child)
+        ):
+            findings.append(f"local_authority_owner_claim:{path}")
+        if (
+            key is not None
+            and normalized_key.endswith("sealing_owner")
+            and isinstance(child, str)
+            and child.strip()
+            and normalized_value != "aaos"
+            and not _is_explicit_negative_authority_claim(child)
+        ):
+            findings.append(f"local_sealing_owner_claim:{path}")
+
+        if key is not None and affirmative:
             if (
                 normalized_key.endswith("_approved")
                 or normalized_key.endswith("_approval_granted")
@@ -445,10 +549,6 @@ def detect_authority_violations(value: Any) -> list[str]:
                 "retained_final_authority_owner",
             }:
                 findings.append(f"final_authority_claim:{path}:{normalized_key}")
-            if normalized_key.endswith("authority_owner") and str(child).strip() != "AAOS":
-                findings.append(f"local_authority_owner_claim:{path}")
-            if normalized_key.endswith("sealing_owner") and str(child).strip() != "AAOS":
-                findings.append(f"local_sealing_owner_claim:{path}")
             if "approval" in normalized_key and normalized_value in {
                 "approved",
                 "granted",

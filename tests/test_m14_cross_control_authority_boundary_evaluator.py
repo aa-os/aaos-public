@@ -173,6 +173,7 @@ BOUNDARY_STATEMENTS = {
     "evidence_complete is not Decision Proof sealing.",
     "replay_ready is not Decision Proof sealing.",
     "Source evaluators remain bounded evidence evaluators.",
+    "Explicit negative governance evidence is not an affirmative authority claim.",
     "Decision Proof sealing remains AAOS-owned.",
     "AAOS remains the decision sovereignty layer.",
 }
@@ -941,6 +942,203 @@ class M14CrossControlAuthorityBoundaryEvaluatorTests(unittest.TestCase):
             {"public_release_status": "approved"}
         )
         self.assertTrue(any("renamed_approval" in item for item in findings))
+
+    def test_91_decision_proof_sealed_false_does_not_trigger(self):
+        self.assertEqual(
+            detect_authority_violations({"decision_proof_sealed": False}), []
+        )
+
+    def test_92_risk_accepted_denied_does_not_trigger(self):
+        self.assertEqual(
+            detect_authority_violations({"risk_accepted": "denied"}), []
+        )
+
+    def test_93_merge_approved_not_approved_does_not_trigger(self):
+        self.assertEqual(
+            detect_authority_violations({"merge_approved": "not_approved"}),
+            [],
+        )
+
+    def test_94_fail_closed_executed_false_does_not_trigger(self):
+        self.assertEqual(
+            detect_authority_violations({"fail_closed_executed": False}), []
+        )
+
+    def test_95_authority_transferred_not_transferred_does_not_trigger(self):
+        self.assertEqual(
+            detect_authority_violations(
+                {"authority_transferred": "not_transferred"}
+            ),
+            [],
+        )
+
+    def test_96_nested_explicit_negative_authority_fields_do_not_trigger(self):
+        payload = {
+            "decision_proof_sealed": {
+                "status": "not_sealed",
+                "evidence": [
+                    {"risk_accepted": "denied"},
+                    {"merge_approved": "not_approved"},
+                    {"fail_closed_executed": False},
+                    {"authority_transferred": "not_transferred"},
+                    {"waiver_granted": None},
+                    {"deployment_approved": 0},
+                    {"review_approved": ""},
+                    {"installation_approved": "no"},
+                    {"audit_closed": "rejected"},
+                    {"final_action_approved": "not_authorized"},
+                    {"skill_execution_approved": "not_allowed"},
+                    {"rollback_executed": "not_executed"},
+                    {"m14_complete": "not_complete"},
+                    {"v0_13_0_released": "not_released"},
+                    {"closes_201": "blocked"},
+                    {"sealed_by_evaluator": "aaos"},
+                ],
+            }
+        }
+        self.assertEqual(detect_authority_violations(payload), [])
+
+    def test_97_negative_outer_field_does_not_hide_nested_affirmative_claim(self):
+        payload = {
+            "decision_proof_sealed": {
+                "status": "not_sealed",
+                "nested": {"authority_transferred": True},
+            }
+        }
+        findings = detect_authority_violations(payload)
+        self.assertNotIn(
+            "forbidden_authority_key:$.decision_proof_sealed:decision_proof_sealed",
+            findings,
+        )
+        self.assertTrue(
+            any("authority_transferred" in finding for finding in findings)
+        )
+
+    def test_98_affirmative_boolean_and_numeric_forbidden_claims_still_trigger(self):
+        for value in (True, 1, -1):
+            with self.subTest(value=value):
+                findings = detect_authority_violations(
+                    {"decision_proof_sealed": value}
+                )
+                self.assertTrue(
+                    any("forbidden_authority_key" in finding for finding in findings)
+                )
+
+    def test_99_affirmative_string_forbidden_claims_still_trigger(self):
+        affirmative_states = {
+            "accepted",
+            "allowed",
+            "approved",
+            "authorized",
+            "closed",
+            "complete",
+            "completed",
+            "executed",
+            "final",
+            "granted",
+            "released",
+            "sealed",
+            "transferred",
+        }
+        for state in affirmative_states:
+            with self.subTest(state=state):
+                findings = detect_authority_violations({"risk_accepted": state})
+                self.assertTrue(
+                    any("forbidden_authority_key" in finding for finding in findings)
+                )
+
+    def test_100_exact_forbidden_output_tokens_used_as_values_still_trigger(self):
+        for token in FORBIDDEN_OUTPUTS:
+            with self.subTest(token=token):
+                findings = detect_authority_violations({"result": token})
+                self.assertTrue(
+                    any("forbidden_authority_value" in finding for finding in findings)
+                )
+
+    def test_101_renamed_approval_and_authority_transfer_claims_still_trigger(self):
+        payloads = (
+            {"public_release_status": "approved"},
+            {"retained_authority_owner": "cross_control_evaluator"},
+            {"delegated_final_authority": True},
+            {"approval_context": {"state": "approved"}},
+        )
+        for payload in payloads:
+            with self.subTest(payload=payload):
+                self.assertTrue(detect_authority_violations(payload))
+        self.assertEqual(
+            detect_authority_violations(
+                {"non_authoritative_observation": {"state": "approved"}}
+            ),
+            [],
+        )
+
+    def test_102_active_component_explicit_negative_governance_evidence_is_valid(self):
+        fixture = copy.deepcopy(self.fixture)
+        fixture["baseline_component_results"][0]["evidence"][
+            "explicit_negative_governance_evidence"
+        ] = {
+            "decision_proof_sealed": False,
+            "risk_accepted": "denied",
+            "merge_approved": "not_approved",
+            "fail_closed_executed": False,
+            "authority_transferred": "not_transferred",
+        }
+        result = self.evaluate_fixture(fixture=fixture)
+        self.assertTrue(result["valid"])
+        self.assertFalse(result["authority_violation_detected"])
+        self.assertTrue(result["ready_for_m14_readiness_review"])
+
+    def test_103_baseline_remains_ready_for_m14_readiness_review(self):
+        result = self.evaluate_fixture()
+        self.assertTrue(result["valid"])
+        self.assertTrue(result["ready_for_m14_readiness_review"])
+
+    def test_104_baseline_remains_m14_active_work_not_complete(self):
+        result = self.evaluate_fixture()
+        self.assertEqual(
+            self.fixture["m14_completion_status"], "active_work_not_complete"
+        )
+        self.assertNotIn("m14_complete", result["outputs"])
+        self.assertTrue(result["ready_for_m14_readiness_review"])
+
+    def test_105_neutral_metadata_inside_negative_container_does_not_trigger(self):
+        payload = {
+            "decision_proof_sealed": {
+                "status": "not_sealed",
+                "attempts": 1,
+                "trace_available": True,
+            }
+        }
+        self.assertEqual(detect_authority_violations(payload), [])
+
+    def test_106_generic_complete_status_is_not_approval(self):
+        payloads = (
+            {"risk_assessment": {"status": "complete"}},
+            {"release_notes": {"status": "complete"}},
+        )
+        for payload in payloads:
+            with self.subTest(payload=payload):
+                self.assertEqual(detect_authority_violations(payload), [])
+
+    def test_107_named_affirmative_forbidden_key_values_still_trigger(self):
+        payloads = (
+            {"decision_proof_sealed": "by_registry"},
+            {"authority_transferred": "cross_control_evaluator"},
+        )
+        for payload in payloads:
+            with self.subTest(payload=payload):
+                findings = detect_authority_violations(payload)
+                self.assertTrue(
+                    any("forbidden_authority_key" in finding for finding in findings)
+                )
+
+    def test_108_arbitrary_not_prefix_cannot_hide_affirmative_claim(self):
+        findings = detect_authority_violations(
+            {"decision_proof_sealed": "not_only_claimed_but_sealed"}
+        )
+        self.assertTrue(
+            any("forbidden_authority_key" in finding for finding in findings)
+        )
 
 
 if __name__ == "__main__":
