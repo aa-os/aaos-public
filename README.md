@@ -82,10 +82,11 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 - v0.10.0 — M11 Public Integration Pack and External Evidence Consumer Pilot
 - v0.11.0 — M12 Public Integration Pack Consumer Registry and Integration CI
 - v0.12.0 — M13 External Consumer Registry Hardening and Operational Readiness
+- v0.13.0 — M14 High-Risk Runtime Policy Gates and Public-Output Safety
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, the M9 Decision Proof Runtime Replay pattern, the M10 Decision Proof Sealing Boundary and External Integration Readiness pattern, the M11 Public Integration Pack and External Evidence Consumer Pilot pattern, the M12 Public Integration Pack Consumer Registry and Integration CI pattern, and the M13 External Consumer Registry Hardening and Operational Readiness pattern.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, the M9 Decision Proof Runtime Replay pattern, the M10 Decision Proof Sealing Boundary and External Integration Readiness pattern, the M11 Public Integration Pack and External Evidence Consumer Pilot pattern, the M12 Public Integration Pack Consumer Registry and Integration CI pattern, the M13 External Consumer Registry Hardening and Operational Readiness pattern, and the M14 High-Risk Runtime Policy Gates and Public-Output Safety pattern.
 
 v0.9.0 adds AAOS Decision Proof Sealing Boundary.
 
@@ -109,6 +110,10 @@ v0.12.0 adds the M13 External Consumer Registry Hardening and Operational Readin
 
 v0.12.0 declares M13 complete and prepares the repository for the v0.12.0 release state.
 
+v0.13.0 adds the M14 High-Risk Runtime Policy Gates and Public-Output Safety pattern.
+
+v0.13.0 declares M14 complete and prepares the repository for the v0.13.0 release state.
+
 Decision Proof sealing remains AAOS-owned.
 
 AAOS remains the decision sovereignty layer.
@@ -119,7 +124,7 @@ They must not seal Decision Proof, re-seal AAOS-sealed artifacts, convert non-se
 
 ## Current Status
 
-M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, and M13 are complete.
+M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, and M14 are complete.
 
 M5 completed:
 
@@ -181,6 +186,20 @@ M13 completed:
 - #196 External Consumer Onboarding Documentation
 - #197 Release Proof Linkage Specimen
 - #198 Completion Readiness and Future README Path
+- this final completion PR
+
+M14 completed:
+
+- #201 M14 tracker issue
+- #202 Governed Voice Runtime Policy Fixtures
+- #204 Public Issue Exfiltration Gate
+- #205 MODA AI Risk Framework Mapping
+- #206 AI-Authored PR Provenance and Reviewer Routing
+- #208 External Skill Admission Gate
+- #210 Cross-Control Authority-Boundary Regression Fixtures
+- #212 Operational Readiness Checklist
+- #213 Release Proof Linkage Specimen
+- #214 Completion Readiness and Future README Path
 - this final completion PR
 
 AAOS Public now has:
@@ -251,6 +270,17 @@ AAOS Public now has:
 - Release Proof Linkage Specimen
 - Completion Readiness and README release-state path
 - deterministic M13 evaluator coverage
+- High-Risk Runtime Policy Gates and Public-Output Safety
+- Governed Voice Runtime Policy Fixtures
+- Public Issue Exfiltration Gate
+- MODA AI Risk Framework Mapping
+- AI-Authored PR Provenance and Reviewer Routing
+- External Skill Admission Gate
+- Cross-Control Authority-Boundary Regression Fixtures
+- M14 Operational Readiness Checklist
+- M14 Release Proof Linkage Specimen
+- M14 Completion Readiness and README release-state path
+- deterministic M14 evaluator coverage
 
 ## M5 Additions
 
@@ -1128,29 +1158,4 @@ Readiness checklist results must not become release approval, risk acceptance, D
 
 ## Next Phase
 
-- M14 — High-Risk Runtime Policy Gates and Public-Output Safety
-  - M14 remains active work; final completion has not been declared.
-  - Tracker: #201 remains Open.
-  - Prior released baseline: v0.12.0.
-  - Future target release path: v0.13.0 remains future-only and is not listed in released versions.
-  - Future README status path: v0.13.0 / M14 remains future-only until final completion review and authorized publication.
-  - Current M14 evidence links:
-    - #202 Governed Voice Runtime Policy Fixtures.
-    - #204 Public Issue Exfiltration Gate.
-    - #205 MODA AI Risk Framework Mapping.
-    - #206 AI-Authored PR Provenance and Reviewer Routing.
-    - #208 External Skill Admission Gate.
-    - #210 Cross-Control Authority-Boundary Regression Fixtures.
-    - #212 Operational Readiness Checklist.
-    - #213 Release Proof Linkage Specimen.
-  - Completion readiness is not completion.
-  - README future status path is not release publication.
-  - README future status path is not M14 completion.
-  - Release proof linkage is not release approval.
-  - completion_ready_for_review is not m14_complete.
-  - ready_for_final_m14_completion_review is not final completion review completed.
-  - readme_future_path_present is not released.
-  - evidence_complete is not Decision Proof sealing.
-  - replay_ready is not Decision Proof sealing.
-  - Decision Proof sealing remains AAOS-owned.
-  - AAOS remains the decision sovereignty layer.
+Future milestone planning will be tracked separately after v0.13.0 release publication.
