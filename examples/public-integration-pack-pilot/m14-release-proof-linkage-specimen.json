@@ -1,0 +1,864 @@
+{
+  "artifact_id": "m14-release-proof-linkage-specimen",
+  "artifact_name": "M14 Release Proof Linkage Specimen",
+  "artifact_scope": "high_risk_runtime_policy_and_public_output_safety_future_release_traceability",
+  "milestone": "M14",
+  "artifact_status": "active_work_in_progress_not_released",
+  "fixture_status": "m14_active_work_not_complete",
+  "m14_completion_status": "active_work_not_complete",
+  "tracker_issue": "#201",
+  "tracker_issue_linkage": "Refs #201",
+  "tracker_expected_state": "open",
+  "tracker_state_changed_by_fixture": false,
+  "related_voice_runtime_pr": "#202",
+  "related_public_output_gate_pr": "#204",
+  "related_moda_mapping_pr": "#205",
+  "related_ai_pr_provenance_pr": "#206",
+  "related_skill_admission_pr": "#208",
+  "related_cross_control_regression_pr": "#210",
+  "related_operational_readiness_pr": "#212",
+  "prior_released_baseline": "v0.12.0",
+  "introduced_after_release": "v0.12.0",
+  "target_future_release": "v0.13.0",
+  "release_proof_linkage_state": "evidence_linkage_complete_for_review",
+  "release_proof_complete": true,
+  "release_ready_for_review": true,
+  "ready_for_future_readme_status_path": true,
+  "ready_for_m14_completion_review": false,
+  "readme_status_updated": false,
+  "release_file_created": false,
+  "release_tag_created": false,
+  "github_release_created": false,
+  "release_notes_finalized": false,
+  "release_notes_published": false,
+  "release_approved": false,
+  "released": false,
+  "m14_complete": false,
+  "risk_accepted_by_fixture": false,
+  "fail_closed_executed_by_fixture": false,
+  "rollback_executed_by_fixture": false,
+  "audit_closed_by_fixture": false,
+  "authority_transferred_by_fixture": false,
+  "final_governance_judgment_made_by_fixture": false,
+  "decision_proof_sealed_by_fixture": false,
+  "network_access_performed_by_fixture": false,
+  "source_evaluators_executed_by_fixture": false,
+  "workflows_executed_by_fixture": false,
+  "verification_manifest_execution_claimed": false,
+  "shell_commands_from_fixture_executed": false,
+  "changed_file_scope": [
+    "examples/public-integration-pack-pilot/m14-release-proof-linkage-specimen.json",
+    "runtime/m14_release_proof_linkage_evaluator.py",
+    "tests/test_m14_release_proof_linkage_evaluator.py"
+  ],
+  "prior_release_baseline": {
+    "release_tag": "v0.12.0",
+    "status": "prior_released_baseline",
+    "governance_role": "historical_release_baseline_only",
+    "grants_current_release_authority": false
+  },
+  "future_release_tag_path": {
+    "target_tag": "v0.13.0",
+    "state": "future_tag_path_only",
+    "released": false,
+    "tag_created": false,
+    "github_release_created": false,
+    "release_notes_finalized": false,
+    "release_notes_published": false,
+    "boundary": "Future release target is not released."
+  },
+  "release_status_path": {
+    "state": "future_release_target_not_released",
+    "prior_released_baseline": "v0.12.0",
+    "target_future_release": "v0.13.0",
+    "release_proof_complete": true,
+    "release_ready_for_review": true,
+    "release_approved": false,
+    "released": false,
+    "readme_status_updated": false,
+    "m14_complete": false
+  },
+  "release_linkage_refs": {
+    "tracker_issue": "#201",
+    "voice_runtime_policy_pr": "#202",
+    "public_output_exfiltration_gate_pr": "#204",
+    "moda_risk_mapping_pr": "#205",
+    "ai_pr_provenance_pr": "#206",
+    "skill_admission_pr": "#208",
+    "cross_control_authority_boundary_pr": "#210",
+    "operational_readiness_pr": "#212"
+  },
+  "operational_readiness_bundle": [
+    {
+      "source_pr": "#212",
+      "relative_path": "examples/public-integration-pack-pilot/m14-operational-readiness-fixtures.json",
+      "artifact_type": "fixture",
+      "required": true,
+      "sha256": "249d97afe928c6087f84f2b7bb061cbcf75f4a258341c18262bc5525b57317ae",
+      "digest_algorithm": "sha256",
+      "observed_on_branch": "main",
+      "evidence_role": "operational_readiness_fixture_data",
+      "executable_by_release_proof_evaluator": false
+    },
+    {
+      "source_pr": "#212",
+      "relative_path": "runtime/m14_operational_readiness_evaluator.py",
+      "artifact_type": "runtime_evaluator",
+      "required": true,
+      "sha256": "8a7a2b996cc2d7022c7456e044724e503d350d516f867caf3138f60615def1ff",
+      "digest_algorithm": "sha256",
+      "observed_on_branch": "main",
+      "evidence_role": "operational_readiness_evaluator_source",
+      "executable_by_release_proof_evaluator": false
+    },
+    {
+      "source_pr": "#212",
+      "relative_path": "tests/test_m14_operational_readiness_evaluator.py",
+      "artifact_type": "deterministic_test",
+      "required": true,
+      "sha256": "5b32b25bc225914283a3ee4a3dac6569d495e03c0726494120580c41cfc159b7",
+      "digest_algorithm": "sha256",
+      "observed_on_branch": "main",
+      "evidence_role": "operational_readiness_test_source",
+      "executable_by_release_proof_evaluator": false
+    }
+  ],
+  "source_track_linkage": [
+    {
+      "track_id": "voice_runtime_policy",
+      "source_pr": "#202",
+      "component_role": "governed_voice_runtime_policy_gate",
+      "readiness_linkage_path": "examples/public-integration-pack-pilot/m14-operational-readiness-fixtures.json#/source_track_manifest/0",
+      "implementation_artifact_paths": [
+        "examples/public-integration-pack-pilot/voxcpm-governed-voice-fixtures.json",
+        "runtime/voice_generation_policy_evaluator.py"
+      ],
+      "deterministic_test_path": "tests/test_voice_generation_policy_evaluator.py",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS",
+      "release_evidence_role": "voice_runtime_policy_release_traceability",
+      "release_authority_granted": false
+    },
+    {
+      "track_id": "public_output_exfiltration_gate",
+      "source_pr": "#204",
+      "component_role": "public_output_exfiltration_gate",
+      "readiness_linkage_path": "examples/public-integration-pack-pilot/m14-operational-readiness-fixtures.json#/source_track_manifest/1",
+      "implementation_artifact_paths": [
+        "examples/public-integration-pack-pilot/m14-public-issue-exfiltration-gate-fixtures.json",
+        "runtime/public_issue_exfiltration_gate_evaluator.py"
+      ],
+      "deterministic_test_path": "tests/test_public_issue_exfiltration_gate_evaluator.py",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS",
+      "release_evidence_role": "public_output_exfiltration_gate_release_traceability",
+      "release_authority_granted": false
+    },
+    {
+      "track_id": "moda_risk_mapping",
+      "source_pr": "#205",
+      "component_role": "external_regulatory_risk_taxonomy_mapping",
+      "readiness_linkage_path": "examples/public-integration-pack-pilot/m14-operational-readiness-fixtures.json#/source_track_manifest/2",
+      "implementation_artifact_paths": [
+        "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md",
+        "examples/public-integration-pack-pilot/m14-moda-ai-risk-decision-proof-fixtures.json",
+        "runtime/moda_ai_risk_mapping_evaluator.py"
+      ],
+      "deterministic_test_path": "tests/test_moda_ai_risk_mapping_evaluator.py",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS",
+      "release_evidence_role": "moda_risk_mapping_release_traceability",
+      "release_authority_granted": false
+    },
+    {
+      "track_id": "ai_pr_provenance",
+      "source_pr": "#206",
+      "component_role": "ai_pr_provenance_and_reviewer_routing",
+      "readiness_linkage_path": "examples/public-integration-pack-pilot/m14-operational-readiness-fixtures.json#/source_track_manifest/3",
+      "implementation_artifact_paths": [
+        ".github/workflows/m14-ai-pr-provenance.yml",
+        "examples/public-integration-pack-pilot/m14-ai-authored-pr-provenance-fixtures.json",
+        "runtime/ai_authored_pr_provenance_evaluator.py"
+      ],
+      "deterministic_test_path": "tests/test_ai_authored_pr_provenance_evaluator.py",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS",
+      "release_evidence_role": "ai_pr_provenance_release_traceability",
+      "release_authority_granted": false
+    },
+    {
+      "track_id": "skill_admission",
+      "source_pr": "#208",
+      "component_role": "external_skill_capability_admission_gate",
+      "readiness_linkage_path": "examples/public-integration-pack-pilot/m14-operational-readiness-fixtures.json#/source_track_manifest/4",
+      "implementation_artifact_paths": [
+        "docs/capability-supply-chain/nvidia-skills-admission.md",
+        "examples/public-integration-pack-pilot/m14-skill-admission-fixtures.json",
+        "runtime/skill_admission_evaluator.py"
+      ],
+      "deterministic_test_path": "tests/test_skill_admission_evaluator.py",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS",
+      "release_evidence_role": "skill_admission_release_traceability",
+      "release_authority_granted": false
+    },
+    {
+      "track_id": "cross_control_authority_boundary",
+      "source_pr": "#210",
+      "component_role": "cross_control_authority_boundary_regression",
+      "readiness_linkage_path": "examples/public-integration-pack-pilot/m14-operational-readiness-fixtures.json#/source_track_manifest/5",
+      "implementation_artifact_paths": [
+        "examples/public-integration-pack-pilot/m14-cross-control-authority-boundary-regression-fixtures.json",
+        "runtime/m14_cross_control_authority_boundary_evaluator.py"
+      ],
+      "deterministic_test_path": "tests/test_m14_cross_control_authority_boundary_evaluator.py",
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS",
+      "release_evidence_role": "cross_control_authority_boundary_release_traceability",
+      "release_authority_granted": false
+    }
+  ],
+  "source_artifact_verification": {
+    "operational_readiness_fixture_path": "examples/public-integration-pack-pilot/m14-operational-readiness-fixtures.json",
+    "source_track_manifest_reference": "#/source_track_manifest",
+    "source_artifact_manifest_reference": "#/source_artifact_manifest",
+    "load_mode": "data_only",
+    "required_source_track_count": 6,
+    "required_source_artifact_count": 21,
+    "import_operational_readiness_evaluator": false,
+    "execute_operational_readiness_tests": false,
+    "execute_source_evaluators": false,
+    "execute_workflows": false,
+    "execute_skills": false,
+    "execute_models": false,
+    "perform_network_access": false,
+    "execute_shell_commands_from_fixture": false,
+    "required_checks": [
+      "exact_six_source_tracks",
+      "all_required_source_artifact_paths_exist",
+      "all_embedded_source_artifact_sha256_digests_match",
+      "all_source_artifacts_non_executable_by_readiness_evaluator",
+      "all_tracks_retain_AAOS_authority",
+      "all_tracks_retain_AAOS_decision_proof_sealing",
+      "tracker_expected_state_open",
+      "v0_13_0_unreleased",
+      "release_proof_linkage_pending_next_stage",
+      "readme_status_path_pending",
+      "final_m14_completion_review_pending"
+    ]
+  },
+  "release_evidence_packet": {
+    "milestone": "M14",
+    "future_release": "v0.13.0",
+    "prior_release_baseline": "v0.12.0",
+    "tracker_reference": "#201",
+    "source_pr_references": [
+      "#202",
+      "#204",
+      "#205",
+      "#206",
+      "#208",
+      "#210"
+    ],
+    "operational_readiness_pr": "#212",
+    "operational_readiness_bundle_digests": [
+      {
+        "relative_path": "examples/public-integration-pack-pilot/m14-operational-readiness-fixtures.json",
+        "sha256": "249d97afe928c6087f84f2b7bb061cbcf75f4a258341c18262bc5525b57317ae"
+      },
+      {
+        "relative_path": "runtime/m14_operational_readiness_evaluator.py",
+        "sha256": "8a7a2b996cc2d7022c7456e044724e503d350d516f867caf3138f60615def1ff"
+      },
+      {
+        "relative_path": "tests/test_m14_operational_readiness_evaluator.py",
+        "sha256": "5b32b25bc225914283a3ee4a3dac6569d495e03c0726494120580c41cfc159b7"
+      }
+    ],
+    "source_artifact_manifest_reference": "examples/public-integration-pack-pilot/m14-operational-readiness-fixtures.json#/source_artifact_manifest",
+    "source_artifact_integrity_status": "valid",
+    "authority_boundary_status": "preserved",
+    "deterministic_test_manifest": [
+      "tests/test_voice_generation_policy_evaluator.py",
+      "tests/test_public_issue_exfiltration_gate_evaluator.py",
+      "tests/test_moda_ai_risk_mapping_evaluator.py",
+      "tests/test_ai_authored_pr_provenance_evaluator.py",
+      "tests/test_skill_admission_evaluator.py",
+      "tests/test_m14_cross_control_authority_boundary_evaluator.py",
+      "tests/test_m14_operational_readiness_evaluator.py",
+      "tests/test_m14_release_proof_linkage_evaluator.py"
+    ],
+    "external_state_confirmation_requirement": "reviewer_required",
+    "outstanding_completion_sequence": [
+      "future_readme_status_path",
+      "final_m14_completion_review",
+      "tracker_issue_201_final_state_transition",
+      "publish_v0_13_0_release"
+    ],
+    "release_proof_linkage_status": "complete_for_review",
+    "release_ready_for_review": true,
+    "release_approved": false,
+    "released": false,
+    "decision_proof_sealed": false,
+    "governance_role": "traceability_packet_only_not_release_approval"
+  },
+  "external_state_review_inputs": {
+    "tracker_issue": "#201",
+    "tracker_expected_state": "open",
+    "source_prs": [
+      "#202",
+      "#204",
+      "#205",
+      "#206",
+      "#208",
+      "#210",
+      "#212"
+    ],
+    "source_pr_expected_state": "merged",
+    "verification_mode": "reviewer_confirmed_external_state",
+    "verified_by_deterministic_evaluator": false,
+    "reviewer_confirmation_required": true
+  },
+  "verification_command_manifest": [
+    {
+      "command_id": "git_diff_check",
+      "command": "git diff --check",
+      "verification_scope": "whitespace and patch-format validation",
+      "expected_exit_code": 0,
+      "expected_result": "no whitespace errors are reported",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_release_proof_evaluator": false
+    },
+    {
+      "command_id": "validate_release_proof_fixture_json",
+      "command": "python -m json.tool examples/public-integration-pack-pilot/m14-release-proof-linkage-specimen.json",
+      "verification_scope": "JSON syntax validation for the release-proof fixture",
+      "expected_exit_code": 0,
+      "expected_result": "valid JSON is printed without parse errors",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_release_proof_evaluator": false
+    },
+    {
+      "command_id": "compile_release_proof_evaluator",
+      "command": "python -m py_compile runtime/m14_release_proof_linkage_evaluator.py",
+      "verification_scope": "Python compilation for the new release-proof evaluator",
+      "expected_exit_code": 0,
+      "expected_result": "the evaluator compiles without syntax errors",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_release_proof_evaluator": false
+    },
+    {
+      "command_id": "compile_release_proof_tests",
+      "command": "python -m py_compile tests/test_m14_release_proof_linkage_evaluator.py",
+      "verification_scope": "Python compilation for the new release-proof tests",
+      "expected_exit_code": 0,
+      "expected_result": "the test module compiles without syntax errors",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_release_proof_evaluator": false
+    },
+    {
+      "command_id": "run_merged_m14_targeted_tests",
+      "command": "python -X faulthandler -m unittest tests.test_voice_generation_policy_evaluator tests.test_public_issue_exfiltration_gate_evaluator tests.test_moda_ai_risk_mapping_evaluator tests.test_ai_authored_pr_provenance_evaluator tests.test_skill_admission_evaluator tests.test_m14_cross_control_authority_boundary_evaluator -v",
+      "verification_scope": "targeted deterministic tests for merged PRs #202, #204, #205, #206, #208, and #210",
+      "expected_exit_code": 0,
+      "expected_result": "stdout or stderr explicitly prints Ran <number> tests and OK",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_release_proof_evaluator": false
+    },
+    {
+      "command_id": "run_operational_readiness_tests",
+      "command": "python -X faulthandler -m unittest tests.test_m14_operational_readiness_evaluator -v",
+      "verification_scope": "targeted deterministic tests for merged PR #212",
+      "expected_exit_code": 0,
+      "expected_result": "stdout or stderr explicitly prints Ran <number> tests and OK",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_release_proof_evaluator": false
+    },
+    {
+      "command_id": "run_release_proof_linkage_tests",
+      "command": "python -X faulthandler -m unittest tests.test_m14_release_proof_linkage_evaluator -v",
+      "verification_scope": "targeted deterministic tests for the M14 release-proof evaluator",
+      "expected_exit_code": 0,
+      "expected_result": "stdout or stderr explicitly prints Ran <number> tests and OK",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_release_proof_evaluator": false
+    },
+    {
+      "command_id": "confirm_changed_file_scope",
+      "command": "git diff --name-only",
+      "verification_scope": "exact three-file changed scope confirmation",
+      "expected_exit_code": 0,
+      "expected_result": "prints exactly the three changed_file_scope paths and no other paths",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_release_proof_evaluator": false
+    }
+  ],
+  "outstanding_completion_items": [
+    {
+      "item_id": "future_readme_status_path",
+      "status": "pending",
+      "sequence_order": 1,
+      "prerequisite": "m14_release_proof_linkage_valid",
+      "authorized_actor": "AAOS_authorized_repository_maintainer",
+      "completion_evidence_required": [
+        "reviewed release-proof linkage",
+        "separately authorized README status change"
+      ],
+      "not_performed_by_this_pr": true
+    },
+    {
+      "item_id": "final_m14_completion_review",
+      "status": "pending",
+      "sequence_order": 2,
+      "prerequisite": "future_readme_status_path",
+      "authorized_actor": "AAOS_authorized_governance_reviewers",
+      "completion_evidence_required": [
+        "future README status evidence",
+        "final human governance review"
+      ],
+      "not_performed_by_this_pr": true
+    },
+    {
+      "item_id": "tracker_issue_201_final_state_transition",
+      "status": "pending",
+      "sequence_order": 3,
+      "prerequisite": "final_m14_completion_review",
+      "authorized_actor": "AAOS_authorized_tracker_maintainer",
+      "completion_evidence_required": [
+        "authorized final M14 completion review",
+        "reviewer-confirmed tracker state transition evidence"
+      ],
+      "not_performed_by_this_pr": true
+    },
+    {
+      "item_id": "publish_v0_13_0_release",
+      "status": "pending",
+      "sequence_order": 4,
+      "prerequisite": "tracker_issue_201_final_state_transition",
+      "authorized_actor": "AAOS_authorized_release_maintainer",
+      "completion_evidence_required": [
+        "authorized tracker final-state evidence",
+        "authorized tag and GitHub Release publication evidence"
+      ],
+      "not_performed_by_this_pr": true
+    }
+  ],
+  "release_proof_cases": [
+    {
+      "case_id": "case_01_valid_release_proof_baseline",
+      "description": "valid release-proof baseline",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_02_missing_operational_readiness_fixture_blocks_linkage",
+      "description": "missing operational-readiness fixture blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_03_missing_readiness_evaluator_source_blocks_linkage",
+      "description": "missing readiness evaluator source blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_04_missing_readiness_test_source_blocks_linkage",
+      "description": "missing readiness test source blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_05_readiness_bundle_digest_mismatch_blocks_linkage",
+      "description": "readiness-bundle digest mismatch blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_06_readiness_bundle_path_substitution_blocks_linkage",
+      "description": "readiness-bundle path substitution blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_07_missing_source_track_blocks_linkage",
+      "description": "missing source track blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_08_unexpected_seventh_source_track_blocks_linkage",
+      "description": "unexpected seventh source track blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_09_source_pr_mismatch_blocks_linkage",
+      "description": "source PR mismatch blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_10_source_artifact_missing_blocks_linkage",
+      "description": "source artifact missing blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_11_source_artifact_digest_drift_blocks_linkage",
+      "description": "source artifact digest drift blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_12_non_aaos_retained_authority_owner_blocks_linkage",
+      "description": "non-AAOS retained authority owner blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_13_non_aaos_sealing_owner_blocks_linkage",
+      "description": "non-AAOS sealing owner blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_14_readiness_fixture_incorrectly_declares_m14_complete",
+      "description": "readiness fixture incorrectly declares M14 complete",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_15_readiness_fixture_incorrectly_marks_v0_13_0_released",
+      "description": "readiness fixture incorrectly marks v0.13.0 released",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_16_tracker_expected_state_is_not_open",
+      "description": "tracker expected state is not open",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_17_external_github_state_incorrectly_marked_machine_verified",
+      "description": "external GitHub state incorrectly marked machine-verified",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_18_verification_manifest_incorrectly_treated_as_execution_evidence",
+      "description": "verification manifest incorrectly treated as execution evidence",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_19_release_approval_claim_blocks_linkage",
+      "description": "release approval claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_20_release_created_claim_blocks_linkage",
+      "description": "release-created claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_21_tag_created_claim_blocks_linkage",
+      "description": "tag-created claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_22_release_notes_finalized_claim_blocks_linkage",
+      "description": "release-notes-finalized claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_23_release_notes_published_claim_blocks_linkage",
+      "description": "release-notes-published claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_24_v0_13_0_release_claim_blocks_linkage",
+      "description": "v0.13.0 release claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_25_readme_status_incorrectly_marked_updated_by_this_pr",
+      "description": "README status incorrectly marked updated by this PR",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_26_final_m14_completion_incorrectly_declared",
+      "description": "final M14 completion incorrectly declared",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_27_risk_acceptance_claim_blocks_linkage",
+      "description": "risk-acceptance claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_28_fail_closed_execution_claim_blocks_linkage",
+      "description": "fail-closed execution claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_29_rollback_execution_claim_blocks_linkage",
+      "description": "rollback execution claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_30_audit_closure_claim_blocks_linkage",
+      "description": "audit-closure claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_31_authority_transfer_claim_blocks_linkage",
+      "description": "authority-transfer claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_32_final_governance_judgment_claim_blocks_linkage",
+      "description": "final-governance-judgment claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_33_decision_proof_sealing_claim_blocks_linkage",
+      "description": "Decision Proof sealing claim blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_34_outstanding_item_sequence_violation_blocks_linkage",
+      "description": "outstanding-item sequence violation blocks linkage",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_35_explicit_negative_governance_evidence_remains_valid",
+      "description": "explicit negative governance evidence remains valid",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_36_negative_structured_state_with_neutral_metadata_remains_valid",
+      "description": "negative structured state with neutral metadata remains valid",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_37_negative_outer_status_does_not_hide_nested_affirmative_claim",
+      "description": "negative outer status does not hide nested affirmative claim",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_38_unknown_non_empty_value_under_forbidden_key_is_affirmative",
+      "description": "unknown non-empty value under forbidden key is affirmative",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_39_release_proof_complete_remains_distinct_from_released",
+      "description": "release_proof_complete remains distinct from released",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_40_valid_baseline_is_ready_for_future_readme_status_work",
+      "description": "valid baseline is ready for future README status work",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_41_valid_baseline_remains_not_ready_for_final_m14_completion_review",
+      "description": "valid baseline remains not ready for final M14 completion review",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_42_valid_baseline_remains_m14_active_work_not_complete",
+      "description": "valid baseline remains M14 active work, not complete",
+      "expected_result": "valid"
+    }
+  ],
+  "required_boundary_statements": [
+    "Release proof linkage is evidence linkage only.",
+    "Release proof linkage is not release approval.",
+    "Operational readiness is not release authorization.",
+    "Artifact presence is not evidence sufficiency.",
+    "Artifact digest matching is not governance approval.",
+    "A merged source PR reference is not release approval.",
+    "A verification-command manifest is not proof that commands ran.",
+    "External GitHub state is reviewer-confirmed evidence, not machine-verified by this evaluator.",
+    "release_proof_complete is not released.",
+    "release_ready_for_review is not release_approved.",
+    "ready_for_future_readme_status_path is not README authorization.",
+    "Future release target is not released.",
+    "v0.13.0 is not released.",
+    "M14 remains active work and not complete.",
+    "Human-review requirement is not completed review.",
+    "fail_closed_recommended is not fail_closed_executed.",
+    "rollback_recommended is not rollback_executed.",
+    "evidence_complete is not Decision Proof sealing.",
+    "replay_ready is not Decision Proof sealing.",
+    "Explicit negative governance evidence is not an affirmative authority claim.",
+    "Decision Proof sealing remains AAOS-owned.",
+    "AAOS remains the decision sovereignty layer."
+  ],
+  "semantic_boundaries": {
+    "boundary_01": "Release proof linkage is evidence linkage only.",
+    "boundary_02": "Release proof linkage is not release approval.",
+    "boundary_03": "Operational readiness is not release authorization.",
+    "boundary_04": "Artifact presence is not evidence sufficiency.",
+    "boundary_05": "Artifact digest matching is not governance approval.",
+    "boundary_06": "A merged source PR reference is not release approval.",
+    "boundary_07": "A verification-command manifest is not proof that commands ran.",
+    "boundary_08": "External GitHub state is reviewer-confirmed evidence, not machine-verified by this evaluator.",
+    "boundary_09": "release_proof_complete is not released.",
+    "boundary_10": "release_ready_for_review is not release_approved.",
+    "boundary_11": "ready_for_future_readme_status_path is not README authorization.",
+    "boundary_12": "Future release target is not released.",
+    "boundary_13": "v0.13.0 is not released.",
+    "boundary_14": "M14 remains active work and not complete.",
+    "boundary_15": "Human-review requirement is not completed review.",
+    "boundary_16": "fail_closed_recommended is not fail_closed_executed.",
+    "boundary_17": "rollback_recommended is not rollback_executed.",
+    "boundary_18": "evidence_complete is not Decision Proof sealing.",
+    "boundary_19": "replay_ready is not Decision Proof sealing.",
+    "boundary_20": "Explicit negative governance evidence is not an affirmative authority claim.",
+    "boundary_21": "Decision Proof sealing remains AAOS-owned.",
+    "boundary_22": "AAOS remains the decision sovereignty layer."
+  },
+  "allowed_evaluator_outputs": [
+    "m14_release_proof_linkage_valid",
+    "m14_release_proof_linkage_invalid",
+    "release_linkage_coverage_complete",
+    "release_linkage_coverage_incomplete",
+    "operational_readiness_bundle_valid",
+    "operational_readiness_bundle_invalid",
+    "source_artifact_integrity_valid",
+    "source_artifact_integrity_invalid",
+    "authority_boundaries_preserved",
+    "authority_boundary_violation",
+    "external_state_confirmation_required",
+    "release_proof_complete",
+    "release_ready_for_review",
+    "ready_for_future_readme_status_path",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended",
+    "not_ready"
+  ],
+  "forbidden_evaluator_outputs": [
+    "release_approved",
+    "release_created",
+    "release_tag_created",
+    "release_notes_finalized",
+    "release_notes_published",
+    "v0_13_0_released",
+    "release_published",
+    "readme_update_approved",
+    "m14_completion_approved",
+    "tracker_201_final_state_applied",
+    "risk_accepted",
+    "fail_closed_executed",
+    "rollback_executed",
+    "audit_closed",
+    "waiver_granted",
+    "decision_proof_verified",
+    "decision_proof_sealed",
+    "sealed_by_release_proof",
+    "sealed_by_evaluator",
+    "authority_transferred",
+    "final_governance_judgment",
+    "m14_complete"
+  ],
+  "forbidden_claim_inspection_policy": {
+    "explicit_negative_evidence_requires_exact_normalized_match": true,
+    "arbitrary_not_prefix_is_negative": false,
+    "unknown_non_empty_value_under_forbidden_key_is_affirmative": true,
+    "negative_outer_state_does_not_suppress_nested_affirmative_claim": true,
+    "neutral_metadata_is_not_authority_state": true,
+    "explicit_negative_normalized_vocabulary": [
+      false,
+      0,
+      null,
+      "",
+      "no",
+      "none",
+      "denied",
+      "rejected",
+      "blocked",
+      "pending",
+      "open",
+      "unreleased",
+      "not_accepted",
+      "not_allowed",
+      "not_approved",
+      "not_authorized",
+      "not_certified",
+      "not_closed",
+      "not_complete",
+      "not_completed",
+      "not_executed",
+      "not_final",
+      "not_granted",
+      "not_published",
+      "not_released",
+      "not_sealed",
+      "not_transferred",
+      "not_verified",
+      "active_work_not_complete"
+    ],
+    "authority_state_fields": [
+      "status",
+      "state",
+      "result",
+      "outcome",
+      "decision",
+      "approval_status",
+      "execution_status",
+      "release_status",
+      "sealing_status",
+      "authority_status"
+    ]
+  },
+  "authority_boundary": {
+    "retained_authority_owner": "AAOS",
+    "decision_proof_sealing_owner": "AAOS",
+    "may": [
+      "link_artifacts",
+      "validate_paths",
+      "recompute_sha256_digests",
+      "inspect_inert_evidence",
+      "report_coverage",
+      "preserve_traceability",
+      "route_findings_for_review"
+    ],
+    "must_not": [
+      "approve_release",
+      "accept_risk",
+      "execute_rollback",
+      "execute_fail_closed",
+      "finalize_release_notes",
+      "publish_release_notes",
+      "grant_waivers",
+      "transfer_authority",
+      "make_final_governance_judgments",
+      "seal_decision_proof",
+      "declare_m14_complete",
+      "publish_v0_13_0",
+      "create_release_files",
+      "create_release_tag",
+      "create_github_release",
+      "authorize_readme_update",
+      "change_tracker_state",
+      "query_github",
+      "import_source_evaluators",
+      "execute_source_evaluators",
+      "execute_source_tests",
+      "execute_workflows",
+      "execute_skills",
+      "execute_models",
+      "execute_external_runtimes",
+      "perform_network_access",
+      "execute_fixture_commands",
+      "declare_v0_13_0_released"
+    ],
+    "decision_proof_sealing_statement": "Decision Proof sealing remains AAOS-owned.",
+    "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+  },
+  "expected_baseline_result": {
+    "valid": true,
+    "release_linkage_coverage_complete": true,
+    "operational_readiness_bundle_present": true,
+    "operational_readiness_bundle_integrity_valid": true,
+    "source_track_linkage_valid": true,
+    "source_artifact_integrity_valid": true,
+    "authority_boundaries_preserved": true,
+    "verification_manifest_complete": true,
+    "external_state_confirmation_required": true,
+    "outstanding_completion_items_valid": true,
+    "release_proof_complete": true,
+    "release_ready_for_review": true,
+    "ready_for_future_readme_status_path": true,
+    "ready_for_m14_completion_review": false,
+    "release_approved": false,
+    "released": false,
+    "m14_complete": false
+  }
+}
