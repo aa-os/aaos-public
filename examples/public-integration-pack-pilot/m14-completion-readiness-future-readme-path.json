@@ -1,0 +1,991 @@
+{
+  "artifact_id": "m14-completion-readiness-future-readme-path",
+  "artifact_name": "M14 Completion Readiness and Future v0.13.0 README Status Path",
+  "artifact_scope": "high_risk_runtime_policy_and_public_output_safety_completion_readiness_future_readme_path",
+  "milestone": "M14",
+  "artifact_status": "active_work_in_progress_not_released",
+  "fixture_status": "m14_active_work_not_complete",
+  "m14_completion_status": "active_work_not_complete",
+  "tracker_issue": "#201",
+  "tracker_issue_linkage": "Refs #201",
+  "tracker_expected_state": "open",
+  "tracker_state_changed_by_fixture": false,
+  "related_voice_runtime_pr": "#202",
+  "related_public_output_gate_pr": "#204",
+  "related_moda_mapping_pr": "#205",
+  "related_ai_pr_provenance_pr": "#206",
+  "related_skill_admission_pr": "#208",
+  "related_cross_control_regression_pr": "#210",
+  "related_operational_readiness_pr": "#212",
+  "related_release_proof_pr": "#213",
+  "prior_released_baseline": "v0.12.0",
+  "introduced_after_release": "v0.12.0",
+  "target_future_release": "v0.13.0",
+  "release_proof_complete": true,
+  "completion_ready_for_review": true,
+  "ready_for_final_m14_completion_review": true,
+  "final_m14_completion_review_completed": false,
+  "readme_future_path_present": true,
+  "readme_next_phase_changed_by_fixture": true,
+  "released_versions_section_changed_by_fixture": false,
+  "current_status_section_changed_by_fixture": false,
+  "bootstrap_status_section_changed_by_fixture": false,
+  "release_ready_for_review": true,
+  "release_approved": false,
+  "release_file_created": false,
+  "release_tag_created": false,
+  "github_release_created": false,
+  "release_notes_finalized": false,
+  "release_notes_published": false,
+  "released": false,
+  "m14_complete": false,
+  "risk_accepted_by_fixture": false,
+  "fail_closed_executed_by_fixture": false,
+  "rollback_executed_by_fixture": false,
+  "audit_closed_by_fixture": false,
+  "authority_transferred_by_fixture": false,
+  "final_governance_judgment_made_by_fixture": false,
+  "decision_proof_sealed_by_fixture": false,
+  "network_access_performed_by_fixture": false,
+  "source_evaluators_executed_by_fixture": false,
+  "workflows_executed_by_fixture": false,
+  "verification_manifest_execution_claimed": false,
+  "shell_commands_from_fixture_executed": false,
+  "changed_file_scope": [
+    "README.md",
+    "examples/public-integration-pack-pilot/m14-completion-readiness-future-readme-path.json",
+    "runtime/m14_completion_readiness_evaluator.py",
+    "tests/test_m14_completion_readiness_evaluator.py"
+  ],
+  "prior_release_baseline": {
+    "release_tag": "v0.12.0",
+    "status": "prior_released_baseline",
+    "governance_role": "historical_release_baseline_only",
+    "grants_current_release_authority": false
+  },
+  "future_release_tag_path": {
+    "target_tag": "v0.13.0",
+    "state": "future_tag_path_only",
+    "released": false,
+    "tag_created": false,
+    "github_release_created": false,
+    "release_notes_finalized": false,
+    "release_notes_published": false,
+    "boundary": "Future release target is not released."
+  },
+  "readme_integrity_guard": {
+    "readme_path": "README.md",
+    "mutable_section_heading": "## Next Phase",
+    "mutable_section_occurrence_count": 1,
+    "immutable_prefix_sha256": "07f45b06b56e8e52eb517a1f37bac47714ddc870d40707940962683405e72f63",
+    "immutable_prefix_ends_before_heading": true,
+    "allowed_modified_sections": [
+      "Next Phase"
+    ],
+    "forbidden_modified_sections": [
+      "Bootstrap Status",
+      "Releases",
+      "Current Status",
+      "M5 Additions",
+      "M6 Additions",
+      "M7 Additions",
+      "M8 Additions",
+      "M9 Additions",
+      "M10 Additions",
+      "M11 Additions",
+      "M12 Additions",
+      "M13 Additions"
+    ]
+  },
+  "readme_expected_next_phase": {
+    "heading": "## Next Phase",
+    "complete_expected_block": "## Next Phase\n\n- M14 — High-Risk Runtime Policy Gates and Public-Output Safety\n  - M14 remains active work; final completion has not been declared.\n  - Tracker: #201 remains Open.\n  - Prior released baseline: v0.12.0.\n  - Future target release path: v0.13.0 remains future-only and is not listed in released versions.\n  - Future README status path: v0.13.0 / M14 remains future-only until final completion review and authorized publication.\n  - Current M14 evidence links:\n    - #202 Governed Voice Runtime Policy Fixtures.\n    - #204 Public Issue Exfiltration Gate.\n    - #205 MODA AI Risk Framework Mapping.\n    - #206 AI-Authored PR Provenance and Reviewer Routing.\n    - #208 External Skill Admission Gate.\n    - #210 Cross-Control Authority-Boundary Regression Fixtures.\n    - #212 Operational Readiness Checklist.\n    - #213 Release Proof Linkage Specimen.\n  - Completion readiness is not completion.\n  - README future status path is not release publication.\n  - README future status path is not M14 completion.\n  - Release proof linkage is not release approval.\n  - completion_ready_for_review is not m14_complete.\n  - ready_for_final_m14_completion_review is not final completion review completed.\n  - readme_future_path_present is not released.\n  - evidence_complete is not Decision Proof sealing.\n  - replay_ready is not Decision Proof sealing.\n  - Decision Proof sealing remains AAOS-owned.\n  - AAOS remains the decision sovereignty layer.\n",
+    "required_statements": [
+      "M14 — High-Risk Runtime Policy Gates and Public-Output Safety",
+      "M14 remains active work; final completion has not been declared.",
+      "Tracker: #201 remains Open.",
+      "Prior released baseline: v0.12.0.",
+      "Future target release path: v0.13.0 remains future-only and is not listed in released versions.",
+      "Future README status path: v0.13.0 / M14 remains future-only until final completion review and authorized publication.",
+      "Current M14 evidence links:",
+      "#202 Governed Voice Runtime Policy Fixtures.",
+      "#204 Public Issue Exfiltration Gate.",
+      "#205 MODA AI Risk Framework Mapping.",
+      "#206 AI-Authored PR Provenance and Reviewer Routing.",
+      "#208 External Skill Admission Gate.",
+      "#210 Cross-Control Authority-Boundary Regression Fixtures.",
+      "#212 Operational Readiness Checklist.",
+      "#213 Release Proof Linkage Specimen.",
+      "Completion readiness is not completion.",
+      "README future status path is not release publication.",
+      "README future status path is not M14 completion.",
+      "Release proof linkage is not release approval.",
+      "completion_ready_for_review is not m14_complete.",
+      "ready_for_final_m14_completion_review is not final completion review completed.",
+      "readme_future_path_present is not released.",
+      "evidence_complete is not Decision Proof sealing.",
+      "replay_ready is not Decision Proof sealing.",
+      "Decision Proof sealing remains AAOS-owned.",
+      "AAOS remains the decision sovereignty layer."
+    ]
+  },
+  "readme_release_state_guards": {
+    "releases_section": {
+      "start_heading": "## Releases",
+      "end_heading": "## Current Status",
+      "latest_released_version": "v0.12.0",
+      "forbidden_released_version": "v0.13.0",
+      "section_changed_by_fixture": false
+    },
+    "current_status_section": {
+      "start_heading": "## Current Status",
+      "end_at_next_level_two_heading": true,
+      "completed_milestones": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M8",
+        "M9",
+        "M10",
+        "M11",
+        "M12",
+        "M13"
+      ],
+      "forbidden_completion_milestone": "M14",
+      "forbidden_heading": "M14 completed:",
+      "forbidden_released_version": "v0.13.0",
+      "section_changed_by_fixture": false
+    },
+    "next_phase_section": {
+      "required_state": "active_work",
+      "tracker_state": "open",
+      "prior_released_baseline": "v0.12.0",
+      "target_future_release": "v0.13.0",
+      "target_release_state": "future_only",
+      "required_evidence_prs": [
+        "#202",
+        "#204",
+        "#205",
+        "#206",
+        "#208",
+        "#210",
+        "#212",
+        "#213"
+      ]
+    }
+  },
+  "release_linkage_refs": {
+    "tracker_issue": "#201",
+    "voice_runtime_policy_pr": "#202",
+    "public_output_exfiltration_gate_pr": "#204",
+    "moda_risk_mapping_pr": "#205",
+    "ai_pr_provenance_pr": "#206",
+    "skill_admission_pr": "#208",
+    "cross_control_authority_boundary_pr": "#210",
+    "operational_readiness_pr": "#212",
+    "release_proof_pr": "#213"
+  },
+  "release_proof_bundle": [
+    {
+      "source_pr": "#213",
+      "relative_path": "examples/public-integration-pack-pilot/m14-release-proof-linkage-specimen.json",
+      "artifact_type": "fixture",
+      "required": true,
+      "sha256": "8f45d7cdd108132e5032874a14bf9a6fc3cf585bdf28b718cd73d5d20b3793a6",
+      "digest_algorithm": "sha256",
+      "observed_on_branch": "main",
+      "evidence_role": "release_proof_fixture_data",
+      "executable_by_completion_readiness_evaluator": false
+    },
+    {
+      "source_pr": "#213",
+      "relative_path": "runtime/m14_release_proof_linkage_evaluator.py",
+      "artifact_type": "runtime_evaluator",
+      "required": true,
+      "sha256": "7cef0132a578c1f091aa3a713468149fc756f7a4e5eab41bee9fc6c40940860f",
+      "digest_algorithm": "sha256",
+      "observed_on_branch": "main",
+      "evidence_role": "release_proof_evaluator_source",
+      "executable_by_completion_readiness_evaluator": false
+    },
+    {
+      "source_pr": "#213",
+      "relative_path": "tests/test_m14_release_proof_linkage_evaluator.py",
+      "artifact_type": "deterministic_test",
+      "required": true,
+      "sha256": "278dcd0dd1183c6ad55c96503a8f93b71bf7b62aa155ac0fa1f2229615b5c3fb",
+      "digest_algorithm": "sha256",
+      "observed_on_branch": "main",
+      "evidence_role": "release_proof_test_source",
+      "executable_by_completion_readiness_evaluator": false
+    }
+  ],
+  "release_proof_state_validation": {
+    "source_fixture_path": "examples/public-integration-pack-pilot/m14-release-proof-linkage-specimen.json",
+    "loaded_as_inert_json_only": true,
+    "expected_values": {
+      "fixture_status": "m14_active_work_not_complete",
+      "tracker_issue": "#201",
+      "tracker_expected_state": "open",
+      "target_future_release": "v0.13.0",
+      "release_proof_complete": true,
+      "release_ready_for_review": true,
+      "ready_for_future_readme_status_path": true,
+      "ready_for_m14_completion_review": false,
+      "release_approved": false,
+      "released": false,
+      "m14_complete": false,
+      "release_tag_created": false,
+      "github_release_created": false,
+      "decision_proof_sealed_by_fixture": false
+    },
+    "required_authority": {
+      "retained_authority_owner": "AAOS",
+      "decision_proof_sealing_owner": "AAOS",
+      "decision_proof_sealing_statement": "Decision Proof sealing remains AAOS-owned.",
+      "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+    },
+    "completeness_role": "evidence_readiness_only"
+  },
+  "completion_evidence_packet": {
+    "milestone": "M14",
+    "tracker_reference": "#201",
+    "prior_release_baseline": "v0.12.0",
+    "future_release": "v0.13.0",
+    "source_pr_references": [
+      "#202",
+      "#204",
+      "#205",
+      "#206",
+      "#208",
+      "#210",
+      "#212",
+      "#213"
+    ],
+    "release_proof_pr": "#213",
+    "release_proof_bundle_digests": [
+      {
+        "relative_path": "examples/public-integration-pack-pilot/m14-release-proof-linkage-specimen.json",
+        "sha256": "8f45d7cdd108132e5032874a14bf9a6fc3cf585bdf28b718cd73d5d20b3793a6"
+      },
+      {
+        "relative_path": "runtime/m14_release_proof_linkage_evaluator.py",
+        "sha256": "7cef0132a578c1f091aa3a713468149fc756f7a4e5eab41bee9fc6c40940860f"
+      },
+      {
+        "relative_path": "tests/test_m14_release_proof_linkage_evaluator.py",
+        "sha256": "278dcd0dd1183c6ad55c96503a8f93b71bf7b62aa155ac0fa1f2229615b5c3fb"
+      }
+    ],
+    "readme_path": "README.md",
+    "readme_section": "Next Phase",
+    "readme_prefix_integrity_status": "valid",
+    "readme_future_path_status": "present_future_only",
+    "released_versions_section_status": "unchanged",
+    "current_status_section_status": "unchanged",
+    "release_proof_status": "complete_for_review",
+    "completion_readiness_status": "ready_for_final_review",
+    "final_completion_review_completed": false,
+    "release_approved": false,
+    "released": false,
+    "m14_complete": false,
+    "decision_proof_sealed": false,
+    "governance_role": "completion_traceability_only_not_final_completion"
+  },
+  "external_state_review_inputs": {
+    "tracker_issue": "#201",
+    "tracker_expected_state": "open",
+    "source_prs": [
+      "#202",
+      "#204",
+      "#205",
+      "#206",
+      "#208",
+      "#210",
+      "#212",
+      "#213"
+    ],
+    "source_pr_expected_state": "merged",
+    "verification_mode": "reviewer_confirmed_external_state",
+    "verified_by_deterministic_evaluator": false,
+    "reviewer_confirmation_required": true
+  },
+  "verification_command_manifest": [
+    {
+      "command_id": "git_diff_check",
+      "command": "git diff --check",
+      "verification_scope": "whitespace and patch-format validation",
+      "expected_exit_code": 0,
+      "expected_result": "no whitespace errors are reported",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_completion_readiness_evaluator": false
+    },
+    {
+      "command_id": "validate_completion_readiness_fixture_json",
+      "command": "python -m json.tool examples/public-integration-pack-pilot/m14-completion-readiness-future-readme-path.json",
+      "verification_scope": "JSON syntax validation for the M14 completion-readiness fixture",
+      "expected_exit_code": 0,
+      "expected_result": "valid JSON is printed without parse errors",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_completion_readiness_evaluator": false
+    },
+    {
+      "command_id": "compile_completion_readiness_evaluator",
+      "command": "python -m py_compile runtime/m14_completion_readiness_evaluator.py",
+      "verification_scope": "Python compilation for the new completion-readiness evaluator",
+      "expected_exit_code": 0,
+      "expected_result": "the evaluator compiles without syntax errors",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_completion_readiness_evaluator": false
+    },
+    {
+      "command_id": "compile_completion_readiness_tests",
+      "command": "python -m py_compile tests/test_m14_completion_readiness_evaluator.py",
+      "verification_scope": "Python compilation for the new completion-readiness test module",
+      "expected_exit_code": 0,
+      "expected_result": "the test module compiles without syntax errors",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_completion_readiness_evaluator": false
+    },
+    {
+      "command_id": "run_all_merged_m14_targeted_tests",
+      "command": "python -X faulthandler -m unittest tests.test_voice_generation_policy_evaluator tests.test_public_issue_exfiltration_gate_evaluator tests.test_moda_ai_risk_mapping_evaluator tests.test_ai_authored_pr_provenance_evaluator tests.test_skill_admission_evaluator tests.test_m14_cross_control_authority_boundary_evaluator tests.test_m14_operational_readiness_evaluator tests.test_m14_release_proof_linkage_evaluator -v",
+      "verification_scope": "all targeted deterministic test modules for merged M14 PRs #202, #204, #205, #206, #208, #210, #212, and #213",
+      "expected_exit_code": 0,
+      "expected_result": "stdout or stderr explicitly prints Ran <number> tests and OK",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_completion_readiness_evaluator": false
+    },
+    {
+      "command_id": "run_release_proof_linkage_tests",
+      "command": "python -X faulthandler -m unittest tests.test_m14_release_proof_linkage_evaluator -v",
+      "verification_scope": "targeted deterministic tests for merged PR #213 release-proof linkage",
+      "expected_exit_code": 0,
+      "expected_result": "stdout or stderr explicitly prints Ran <number> tests and OK",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_completion_readiness_evaluator": false
+    },
+    {
+      "command_id": "run_completion_readiness_tests",
+      "command": "python -X faulthandler -m unittest tests.test_m14_completion_readiness_evaluator -v",
+      "verification_scope": "targeted deterministic tests for the new M14 completion-readiness evaluator",
+      "expected_exit_code": 0,
+      "expected_result": "stdout or stderr explicitly prints Ran <number> tests and OK",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_completion_readiness_evaluator": false
+    },
+    {
+      "command_id": "confirm_changed_file_scope",
+      "command": "git diff --name-only",
+      "verification_scope": "exact four-file changed scope confirmation",
+      "expected_exit_code": 0,
+      "expected_result": "prints exactly the four changed_file_scope paths and no other paths",
+      "evidence_recording_requirement": "record the command, exit code, and complete output",
+      "executed_by_completion_readiness_evaluator": false
+    }
+  ],
+  "outstanding_completion_items": [
+    {
+      "item_id": "final_m14_completion_review",
+      "status": "pending",
+      "sequence_order": 1,
+      "prerequisite": "m14_completion_readiness_valid",
+      "authorized_actor": "AAOS_authorized_governance_reviewers",
+      "completion_evidence_required": "validated M14 completion-readiness evidence and final human governance review evidence",
+      "not_performed_by_this_pr": true
+    },
+    {
+      "item_id": "tracker_issue_201_final_state_transition",
+      "status": "pending",
+      "sequence_order": 2,
+      "prerequisite": "final_m14_completion_review",
+      "authorized_actor": "AAOS_authorized_tracker_maintainer",
+      "completion_evidence_required": "authorized final M14 completion review and reviewer-confirmed tracker final-state transition evidence",
+      "not_performed_by_this_pr": true
+    },
+    {
+      "item_id": "publish_v0_13_0_release",
+      "status": "pending",
+      "sequence_order": 3,
+      "prerequisite": "tracker_issue_201_final_state_transition",
+      "authorized_actor": "AAOS_authorized_release_maintainer",
+      "completion_evidence_required": "authorized tracker final-state evidence and authorized tag and GitHub Release publication evidence",
+      "not_performed_by_this_pr": true
+    }
+  ],
+  "completion_readiness_cases": [
+    {
+      "case_id": "case_01_valid_completion_readiness_baseline",
+      "description": "valid completion-readiness baseline",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_02_readme_missing_blocks_readiness",
+      "description": "README missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_03_next_phase_heading_missing_blocks_readiness",
+      "description": "Next Phase heading missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_04_duplicate_next_phase_heading_blocks_readiness",
+      "description": "duplicate Next Phase heading blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_05_readme_immutable_prefix_digest_mismatch_blocks_readiness",
+      "description": "README immutable-prefix digest mismatch blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_06_releases_section_modification_blocks_readiness",
+      "description": "Releases section modification blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_07_current_status_section_modification_blocks_readiness",
+      "description": "Current Status section modification blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_08_v0_13_0_added_to_releases_blocks_readiness",
+      "description": "v0.13.0 added to Releases blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_09_m14_declared_complete_in_current_status_blocks_readiness",
+      "description": "M14 declared complete in Current Status blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_10_m14_completed_heading_in_current_status_blocks_readiness",
+      "description": "M14 completed heading in Current Status blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_11_v0_13_0_described_as_released_blocks_readiness",
+      "description": "v0.13.0 described as released blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_12_active_work_statement_missing_blocks_readiness",
+      "description": "active-work statement missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_13_tracker_open_statement_missing_blocks_readiness",
+      "description": "tracker Open statement missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_14_prior_baseline_statement_missing_blocks_readiness",
+      "description": "prior baseline statement missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_15_future_only_release_statement_missing_blocks_readiness",
+      "description": "future-only release statement missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_16_pr_202_evidence_link_missing_blocks_readiness",
+      "description": "#202 evidence link missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_17_pr_204_evidence_link_missing_blocks_readiness",
+      "description": "#204 evidence link missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_18_pr_205_evidence_link_missing_blocks_readiness",
+      "description": "#205 evidence link missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_19_pr_206_evidence_link_missing_blocks_readiness",
+      "description": "#206 evidence link missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_20_pr_208_evidence_link_missing_blocks_readiness",
+      "description": "#208 evidence link missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_21_pr_210_evidence_link_missing_blocks_readiness",
+      "description": "#210 evidence link missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_22_pr_212_evidence_link_missing_blocks_readiness",
+      "description": "#212 evidence link missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_23_pr_213_evidence_link_missing_blocks_readiness",
+      "description": "#213 evidence link missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_24_release_proof_bundle_file_missing_blocks_readiness",
+      "description": "release-proof bundle file missing blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_25_release_proof_bundle_digest_mismatch_blocks_readiness",
+      "description": "release-proof bundle digest mismatch blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_26_release_proof_bundle_path_substitution_blocks_readiness",
+      "description": "release-proof bundle path substitution blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_27_release_proof_fixture_incorrectly_declares_release_approval",
+      "description": "release-proof fixture incorrectly declares release approval",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_28_release_proof_fixture_incorrectly_declares_released",
+      "description": "release-proof fixture incorrectly declares released",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_29_release_proof_fixture_incorrectly_declares_m14_complete",
+      "description": "release-proof fixture incorrectly declares M14 complete",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_30_release_proof_fixture_incorrectly_changes_tracker_state",
+      "description": "release-proof fixture incorrectly changes tracker state",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_31_release_proof_fixture_incorrectly_claims_decision_proof_sealing",
+      "description": "release-proof fixture incorrectly claims Decision Proof sealing",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_32_external_github_state_incorrectly_marked_machine_verified",
+      "description": "external GitHub state incorrectly marked machine-verified",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_33_verification_command_manifest_incorrectly_treated_as_execution_evidence",
+      "description": "verification command manifest incorrectly treated as execution evidence",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_34_final_completion_review_incorrectly_marked_completed",
+      "description": "final completion review incorrectly marked completed",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_35_release_tag_creation_claim_blocks_readiness",
+      "description": "release-tag creation claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_36_github_release_creation_claim_blocks_readiness",
+      "description": "GitHub Release creation claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_37_release_note_publication_claim_blocks_readiness",
+      "description": "release-note publication claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_38_release_approval_claim_blocks_readiness",
+      "description": "release approval claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_39_risk_acceptance_claim_blocks_readiness",
+      "description": "risk-acceptance claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_40_fail_closed_execution_claim_blocks_readiness",
+      "description": "fail-closed execution claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_41_rollback_execution_claim_blocks_readiness",
+      "description": "rollback execution claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_42_audit_closure_claim_blocks_readiness",
+      "description": "audit-closure claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_43_authority_transfer_claim_blocks_readiness",
+      "description": "authority-transfer claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_44_final_governance_judgment_claim_blocks_readiness",
+      "description": "final-governance-judgment claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_45_decision_proof_sealing_claim_blocks_readiness",
+      "description": "Decision Proof sealing claim blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_46_outstanding_item_sequence_violation_blocks_readiness",
+      "description": "outstanding-item sequence violation blocks readiness",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_47_explicit_negative_governance_evidence_remains_valid",
+      "description": "explicit negative governance evidence remains valid",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_48_arbitrary_not_prefix_disguise_is_rejected",
+      "description": "arbitrary not-prefix disguise is rejected",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_49_unknown_non_empty_value_under_forbidden_key_is_affirmative",
+      "description": "unknown non-empty value under forbidden key is affirmative",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_50_structured_affirmative_authority_state_is_rejected",
+      "description": "structured affirmative authority state is rejected",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_51_structured_negative_state_with_neutral_metadata_remains_valid",
+      "description": "structured negative state with neutral metadata remains valid",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_52_negative_outer_state_does_not_hide_nested_affirmative_claim",
+      "description": "negative outer state does not hide nested affirmative claim",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_53_exact_forbidden_output_token_used_as_value_is_rejected",
+      "description": "exact forbidden output token used as a value is rejected",
+      "expected_result": "invalid"
+    },
+    {
+      "case_id": "case_54_valid_baseline_remains_m14_active_work",
+      "description": "valid baseline remains M14 active work",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_55_valid_baseline_is_ready_for_final_completion_review",
+      "description": "valid baseline is ready for final completion review",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_56_valid_baseline_does_not_approve_release",
+      "description": "valid baseline does not approve release",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_57_valid_baseline_does_not_release_v0_13_0",
+      "description": "valid baseline does not release v0.13.0",
+      "expected_result": "valid"
+    },
+    {
+      "case_id": "case_58_valid_baseline_does_not_complete_m14",
+      "description": "valid baseline does not complete M14",
+      "expected_result": "valid"
+    }
+  ],
+  "required_boundary_statements": [
+    "Completion readiness is not completion.",
+    "README future status path is not release publication.",
+    "README future status path is not M14 completion.",
+    "Release proof linkage is not release approval.",
+    "release_proof_complete is not released.",
+    "completion_ready_for_review is not m14_complete.",
+    "ready_for_final_m14_completion_review is not final completion review completed.",
+    "readme_future_path_present is not released.",
+    "A README entry is descriptive evidence, not governance authority.",
+    "A merged PR reference is not release approval.",
+    "Artifact digest matching is not governance approval.",
+    "A verification-command manifest is not proof that commands ran.",
+    "External GitHub state is reviewer-confirmed evidence, not machine-verified by this evaluator.",
+    "Future release target is not released.",
+    "v0.13.0 is not released.",
+    "M14 remains active work and not complete.",
+    "Tracker #201 remains Open.",
+    "Human-review requirement is not completed review.",
+    "fail_closed_recommended is not fail_closed_executed.",
+    "rollback_recommended is not rollback_executed.",
+    "evidence_complete is not Decision Proof sealing.",
+    "replay_ready is not Decision Proof sealing.",
+    "Explicit negative governance evidence is not an affirmative authority claim.",
+    "Decision Proof sealing remains AAOS-owned.",
+    "AAOS remains the decision sovereignty layer."
+  ],
+  "semantic_boundaries": {
+    "completion_readiness_boundary": "Completion readiness is not completion.",
+    "readme_future_status_publication_boundary": "README future status path is not release publication.",
+    "readme_future_status_completion_boundary": "README future status path is not M14 completion.",
+    "release_proof_boundary": "Release proof linkage is not release approval.",
+    "release_proof_complete_boundary": "release_proof_complete is not released.",
+    "completion_ready_for_review_boundary": "completion_ready_for_review is not m14_complete.",
+    "final_review_readiness_boundary": "ready_for_final_m14_completion_review is not final completion review completed.",
+    "readme_future_path_boundary": "readme_future_path_present is not released.",
+    "readme_authority_boundary": "A README entry is descriptive evidence, not governance authority.",
+    "merged_pr_boundary": "A merged PR reference is not release approval.",
+    "artifact_digest_boundary": "Artifact digest matching is not governance approval.",
+    "verification_manifest_boundary": "A verification-command manifest is not proof that commands ran.",
+    "external_state_boundary": "External GitHub state is reviewer-confirmed evidence, not machine-verified by this evaluator.",
+    "future_release_target_boundary": "Future release target is not released.",
+    "v0_13_0_boundary": "v0.13.0 is not released.",
+    "m14_active_work_boundary": "M14 remains active work and not complete.",
+    "tracker_issue_boundary": "Tracker #201 remains Open.",
+    "human_review_boundary": "Human-review requirement is not completed review.",
+    "fail_closed_boundary": "fail_closed_recommended is not fail_closed_executed.",
+    "rollback_boundary": "rollback_recommended is not rollback_executed.",
+    "evidence_complete_boundary": "evidence_complete is not Decision Proof sealing.",
+    "replay_ready_boundary": "replay_ready is not Decision Proof sealing.",
+    "explicit_negative_boundary": "Explicit negative governance evidence is not an affirmative authority claim.",
+    "decision_proof_sealing_boundary": "Decision Proof sealing remains AAOS-owned.",
+    "sovereignty_boundary": "AAOS remains the decision sovereignty layer."
+  },
+  "allowed_evaluator_outputs": [
+    "m14_completion_readiness_valid",
+    "m14_completion_readiness_invalid",
+    "completion_evidence_coverage_complete",
+    "completion_evidence_coverage_incomplete",
+    "readme_prefix_integrity_valid",
+    "readme_prefix_integrity_invalid",
+    "readme_future_path_present",
+    "readme_future_path_invalid",
+    "released_versions_section_preserved",
+    "current_status_section_preserved",
+    "release_proof_bundle_valid",
+    "release_proof_bundle_invalid",
+    "completion_ready_for_review",
+    "ready_for_final_m14_completion_review",
+    "external_state_confirmation_required",
+    "review_required",
+    "escalation_required",
+    "fail_closed_recommended",
+    "not_ready"
+  ],
+  "forbidden_evaluator_outputs": [
+    "final_m14_completion_review_completed",
+    "m14_completion_approved",
+    "m14_complete",
+    "release_approved",
+    "release_created",
+    "release_tag_created",
+    "github_release_created",
+    "release_notes_finalized",
+    "release_notes_published",
+    "v0_13_0_released",
+    "release_published",
+    "tracker_201_final_state_applied",
+    "risk_accepted",
+    "fail_closed_executed",
+    "rollback_executed",
+    "audit_closed",
+    "waiver_granted",
+    "decision_proof_verified",
+    "decision_proof_sealed",
+    "sealed_by_completion_readiness",
+    "sealed_by_readme",
+    "authority_transferred",
+    "final_governance_judgment"
+  ],
+  "forbidden_claim_inspection_policy": {
+    "explicit_negative_evidence_requires_exact_normalized_match": true,
+    "arbitrary_not_prefix_is_negative": false,
+    "unknown_non_empty_value_under_forbidden_key_is_affirmative": true,
+    "negative_outer_state_does_not_suppress_nested_affirmative_claim": true,
+    "neutral_metadata_is_not_authority_state": true,
+    "explicit_negative_normalized_vocabulary": [
+      false,
+      0,
+      null,
+      "",
+      "no",
+      "none",
+      "denied",
+      "rejected",
+      "blocked",
+      "pending",
+      "open",
+      "unreleased",
+      "not_accepted",
+      "not_allowed",
+      "not_approved",
+      "not_authorized",
+      "not_certified",
+      "not_closed",
+      "not_complete",
+      "not_completed",
+      "not_executed",
+      "not_final",
+      "not_granted",
+      "not_published",
+      "not_released",
+      "not_sealed",
+      "not_transferred",
+      "not_verified",
+      "active_work_not_complete"
+    ],
+    "authority_state_fields": [
+      "status",
+      "state",
+      "result",
+      "outcome",
+      "decision",
+      "approval_status",
+      "execution_status",
+      "release_status",
+      "sealing_status",
+      "authority_status",
+      "completion_status"
+    ],
+    "known_forbidden_authority_keys": [
+      "final_m14_completion_review_completed",
+      "release_approved",
+      "release_created",
+      "release_file_created",
+      "release_tag_created",
+      "github_release_created",
+      "release_notes_finalized",
+      "release_notes_published",
+      "released",
+      "m14_complete",
+      "risk_accepted_by_fixture",
+      "fail_closed_executed_by_fixture",
+      "rollback_executed_by_fixture",
+      "audit_closed_by_fixture",
+      "authority_transferred_by_fixture",
+      "final_governance_judgment_made_by_fixture",
+      "decision_proof_sealed_by_fixture",
+      "verification_manifest_execution_claimed"
+    ],
+    "neutral_metadata_fields": [
+      "description",
+      "note",
+      "rationale",
+      "evidence_role",
+      "verification_scope",
+      "expected_result",
+      "evidence_recording_requirement",
+      "boundary",
+      "governance_role",
+      "prerequisite",
+      "authorized_actor",
+      "completion_evidence_required"
+    ]
+  },
+  "authority_boundary": {
+    "retained_authority_owner": "AAOS",
+    "decision_proof_sealing_owner": "AAOS",
+    "may": [
+      "describe_evidence",
+      "reference_evidence",
+      "read_repository_files",
+      "load_release_proof_fixture_as_inert_json",
+      "validate_readme_integrity",
+      "validate_readme_release_state",
+      "validate_paths",
+      "validate_repository_state",
+      "recompute_sha256_digests",
+      "inspect_inert_evidence",
+      "report_completion_readiness",
+      "report_coverage",
+      "preserve_traceability",
+      "route_findings_for_review",
+      "require_external_state_confirmation",
+      "validate_verification_command_manifest",
+      "validate_outstanding_completion_sequence"
+    ],
+    "must_not": [
+      "approve_release",
+      "accept_risk",
+      "execute_rollback",
+      "execute_fail_closed",
+      "finalize_release_notes",
+      "publish_release_notes",
+      "grant_waivers",
+      "transfer_authority",
+      "make_final_governance_judgments",
+      "seal_decision_proof",
+      "declare_m14_complete",
+      "complete_final_m14_completion_review",
+      "publish_v0_13_0",
+      "create_release_files",
+      "create_release_tag",
+      "create_github_release",
+      "change_tracker_state",
+      "query_github",
+      "import_source_evaluators",
+      "execute_source_evaluators",
+      "execute_source_tests",
+      "execute_workflows",
+      "execute_skills",
+      "execute_models",
+      "execute_external_runtimes",
+      "perform_network_access",
+      "execute_fixture_commands",
+      "execute_shell_commands_derived_from_fixture_content",
+      "declare_v0_13_0_released"
+    ],
+    "readme_entry_role": "descriptive_evidence_only_not_governance_authority",
+    "release_proof_role": "evidence_readiness_only_not_release_approval",
+    "decision_proof_sealing_statement": "Decision Proof sealing remains AAOS-owned.",
+    "sovereignty_statement": "AAOS remains the decision sovereignty layer."
+  },
+  "expected_baseline_result": {
+    "valid": true,
+    "readme_present": true,
+    "readme_prefix_integrity_valid": true,
+    "readme_next_phase_valid": true,
+    "released_versions_section_preserved": true,
+    "current_status_section_preserved": true,
+    "release_proof_bundle_present": true,
+    "release_proof_bundle_integrity_valid": true,
+    "release_proof_state_valid": true,
+    "completion_evidence_coverage_complete": true,
+    "authority_boundaries_preserved": true,
+    "verification_manifest_complete": true,
+    "external_state_confirmation_required": true,
+    "outstanding_completion_items_valid": true,
+    "completion_ready_for_review": true,
+    "ready_for_final_m14_completion_review": true,
+    "final_m14_completion_review_completed": false,
+    "release_approved": false,
+    "released": false,
+    "m14_complete": false,
+    "findings": [],
+    "outputs": [
+      "m14_completion_readiness_valid",
+      "completion_evidence_coverage_complete",
+      "readme_prefix_integrity_valid",
+      "readme_future_path_present",
+      "released_versions_section_preserved",
+      "current_status_section_preserved",
+      "release_proof_bundle_valid",
+      "completion_ready_for_review",
+      "ready_for_final_m14_completion_review",
+      "external_state_confirmation_required",
+      "review_required"
+    ]
+  }
+}
