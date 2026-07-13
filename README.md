@@ -1128,4 +1128,29 @@ Readiness checklist results must not become release approval, risk acceptance, D
 
 ## Next Phase
 
-Future milestone planning will be tracked separately after v0.12.0 release publication.
+- M14 — High-Risk Runtime Policy Gates and Public-Output Safety
+  - M14 remains active work; final completion has not been declared.
+  - Tracker: #201 remains Open.
+  - Prior released baseline: v0.12.0.
+  - Future target release path: v0.13.0 remains future-only and is not listed in released versions.
+  - Future README status path: v0.13.0 / M14 remains future-only until final completion review and authorized publication.
+  - Current M14 evidence links:
+    - #202 Governed Voice Runtime Policy Fixtures.
+    - #204 Public Issue Exfiltration Gate.
+    - #205 MODA AI Risk Framework Mapping.
+    - #206 AI-Authored PR Provenance and Reviewer Routing.
+    - #208 External Skill Admission Gate.
+    - #210 Cross-Control Authority-Boundary Regression Fixtures.
+    - #212 Operational Readiness Checklist.
+    - #213 Release Proof Linkage Specimen.
+  - Completion readiness is not completion.
+  - README future status path is not release publication.
+  - README future status path is not M14 completion.
+  - Release proof linkage is not release approval.
+  - completion_ready_for_review is not m14_complete.
+  - ready_for_final_m14_completion_review is not final completion review completed.
+  - readme_future_path_present is not released.
+  - evidence_complete is not Decision Proof sealing.
+  - replay_ready is not Decision Proof sealing.
+  - Decision Proof sealing remains AAOS-owned.
+  - AAOS remains the decision sovereignty layer.
