@@ -271,6 +271,7 @@ REQUIRED_CONTAINER_TYPES = {
     "required_boundary_statements": list,
     "allowed_evaluator_outputs": list,
     "forbidden_evaluator_outputs": list,
+    "forbidden_claim_inspection_policy": dict,
 }
 
 ARTIFACT_INTEGRITY_POLICY_KEYS = {
@@ -528,9 +529,29 @@ OUTSTANDING_REQUIRED_FIELDS = {
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
 CLAIM_SCAN_SKIP_KEYS = {
+    "source_track_manifest",
+    "source_artifact_manifest",
+    "artifact_integrity_policy",
+    "readiness_dimensions",
+    "operational_checklist",
+    "external_state_review_inputs",
+    "verification_command_manifest",
+    "outstanding_completion_items",
     "readiness_cases",
     "required_boundary_statements",
+    "allowed_evaluator_outputs",
     "forbidden_evaluator_outputs",
+    "forbidden_claim_inspection_policy",
+    "changed_file_scope",
+}
+
+ACTIVE_CLAIM_ROOT_KEYS = {
+    "active_governance_evidence",
+    "active_readiness_payload",
+    "active_payload",
+    "simulated_outputs",
+    "evaluator_output",
+    "outputs",
 }
 
 AFFIRMATIVE_CLAIM_KEYS = REQUIRED_FORBIDDEN_OUTPUTS | {
@@ -579,31 +600,68 @@ POSITIVE_CLAIM_PHRASES = (
     "closes #201",
 )
 
-NEGATIVE_CLAIM_VALUES = {
+EXPLICIT_NEGATIVE_CLAIM_STATES = (
+    "",
     "false",
+    "0",
+    "null",
     "no",
     "none",
     "denied",
+    "rejected",
+    "blocked",
     "pending",
     "open",
     "unreleased",
-    "not_released",
-    "not released",
-    "not_complete",
-    "not complete",
-    "active_work_not_complete",
-    "not_transferred",
-    "not transferred",
+    "not_accepted",
+    "not_allowed",
     "not_approved",
-    "not approved",
+    "not_authorized",
+    "not_certified",
+    "not_closed",
+    "not_complete",
+    "not_completed",
     "not_executed",
-    "not executed",
-    "not_sealed",
-    "not sealed",
-    "not_verified",
-    "not verified",
+    "not_final",
+    "not_granted",
     "not_published",
-    "not published",
+    "not_released",
+    "not_sealed",
+    "not_transferred",
+    "not_verified",
+    "active_work_not_complete",
+)
+
+NEGATIVE_CLAIM_VALUES = frozenset(EXPLICIT_NEGATIVE_CLAIM_STATES)
+
+AUTHORITY_STATE_FIELD_ORDER = (
+    "status",
+    "state",
+    "result",
+    "outcome",
+    "decision",
+    "approval_status",
+    "execution_status",
+    "release_status",
+    "sealing_status",
+    "authority_status",
+)
+
+AUTHORITY_STATE_FIELDS = frozenset(AUTHORITY_STATE_FIELD_ORDER)
+
+FORBIDDEN_CLAIM_POLICY_VALUES = {
+    "recursively_inspect_active_readiness_payloads": True,
+    "recursively_inspect_simulated_outputs": True,
+    "explicit_negative_evidence_allowed": True,
+    "field_name_alone_does_not_trigger_violation": True,
+    "nested_affirmative_claims_detected": True,
+    "dormant_case_payloads_excluded_until_activated": True,
+    "explicit_negative_requires_exact_normalized_match": True,
+    "generic_negative_prefix_acceptance": False,
+    "unknown_non_empty_scalar_under_forbidden_key_is_affirmative": True,
+    "structured_authority_state_fields_recursively_inspected": True,
+    "neutral_metadata_is_not_authority_state": True,
+    "negative_outer_state_cannot_hide_nested_affirmative_claim": True,
 }
 
 
@@ -647,17 +705,7 @@ def _is_explicit_negative(value: Any) -> bool:
         return value == 0
     if not isinstance(value, str):
         return False
-    normalized = value.strip().lower()
-    text = _text(value)
-    return (
-        normalized in NEGATIVE_CLAIM_VALUES
-        or text in NEGATIVE_CLAIM_VALUES
-        or normalized.startswith("not_")
-        or text.startswith("not ")
-        or " is not " in text
-        or " remains unreleased" in text
-        or " remains open" in text
-    )
+    return _token(value) in NEGATIVE_CLAIM_VALUES
 
 
 def _is_affirmative_claim_value(value: Any, known_claim_key: bool = False) -> bool:
@@ -669,31 +717,14 @@ def _is_affirmative_claim_value(value: Any, known_claim_key: bool = False) -> bo
         return value != 0
     if not isinstance(value, str):
         return False
+    if known_claim_key:
+        return bool(value.strip())
     normalized_token = _token(value)
     text = _text(value)
     if normalized_token in REQUIRED_FORBIDDEN_OUTPUTS:
         return True
     if any(phrase in text for phrase in POSITIVE_CLAIM_PHRASES):
         return True
-    if known_claim_key:
-        return text in {
-            "true",
-            "yes",
-            "approved",
-            "accepted",
-            "complete",
-            "completed",
-            "closed",
-            "created",
-            "released",
-            "published",
-            "sealed",
-            "verified",
-            "executed",
-            "transferred",
-            "made",
-            "granted",
-        }
     return False
 
 
@@ -702,8 +733,11 @@ def _scan_forbidden_claims(
     findings: list[str],
     path: str = "payload",
     parent_key: str | None = None,
+    active_context: bool = False,
+    forbidden_container_context: bool = False,
+    authority_state_context: bool = False,
 ) -> None:
-    if parent_key in CLAIM_SCAN_SKIP_KEYS:
+    if not active_context and parent_key in CLAIM_SCAN_SKIP_KEYS:
         return
     if isinstance(value, Mapping):
         for raw_key, item in value.items():
@@ -711,10 +745,19 @@ def _scan_forbidden_claims(
             token = _token(key)
             child_path = f"{path}.{key}"
             known_key = token in AFFIRMATIVE_CLAIM_KEYS
-            if not isinstance(item, (Mapping, list)) and _is_affirmative_claim_value(
-                item, known_key
-            ):
-                if known_key or (
+            state_field = token in AUTHORITY_STATE_FIELDS
+            scalar_claim_context = bool(
+                known_key
+                or authority_state_context
+                or (forbidden_container_context and state_field)
+            )
+            if not isinstance(item, (Mapping, list)):
+                affirmative = _is_affirmative_claim_value(
+                    item, scalar_claim_context
+                )
+                if affirmative and (
+                    scalar_claim_context
+                    or (
                     isinstance(item, str)
                     and (
                         _token(item) in REQUIRED_FORBIDDEN_OUTPUTS
@@ -723,15 +766,45 @@ def _scan_forbidden_claims(
                             for phrase in POSITIVE_CLAIM_PHRASES
                         )
                     )
+                    )
                 ):
                     _add(findings, f"affirmative_forbidden_claim:{child_path}")
-            _scan_forbidden_claims(item, findings, child_path, token)
+            child_active_context = bool(
+                active_context
+                or (path == "payload" and token in ACTIVE_CLAIM_ROOT_KEYS)
+            )
+            child_forbidden_context = bool(
+                forbidden_container_context or known_key
+            )
+            child_authority_state_context = bool(
+                authority_state_context
+                or (forbidden_container_context and state_field)
+            )
+            _scan_forbidden_claims(
+                item,
+                findings,
+                child_path,
+                token,
+                child_active_context,
+                child_forbidden_context,
+                child_authority_state_context,
+            )
         return
     if isinstance(value, list):
         for index, item in enumerate(value):
-            _scan_forbidden_claims(item, findings, f"{path}[{index}]", parent_key)
+            _scan_forbidden_claims(
+                item,
+                findings,
+                f"{path}[{index}]",
+                parent_key,
+                active_context,
+                forbidden_container_context,
+                authority_state_context,
+            )
         return
-    if isinstance(value, str) and _is_affirmative_claim_value(value):
+    if authority_state_context and _is_affirmative_claim_value(value, True):
+        _add(findings, f"affirmative_forbidden_claim:{path}")
+    elif isinstance(value, str) and _is_affirmative_claim_value(value):
         _add(findings, f"affirmative_forbidden_claim:{path}")
 
 
@@ -1468,6 +1541,32 @@ def _validate_boundary_catalogs(
     if overlap:
         for output in sorted(overlap):
             _add(findings, f"forbidden_output_in_allowed_catalog:{output}")
+        valid = False
+
+    policy = payload.get("forbidden_claim_inspection_policy")
+    if not isinstance(policy, Mapping):
+        _add(findings, "forbidden_claim_inspection_policy_invalid")
+        return False
+
+    for field, expected in FORBIDDEN_CLAIM_POLICY_VALUES.items():
+        if policy.get(field) is not expected:
+            _add(findings, f"forbidden_claim_policy_value_invalid:{field}")
+            valid = False
+
+    explicit_negative_states = policy.get(
+        "explicit_negative_normalized_vocabulary"
+    )
+    if not isinstance(explicit_negative_states, list) or tuple(
+        explicit_negative_states
+    ) != EXPLICIT_NEGATIVE_CLAIM_STATES:
+        _add(findings, "explicit_negative_vocabulary_invalid")
+        valid = False
+
+    authority_state_fields = policy.get("authority_state_fields")
+    if not isinstance(authority_state_fields, list) or tuple(
+        authority_state_fields
+    ) != AUTHORITY_STATE_FIELD_ORDER:
+        _add(findings, "authority_state_field_vocabulary_invalid")
         valid = False
     return valid
 

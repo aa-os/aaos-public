@@ -929,6 +929,189 @@ class M14OperationalReadinessEvaluatorTests(unittest.TestCase):
         self.assertFalse(result["source_artifacts_present"])
         self.assertFalse(result["artifact_integrity_valid"])
 
+    def test_66_decision_proof_sealed_false_remains_valid(self):
+        self.fixture["simulated_outputs"] = {"decision_proof_sealed": False}
+        result = self.evaluate()
+        self.assertTrue(result["valid"])
+        self.assertTrue(result["authority_boundaries_preserved"])
+
+    def test_67_risk_accepted_denied_remains_valid(self):
+        self.fixture["simulated_outputs"] = {"risk_accepted": "denied"}
+        result = self.evaluate()
+        self.assertTrue(result["valid"])
+        self.assertTrue(result["authority_boundaries_preserved"])
+
+    def test_68_authority_transferred_not_transferred_remains_valid(self):
+        self.fixture["simulated_outputs"] = {
+            "authority_transferred": "not_transferred"
+        }
+        result = self.evaluate()
+        self.assertTrue(result["valid"])
+        self.assertTrue(result["authority_boundaries_preserved"])
+
+    def test_69_arbitrary_not_prefix_disguises_are_rejected(self):
+        disguised_claims = (
+            "not_merely_approved_but_executed",
+            "not denied; release approved",
+            "this is not pending; it is released",
+        )
+        for value in disguised_claims:
+            with self.subTest(value=value):
+                fixture = copy.deepcopy(self.baseline)
+                fixture["simulated_outputs"] = {"decision_proof_sealed": value}
+                result = self.assert_invalid(fixture)
+                self.assertFalse(result["authority_boundaries_preserved"])
+
+    def test_70_not_only_claimed_but_sealed_is_rejected(self):
+        self.fixture["simulated_outputs"] = {
+            "decision_proof_sealed": "not_only_claimed_but_sealed"
+        }
+        result = self.assert_invalid(self.fixture)
+        self.assertFalse(result["authority_boundaries_preserved"])
+
+    def test_71_forbidden_key_with_by_registry_is_rejected(self):
+        self.fixture["simulated_outputs"] = {
+            "decision_proof_sealed": "by_registry"
+        }
+        result = self.assert_invalid(self.fixture)
+        self.assertFalse(result["authority_boundaries_preserved"])
+
+    def test_72_forbidden_keys_with_unknown_affirmative_values_are_rejected(self):
+        claims = (
+            ("authority_transferred", "cross_control_evaluator"),
+            ("risk_accepted", "accepted_by_operator"),
+            ("m14_complete", "completion_recorded"),
+            ("v0_13_0_released", "published_on_github"),
+        )
+        for key, value in claims:
+            with self.subTest(key=key, value=value):
+                fixture = copy.deepcopy(self.baseline)
+                fixture["simulated_outputs"] = {key: value}
+                result = self.assert_invalid(fixture)
+                self.assertFalse(result["authority_boundaries_preserved"])
+
+    def test_73_decision_proof_sealed_structured_status_is_rejected(self):
+        self.fixture["simulated_outputs"] = {
+            "decision_proof_sealed": {"status": "sealed"}
+        }
+        result = self.assert_invalid(self.fixture)
+        self.assertFalse(result["authority_boundaries_preserved"])
+
+    def test_74_risk_accepted_structured_state_is_rejected(self):
+        self.fixture["simulated_outputs"] = {
+            "risk_accepted": {"state": "approved"}
+        }
+        result = self.assert_invalid(self.fixture)
+        self.assertFalse(result["authority_boundaries_preserved"])
+
+    def test_75_authority_transferred_structured_result_is_rejected(self):
+        self.fixture["simulated_outputs"] = {
+            "authority_transferred": {"result": "granted"}
+        }
+        result = self.assert_invalid(self.fixture)
+        self.assertFalse(result["authority_boundaries_preserved"])
+
+    def test_76_structured_negative_status_with_neutral_metadata_is_valid(self):
+        self.fixture["simulated_outputs"] = {
+            "decision_proof_sealed": {
+                "status": "not_sealed",
+                "trace_available": True,
+                "attempts": 1,
+            }
+        }
+        result = self.evaluate()
+        self.assertTrue(result["valid"])
+        self.assertTrue(result["authority_boundaries_preserved"])
+
+    def test_77_negative_outer_state_does_not_hide_nested_affirmative_claim(self):
+        self.fixture["simulated_outputs"] = {
+            "decision_proof_sealed": {
+                "status": "not_sealed",
+                "nested": {"authority_transferred": True},
+            }
+        }
+        result = self.assert_invalid(self.fixture)
+        self.assertFalse(result["authority_boundaries_preserved"])
+
+    def test_78_exact_forbidden_output_token_used_as_value_is_rejected(self):
+        self.fixture["simulated_outputs"] = {
+            "detector_result": "decision_proof_sealed"
+        }
+        result = self.assert_invalid(self.fixture)
+        self.assertFalse(result["authority_boundaries_preserved"])
+
+    def test_79_baseline_remains_ready_for_release_proof_linkage(self):
+        result = self.evaluate()
+        self.assertTrue(result["valid"])
+        self.assertTrue(result["ready_for_release_proof_linkage"])
+        self.assertFalse(result["ready_for_m14_completion_review"])
+
+    def test_80_baseline_remains_m14_active_work_not_complete(self):
+        result = self.evaluate()
+        self.assertEqual(
+            self.fixture["m14_completion_status"], "active_work_not_complete"
+        )
+        self.assertFalse(result["m14_complete"])
+        self.assertNotIn("m14_complete", result["outputs"])
+
+    def test_81_detector_policy_uses_bounded_negative_and_state_vocabularies(self):
+        policy = self.fixture["forbidden_claim_inspection_policy"]
+        self.assertFalse(policy["generic_negative_prefix_acceptance"])
+        self.assertTrue(
+            policy[
+                "unknown_non_empty_scalar_under_forbidden_key_is_affirmative"
+            ]
+        )
+        self.assertEqual(
+            set(policy["explicit_negative_normalized_vocabulary"]),
+            {
+                "",
+                "false",
+                "0",
+                "null",
+                "no",
+                "none",
+                "denied",
+                "rejected",
+                "blocked",
+                "pending",
+                "open",
+                "unreleased",
+                "not_accepted",
+                "not_allowed",
+                "not_approved",
+                "not_authorized",
+                "not_certified",
+                "not_closed",
+                "not_complete",
+                "not_completed",
+                "not_executed",
+                "not_final",
+                "not_granted",
+                "not_published",
+                "not_released",
+                "not_sealed",
+                "not_transferred",
+                "not_verified",
+                "active_work_not_complete",
+            },
+        )
+        self.assertEqual(
+            set(policy["authority_state_fields"]),
+            {
+                "status",
+                "state",
+                "result",
+                "outcome",
+                "decision",
+                "approval_status",
+                "execution_status",
+                "release_status",
+                "sealing_status",
+                "authority_status",
+            },
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
