@@ -9,11 +9,17 @@ approval, final governance judgment, or Decision Proof sealing.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
+
+from runtime.repository_artifact_digest import (
+    RepositoryArtifactFileTypeError,
+    RepositoryArtifactPathError,
+    RepositoryArtifactTextError,
+    sha256_repository_file,
+)
 
 
 EXPECTED_CHANGED_FILES = (
@@ -224,6 +230,38 @@ EXPECTED_ARTIFACTS: dict[str, dict[str, str]] = {
     "tests/test_m14_cross_control_authority_boundary_evaluator.py": _artifact(
         "cross_control_authority_boundary", "#210", "deterministic_test"
     ),
+}
+
+# These are the digests recorded by the original PR #212 fixture.  They are
+# historical evidence and must not be rewritten when a maintained file changes.
+EXPECTED_HISTORICAL_ARTIFACT_SHA256 = {
+    "examples/public-integration-pack-pilot/voxcpm-governed-voice-fixtures.json": "f2d30aca2abca68e0d69080098c473ff2ef7f45a5afae0eb2734dd48ae294921",
+    "runtime/voice_generation_policy_evaluator.py": "6c6a10fc88b1abd6f35ae3993b27784fbe69d028d192e19275677296e21df84f",
+    "tests/test_voice_generation_policy_evaluator.py": "0d2e3921ed4e7060615bfbc2ae0c192616b20990834e5be5a3663c78b19a0d4e",
+    "examples/public-integration-pack-pilot/m14-public-issue-exfiltration-gate-fixtures.json": "ac682908ba081cfc58726046efcb928c51e64eb2037f03354fda80afeb0846a9",
+    "runtime/public_issue_exfiltration_gate_evaluator.py": "f3453af5c1829a28c791b665640e24940ececdc211e364360635bfe39573e81d",
+    "tests/test_public_issue_exfiltration_gate_evaluator.py": "e3ab2be88dfeb8ec85a9cd12936f33b54476e46c22eeebe650648a8678d962bc",
+    "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md": "d28987ceeb419d36f43e32f9fba6fa82c7233ce3355117ebac5f9c45cfae97a3",
+    "examples/public-integration-pack-pilot/m14-moda-ai-risk-decision-proof-fixtures.json": "dc157dd2029912ffe7d2ed48485c6b6e603237a9aa2cca72bb8d12ba285ff2ba",
+    "runtime/moda_ai_risk_mapping_evaluator.py": "11a71ee8a7a7120d798e5cbb262a9e98bb9b1e74ca2471db486d6bdd0d091f28",
+    "tests/test_moda_ai_risk_mapping_evaluator.py": "96a52094a65a2cd9303a01aa62b2e53c5240fdc789ee005c243a44a627fc3564",
+    ".github/workflows/m14-ai-pr-provenance.yml": "af8ba9426f1bda5c2b9a09fad7a2b03ef2c4d04a178e4f414519bf837ff19bf1",
+    "examples/public-integration-pack-pilot/m14-ai-authored-pr-provenance-fixtures.json": "e72636d1871f2c1232c811aec41ca9724be1505916d4804a05be75e600f3808a",
+    "runtime/ai_authored_pr_provenance_evaluator.py": "465a0aba8beb49a6d6ad55e0bfce65ab74f5368164c758841ab202c50432ef35",
+    "tests/test_ai_authored_pr_provenance_evaluator.py": "e648d2606d38f05063d72be0fa270a0191a28dca24a5fc07e80414faa4fc1f8f",
+    "docs/capability-supply-chain/nvidia-skills-admission.md": "f49b51dd960df118a002c7e3fef685bf39f4006f8372373c0cb1fa7b635f8f49",
+    "examples/public-integration-pack-pilot/m14-skill-admission-fixtures.json": "4fc229be3883a2681f8ebfc3f2eb828514cd3a2d6729c5841bab5a7efe609509",
+    "runtime/skill_admission_evaluator.py": "bb81697df1be79b96a6af373ce63314a01ac73392b3cdb97981abaddbe6a4400",
+    "tests/test_skill_admission_evaluator.py": "7cfd8b7f801a9a9da0546ae64499b234cbd1882fbba64b7a169b01b866ec6abd",
+    "examples/public-integration-pack-pilot/m14-cross-control-authority-boundary-regression-fixtures.json": "f44b6d3298922608096c10f248955fa4c25e8d4a3452d6d7c585f9237129809d",
+    "runtime/m14_cross_control_authority_boundary_evaluator.py": "51a413dc5303d64d49e958ffde970925ffc5aebead3435f8cf714e6112e1b48c",
+    "tests/test_m14_cross_control_authority_boundary_evaluator.py": "5a4a5e764655382e2b19aa5a4e8a5a6a2b5082ade733e7125d88dfd2ba6cfc52",
+}
+
+# Current repository integrity is independently maintained.  Later legitimate
+# source changes belong here; they never overwrite the historical map above.
+EXPECTED_MAINTAINED_ARTIFACT_SHA256 = {
+    **EXPECTED_HISTORICAL_ARTIFACT_SHA256,
 }
 
 EXPECTED_TOP_LEVEL_VALUES = {
@@ -1083,6 +1121,9 @@ def _validate_artifacts(
         ):
             _add(findings, f"artifact_digest_shape_invalid:{relative_path}")
             integrity_valid = False
+        elif declared_digest != EXPECTED_HISTORICAL_ARTIFACT_SHA256[relative_path]:
+            _add(findings, f"artifact_historical_digest_mismatch:{relative_path}")
+            integrity_valid = False
 
         artifact_path = _safe_artifact_path(root, relative_path)
         if artifact_path is None:
@@ -1096,14 +1137,34 @@ def _validate_artifacts(
             integrity_valid = False
             continue
         try:
-            observed_digest = hashlib.sha256(artifact_path.read_bytes()).hexdigest()
+            observed_digest = sha256_repository_file(
+                root, relative_path, mode="text"
+            )
+        except UnicodeDecodeError:
+            _add(findings, f"source_artifact_malformed_utf8:{relative_path}")
+            integrity_valid = False
+            continue
+        except RepositoryArtifactTextError:
+            _add(findings, f"source_artifact_lone_carriage_return:{relative_path}")
+            integrity_valid = False
+            continue
+        except RepositoryArtifactPathError:
+            _add(findings, f"artifact_relative_path_unsafe:{relative_path}")
+            presence_valid = False
+            integrity_valid = False
+            continue
+        except (FileNotFoundError, RepositoryArtifactFileTypeError):
+            _add(findings, f"source_artifact_missing:{relative_path}")
+            presence_valid = False
+            integrity_valid = False
+            continue
         except OSError:
             _add(findings, f"source_artifact_unreadable:{relative_path}")
             presence_valid = False
             integrity_valid = False
             continue
-        if declared_digest != observed_digest:
-            _add(findings, f"artifact_digest_mismatch:{relative_path}")
+        if observed_digest != EXPECTED_MAINTAINED_ARTIFACT_SHA256[relative_path]:
+            _add(findings, f"artifact_maintained_digest_mismatch:{relative_path}")
             integrity_valid = False
 
     return presence_valid, integrity_valid and presence_valid

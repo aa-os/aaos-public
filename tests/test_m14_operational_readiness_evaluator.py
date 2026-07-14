@@ -1,9 +1,10 @@
 import ast
 import copy
-import hashlib
 import json
 import sys
+import tempfile
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 
 
@@ -11,10 +12,16 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from runtime.m14_operational_readiness_evaluator import (  # noqa: E402
+    EXPECTED_HISTORICAL_ARTIFACT_SHA256,
+    EXPECTED_MAINTAINED_ARTIFACT_SHA256,
     evaluate_file,
     evaluate_m14_operational_readiness,
     load_fixture,
     validate_m14_operational_readiness,
+)
+from runtime.repository_artifact_digest import (  # noqa: E402
+    canonicalize_utf8_repository_text,
+    sha256_repository_file,
 )
 
 
@@ -266,11 +273,27 @@ class M14OperationalReadinessEvaluatorTests(unittest.TestCase):
     def setUp(self):
         self.fixture = copy.deepcopy(self.baseline)
 
-    def evaluate(self, fixture=None):
+    def evaluate(self, fixture=None, repository_root=ROOT):
         return evaluate_m14_operational_readiness(
             self.fixture if fixture is None else fixture,
-            repository_root=ROOT,
+            repository_root=repository_root,
         )
+
+    @contextmanager
+    def temporary_repository(self, *, line_endings="lf"):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            for relative_path in EXPECTED_ARTIFACTS:
+                source = ROOT / relative_path
+                target = root / relative_path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                canonical = canonicalize_utf8_repository_text(source.read_bytes())
+                if line_endings == "crlf":
+                    canonical = canonical.replace(b"\n", b"\r\n")
+                elif line_endings != "lf":
+                    raise ValueError("line_endings must be 'lf' or 'crlf'")
+                target.write_bytes(canonical)
+            yield root
 
     def assert_invalid(self, fixture):
         result = self.evaluate(fixture)
@@ -349,19 +372,30 @@ class M14OperationalReadinessEvaluatorTests(unittest.TestCase):
             with self.subTest(relative_path=relative_path):
                 self.assertTrue((ROOT / relative_path).is_file())
 
-    def test_07_all_sha256_digests_match_exact_file_bytes(self):
+    def test_07_historical_and_maintained_sha256_digests_are_independent(self):
         for relative_path in EXPECTED_ARTIFACTS:
             with self.subTest(relative_path=relative_path):
-                expected = hashlib.sha256((ROOT / relative_path).read_bytes()).hexdigest()
                 entry = self.artifact(self.fixture, relative_path)
                 self.assertEqual(entry["digest_algorithm"], "sha256")
-                self.assertEqual(entry["sha256"], expected)
+                self.assertEqual(
+                    entry["sha256"],
+                    EXPECTED_HISTORICAL_ARTIFACT_SHA256[relative_path],
+                )
+                self.assertEqual(
+                    sha256_repository_file(ROOT, relative_path, mode="text"),
+                    EXPECTED_MAINTAINED_ARTIFACT_SHA256[relative_path],
+                )
 
-    def test_08_source_artifact_digest_mismatch_fails(self):
+    def test_08_historical_source_artifact_digest_mutation_fails(self):
         entry = self.fixture["source_artifact_manifest"][0]
+        relative_path = entry["relative_path"]
         entry["sha256"] = "0" * 64
         result = self.assert_invalid(self.fixture)
         self.assertFalse(result["artifact_integrity_valid"])
+        self.assertIn(
+            f"artifact_historical_digest_mismatch:{relative_path}",
+            result["findings"],
+        )
 
     def test_09_missing_source_artifact_fails(self):
         self.fixture["source_artifact_manifest"].pop()
@@ -1111,6 +1145,86 @@ class M14OperationalReadinessEvaluatorTests(unittest.TestCase):
                 "authority_status",
             },
         )
+
+    def test_82_lf_temporary_repository_passes(self):
+        with self.temporary_repository(line_endings="lf") as root:
+            specimen = root / next(iter(EXPECTED_ARTIFACTS))
+            self.assertNotIn(b"\r\n", specimen.read_bytes())
+            result = self.evaluate(repository_root=root)
+        self.assertTrue(result["valid"], result["findings"])
+        self.assertTrue(result["artifact_integrity_valid"])
+
+    def test_83_equivalent_crlf_temporary_repository_passes(self):
+        with self.temporary_repository(line_endings="crlf") as root:
+            specimen = root / next(iter(EXPECTED_ARTIFACTS))
+            self.assertIn(b"\r\n", specimen.read_bytes())
+            result = self.evaluate(repository_root=root)
+        self.assertTrue(result["valid"], result["findings"])
+        self.assertTrue(result["artifact_integrity_valid"])
+
+    def test_84_malformed_utf8_repository_artifact_fails(self):
+        relative_path = next(iter(EXPECTED_ARTIFACTS))
+        with self.temporary_repository() as root:
+            (root / relative_path).write_bytes(b"\xff")
+            result = self.evaluate(repository_root=root)
+        self.assertFalse(result["valid"])
+        self.assertIn(
+            f"source_artifact_malformed_utf8:{relative_path}", result["findings"]
+        )
+
+    def test_85_lone_carriage_return_repository_artifact_fails(self):
+        relative_path = next(iter(EXPECTED_ARTIFACTS))
+        with self.temporary_repository() as root:
+            (root / relative_path).write_bytes(b"safe\runsafe\n")
+            result = self.evaluate(repository_root=root)
+        self.assertFalse(result["valid"])
+        self.assertIn(
+            f"source_artifact_lone_carriage_return:{relative_path}",
+            result["findings"],
+        )
+
+    def test_86_maintained_repository_artifact_mutation_fails(self):
+        relative_path = next(iter(EXPECTED_ARTIFACTS))
+        with self.temporary_repository() as root:
+            path = root / relative_path
+            path.write_bytes(path.read_bytes() + b"\nmaintained drift\n")
+            result = self.evaluate(repository_root=root)
+        self.assertFalse(result["valid"])
+        self.assertIn(
+            f"artifact_maintained_digest_mismatch:{relative_path}",
+            result["findings"],
+        )
+
+    def test_87_repository_artifact_path_substitution_fails(self):
+        original_path = self.fixture["source_artifact_manifest"][0]["relative_path"]
+        self.fixture["source_artifact_manifest"][0]["relative_path"] = "README.md"
+        result = self.evaluate()
+        self.assertFalse(result["valid"])
+        self.assertFalse(result["source_artifacts_present"])
+        self.assertIn("source_artifact_manifest_coverage_invalid", result["findings"])
+        self.assertIn(
+            f"source_artifact_manifest_entry_missing:{original_path}",
+            result["findings"],
+        )
+
+    def test_88_missing_repository_artifact_fails(self):
+        relative_path = next(iter(EXPECTED_ARTIFACTS))
+        with self.temporary_repository() as root:
+            (root / relative_path).unlink()
+            result = self.evaluate(repository_root=root)
+        self.assertFalse(result["valid"])
+        self.assertFalse(result["source_artifacts_present"])
+        self.assertIn(f"source_artifact_missing:{relative_path}", result["findings"])
+
+    def test_89_canonical_digest_match_grants_no_governance_authority(self):
+        with self.temporary_repository(line_endings="crlf") as root:
+            result = self.evaluate(repository_root=root)
+        self.assertTrue(result["valid"], result["findings"])
+        self.assertTrue(result["authority_boundaries_preserved"])
+        self.assertFalse(self.fixture["final_release_approved_by_fixture"])
+        self.assertFalse(self.fixture["authority_transferred_by_fixture"])
+        self.assertFalse(self.fixture["decision_proof_sealed_by_fixture"])
+        self.assertFalse(result["m14_complete"])
 
 
 if __name__ == "__main__":

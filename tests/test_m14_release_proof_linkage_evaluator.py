@@ -1,7 +1,6 @@
 import ast
 import builtins
 import copy
-import hashlib
 import importlib
 import json
 import os
@@ -25,6 +24,11 @@ from runtime.m14_release_proof_linkage_evaluator import (  # noqa: E402
     EXPECTED_CHANGED_FILES,
     EXPECTED_OUTSTANDING_ORDER,
     EXPECTED_TRACKS,
+    HISTORICAL_SOURCE_ARTIFACT_SHA256,
+    MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256,
+    MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256_OVERRIDES,
+    MAINTAINED_SOURCE_ARTIFACT_SHA256,
+    MAINTAINED_SOURCE_ARTIFACT_SHA256_OVERRIDES,
     REQUIRED_ALLOWED_OUTPUTS,
     REQUIRED_BOUNDARY_STATEMENTS,
     REQUIRED_FORBIDDEN_OUTPUTS,
@@ -32,6 +36,10 @@ from runtime.m14_release_proof_linkage_evaluator import (  # noqa: E402
     evaluate_m14_release_proof_linkage,
     load_fixture,
     validate_m14_release_proof_linkage,
+)
+from runtime.repository_artifact_digest import (  # noqa: E402
+    canonicalize_utf8_repository_text,
+    sha256_repository_file,
 )
 
 
@@ -64,8 +72,12 @@ EXPECTED_RESULT_FIELDS = {
     "release_linkage_coverage_complete",
     "operational_readiness_bundle_present",
     "operational_readiness_bundle_integrity_valid",
+    "operational_readiness_bundle_historical_digest_valid",
+    "operational_readiness_bundle_maintained_digest_valid",
     "source_track_linkage_valid",
     "source_artifact_integrity_valid",
+    "source_artifact_historical_digest_valid",
+    "source_artifact_maintained_digest_valid",
     "authority_boundaries_preserved",
     "verification_manifest_complete",
     "external_state_confirmation_required",
@@ -106,6 +118,14 @@ class M14ReleaseProofLinkageEvaluatorTests(unittest.TestCase):
     def assert_valid(self, result):
         self.assertTrue(result["valid"], result["findings"])
         self.assertEqual(result["findings"], [])
+        self.assertTrue(
+            result["operational_readiness_bundle_historical_digest_valid"]
+        )
+        self.assertTrue(
+            result["operational_readiness_bundle_maintained_digest_valid"]
+        )
+        self.assertTrue(result["source_artifact_historical_digest_valid"])
+        self.assertTrue(result["source_artifact_maintained_digest_valid"])
         self.assertTrue(result["release_proof_complete"])
         self.assertTrue(result["release_ready_for_review"])
         self.assertTrue(result["ready_for_future_readme_status_path"])
@@ -135,6 +155,15 @@ class M14ReleaseProofLinkageEvaluatorTests(unittest.TestCase):
     def temporary_evidence_repository(self):
         temporary = tempfile.TemporaryDirectory()
         root = Path(temporary.name)
+        paths = self.evidence_paths()
+        for relative_path in paths:
+            source = ROOT / relative_path
+            target = root / relative_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, target)
+        return temporary, root
+
+    def evidence_paths(self):
         paths = {
             entry["relative_path"] for entry in self.specimen["operational_readiness_bundle"]
         }
@@ -142,12 +171,16 @@ class M14ReleaseProofLinkageEvaluatorTests(unittest.TestCase):
             entry["relative_path"]
             for entry in self.readiness["source_artifact_manifest"]
         )
-        for relative_path in paths:
-            source = ROOT / relative_path
-            target = root / relative_path
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(source, target)
-        return temporary, root
+        return paths
+
+    def rewrite_evidence_line_endings(self, root, newline):
+        self.assertIn(newline, {"lf", "crlf"})
+        for relative_path in self.evidence_paths():
+            path = root / relative_path
+            canonical = canonicalize_utf8_repository_text(path.read_bytes())
+            if newline == "crlf":
+                canonical = canonical.replace(b"\n", b"\r\n")
+            path.write_bytes(canonical)
 
     def mutate_readiness_file(self, root, mutator):
         path = (
@@ -246,19 +279,33 @@ class M14ReleaseProofLinkageEvaluatorTests(unittest.TestCase):
                 self.assertTrue((ROOT / entry["relative_path"]).is_file())
 
     def test_10_readiness_bundle_sha256_digests_match(self):
-        for entry in self.specimen["operational_readiness_bundle"]:
+        for entry, historical in zip(
+            self.specimen["operational_readiness_bundle"], EXPECTED_BUNDLE
+        ):
             with self.subTest(path=entry["relative_path"]):
-                digest = hashlib.sha256(
-                    (ROOT / entry["relative_path"]).read_bytes()
-                ).hexdigest()
-                self.assertEqual(digest, entry["sha256"])
+                self.assertEqual(entry["sha256"], historical["sha256"])
+                observed = sha256_repository_file(
+                    ROOT, entry["relative_path"], mode="text"
+                )
+                self.assertEqual(
+                    observed,
+                    MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256[
+                        entry["relative_path"]
+                    ],
+                )
 
     def test_11_readiness_bundle_digest_mismatch_fails(self):
         specimen = copy.deepcopy(self.specimen)
         specimen["operational_readiness_bundle"][0]["sha256"] = "0" * 64
         self.assert_invalid(
-            self.evaluate(specimen),
+            result := self.evaluate(specimen),
             "operational_readiness_bundle_field_invalid",
+        )
+        self.assertFalse(
+            result["operational_readiness_bundle_historical_digest_valid"]
+        )
+        self.assertTrue(
+            result["operational_readiness_bundle_maintained_digest_valid"]
         )
 
     def test_12_readiness_bundle_path_substitution_fails(self):
@@ -370,12 +417,21 @@ class M14ReleaseProofLinkageEvaluatorTests(unittest.TestCase):
                 self.assertTrue((ROOT / entry["relative_path"]).is_file())
 
     def test_19_source_artifact_digests_match(self):
+        fixture_digests = {
+            entry["relative_path"]: entry["sha256"]
+            for entry in self.readiness["source_artifact_manifest"]
+        }
+        self.assertEqual(fixture_digests, HISTORICAL_SOURCE_ARTIFACT_SHA256)
+        self.assertEqual(len(fixture_digests), 21)
         for entry in self.readiness["source_artifact_manifest"]:
             with self.subTest(path=entry["relative_path"]):
-                digest = hashlib.sha256(
-                    (ROOT / entry["relative_path"]).read_bytes()
-                ).hexdigest()
-                self.assertEqual(digest, entry["sha256"])
+                observed = sha256_repository_file(
+                    ROOT, entry["relative_path"], mode="text"
+                )
+                self.assertEqual(
+                    observed,
+                    MAINTAINED_SOURCE_ARTIFACT_SHA256[entry["relative_path"]],
+                )
 
     def test_20_all_retained_authority_owners_are_aaos(self):
         for track in self.specimen["source_track_linkage"]:
@@ -723,8 +779,10 @@ class M14ReleaseProofLinkageEvaluatorTests(unittest.TestCase):
         with (root / relative_path).open("ab") as handle:
             handle.write(b"drift")
         result = self.evaluate(repository_root=root)
-        self.assert_invalid(result, "source_artifact_digest_mismatch")
+        self.assert_invalid(result, "source_artifact_maintained_digest_mismatch")
         self.assertFalse(result["source_artifact_integrity_valid"])
+        self.assertTrue(result["source_artifact_historical_digest_valid"])
+        self.assertFalse(result["source_artifact_maintained_digest_valid"])
 
     def test_68_non_aaos_retained_authority_owner_blocks_linkage(self):
         specimen = copy.deepcopy(self.specimen)
@@ -884,6 +942,164 @@ class M14ReleaseProofLinkageEvaluatorTests(unittest.TestCase):
         specimen = copy.deepcopy(self.specimen)
         specimen["verification_command_manifest"][0]["release_approved"] = True
         self.assert_invalid(self.evaluate(specimen), "release_approved")
+
+    def test_85_maintained_operational_digest_overlay_is_narrow_and_explicit(self):
+        self.assertEqual(
+            MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256_OVERRIDES,
+            {
+                "runtime/m14_operational_readiness_evaluator.py": (
+                    "265f6d3ad2a9803fe1fe119c1ed9d2129bba47d616b09fda7b03b52306480e97"
+                ),
+                "tests/test_m14_operational_readiness_evaluator.py": (
+                    "2ac69dc2d9c5e8c69b0bc52c09a68944c15f440a6e91f066d8ba6b4534d893a5"
+                ),
+            },
+        )
+        self.assertEqual(
+            MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256[
+                EXPECTED_BUNDLE[0]["relative_path"]
+            ],
+            EXPECTED_BUNDLE[0]["sha256"],
+        )
+
+    def test_86_historical_source_digests_are_independent_of_maintained_overlay(self):
+        fixture_digests = {
+            entry["relative_path"]: entry["sha256"]
+            for entry in self.readiness["source_artifact_manifest"]
+        }
+        self.assertEqual(fixture_digests, HISTORICAL_SOURCE_ARTIFACT_SHA256)
+        self.assertEqual(MAINTAINED_SOURCE_ARTIFACT_SHA256_OVERRIDES, {})
+        self.assertEqual(
+            MAINTAINED_SOURCE_ARTIFACT_SHA256,
+            HISTORICAL_SOURCE_ARTIFACT_SHA256,
+        )
+
+    def test_87_end_to_end_lf_repository_text_passes(self):
+        temporary, root = self.temporary_evidence_repository()
+        self.addCleanup(temporary.cleanup)
+        self.rewrite_evidence_line_endings(root, "lf")
+        self.assert_valid(self.evaluate(repository_root=root))
+
+    def test_88_end_to_end_equivalent_crlf_repository_text_passes(self):
+        temporary, root = self.temporary_evidence_repository()
+        self.addCleanup(temporary.cleanup)
+        self.rewrite_evidence_line_endings(root, "crlf")
+        result = self.evaluate(repository_root=root)
+        self.assert_valid(result)
+        self.assertFalse(result["release_approved"])
+        self.assertFalse(result["released"])
+        self.assertFalse(result["m14_complete"])
+        self.assertNotIn("authority_transferred", result["outputs"])
+        self.assertNotIn("decision_proof_sealed", result["outputs"])
+
+    def test_89_malformed_utf8_repository_text_fails_deterministically(self):
+        temporary, root = self.temporary_evidence_repository()
+        self.addCleanup(temporary.cleanup)
+        relative_path = EXPECTED_BUNDLE[1]["relative_path"]
+        (root / relative_path).write_bytes(b"\xff")
+        result = self.evaluate(repository_root=root)
+        self.assert_invalid(
+            result,
+            f"operational_readiness_bundle_malformed_utf8:{relative_path}",
+        )
+        self.assertTrue(
+            result["operational_readiness_bundle_historical_digest_valid"]
+        )
+        self.assertFalse(
+            result["operational_readiness_bundle_maintained_digest_valid"]
+        )
+
+    def test_90_lone_carriage_return_repository_text_fails_deterministically(self):
+        temporary, root = self.temporary_evidence_repository()
+        self.addCleanup(temporary.cleanup)
+        relative_path = EXPECTED_BUNDLE[1]["relative_path"]
+        (root / relative_path).write_bytes(b"repository\rartifact\n")
+        result = self.evaluate(repository_root=root)
+        self.assert_invalid(
+            result,
+            "operational_readiness_bundle_lone_carriage_return:"
+            f"{relative_path}",
+        )
+        self.assertTrue(
+            result["operational_readiness_bundle_historical_digest_valid"]
+        )
+        self.assertFalse(
+            result["operational_readiness_bundle_maintained_digest_valid"]
+        )
+
+    def test_91_historical_source_digest_mutation_fails_independently(self):
+        temporary, root = self.temporary_evidence_repository()
+        self.addCleanup(temporary.cleanup)
+
+        def mutate(payload):
+            payload["source_artifact_manifest"][0]["sha256"] = "0" * 64
+
+        self.mutate_readiness_file(root, mutate)
+        result = self.evaluate(repository_root=root)
+        self.assert_invalid(result, "source_artifact_historical_digest_mismatch")
+        self.assertFalse(result["source_artifact_historical_digest_valid"])
+        self.assertTrue(result["source_artifact_maintained_digest_valid"])
+
+    def test_92_maintained_bundle_digest_mutation_fails_independently(self):
+        temporary, root = self.temporary_evidence_repository()
+        self.addCleanup(temporary.cleanup)
+        relative_path = EXPECTED_BUNDLE[1]["relative_path"]
+        path = root / relative_path
+        path.write_bytes(path.read_bytes() + b"\n# maintained drift\n")
+        result = self.evaluate(repository_root=root)
+        self.assert_invalid(
+            result,
+            "operational_readiness_bundle_maintained_digest_mismatch",
+        )
+        self.assertTrue(
+            result["operational_readiness_bundle_historical_digest_valid"]
+        )
+        self.assertFalse(
+            result["operational_readiness_bundle_maintained_digest_valid"]
+        )
+
+    def test_93_source_manifest_path_substitution_fails_closed(self):
+        temporary, root = self.temporary_evidence_repository()
+        self.addCleanup(temporary.cleanup)
+
+        def mutate(payload):
+            payload["source_artifact_manifest"][0]["relative_path"] = (
+                "runtime\\voice_generation_policy_evaluator.py"
+            )
+
+        self.mutate_readiness_file(root, mutate)
+        result = self.evaluate(repository_root=root)
+        self.assert_invalid(result, "source_artifact_manifest_path_set_invalid")
+        self.assertFalse(result["source_artifact_historical_digest_valid"])
+
+    def test_94_relative_repository_root_fails_without_cwd_resolution(self):
+        result = self.evaluate(repository_root=Path("relative-repository-root"))
+        self.assert_invalid(result, "operational_readiness_bundle_path_invalid")
+        self.assertFalse(result["operational_readiness_bundle_present"])
+
+    def test_95_evaluator_uses_only_shared_explicit_text_digest_calls(self):
+        imports = {
+            node.module
+            for node in ast.walk(self.tree)
+            if isinstance(node, ast.ImportFrom) and node.module
+        }
+        self.assertIn("runtime.repository_artifact_digest", imports)
+        self.assertNotIn("hashlib", self.source)
+        digest_calls = [
+            node
+            for node in ast.walk(self.tree)
+            if isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "sha256_repository_file"
+        ]
+        self.assertTrue(digest_calls)
+        for call in digest_calls:
+            mode = next(
+                (keyword.value for keyword in call.keywords if keyword.arg == "mode"),
+                None,
+            )
+            self.assertIsInstance(mode, ast.Constant)
+            self.assertEqual(mode.value, "text")
 
 
 if __name__ == "__main__":

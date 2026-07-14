@@ -14,6 +14,14 @@ import re
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
 
+from runtime.repository_artifact_digest import (
+    RepositoryArtifactFileTypeError,
+    RepositoryArtifactPathError,
+    RepositoryArtifactTextError,
+    canonicalize_utf8_repository_text,
+    sha256_repository_file,
+)
+
 
 EXPECTED_CHANGED_FILES = (
     "README.md",
@@ -141,6 +149,19 @@ EXPECTED_BUNDLE = (
         "executable_by_completion_readiness_evaluator": False,
     },
 )
+
+# The fixture records the immutable PR #213 manifest values in EXPECTED_BUNDLE.
+# Only repository files that changed after that historical phase belong here.
+# Current-file integrity is checked against this maintained overlay without
+# rewriting or loosely accepting the historical fixture digest.
+EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES: dict[str, str] = {
+    "runtime/m14_release_proof_linkage_evaluator.py": (
+        "a572fd9470ac2a852f576d6487d926374a5bb5a4a632f79d0a365b7c1c167098"
+    ),
+    "tests/test_m14_release_proof_linkage_evaluator.py": (
+        "b992c29ff29656353d6d8b4586becc8fee86c4b4957e58f73fc06c410336a03d"
+    ),
+}
 
 EXPECTED_SOURCE_PRS = ("#202", "#204", "#205", "#206", "#208", "#210", "#212", "#213")
 
@@ -701,16 +722,10 @@ def _safe_repository_path(root: Path, relative_path: Any) -> Path | None:
     return candidate
 
 
-def _sha256_bytes(value: bytes) -> str:
-    return hashlib.sha256(value).hexdigest()
+def _sha256_repository_text_bytes(value: bytes) -> str:
+    """Hash canonical UTF-8 repository text already loaded for section checks."""
 
-
-def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(131072), b""):
-            digest.update(block)
-    return digest.hexdigest()
+    return hashlib.sha256(canonicalize_utf8_repository_text(value)).hexdigest()
 
 
 def load_fixture(path: str | Path) -> dict[str, Any]:
@@ -910,9 +925,15 @@ def _validate_readme(
         return False, False, False, False, False
 
     try:
-        data = path.read_bytes()
-        text = data.decode("utf-8")
-    except (OSError, UnicodeError):
+        data = canonicalize_utf8_repository_text(path.read_bytes())
+        text = data.decode("utf-8", errors="strict")
+    except UnicodeDecodeError:
+        _add(findings, "readme_malformed_utf8")
+        return True, False, False, False, False
+    except RepositoryArtifactTextError:
+        _add(findings, "readme_lone_cr")
+        return True, False, False, False, False
+    except OSError:
         _add(findings, "readme_unreadable")
         return True, False, False, False, False
 
@@ -927,7 +948,7 @@ def _validate_readme(
     if len(next_positions) == 1:
         heading_start = next_positions[0]
         prefix = data[:heading_start]
-        if _sha256_bytes(prefix) != EXPECTED_README_PREFIX_SHA256:
+        if _sha256_repository_text_bytes(prefix) != EXPECTED_README_PREFIX_SHA256:
             _add(findings, "readme_immutable_prefix_digest_mismatch")
             prefix_valid = False
         actual_block = data[heading_start:]
@@ -944,7 +965,10 @@ def _validate_readme(
     if releases_bytes is None:
         _add(findings, "readme_releases_section_missing")
     else:
-        if _sha256_bytes(releases_bytes) != EXPECTED_RELEASES_SECTION_SHA256:
+        if (
+            _sha256_repository_text_bytes(releases_bytes)
+            != EXPECTED_RELEASES_SECTION_SHA256
+        ):
             _add(findings, "readme_releases_section_modified")
             releases_preserved = False
         releases_text = releases_bytes.decode("utf-8")
@@ -963,7 +987,10 @@ def _validate_readme(
     if current_bytes is None:
         _add(findings, "readme_current_status_section_missing")
     else:
-        if _sha256_bytes(current_bytes) != EXPECTED_CURRENT_STATUS_SECTION_SHA256:
+        if (
+            _sha256_repository_text_bytes(current_bytes)
+            != EXPECTED_CURRENT_STATUS_SECTION_SHA256
+        ):
             _add(findings, "readme_current_status_section_modified")
             current_preserved = False
         current_text = current_bytes.decode("utf-8")
@@ -1027,18 +1054,54 @@ def _validate_release_proof_bundle(
                 elif field == "sha256":
                     _add(
                         findings,
+                        "release_proof_bundle_historical_digest_mismatch:"
+                        + expected["relative_path"],
+                    )
+                    _add(
+                        findings,
                         "release_proof_bundle_digest_mismatch:"
                         + expected["relative_path"],
                     )
 
-        path = _safe_repository_path(root, expected["relative_path"])
-        if path is None or not path.is_file():
-            _add(findings, f"release_proof_bundle_file_missing:{expected['relative_path']}")
+        relative_path = expected["relative_path"]
+        maintained_digest = EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES.get(
+            relative_path, expected["sha256"]
+        )
+        try:
+            observed_digest = sha256_repository_file(
+                root,
+                relative_path,
+                mode="text",
+            )
+        except RepositoryArtifactPathError:
+            _add(findings, f"release_proof_bundle_path_unsafe:{relative_path}")
             present = False
             integrity_valid = False
-        elif _sha256(path) != expected["sha256"]:
-            _add(findings, f"release_proof_bundle_digest_mismatch:{expected['relative_path']}")
+        except FileNotFoundError:
+            _add(findings, f"release_proof_bundle_file_missing:{relative_path}")
+            present = False
             integrity_valid = False
+        except RepositoryArtifactFileTypeError:
+            _add(findings, f"release_proof_bundle_file_not_regular:{relative_path}")
+            present = False
+            integrity_valid = False
+        except UnicodeDecodeError:
+            _add(findings, f"release_proof_bundle_malformed_utf8:{relative_path}")
+            integrity_valid = False
+        except RepositoryArtifactTextError:
+            _add(findings, f"release_proof_bundle_lone_cr:{relative_path}")
+            integrity_valid = False
+        except OSError:
+            _add(findings, f"release_proof_bundle_file_unreadable:{relative_path}")
+            integrity_valid = False
+        else:
+            if observed_digest != maintained_digest:
+                _add(
+                    findings,
+                    f"release_proof_bundle_maintained_digest_mismatch:{relative_path}",
+                )
+                _add(findings, f"release_proof_bundle_digest_mismatch:{relative_path}")
+                integrity_valid = False
 
     release_fixture_path = _safe_repository_path(root, EXPECTED_BUNDLE[0]["relative_path"])
     release_fixture: dict[str, Any] | None = None
