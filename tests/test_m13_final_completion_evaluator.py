@@ -171,10 +171,17 @@ class M13FinalCompletionEvaluatorTests(unittest.TestCase):
         self.assertIn("readme_m13_completion_status_missing", result["final_completion_findings"])
 
     def test_readme_leaving_m13_active_work_in_next_phase_fails(self):
+        next_phase_heading = "## Next Phase"
+        self.assertEqual(self.readme_text.count(next_phase_heading), 1)
         readme_text = self.readme_text.replace(
-            "Future milestone planning will be tracked separately after v0.12.0 release publication.",
-            "M13 remains active work; final completion has not been declared.",
+            next_phase_heading,
+            (
+                f"{next_phase_heading}\n\n"
+                "M13 remains active work; final completion has not been declared."
+            ),
+            1,
         )
+        self.assertNotEqual(readme_text, self.readme_text)
 
         result = self.evaluate(readme_text=readme_text)
 

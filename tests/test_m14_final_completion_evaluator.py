@@ -85,6 +85,18 @@ EXPECTED_BUNDLE = [
         "executable_by_final_completion_evaluator": False,
     },
 ]
+EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
+    (
+        "examples/public-integration-pack-pilot/"
+        "m14-completion-readiness-future-readme-path.json"
+    ): "e65e4558bc25504ebea24dd8479ac5c40e1ecc588cd3262e729fe77b193d2673",
+    "runtime/m14_completion_readiness_evaluator.py": (
+        "c3e1a9b36b94750f4ec6fe00c2fda7def4c033eb2a7100100fc31a4378deb956"
+    ),
+    "tests/test_m14_completion_readiness_evaluator.py": (
+        "9333843bdd89df5b5a4f6cc1889eba7d2a9ca48e636b8bdebda80ab9bad8f9b9"
+    ),
+}
 EXPECTED_MANUAL_STEPS = [
     "verify final PR merged into main",
     "verify tracker #201 is closed as completed",
@@ -280,7 +292,20 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
 
     def test_08_all_bundle_sha256_digests_match(self):
         for entry in EXPECTED_BUNDLE:
-            self.assertEqual(canonical_sha256(ROOT / entry["relative_path"]), entry["sha256"])
+            self.assertEqual(
+                canonical_sha256(ROOT / entry["relative_path"]),
+                EXPECTED_MAINTAINED_BUNDLE_SHA256[entry["relative_path"]],
+            )
+        self.assertEqual(
+            self.fixture["completion_readiness_bundle"],
+            EXPECTED_BUNDLE,
+        )
+        self.assertNotEqual(
+            EXPECTED_MAINTAINED_BUNDLE_SHA256[
+                "tests/test_m14_completion_readiness_evaluator.py"
+            ],
+            EXPECTED_BUNDLE[2]["sha256"],
+        )
         self.assertTrue(self.evaluate()["completion_readiness_bundle_integrity_valid"])
 
     def test_09_missing_bundle_file_fails(self):
