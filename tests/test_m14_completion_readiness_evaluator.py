@@ -32,6 +32,10 @@ from runtime.m14_completion_readiness_evaluator import (  # noqa: E402
     load_fixture,
     validate_m14_completion_readiness,
 )
+from runtime.m14_final_completion_evaluator import (  # noqa: E402
+    evaluate_m14_final_completion,
+    load_fixture as load_final_completion_fixture,
+)
 
 
 FIXTURE_PATH = (
@@ -47,6 +51,12 @@ RELEASE_PROOF_FIXTURE_PATH = (
     / "examples"
     / "public-integration-pack-pilot"
     / "m14-release-proof-linkage-specimen.json"
+)
+FINAL_COMPLETION_FIXTURE_PATH = (
+    ROOT
+    / "examples"
+    / "public-integration-pack-pilot"
+    / "m14-final-completion-release-state.json"
 )
 
 SOURCE_MODULES = {
@@ -743,19 +753,52 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         self.assertFalse(readme.endswith(b"\r\n"))
 
     def test_63_readme_release_and_current_status_sections_remain_prior_state(self):
-        text = README_PATH.read_text(encoding="utf-8")
-        releases = text.split("## Releases", 1)[1].split("## Current Status", 1)[0]
-        current = text.split("## Current Status", 1)[1].split("\n## ", 1)[0]
-        release_lines = [line for line in releases.splitlines() if line.startswith("- v")]
-        self.assertTrue(release_lines[-1].startswith("- v0.12.0 "))
-        self.assertNotIn("- v0.13.0", releases)
-        self.assertIn(
-            "M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, and M13 are complete.",
-            current,
+        historical = self.fixture["readme_release_state_guards"]
+        self.assertEqual(
+            historical["releases_section"],
+            {
+                "start_heading": "## Releases",
+                "end_heading": "## Current Status",
+                "latest_released_version": "v0.12.0",
+                "forbidden_released_version": "v0.13.0",
+                "section_changed_by_fixture": False,
+            },
         )
-        self.assertNotIn("M14 completed:", current)
-        self.assertNotIn("M14 is complete", current)
-        self.assertNotIn("v0.13.0 is released", current)
+        self.assertEqual(
+            historical["current_status_section"]["completed_milestones"],
+            [
+                "M1",
+                "M2",
+                "M3",
+                "M4",
+                "M5",
+                "M6",
+                "M7",
+                "M8",
+                "M9",
+                "M10",
+                "M11",
+                "M12",
+                "M13",
+            ],
+        )
+        self.assertEqual(
+            historical["current_status_section"]["forbidden_completion_milestone"],
+            "M14",
+        )
+        self.assertEqual(historical["next_phase_section"]["required_state"], "active_work")
+        self.assertEqual(historical["next_phase_section"]["tracker_state"], "open")
+        self.assertEqual(
+            historical["next_phase_section"]["target_release_state"], "future_only"
+        )
+
+        final_fixture = load_final_completion_fixture(FINAL_COMPLETION_FIXTURE_PATH)
+        current = evaluate_m14_final_completion(final_fixture, repository_root=ROOT)
+        self.assertTrue(current["m14_final_completion_valid"], current["findings"])
+        self.assertTrue(current["completion_readiness_bundle_integrity_valid"])
+        self.assertTrue(current["completion_readiness_state_valid"])
+        self.assertTrue(current["readme_release_state_valid"])
+        self.assertTrue(current["authority_boundaries_preserved"])
 
     def test_64_release_proof_bundle_has_exact_paths_and_main_digests(self):
         self.assertEqual(self.fixture["release_proof_bundle"], list(EXPECTED_BUNDLE))

@@ -1,10 +1,12 @@
 """Deterministic validation for the M14 final-completion transition.
 
 The evaluator treats repository files as inert evidence.  It reads JSON and
-README text, recomputes canonical repository-text SHA-256 digests, and reports
-whether the recorded transition is internally consistent.  It never imports or
-executes another evaluator or test, runs commands or workflows, queries GitHub,
-publishes a release, changes tracker state, or exercises governance authority.
+README text, preserves the recorded PR #214 digests as historical evidence,
+recomputes canonical repository-text SHA-256 digests for maintained files, and
+reports whether the recorded transition is internally consistent.  It never
+imports or executes another evaluator or test, runs commands or workflows,
+queries GitHub, publishes a release, changes tracker state, or exercises
+governance authority.
 """
 
 from __future__ import annotations
@@ -76,6 +78,19 @@ EXPECTED_BUNDLE = (
         "executable_by_final_completion_evaluator": False,
     },
 )
+
+EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
+    (
+        "examples/public-integration-pack-pilot/"
+        "m14-completion-readiness-future-readme-path.json"
+    ): "e65e4558bc25504ebea24dd8479ac5c40e1ecc588cd3262e729fe77b193d2673",
+    "runtime/m14_completion_readiness_evaluator.py": (
+        "c3e1a9b36b94750f4ec6fe00c2fda7def4c033eb2a7100100fc31a4378deb956"
+    ),
+    "tests/test_m14_completion_readiness_evaluator.py": (
+        "9333843bdd89df5b5a4f6cc1889eba7d2a9ca48e636b8bdebda80ab9bad8f9b9"
+    ),
+}
 
 EXPECTED_TOP_LEVEL = {
     "artifact_id": "m14-final-completion-release-state",
@@ -717,7 +732,7 @@ def _validate_bundle(
             integrity = False
             continue
         observed = _sha256_repository_text(path)
-        if observed != expected["sha256"] or observed != entry.get("sha256"):
+        if observed != EXPECTED_MAINTAINED_BUNDLE_SHA256[relative_path]:
             _add(findings, f"completion_readiness_bundle_digest_mismatch:{relative_path}")
             integrity = False
         if expected["artifact_type"] == "fixture":
