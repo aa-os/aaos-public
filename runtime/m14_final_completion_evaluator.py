@@ -11,11 +11,17 @@ governance authority.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
+
+from runtime.repository_artifact_digest import (
+    RepositoryArtifactFileTypeError,
+    RepositoryArtifactPathError,
+    RepositoryArtifactTextError,
+    sha256_repository_file,
+)
 
 
 EXPECTED_CHANGED_FILES = (
@@ -85,10 +91,10 @@ EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
         "m14-completion-readiness-future-readme-path.json"
     ): "e65e4558bc25504ebea24dd8479ac5c40e1ecc588cd3262e729fe77b193d2673",
     "runtime/m14_completion_readiness_evaluator.py": (
-        "c3e1a9b36b94750f4ec6fe00c2fda7def4c033eb2a7100100fc31a4378deb956"
+        "3130bb98c22ba4c6b657d94be92cc57c8e6ae3319e71f6b7a7e90b02761d9f54"
     ),
     "tests/test_m14_completion_readiness_evaluator.py": (
-        "9333843bdd89df5b5a4f6cc1889eba7d2a9ca48e636b8bdebda80ab9bad8f9b9"
+        "cafb84d2f52cf9f13e79bb3609499e9f2781ff99cee9663914ec84b028aa1c43"
     ),
 }
 
@@ -600,12 +606,6 @@ def _safe_repository_path(root: Path, relative_path: Any) -> Path | None:
     return candidate
 
 
-def _sha256_repository_text(path: Path) -> str:
-    """Hash Git text bytes, canonicalizing only checkout CRLF to repository LF."""
-
-    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
-
-
 def load_fixture(path: str | Path) -> dict[str, Any]:
     """Load one UTF-8 final-completion fixture as inert JSON data."""
 
@@ -722,18 +722,72 @@ def _validate_bundle(
             continue
         for field, expected_value in expected.items():
             if entry.get(field) != expected_value:
-                _add(findings, f"completion_readiness_bundle_metadata_invalid:{relative_path}:{field}")
+                if field == "sha256":
+                    _add(
+                        findings,
+                        "completion_readiness_bundle_historical_digest_mismatch:"
+                        f"{relative_path}",
+                    )
+                else:
+                    _add(
+                        findings,
+                        "completion_readiness_bundle_metadata_invalid:"
+                        f"{relative_path}:{field}",
+                    )
                 integrity = False
         path = _safe_repository_path(root, relative_path)
-        if path is None or not path.is_file():
+        if path is None:
+            _add(
+                findings,
+                f"completion_readiness_bundle_path_unsafe:{relative_path}",
+            )
+            present = False
+            integrity = False
+            continue
+        try:
+            observed = sha256_repository_file(root, relative_path, mode="text")
+        except UnicodeDecodeError:
+            _add(
+                findings,
+                f"completion_readiness_bundle_malformed_utf8:{relative_path}",
+            )
+            integrity = False
+            continue
+        except RepositoryArtifactTextError:
+            _add(
+                findings,
+                f"completion_readiness_bundle_lone_carriage_return:{relative_path}",
+            )
+            integrity = False
+            continue
+        except RepositoryArtifactPathError:
+            _add(
+                findings,
+                f"completion_readiness_bundle_path_unsafe:{relative_path}",
+            )
+            present = False
+            integrity = False
+            continue
+        except (FileNotFoundError, RepositoryArtifactFileTypeError):
             _add(findings, f"completion_readiness_bundle_file_missing:{relative_path}")
             _add(missing, relative_path)
             present = False
             integrity = False
             continue
-        observed = _sha256_repository_text(path)
+        except OSError:
+            _add(
+                findings,
+                f"completion_readiness_bundle_file_unreadable:{relative_path}",
+            )
+            _add(missing, relative_path)
+            present = False
+            integrity = False
+            continue
         if observed != EXPECTED_MAINTAINED_BUNDLE_SHA256[relative_path]:
-            _add(findings, f"completion_readiness_bundle_digest_mismatch:{relative_path}")
+            _add(
+                findings,
+                f"completion_readiness_bundle_maintained_digest_mismatch:{relative_path}",
+            )
             integrity = False
         if expected["artifact_type"] == "fixture":
             try:

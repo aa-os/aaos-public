@@ -1,5 +1,4 @@
 import ast
-import hashlib
 import json
 import shutil
 import tempfile
@@ -14,6 +13,10 @@ from runtime.m14_final_completion_evaluator import (
     evaluate_m14_final_completion,
     load_fixture,
     validate_m14_final_completion,
+)
+from runtime.repository_artifact_digest import (
+    canonicalize_utf8_repository_text,
+    sha256_repository_file,
 )
 
 
@@ -91,10 +94,10 @@ EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
         "m14-completion-readiness-future-readme-path.json"
     ): "e65e4558bc25504ebea24dd8479ac5c40e1ecc588cd3262e729fe77b193d2673",
     "runtime/m14_completion_readiness_evaluator.py": (
-        "c3e1a9b36b94750f4ec6fe00c2fda7def4c033eb2a7100100fc31a4378deb956"
+        "3130bb98c22ba4c6b657d94be92cc57c8e6ae3319e71f6b7a7e90b02761d9f54"
     ),
     "tests/test_m14_completion_readiness_evaluator.py": (
-        "9333843bdd89df5b5a4f6cc1889eba7d2a9ca48e636b8bdebda80ab9bad8f9b9"
+        "cafb84d2f52cf9f13e79bb3609499e9f2781ff99cee9663914ec84b028aa1c43"
     ),
 }
 EXPECTED_MANUAL_STEPS = [
@@ -184,11 +187,6 @@ def load_json(path):
         return json.load(handle)
 
 
-def canonical_sha256(path):
-    data = Path(path).read_bytes().replace(b"\r\n", b"\n")
-    return hashlib.sha256(data).hexdigest()
-
-
 class M14FinalCompletionEvaluatorTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -206,7 +204,7 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
         )
 
     @contextmanager
-    def temporary_repository(self):
+    def temporary_repository(self, line_endings=None):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             for relative_path in [
@@ -216,7 +214,16 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
                 source = ROOT / relative_path
                 target = root / relative_path
                 target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(source, target)
+                if line_endings is None:
+                    shutil.copyfile(source, target)
+                    continue
+                canonical = canonicalize_utf8_repository_text(source.read_bytes())
+                if line_endings == "lf":
+                    target.write_bytes(canonical)
+                elif line_endings == "crlf":
+                    target.write_bytes(canonical.replace(b"\n", b"\r\n"))
+                else:
+                    raise ValueError("line_endings must be 'lf', 'crlf', or None")
             yield root
 
     def evaluate_readme_mutation(self, old, new):
@@ -293,7 +300,9 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
     def test_08_all_bundle_sha256_digests_match(self):
         for entry in EXPECTED_BUNDLE:
             self.assertEqual(
-                canonical_sha256(ROOT / entry["relative_path"]),
+                sha256_repository_file(
+                    ROOT, entry["relative_path"], mode="text"
+                ),
                 EXPECTED_MAINTAINED_BUNDLE_SHA256[entry["relative_path"]],
             )
         self.assertEqual(
@@ -310,23 +319,38 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
 
     def test_09_missing_bundle_file_fails(self):
         with self.temporary_repository() as root:
-            (root / EXPECTED_BUNDLE[1]["relative_path"]).unlink()
+            relative_path = EXPECTED_BUNDLE[1]["relative_path"]
+            (root / relative_path).unlink()
             result = self.evaluate(repository_root=root)
         self.assertFalse(result["m14_final_completion_valid"])
         self.assertFalse(result["completion_readiness_bundle_present"])
+        self.assertIn(
+            f"completion_readiness_bundle_file_missing:{relative_path}",
+            result["findings"],
+        )
 
-    def test_10_bundle_digest_mismatch_fails(self):
+    def test_10_maintained_bundle_digest_mismatch_fails(self):
         with self.temporary_repository() as root:
-            path = root / EXPECTED_BUNDLE[2]["relative_path"]
+            relative_path = EXPECTED_BUNDLE[2]["relative_path"]
+            path = root / relative_path
             path.write_bytes(path.read_bytes() + b"# digest mutation\n")
             result = self.evaluate(repository_root=root)
         self.assertFalse(result["m14_final_completion_valid"])
         self.assertFalse(result["completion_readiness_bundle_integrity_valid"])
+        self.assertIn(
+            f"completion_readiness_bundle_maintained_digest_mismatch:{relative_path}",
+            result["findings"],
+        )
 
     def test_11_bundle_path_substitution_fails(self):
         self.fixture["completion_readiness_bundle"][0]["relative_path"] = "README.md"
         result = self.evaluate()
         self.assertFalse(result["m14_final_completion_valid"])
+        self.assertFalse(result["completion_readiness_bundle_integrity_valid"])
+        self.assertIn(
+            "completion_readiness_bundle_paths_invalid",
+            result["findings"],
+        )
 
     def test_12_pr_214_fixture_is_loaded_as_inert_json(self):
         tree = ast.parse(self.evaluator_source)
@@ -552,7 +576,10 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
             if isinstance(node, ast.Import)
             for alias in node.names
         ]
-        self.assertFalse(any(name.startswith("runtime.") for name in imported))
+        self.assertEqual(
+            {name for name in imported if name.startswith("runtime.")},
+            {"runtime.repository_artifact_digest"},
+        )
         self.assertFalse(any(name.startswith("tests.") for name in imported))
 
     def test_40_evaluator_does_not_execute_workflows(self):
@@ -798,9 +825,9 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
         for key, value in expected.items():
             self.assertEqual(result[key], value)
 
-    def test_73_evaluator_uses_only_standard_library_imports(self):
+    def test_73_evaluator_uses_only_shared_digest_and_standard_library_imports(self):
         tree = ast.parse(self.evaluator_source)
-        allowed = {"__future__", "hashlib", "json", "re", "pathlib", "typing"}
+        allowed = {"__future__", "json", "re", "pathlib", "runtime", "typing"}
         imported = {
             alias.name.split(".")[0]
             for node in ast.walk(tree)
@@ -1075,6 +1102,90 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
                 result = self.evaluate(payload)
                 self.assertFalse(result["m14_final_completion_valid"])
                 self.assertTrue(result["escalation_required"])
+
+    def test_94_explicit_lf_temporary_repository_passes(self):
+        with self.temporary_repository(line_endings="lf") as root:
+            result = self.evaluate(repository_root=root)
+        self.assertTrue(result["m14_final_completion_valid"])
+        self.assertTrue(result["completion_readiness_bundle_integrity_valid"])
+
+    def test_95_equivalent_crlf_temporary_repository_passes(self):
+        with self.temporary_repository(line_endings="crlf") as root:
+            for entry in EXPECTED_BUNDLE:
+                raw = (root / entry["relative_path"]).read_bytes()
+                self.assertIn(b"\r\n", raw)
+            result = self.evaluate(repository_root=root)
+        self.assertTrue(result["m14_final_completion_valid"])
+        self.assertTrue(result["completion_readiness_bundle_integrity_valid"])
+
+    def test_96_malformed_utf8_repository_text_fails(self):
+        relative_path = EXPECTED_BUNDLE[1]["relative_path"]
+        with self.temporary_repository(line_endings="lf") as root:
+            (root / relative_path).write_bytes(b"not utf-8: \xff\n")
+            result = self.evaluate(repository_root=root)
+        self.assertFalse(result["m14_final_completion_valid"])
+        self.assertFalse(result["completion_readiness_bundle_integrity_valid"])
+        self.assertIn(
+            f"completion_readiness_bundle_malformed_utf8:{relative_path}",
+            result["findings"],
+        )
+
+    def test_97_lone_carriage_return_repository_text_fails(self):
+        relative_path = EXPECTED_BUNDLE[1]["relative_path"]
+        with self.temporary_repository(line_endings="lf") as root:
+            (root / relative_path).write_bytes(b"line one\rline two\n")
+            result = self.evaluate(repository_root=root)
+        self.assertFalse(result["m14_final_completion_valid"])
+        self.assertFalse(result["completion_readiness_bundle_integrity_valid"])
+        self.assertIn(
+            f"completion_readiness_bundle_lone_carriage_return:{relative_path}",
+            result["findings"],
+        )
+
+    def test_98_historical_digest_cannot_be_replaced_by_maintained_digest(self):
+        relative_path = EXPECTED_BUNDLE[2]["relative_path"]
+        maintained_digest = EXPECTED_MAINTAINED_BUNDLE_SHA256[relative_path]
+        self.assertNotEqual(maintained_digest, EXPECTED_BUNDLE[2]["sha256"])
+        self.fixture["completion_readiness_bundle"][2]["sha256"] = maintained_digest
+        result = self.evaluate()
+        self.assertFalse(result["m14_final_completion_valid"])
+        self.assertFalse(result["completion_readiness_bundle_integrity_valid"])
+        self.assertIn(
+            f"completion_readiness_bundle_historical_digest_mismatch:{relative_path}",
+            result["findings"],
+        )
+
+    def test_99_evaluator_has_no_private_raw_text_digest_path(self):
+        self.assertNotIn("hashlib.sha256", self.evaluator_source)
+        self.assertNotIn(".read_bytes()", self.evaluator_source)
+        self.assertIn("sha256_repository_file", self.evaluator_source)
+        self.assertIn('mode="text"', self.evaluator_source)
+
+    def test_100_canonical_digest_match_does_not_approve_release(self):
+        result = self.evaluate()
+        self.assertTrue(result["completion_readiness_bundle_integrity_valid"])
+        self.assertIs(
+            self.fixture["completion_readiness_state_validation"]["expected_values"][
+                "release_approved"
+            ],
+            False,
+        )
+        self.assertNotIn("release_approved", result)
+        self.assertNotIn("release_published_by_evaluator", result["outputs"])
+
+    def test_101_canonical_digest_match_does_not_transfer_authority(self):
+        result = self.evaluate()
+        self.assertTrue(result["completion_readiness_bundle_integrity_valid"])
+        self.assertIs(self.fixture["authority_transferred_by_artifact"], False)
+        self.assertNotIn("authority_transferred", result)
+        self.assertNotIn("authority_transferred", result["outputs"])
+
+    def test_102_canonical_digest_match_does_not_seal_decision_proof(self):
+        result = self.evaluate()
+        self.assertTrue(result["completion_readiness_bundle_integrity_valid"])
+        self.assertIs(self.fixture["decision_proof_sealed_by_this_artifact"], False)
+        self.assertNotIn("decision_proof_sealed", result)
+        self.assertNotIn("decision_proof_sealed_by_evaluator", result["outputs"])
 
 
 if __name__ == "__main__":

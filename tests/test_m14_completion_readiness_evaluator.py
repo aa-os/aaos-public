@@ -23,6 +23,7 @@ sys.path.insert(0, str(ROOT))
 from runtime.m14_completion_readiness_evaluator import (  # noqa: E402
     EXPECTED_BUNDLE,
     EXPECTED_CHANGED_FILES,
+    EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
     EXPECTED_NEXT_PHASE_BLOCK,
     REQUIRED_ALLOWED_OUTPUTS,
     REQUIRED_BOUNDARY_STATEMENTS,
@@ -35,6 +36,10 @@ from runtime.m14_completion_readiness_evaluator import (  # noqa: E402
 from runtime.m14_final_completion_evaluator import (  # noqa: E402
     evaluate_m14_final_completion,
     load_fixture as load_final_completion_fixture,
+)
+from runtime.repository_artifact_digest import (  # noqa: E402
+    canonicalize_utf8_repository_text,
+    sha256_repository_file,
 )
 
 
@@ -211,8 +216,9 @@ def load_json(path):
         return json.load(handle)
 
 
-def sha256(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def canonical_sha256(path):
+    relative_path = Path(path).resolve().relative_to(ROOT.resolve()).as_posix()
+    return sha256_repository_file(ROOT, relative_path, mode="text")
 
 
 class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
@@ -287,11 +293,26 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
             shutil.copyfile(source, target)
         return temporary, root
 
+    def set_repository_text_line_endings(self, root, *, crlf):
+        relative_paths = ["README.md"] + [
+            entry["relative_path"] for entry in EXPECTED_BUNDLE
+        ]
+        for relative_path in relative_paths:
+            path = root / relative_path
+            if not path.is_file():
+                continue
+            canonical = canonicalize_utf8_repository_text(path.read_bytes())
+            path.write_bytes(
+                canonical.replace(b"\n", b"\r\n") if crlf else canonical
+            )
+
     def evaluate_readme_mutation(self, old, new):
         temporary, root = self.temporary_repository()
         self.addCleanup(temporary.cleanup)
         readme_path = root / "README.md"
-        text = readme_path.read_bytes().decode("utf-8")
+        text = canonicalize_utf8_repository_text(readme_path.read_bytes()).decode(
+            "utf-8", errors="strict"
+        )
         self.assertEqual(text.count(old), 1, old)
         readme_path.write_bytes(text.replace(old, new, 1).encode("utf-8"))
         return self.evaluate(repository_root=root)
@@ -732,7 +753,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
                 "M13 Additions",
             ],
         )
-        readme = README_PATH.read_bytes()
+        readme = canonicalize_utf8_repository_text(README_PATH.read_bytes())
         heading = b"## Next Phase"
         self.assertEqual(readme.count(heading), 1)
         prefix = readme[: readme.index(heading)]
@@ -746,7 +767,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         expected = self.fixture["readme_expected_next_phase"]
         self.assertEqual(expected["heading"], "## Next Phase")
         self.assertEqual(expected["complete_expected_block"], EXPECTED_NEXT_PHASE_BLOCK)
-        readme = README_PATH.read_bytes()
+        readme = canonicalize_utf8_repository_text(README_PATH.read_bytes())
         offset = readme.index(b"## Next Phase")
         self.assertEqual(readme[offset:], EXPECTED_NEXT_PHASE_BLOCK.encode("utf-8"))
         self.assertTrue(readme.endswith(b"\n"))
@@ -807,7 +828,10 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
             with self.subTest(path=entry["relative_path"]):
                 path = ROOT / entry["relative_path"]
                 self.assertTrue(path.is_file())
-                self.assertEqual(sha256(path), entry["sha256"])
+                maintained = EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES.get(
+                    entry["relative_path"], entry["sha256"]
+                )
+                self.assertEqual(canonical_sha256(path), maintained)
                 self.assertEqual(entry["source_pr"], "#213")
                 self.assertTrue(entry["required"])
                 self.assertEqual(entry["digest_algorithm"], "sha256")
@@ -1158,6 +1182,127 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         fixture = copy.deepcopy(self.fixture)
         fixture["verification_command_manifest"][0]["executed"] = True
         self.assert_invalid(self.evaluate(fixture), "verification_command_unexpected_fields")
+
+    def test_92_lf_repository_text_has_portable_bundle_integrity(self):
+        temporary, root = self.temporary_repository()
+        self.addCleanup(temporary.cleanup)
+        self.set_repository_text_line_endings(root, crlf=False)
+
+        result = self.evaluate(repository_root=root)
+
+        self.assertTrue(result["release_proof_bundle_integrity_valid"], result["findings"])
+        self.assertFalse(
+            any("release_proof_bundle_digest_mismatch" in item for item in result["findings"])
+        )
+
+    def test_93_equivalent_crlf_repository_text_has_portable_bundle_integrity(self):
+        temporary, root = self.temporary_repository()
+        self.addCleanup(temporary.cleanup)
+        self.set_repository_text_line_endings(root, crlf=True)
+
+        result = self.evaluate(repository_root=root)
+
+        self.assertTrue(result["release_proof_bundle_integrity_valid"], result["findings"])
+        self.assertFalse(
+            any("release_proof_bundle_digest_mismatch" in item for item in result["findings"])
+        )
+        self.assertFalse(any("lone_cr" in item for item in result["findings"]))
+
+    def test_94_malformed_utf8_bundle_artifact_fails_deterministically(self):
+        temporary, root = self.temporary_repository()
+        self.addCleanup(temporary.cleanup)
+        relative_path = EXPECTED_BUNDLE[1]["relative_path"]
+        (root / relative_path).write_bytes(b"not utf-8: \xff\n")
+
+        result = self.evaluate(repository_root=root)
+
+        self.assertFalse(result["release_proof_bundle_integrity_valid"])
+        self.assertIn(
+            f"release_proof_bundle_malformed_utf8:{relative_path}",
+            result["findings"],
+        )
+
+    def test_95_lone_cr_bundle_artifact_fails_deterministically(self):
+        temporary, root = self.temporary_repository()
+        self.addCleanup(temporary.cleanup)
+        relative_path = EXPECTED_BUNDLE[1]["relative_path"]
+        (root / relative_path).write_bytes(b"line one\rline two\n")
+
+        result = self.evaluate(repository_root=root)
+
+        self.assertFalse(result["release_proof_bundle_integrity_valid"])
+        self.assertIn(
+            f"release_proof_bundle_lone_cr:{relative_path}",
+            result["findings"],
+        )
+
+    def test_96_historical_bundle_digest_mutation_fails_independently(self):
+        fixture = copy.deepcopy(self.fixture)
+        relative_path = EXPECTED_BUNDLE[0]["relative_path"]
+        fixture["release_proof_bundle"][0]["sha256"] = "0" * 64
+
+        result = self.evaluate(fixture)
+
+        self.assertFalse(result["release_proof_bundle_integrity_valid"])
+        self.assertIn(
+            f"release_proof_bundle_historical_digest_mismatch:{relative_path}",
+            result["findings"],
+        )
+
+    def test_97_maintained_bundle_digest_mutation_fails_independently(self):
+        temporary, root = self.temporary_repository()
+        self.addCleanup(temporary.cleanup)
+        relative_path = EXPECTED_BUNDLE[1]["relative_path"]
+        path = root / relative_path
+        path.write_bytes(
+            canonicalize_utf8_repository_text(path.read_bytes()) + b"# maintained drift\n"
+        )
+
+        result = self.evaluate(repository_root=root)
+
+        self.assertFalse(result["release_proof_bundle_integrity_valid"])
+        self.assertIn(
+            f"release_proof_bundle_maintained_digest_mismatch:{relative_path}",
+            result["findings"],
+        )
+
+    def test_98_bundle_path_substitution_fails_before_digest_acceptance(self):
+        fixture = copy.deepcopy(self.fixture)
+        fixture["release_proof_bundle"][0]["relative_path"] = EXPECTED_BUNDLE[1][
+            "relative_path"
+        ]
+
+        result = self.evaluate(fixture)
+
+        self.assertFalse(result["release_proof_bundle_integrity_valid"])
+        self.assertIn("release_proof_bundle_path_substitution:0", result["findings"])
+
+    def test_99_missing_maintained_bundle_artifact_fails(self):
+        relative_path = EXPECTED_BUNDLE[1]["relative_path"]
+        temporary, root = self.temporary_repository(skip_bundle_path=relative_path)
+        self.addCleanup(temporary.cleanup)
+
+        result = self.evaluate(repository_root=root)
+
+        self.assertFalse(result["release_proof_bundle_integrity_valid"])
+        self.assertIn(
+            f"release_proof_bundle_file_missing:{relative_path}",
+            result["findings"],
+        )
+
+    def test_100_canonical_digest_match_grants_no_governance_authority(self):
+        temporary, root = self.temporary_repository()
+        self.addCleanup(temporary.cleanup)
+        self.set_repository_text_line_endings(root, crlf=True)
+
+        result = self.evaluate(repository_root=root)
+
+        self.assertTrue(result["release_proof_bundle_integrity_valid"], result["findings"])
+        self.assertFalse(result["release_approved"])
+        self.assertFalse(result["released"])
+        self.assertFalse(result["m14_complete"])
+        self.assertTrue(result["authority_boundaries_preserved"])
+        self.assertTrue(set(result["outputs"]).isdisjoint(REQUIRED_FORBIDDEN_OUTPUTS))
 
     def test_91_malformed_required_sequences_fail_closed(self):
         mutations = (

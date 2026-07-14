@@ -8,11 +8,18 @@ GitHub, authorizes a release, or seals Decision Proof.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import Any, Mapping, Sequence
+
+from runtime.repository_artifact_digest import (
+    RepositoryArtifactFileTypeError,
+    RepositoryArtifactPathError,
+    RepositoryArtifactTextError,
+    canonicalize_utf8_repository_text,
+    sha256_repository_file,
+)
 
 
 EXPECTED_CHANGED_FILES = (
@@ -59,6 +66,25 @@ EXPECTED_BUNDLE = (
         "executable_by_release_proof_evaluator": False,
     },
 )
+
+# The fixture continues to record the three digests reviewed in PR #212.  The
+# operational evaluator and its tests legitimately changed after that review,
+# so their current canonical digests are maintained separately.  This is a
+# deterministic phase-aware lookup, not an "old OR new" acceptance rule.
+MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256_OVERRIDES = {
+    "runtime/m14_operational_readiness_evaluator.py": (
+        "265f6d3ad2a9803fe1fe119c1ed9d2129bba47d616b09fda7b03b52306480e97"
+    ),
+    "tests/test_m14_operational_readiness_evaluator.py": (
+        "2ac69dc2d9c5e8c69b0bc52c09a68944c15f440a6e91f066d8ba6b4534d893a5"
+    ),
+}
+MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256 = {
+    entry["relative_path"]: MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256_OVERRIDES.get(
+        entry["relative_path"], entry["sha256"]
+    )
+    for entry in EXPECTED_BUNDLE
+}
 
 EXPECTED_TRACKS: dict[str, dict[str, Any]] = {
     "voice_runtime_policy": {
@@ -124,6 +150,86 @@ EXPECTED_TRACKS: dict[str, dict[str, Any]] = {
     },
 }
 EXPECTED_TRACK_ORDER = tuple(EXPECTED_TRACKS)
+
+# These are the immutable source-artifact digests recorded by the historical
+# operational-readiness fixture.  They are intentionally hardcoded here so a
+# fixture mutation cannot silently redefine its own expected historical value.
+HISTORICAL_SOURCE_ARTIFACT_SHA256 = {
+    "examples/public-integration-pack-pilot/voxcpm-governed-voice-fixtures.json": (
+        "f2d30aca2abca68e0d69080098c473ff2ef7f45a5afae0eb2734dd48ae294921"
+    ),
+    "runtime/voice_generation_policy_evaluator.py": (
+        "6c6a10fc88b1abd6f35ae3993b27784fbe69d028d192e19275677296e21df84f"
+    ),
+    "tests/test_voice_generation_policy_evaluator.py": (
+        "0d2e3921ed4e7060615bfbc2ae0c192616b20990834e5be5a3663c78b19a0d4e"
+    ),
+    "examples/public-integration-pack-pilot/m14-public-issue-exfiltration-gate-fixtures.json": (
+        "ac682908ba081cfc58726046efcb928c51e64eb2037f03354fda80afeb0846a9"
+    ),
+    "runtime/public_issue_exfiltration_gate_evaluator.py": (
+        "f3453af5c1829a28c791b665640e24940ececdc211e364360635bfe39573e81d"
+    ),
+    "tests/test_public_issue_exfiltration_gate_evaluator.py": (
+        "e3ab2be88dfeb8ec85a9cd12936f33b54476e46c22eeebe650648a8678d962bc"
+    ),
+    "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md": (
+        "d28987ceeb419d36f43e32f9fba6fa82c7233ce3355117ebac5f9c45cfae97a3"
+    ),
+    "examples/public-integration-pack-pilot/m14-moda-ai-risk-decision-proof-fixtures.json": (
+        "dc157dd2029912ffe7d2ed48485c6b6e603237a9aa2cca72bb8d12ba285ff2ba"
+    ),
+    "runtime/moda_ai_risk_mapping_evaluator.py": (
+        "11a71ee8a7a7120d798e5cbb262a9e98bb9b1e74ca2471db486d6bdd0d091f28"
+    ),
+    "tests/test_moda_ai_risk_mapping_evaluator.py": (
+        "96a52094a65a2cd9303a01aa62b2e53c5240fdc789ee005c243a44a627fc3564"
+    ),
+    ".github/workflows/m14-ai-pr-provenance.yml": (
+        "af8ba9426f1bda5c2b9a09fad7a2b03ef2c4d04a178e4f414519bf837ff19bf1"
+    ),
+    "examples/public-integration-pack-pilot/m14-ai-authored-pr-provenance-fixtures.json": (
+        "e72636d1871f2c1232c811aec41ca9724be1505916d4804a05be75e600f3808a"
+    ),
+    "runtime/ai_authored_pr_provenance_evaluator.py": (
+        "465a0aba8beb49a6d6ad55e0bfce65ab74f5368164c758841ab202c50432ef35"
+    ),
+    "tests/test_ai_authored_pr_provenance_evaluator.py": (
+        "e648d2606d38f05063d72be0fa270a0191a28dca24a5fc07e80414faa4fc1f8f"
+    ),
+    "docs/capability-supply-chain/nvidia-skills-admission.md": (
+        "f49b51dd960df118a002c7e3fef685bf39f4006f8372373c0cb1fa7b635f8f49"
+    ),
+    "examples/public-integration-pack-pilot/m14-skill-admission-fixtures.json": (
+        "4fc229be3883a2681f8ebfc3f2eb828514cd3a2d6729c5841bab5a7efe609509"
+    ),
+    "runtime/skill_admission_evaluator.py": (
+        "bb81697df1be79b96a6af373ce63314a01ac73392b3cdb97981abaddbe6a4400"
+    ),
+    "tests/test_skill_admission_evaluator.py": (
+        "7cfd8b7f801a9a9da0546ae64499b234cbd1882fbba64b7a169b01b866ec6abd"
+    ),
+    "examples/public-integration-pack-pilot/m14-cross-control-authority-boundary-regression-fixtures.json": (
+        "f44b6d3298922608096c10f248955fa4c25e8d4a3452d6d7c585f9237129809d"
+    ),
+    "runtime/m14_cross_control_authority_boundary_evaluator.py": (
+        "51a413dc5303d64d49e958ffde970925ffc5aebead3435f8cf714e6112e1b48c"
+    ),
+    "tests/test_m14_cross_control_authority_boundary_evaluator.py": (
+        "5a4a5e764655382e2b19aa5a4e8a5a6a2b5082ade733e7125d88dfd2ba6cfc52"
+    ),
+}
+
+# No source artifact in the 21-file historical manifest has a legitimate
+# post-review change at this phase.  Future maintained changes must be explicit
+# here and must not rewrite HISTORICAL_SOURCE_ARTIFACT_SHA256.
+MAINTAINED_SOURCE_ARTIFACT_SHA256_OVERRIDES: dict[str, str] = {}
+MAINTAINED_SOURCE_ARTIFACT_SHA256 = {
+    relative_path: MAINTAINED_SOURCE_ARTIFACT_SHA256_OVERRIDES.get(
+        relative_path, historical_digest
+    )
+    for relative_path, historical_digest in HISTORICAL_SOURCE_ARTIFACT_SHA256.items()
+}
 
 EXPECTED_TOP_LEVEL = {
     "artifact_id": "m14-release-proof-linkage-specimen",
@@ -425,27 +531,37 @@ def _token(value: Any) -> str:
 def _repository_root(repository_root: str | Path | None) -> Path:
     if repository_root is None:
         return Path(__file__).resolve().parents[1]
-    return Path(repository_root).resolve()
+    # Keep a supplied root lexical here.  The shared digest utility requires
+    # an absolute root and performs the authoritative strict resolution, so a
+    # relative root is never interpreted through the process working directory.
+    return Path(repository_root)
 
 
-def _safe_repository_path(root: Path, relative_path: Any) -> Path | None:
-    if not isinstance(relative_path, str) or not relative_path or "\\" in relative_path:
-        return None
-    pure = PurePosixPath(relative_path)
-    if pure.is_absolute() or any(part in {"", ".", ".."} for part in pure.parts):
-        return None
-    candidate = (root / Path(*pure.parts)).resolve()
-    if candidate != root and root not in candidate.parents:
-        return None
-    return candidate
-
-
-def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(131072), b""):
-            digest.update(block)
-    return digest.hexdigest()
+def _canonical_text_digest(
+    root: Path,
+    relative_path: str,
+    findings: list[str],
+    *,
+    finding_prefix: str,
+) -> tuple[str | None, str]:
+    try:
+        return sha256_repository_file(root, relative_path, mode="text"), "ok"
+    except FileNotFoundError:
+        _add(findings, f"{finding_prefix}_file_missing:{relative_path}")
+        status = "missing"
+    except UnicodeDecodeError:
+        _add(findings, f"{finding_prefix}_malformed_utf8:{relative_path}")
+        status = "malformed_utf8"
+    except RepositoryArtifactTextError:
+        _add(findings, f"{finding_prefix}_lone_carriage_return:{relative_path}")
+        status = "lone_carriage_return"
+    except (RepositoryArtifactPathError, RepositoryArtifactFileTypeError):
+        _add(findings, f"{finding_prefix}_path_invalid:{relative_path}")
+        status = "path_invalid"
+    except OSError:
+        _add(findings, f"{finding_prefix}_unreadable:{relative_path}")
+        status = "unreadable"
+    return None, status
 
 
 def load_fixture(path: str | Path) -> dict[str, Any]:
@@ -556,10 +672,12 @@ def _validate_top_level(
 
 def _validate_operational_readiness_bundle(
     payload: Mapping[str, Any], root: Path, findings: list[str]
-) -> tuple[bool, bool, dict[str, Any] | None]:
+) -> tuple[bool, bool, bool, bool, dict[str, Any] | None]:
     entries = payload.get("operational_readiness_bundle")
     present = isinstance(entries, list) and len(entries) == len(EXPECTED_BUNDLE)
     integrity_valid = present
+    historical_digest_valid = present
+    maintained_digest_valid = present
 
     if not isinstance(entries, list):
         entries = []
@@ -567,12 +685,14 @@ def _validate_operational_readiness_bundle(
     elif len(entries) != len(EXPECTED_BUNDLE):
         _add(findings, "operational_readiness_bundle_coverage_invalid")
 
+    digest_statuses: dict[str, str] = {}
     for index, expected in enumerate(EXPECTED_BUNDLE):
         raw = entries[index] if index < len(entries) else None
         if not isinstance(raw, Mapping):
             _add(findings, f"operational_readiness_bundle_entry_missing:{index}")
             present = False
             integrity_valid = False
+            historical_digest_valid = False
             continue
 
         for field, expected_value in expected.items():
@@ -584,30 +704,63 @@ def _validate_operational_readiness_bundle(
                 integrity_valid = False
                 if field == "relative_path":
                     present = False
+                if field == "sha256":
+                    historical_digest_valid = False
+                    _add(
+                        findings,
+                        "operational_readiness_bundle_historical_digest_mismatch:"
+                        f"{expected['relative_path']}",
+                    )
 
-        path = _safe_repository_path(root, expected["relative_path"])
-        if path is None or not path.is_file():
-            _add(findings, f"operational_readiness_bundle_file_missing:{expected['relative_path']}")
-            present = False
+        relative_path = expected["relative_path"]
+        observed_digest, digest_status = _canonical_text_digest(
+            root,
+            relative_path,
+            findings,
+            finding_prefix="operational_readiness_bundle",
+        )
+        digest_statuses[relative_path] = digest_status
+        if observed_digest is None:
+            if digest_status in {"missing", "path_invalid"}:
+                present = False
             integrity_valid = False
-        elif _sha256(path) != expected["sha256"]:
-            _add(findings, f"operational_readiness_bundle_digest_mismatch:{expected['relative_path']}")
+            maintained_digest_valid = False
+        elif (
+            observed_digest
+            != MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256[relative_path]
+        ):
+            _add(
+                findings,
+                "operational_readiness_bundle_maintained_digest_mismatch:"
+                f"{relative_path}",
+            )
             integrity_valid = False
+            maintained_digest_valid = False
 
-    readiness_path = _safe_repository_path(root, EXPECTED_BUNDLE[0]["relative_path"])
+    readiness_relative_path = EXPECTED_BUNDLE[0]["relative_path"]
     readiness_payload: dict[str, Any] | None = None
-    if readiness_path is not None and readiness_path.is_file():
+    if digest_statuses.get(readiness_relative_path) == "ok":
         try:
-            loaded = json.loads(readiness_path.read_text(encoding="utf-8"))
+            readiness_path = root.joinpath(*readiness_relative_path.split("/")).resolve(
+                strict=True
+            )
+            canonical = canonicalize_utf8_repository_text(readiness_path.read_bytes())
+            loaded = json.loads(canonical.decode("utf-8", errors="strict"))
             if isinstance(loaded, dict):
                 readiness_payload = loaded
             else:
                 _add(findings, "operational_readiness_fixture_not_object")
                 integrity_valid = False
-        except (OSError, UnicodeError, json.JSONDecodeError):
+        except (OSError, UnicodeError, RepositoryArtifactTextError, json.JSONDecodeError):
             _add(findings, "operational_readiness_fixture_unreadable")
             integrity_valid = False
-    return present, integrity_valid, readiness_payload
+    return (
+        present,
+        integrity_valid,
+        historical_digest_valid,
+        maintained_digest_valid,
+        readiness_payload,
+    )
 
 
 def _readiness_dimensions(readiness: Mapping[str, Any]) -> dict[str, str]:
@@ -799,14 +952,14 @@ def _validate_source_artifacts(
     readiness: Mapping[str, Any] | None,
     root: Path,
     findings: list[str],
-) -> bool:
+) -> tuple[bool, bool, bool]:
     if not isinstance(readiness, Mapping):
         _add(findings, "source_artifact_manifest_unavailable")
-        return False
+        return False, False, False
     manifest = readiness.get("source_artifact_manifest")
     if not isinstance(manifest, list):
         _add(findings, "source_artifact_manifest_invalid")
-        return False
+        return False, False, False
 
     expected_paths: dict[str, tuple[str, str]] = {}
     for track_id, track in EXPECTED_TRACKS.items():
@@ -814,9 +967,20 @@ def _validate_source_artifacts(
             expected_paths[path] = (track_id, track["source_pr"])
 
     valid = True
+    historical_digest_valid = True
+    maintained_digest_valid = True
+    if set(HISTORICAL_SOURCE_ARTIFACT_SHA256) != set(expected_paths):
+        _add(findings, "historical_source_artifact_digest_catalog_invalid")
+        valid = False
+        historical_digest_valid = False
+    if set(MAINTAINED_SOURCE_ARTIFACT_SHA256) != set(expected_paths):
+        _add(findings, "maintained_source_artifact_digest_catalog_invalid")
+        valid = False
+        maintained_digest_valid = False
     if len(manifest) != len(expected_paths):
         _add(findings, "source_artifact_manifest_count_invalid")
         valid = False
+        historical_digest_valid = False
 
     by_path: dict[str, Mapping[str, Any]] = {}
     for entry in manifest:
@@ -834,50 +998,75 @@ def _validate_source_artifacts(
     if set(by_path) != set(expected_paths):
         _add(findings, "source_artifact_manifest_path_set_invalid")
         valid = False
+        historical_digest_valid = False
 
     for relative_path, (track_id, source_pr) in expected_paths.items():
         entry = _as_mapping(by_path.get(relative_path))
         if not entry:
             _add(findings, f"source_artifact_missing_from_manifest:{relative_path}")
             valid = False
-            continue
-        expectations = {
-            "track_id": track_id,
-            "source_pr": source_pr,
-            "relative_path": relative_path,
-            "required": True,
-            "digest_algorithm": "sha256",
-            "observed_on_branch": "main",
-            "executable_by_readiness_evaluator": False,
-        }
-        for field, expected_value in expectations.items():
-            if entry.get(field) != expected_value:
-                _add(findings, f"source_artifact_binding_invalid:{relative_path}:{field}")
+            historical_digest_valid = False
+        else:
+            expectations = {
+                "track_id": track_id,
+                "source_pr": source_pr,
+                "relative_path": relative_path,
+                "required": True,
+                "digest_algorithm": "sha256",
+                "observed_on_branch": "main",
+                "executable_by_readiness_evaluator": False,
+            }
+            for field, expected_value in expectations.items():
+                if entry.get(field) != expected_value:
+                    _add(
+                        findings,
+                        f"source_artifact_binding_invalid:{relative_path}:{field}",
+                    )
+                    valid = False
+
+            if not isinstance(entry.get("artifact_type"), str) or not entry.get(
+                "artifact_type"
+            ):
+                _add(findings, f"source_artifact_type_missing:{relative_path}")
+                valid = False
+            if not isinstance(entry.get("evidence_role"), str) or not entry.get(
+                "evidence_role"
+            ):
+                _add(findings, f"source_artifact_evidence_role_missing:{relative_path}")
                 valid = False
 
-        if not isinstance(entry.get("artifact_type"), str) or not entry.get("artifact_type"):
-            _add(findings, f"source_artifact_type_missing:{relative_path}")
-            valid = False
-        if not isinstance(entry.get("evidence_role"), str) or not entry.get("evidence_role"):
-            _add(findings, f"source_artifact_evidence_role_missing:{relative_path}")
-            valid = False
+            recorded_digest = entry.get("sha256")
+            if not isinstance(recorded_digest, str) or not re.fullmatch(
+                r"[0-9a-f]{64}", recorded_digest
+            ):
+                _add(findings, f"source_artifact_digest_invalid:{relative_path}")
+                valid = False
+                historical_digest_valid = False
+            elif recorded_digest != HISTORICAL_SOURCE_ARTIFACT_SHA256[relative_path]:
+                _add(
+                    findings,
+                    f"source_artifact_historical_digest_mismatch:{relative_path}",
+                )
+                valid = False
+                historical_digest_valid = False
 
-        expected_digest = entry.get("sha256")
-        if not isinstance(expected_digest, str) or not re.fullmatch(
-            r"[0-9a-f]{64}", expected_digest
-        ):
-            _add(findings, f"source_artifact_digest_invalid:{relative_path}")
+        observed_digest, _ = _canonical_text_digest(
+            root,
+            relative_path,
+            findings,
+            finding_prefix="source_artifact",
+        )
+        if observed_digest is None:
             valid = False
-            continue
-
-        path = _safe_repository_path(root, relative_path)
-        if path is None or not path.is_file():
-            _add(findings, f"source_artifact_file_missing:{relative_path}")
+            maintained_digest_valid = False
+        elif observed_digest != MAINTAINED_SOURCE_ARTIFACT_SHA256[relative_path]:
+            _add(
+                findings,
+                f"source_artifact_maintained_digest_mismatch:{relative_path}",
+            )
             valid = False
-        elif _sha256(path) != expected_digest:
-            _add(findings, f"source_artifact_digest_mismatch:{relative_path}")
-            valid = False
-    return valid
+            maintained_digest_valid = False
+    return valid, historical_digest_valid, maintained_digest_valid
 
 
 def _validate_source_artifact_policy(
@@ -1429,14 +1618,22 @@ def evaluate_m14_release_proof_linkage(
     root = _repository_root(repository_root)
 
     top_valid, refs_valid = _validate_top_level(payload, findings)
-    bundle_present, bundle_integrity, readiness = (
+    (
+        bundle_present,
+        bundle_integrity,
+        bundle_historical_digest_valid,
+        bundle_maintained_digest_valid,
+        readiness,
+    ) = (
         _validate_operational_readiness_bundle(payload, root, findings)
     )
     readiness_valid = _validate_readiness_state(readiness, findings)
     source_track_valid = _validate_source_track_linkage(payload, readiness, findings)
-    source_artifact_integrity = _validate_source_artifacts(
-        readiness, root, findings
-    )
+    (
+        source_artifact_integrity,
+        source_artifact_historical_digest_valid,
+        source_artifact_maintained_digest_valid,
+    ) = _validate_source_artifacts(readiness, root, findings)
     source_policy_valid = _validate_source_artifact_policy(payload, findings)
     evidence_packet_valid = _validate_release_evidence_packet(payload, findings)
     external_valid = _validate_external_state(payload, findings)
@@ -1499,8 +1696,20 @@ def evaluate_m14_release_proof_linkage(
         "release_linkage_coverage_complete": coverage,
         "operational_readiness_bundle_present": bundle_present,
         "operational_readiness_bundle_integrity_valid": bundle_integrity,
+        "operational_readiness_bundle_historical_digest_valid": (
+            bundle_historical_digest_valid
+        ),
+        "operational_readiness_bundle_maintained_digest_valid": (
+            bundle_maintained_digest_valid
+        ),
         "source_track_linkage_valid": source_track_valid,
         "source_artifact_integrity_valid": source_artifact_integrity,
+        "source_artifact_historical_digest_valid": (
+            source_artifact_historical_digest_valid
+        ),
+        "source_artifact_maintained_digest_valid": (
+            source_artifact_maintained_digest_valid
+        ),
         "authority_boundaries_preserved": authority_preserved,
         "verification_manifest_complete": command_manifest_valid,
         "external_state_confirmation_required": True,
