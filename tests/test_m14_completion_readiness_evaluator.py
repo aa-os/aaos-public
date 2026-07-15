@@ -893,8 +893,38 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         self.assertTrue(current["authority_boundaries_preserved"])
 
     def test_64_release_proof_bundle_has_exact_paths_and_main_digests(self):
+        expected_overrides = {
+            "runtime/m14_release_proof_linkage_evaluator.py": (
+                "66b7ce4a32c8311c74aa25b41bc2ee22cec9390a16f506f8ab7b34f9a8b60e13"
+            ),
+            "tests/test_m14_release_proof_linkage_evaluator.py": (
+                "34cefeba7aa60f81411372906715b17468d81ed4c3570657966e380032cee621"
+            ),
+        }
         self.assertEqual(self.fixture["release_proof_bundle"], list(EXPECTED_BUNDLE))
         self.assertEqual(len(EXPECTED_BUNDLE), 3)
+        historical = {
+            entry["relative_path"]: entry["sha256"] for entry in EXPECTED_BUNDLE
+        }
+        self.assertEqual(
+            historical,
+            {
+                "examples/public-integration-pack-pilot/"
+                "m14-release-proof-linkage-specimen.json": (
+                    "8f45d7cdd108132e5032874a14bf9a6fc3cf585bdf28b718cd73d5d20b3793a6"
+                ),
+                "runtime/m14_release_proof_linkage_evaluator.py": (
+                    "7cef0132a578c1f091aa3a713468149fc756f7a4e5eab41bee9fc6c40940860f"
+                ),
+                "tests/test_m14_release_proof_linkage_evaluator.py": (
+                    "278dcd0dd1183c6ad55c96503a8f93b71bf7b62aa155ac0fa1f2229615b5c3fb"
+                ),
+            },
+        )
+        self.assertEqual(
+            EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
+            expected_overrides,
+        )
         for entry in EXPECTED_BUNDLE:
             with self.subTest(path=entry["relative_path"]):
                 path = ROOT / entry["relative_path"]
@@ -903,6 +933,10 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
                     entry["relative_path"], entry["sha256"]
                 )
                 self.assertEqual(canonical_sha256(path), maintained)
+                if entry["relative_path"] in expected_overrides:
+                    self.assertNotEqual(maintained, entry["sha256"])
+                else:
+                    self.assertEqual(maintained, entry["sha256"])
                 self.assertEqual(entry["source_pr"], "#213")
                 self.assertTrue(entry["required"])
                 self.assertEqual(entry["digest_algorithm"], "sha256")
@@ -910,6 +944,23 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
                 self.assertFalse(
                     entry["executable_by_completion_readiness_evaluator"]
                 )
+
+        digest_map_names = {
+            "EXPECTED_BUNDLE",
+            "EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES",
+        }
+        for node in ast.walk(self.tree):
+            names = {
+                child.id
+                for child in ast.walk(node)
+                if isinstance(child, ast.Name)
+            }
+            if isinstance(node, ast.BoolOp) and isinstance(node.op, ast.Or):
+                self.assertFalse(digest_map_names <= names)
+            if isinstance(node, ast.Compare) and any(
+                isinstance(operator, (ast.In, ast.NotIn)) for operator in node.ops
+            ):
+                self.assertFalse(digest_map_names <= names)
 
     def test_65_release_proof_fixture_is_loaded_only_as_inert_json(self):
         imported = set()

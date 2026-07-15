@@ -174,10 +174,10 @@ EXPECTED_BUNDLE = (
 # rewriting or loosely accepting the historical fixture digest.
 EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES: dict[str, str] = {
     "runtime/m14_release_proof_linkage_evaluator.py": (
-        "a572fd9470ac2a852f576d6487d926374a5bb5a4a632f79d0a365b7c1c167098"
+        "66b7ce4a32c8311c74aa25b41bc2ee22cec9390a16f506f8ab7b34f9a8b60e13"
     ),
     "tests/test_m14_release_proof_linkage_evaluator.py": (
-        "b992c29ff29656353d6d8b4586becc8fee86c4b4957e58f73fc06c410336a03d"
+        "34cefeba7aa60f81411372906715b17468d81ed4c3570657966e380032cee621"
     ),
 }
 

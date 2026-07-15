@@ -85,17 +85,19 @@ EXPECTED_BUNDLE = (
     },
 )
 
-EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
-    (
-        "examples/public-integration-pack-pilot/"
-        "m14-completion-readiness-future-readme-path.json"
-    ): "e65e4558bc25504ebea24dd8479ac5c40e1ecc588cd3262e729fe77b193d2673",
+EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES = {
     "runtime/m14_completion_readiness_evaluator.py": (
-        "c87bdf875c3cce8893693a60a913f1adc97b2b49b7922ad038aaf6f80cc585c5"
+        "c9dbf73ee66b2e6e002ed82f2c16913d23b13c0b22d70ee56dc7761b7b4069b3"
     ),
     "tests/test_m14_completion_readiness_evaluator.py": (
-        "9ba54dbb7b6c4a3d5ce4d4f46e1919f5e259a8bcbd6ce247d4c5b7b1dbae21f9"
+        "6faf721f987379bc5220e022017f9a3a3c91555a58264de6c0a36ff8a8241b1b"
     ),
+}
+EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
+    entry["relative_path"]: EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES.get(
+        entry["relative_path"], entry["sha256"]
+    )
+    for entry in EXPECTED_BUNDLE
 }
 
 EXPECTED_MAINTAINED_COMPLETION_READINESS_AUXILIARY_DEPENDENCIES = (

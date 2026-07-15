@@ -878,9 +878,13 @@ class SkillAdmissionEvaluatorTests(unittest.TestCase):
             "## 16. High-risk domain restrictions",
             "## 17. Capture / Verify / Accumulate mapping",
             "## 18. Governance boundary",
-            "## 19. M14 active-work and future v0.13.0 status",
+            "## 19. M14 completed and published v0.13.0 status",
         ):
             self.assertIn(section, self.document_text)
+        self.assertNotIn(
+            "## 19. M14 active-work and future v0.13.0 status",
+            self.document_text,
+        )
 
     def test_57_nvidia_is_reference_specimen_not_dependency_or_approval(self):
         self.assertEqual(self.fixture["source_reference"], "NVIDIA/skills")

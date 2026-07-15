@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT))
 from runtime.m14_operational_readiness_evaluator import (  # noqa: E402
     EXPECTED_HISTORICAL_ARTIFACT_SHA256,
     EXPECTED_MAINTAINED_ARTIFACT_SHA256,
+    EXPECTED_MAINTAINED_ARTIFACT_SHA256_OVERRIDES,
     evaluate_file,
     evaluate_m14_operational_readiness,
     load_fixture,
@@ -373,6 +374,51 @@ class M14OperationalReadinessEvaluatorTests(unittest.TestCase):
                 self.assertTrue((ROOT / relative_path).is_file())
 
     def test_07_historical_and_maintained_sha256_digests_are_independent(self):
+        expected_overrides = {
+            "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md": (
+                "75ae56e8fecc423cda353ef118ca8859ddd06f5e95e31e2f72659ecfca1a54f2"
+            ),
+            "docs/capability-supply-chain/nvidia-skills-admission.md": (
+                "ad9129242540d241d82b8fcd35f7ecb1da1c4559937ec20b3c424ae88faa316d"
+            ),
+            "tests/test_skill_admission_evaluator.py": (
+                "45ba9f2f8369bf0c127993c480e5091a1a2ee8f7ca2a0be2f579b3de38011b83"
+            ),
+        }
+        expected_historical_for_overrides = {
+            "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md": (
+                "d28987ceeb419d36f43e32f9fba6fa82c7233ce3355117ebac5f9c45cfae97a3"
+            ),
+            "docs/capability-supply-chain/nvidia-skills-admission.md": (
+                "f49b51dd960df118a002c7e3fef685bf39f4006f8372373c0cb1fa7b635f8f49"
+            ),
+            "tests/test_skill_admission_evaluator.py": (
+                "7cfd8b7f801a9a9da0546ae64499b234cbd1882fbba64b7a169b01b866ec6abd"
+            ),
+        }
+        fixture_digests = {
+            entry["relative_path"]: entry["sha256"]
+            for entry in self.fixture["source_artifact_manifest"]
+        }
+        self.assertEqual(fixture_digests, EXPECTED_HISTORICAL_ARTIFACT_SHA256)
+        self.assertEqual(
+            EXPECTED_MAINTAINED_ARTIFACT_SHA256_OVERRIDES,
+            expected_overrides,
+        )
+        self.assertEqual(
+            set(EXPECTED_MAINTAINED_ARTIFACT_SHA256),
+            set(EXPECTED_HISTORICAL_ARTIFACT_SHA256),
+        )
+        self.assertIsNot(
+            EXPECTED_MAINTAINED_ARTIFACT_SHA256,
+            EXPECTED_HISTORICAL_ARTIFACT_SHA256,
+        )
+        for relative_path, historical_digest in expected_historical_for_overrides.items():
+            self.assertEqual(
+                EXPECTED_HISTORICAL_ARTIFACT_SHA256[relative_path],
+                historical_digest,
+            )
+
         for relative_path in EXPECTED_ARTIFACTS:
             with self.subTest(relative_path=relative_path):
                 entry = self.artifact(self.fixture, relative_path)
@@ -385,6 +431,33 @@ class M14OperationalReadinessEvaluatorTests(unittest.TestCase):
                     sha256_repository_file(ROOT, relative_path, mode="text"),
                     EXPECTED_MAINTAINED_ARTIFACT_SHA256[relative_path],
                 )
+                if relative_path in expected_overrides:
+                    self.assertNotEqual(
+                        EXPECTED_MAINTAINED_ARTIFACT_SHA256[relative_path],
+                        EXPECTED_HISTORICAL_ARTIFACT_SHA256[relative_path],
+                    )
+                else:
+                    self.assertEqual(
+                        EXPECTED_MAINTAINED_ARTIFACT_SHA256[relative_path],
+                        EXPECTED_HISTORICAL_ARTIFACT_SHA256[relative_path],
+                    )
+
+        digest_map_names = {
+            "EXPECTED_HISTORICAL_ARTIFACT_SHA256",
+            "EXPECTED_MAINTAINED_ARTIFACT_SHA256",
+        }
+        for node in ast.walk(self.evaluator_tree):
+            names = {
+                child.id
+                for child in ast.walk(node)
+                if isinstance(child, ast.Name)
+            }
+            if isinstance(node, ast.BoolOp) and isinstance(node.op, ast.Or):
+                self.assertFalse(digest_map_names <= names)
+            if isinstance(node, ast.Compare) and any(
+                isinstance(operator, (ast.In, ast.NotIn)) for operator in node.ops
+            ):
+                self.assertFalse(digest_map_names <= names)
 
     def test_08_historical_source_artifact_digest_mutation_fails(self):
         entry = self.fixture["source_artifact_manifest"][0]
