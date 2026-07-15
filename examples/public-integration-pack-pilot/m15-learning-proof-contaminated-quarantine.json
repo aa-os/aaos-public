@@ -1,0 +1,55 @@
+{
+  "schema_version": "m15-learning-proof/v1",
+  "learning_proof_id": "urn:aaos:m15:learning-proof:synthetic-contaminated-artifact-001",
+  "source_type": "generated-artifact",
+  "source_reference": "urn:aaos:m15:synthetic-source:revoked-derived-artifact-001",
+  "source_owner": "provider",
+  "source_integrity_hash": "841d172b0f0a726547b595e1d41dd17be90edcb6da3359ddd511aab7197934f2",
+  "source_self_asserted_trust_marker": null,
+  "sensitivity": "internal",
+  "requested_purpose": "training",
+  "authorized_purpose": null,
+  "authorization_outcome": "quarantine",
+  "authority_basis_reference": "urn:aaos:m15:authority-basis:synthetic-contamination-policy-001",
+  "policy_version": "aaos-m15-learning-authorization-policy/v1",
+  "processing_boundary": "organization",
+  "retention_boundary": "local",
+  "boundary_evidence_reference": null,
+  "transformation_type": "none",
+  "transformation_input_references": [
+    "urn:aaos:m15:synthetic-source:revoked-derived-artifact-001"
+  ],
+  "transformation_output_reference": "urn:aaos:m15:synthetic-output:quarantine-record-001",
+  "lifecycle_state": "quarantined",
+  "effective_timestamp": "2026-07-15T09:10:00Z",
+  "expiration_timestamp": null,
+  "superseded_by_reference": null,
+  "rollback_target": null,
+  "deletion_evidence_reference": null,
+  "related_decision_proof_reference": null,
+  "contamination_detected": true,
+  "contamination_evidence_references": [
+    "urn:aaos:m15:contamination-evidence:revoked-source-001",
+    "urn:aaos:m15:contamination-evidence:poisoned-source-001"
+  ],
+  "authority_claims": {
+    "release_approved": false,
+    "deployment_approved": false,
+    "execution_authorized": false,
+    "risk_accepted": false,
+    "rollback_executed": false,
+    "deletion_executed": false,
+    "audit_closed": false,
+    "waiver_granted": false,
+    "authority_transferred": false,
+    "learning_proof_sealed": false,
+    "decision_proof_sealed": false
+  },
+  "evaluator_findings": [
+    "source_contamination_detected",
+    "revoked_or_poisoned_source_dependency_detected",
+    "learning_artifact_quarantined",
+    "persistence_and_execution_not_authorized"
+  ],
+  "non_authoritative_boundary_statement": "This Learning Proof is evidence only; it grants no persistence, training, skill, tool, execution, rollback, deletion, sealing, or governance authority."
+}
