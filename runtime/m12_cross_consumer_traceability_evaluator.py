@@ -235,7 +235,7 @@ def _as_set(value: Any) -> set[str]:
 def _has_value(record: dict[str, Any], field: str) -> bool:
     value = record.get(field)
     if isinstance(value, bool):
-        return value
+        return True
     if isinstance(value, str):
         return bool(value.strip())
     if isinstance(value, (list, dict)):

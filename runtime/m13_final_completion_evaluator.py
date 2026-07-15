@@ -2,7 +2,39 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
+
+from runtime.authority_semantics import scan_forbidden_authority_claims
+from runtime.repository_artifact_digest import (
+    RepositoryArtifactFileTypeError,
+    RepositoryArtifactPathError,
+    RepositoryArtifactTextError,
+    canonicalize_utf8_repository_text,
+    sha256_repository_file,
+)
+
+
+HISTORICAL_README_SNAPSHOT_PATH = (
+    "examples/public-integration-pack-pilot/m13-final-completion-readme-snapshot.md"
+)
+HISTORICAL_README_SNAPSHOT_SOURCE_COMMIT = (
+    "d387e824f8c01c5afd6625982bb4f2d9fa1b829d"
+)
+HISTORICAL_README_SNAPSHOT_SOURCE_BLOB = (
+    "de1f4483fa0a2b1b41edc386583260ea7b409438"
+)
+EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256 = (
+    "7f19c136640d1e229270799e125710caa724bed65c0c9bc89382dc80f1557551"
+)
+HISTORICAL_README_SNAPSHOT_PHASE = "m13_final_completion_v0_12_release_state"
+HISTORICAL_README_SNAPSHOT_EVIDENCE_ROLE = (
+    "post_release_auxiliary_historical_readme_evidence"
+)
+
+
+class _HistoricalReadmeSnapshotDigestMismatch(ValueError):
+    """Raised when the bound historical README content no longer matches."""
 
 
 EXPECTED_FIELDS = {
@@ -105,6 +137,14 @@ SAFE_CONTEXT_KEYS = {
     "semantic_boundaries",
 }
 
+FORBIDDEN_AUTHORITY_KEYS = FORBIDDEN_EVALUATOR_OUTPUTS | {
+    "evaluator_output",
+    "github_release_created_by_pr",
+    "release_tag_created_by_pr",
+    "decision_proof_sealed_by_this_artifact",
+    "release_state_preparation_is_publication",
+}
+
 README_RELEASE_ENTRY = (
     "- v0.12.0 — M13 External Consumer Registry Hardening and Operational Readiness"
 )
@@ -131,6 +171,31 @@ README_COMPLETED_REFS = {
     "#198 Completion Readiness and Future README Path",
     "this final completion PR",
 }
+
+
+def load_historical_readme_snapshot(
+    repository_root: str | Path | None = None,
+) -> str:
+    """Load the explicit PR #199 phase snapshot after canonical digest checks."""
+
+    resolved_root = (
+        Path(__file__).resolve().parents[1]
+        if repository_root is None
+        else Path(repository_root)
+    )
+    observed = sha256_repository_file(
+        resolved_root,
+        HISTORICAL_README_SNAPSHOT_PATH,
+        mode="text",
+    )
+    if observed != EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256:
+        raise _HistoricalReadmeSnapshotDigestMismatch(
+            "M13 final-completion README snapshot digest mismatch"
+        )
+
+    path = resolved_root / Path(HISTORICAL_README_SNAPSHOT_PATH)
+    canonical = canonicalize_utf8_repository_text(path.read_bytes())
+    return canonical.decode("utf-8")
 
 
 def _as_dict(value: Any) -> dict[str, Any]:
@@ -185,7 +250,9 @@ def _section_between(text: str, start: str, end: str | None = None) -> str:
 
 
 def evaluate_m13_final_completion(
-    artifact: dict[str, Any], readme_text: str | None = None
+    artifact: dict[str, Any],
+    readme_text: str | None = None,
+    repository_root: str | Path | None = None,
 ) -> dict[str, Any]:
     findings: list[str] = []
     missing_evidence: list[str] = []
@@ -278,9 +345,12 @@ def evaluate_m13_final_completion(
         if phrase not in boundary_text:
             add_missing("missing_final_completion_boundary_language", phrase)
 
-    forbidden_claims = {
-        text for text in _iter_claim_text(artifact) if text in FORBIDDEN_EVALUATOR_OUTPUTS
-    }
+    forbidden_claims = scan_forbidden_authority_claims(
+        artifact,
+        forbidden_keys=FORBIDDEN_AUTHORITY_KEYS,
+        forbidden_tokens=FORBIDDEN_EVALUATOR_OUTPUTS,
+        skip_keys=SAFE_CONTEXT_KEYS,
+    )
     if forbidden_claims:
         findings.append("forbidden_evaluator_output_claim_detected")
         boundary_violation = True
@@ -295,7 +365,31 @@ def evaluate_m13_final_completion(
         findings.append("decision_proof_sealed_by_artifact_claim_detected")
         boundary_violation = True
 
-    readme_valid = True
+    readme_valid = False
+    if readme_text is None:
+        snapshot_finding: str | None = None
+        try:
+            readme_text = load_historical_readme_snapshot(repository_root)
+        except FileNotFoundError:
+            snapshot_finding = "historical_readme_snapshot_missing"
+        except UnicodeDecodeError:
+            snapshot_finding = "historical_readme_snapshot_invalid_utf8"
+        except RepositoryArtifactTextError:
+            snapshot_finding = "historical_readme_snapshot_lone_cr"
+        except _HistoricalReadmeSnapshotDigestMismatch:
+            snapshot_finding = "historical_readme_snapshot_digest_mismatch"
+        except (
+            RepositoryArtifactFileTypeError,
+            RepositoryArtifactPathError,
+            OSError,
+            TypeError,
+            RuntimeError,
+        ):
+            snapshot_finding = "historical_readme_snapshot_path_invalid"
+
+        if snapshot_finding is not None:
+            add_missing(snapshot_finding, HISTORICAL_README_SNAPSHOT_PATH)
+
     if readme_text is not None:
         readme_result = _evaluate_readme(readme_text)
         findings.extend(readme_result["findings"])

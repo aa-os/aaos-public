@@ -58,9 +58,13 @@ class M13ExternalConsumerOnboardingEvaluatorTests(unittest.TestCase):
 
     def test_onboarding_documentation_granting_authority_fails(self):
         fixture = copy.deepcopy(self.fixture)
+        original = copy.deepcopy(fixture)
+        self.assertNotIn("documentation_output", fixture)
         fixture["documentation_output"] = (
             "External consumer onboarding documentation grants authority."
         )
+        self.assertEqual(list(fixture).count("documentation_output"), 1)
+        self.assertNotEqual(fixture, original)
 
         result = self.evaluate(fixture)
 
@@ -68,6 +72,27 @@ class M13ExternalConsumerOnboardingEvaluatorTests(unittest.TestCase):
         self.assertTrue(result["onboarding_boundary_violation"])
         self.assertIn(
             "onboarding_documentation_authority_grant_claim_detected",
+            result["onboarding_findings"],
+        )
+
+    def test_negative_outer_documentation_claim_cannot_hide_nested_authority(self):
+        fixture = copy.deepcopy(self.fixture)
+        self.assertNotIn("documentation_output", fixture)
+        fixture["documentation_output"] = {
+            "status": "evidence_only",
+            "decision": {
+                "approval": "not_approved",
+                "authority": "granted",
+            },
+        }
+        self.assertNotEqual(fixture, self.fixture)
+
+        result = self.evaluate(fixture)
+
+        self.assertTrue(result["onboarding_documentation_invalid"])
+        self.assertTrue(result["onboarding_boundary_violation"])
+        self.assertIn(
+            "authority_transfer_claim_detected",
             result["onboarding_findings"],
         )
 
