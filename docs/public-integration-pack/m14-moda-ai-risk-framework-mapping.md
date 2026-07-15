@@ -1,10 +1,12 @@
 # M14 MODA AI Risk Framework Mapping
 
-Status: M14 active work, not complete.
+Document state: M14 completed.
 
-Related work: Closes #181 when the implementing PR is merged; Refs #201, #202, and #204.
+Release state: Included in published v0.13.0.
 
-Target future release path: v0.13.0, not released.
+Historical implementation evidence: PR #205.
+
+Historical completed references: source issue #181 and M14 tracker #201. Related M14 context includes PR #202 and PR #204.
 
 This document maps Taiwan MODA AI Risk Classification Framework v1.0 risk codes to AAOS Decision Proof evidence controls. It is an engineering governance mapping, not legal advice, legal approval, regulatory certification, a full-compliance claim, or deployment approval.
 

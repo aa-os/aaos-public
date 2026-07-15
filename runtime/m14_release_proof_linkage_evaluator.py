@@ -73,10 +73,10 @@ EXPECTED_BUNDLE = (
 # deterministic phase-aware lookup, not an "old OR new" acceptance rule.
 MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256_OVERRIDES = {
     "runtime/m14_operational_readiness_evaluator.py": (
-        "265f6d3ad2a9803fe1fe119c1ed9d2129bba47d616b09fda7b03b52306480e97"
+        "d3c6e22ff3ab7a885378ba6732a1cf91879f801e39226b720e3fb847ac8bbffb"
     ),
     "tests/test_m14_operational_readiness_evaluator.py": (
-        "2ac69dc2d9c5e8c69b0bc52c09a68944c15f440a6e91f066d8ba6b4534d893a5"
+        "00d8dbad46190020f50661f08c413d383d327be55c93c5d2313b8204eb131d5b"
     ),
 }
 MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256 = {
@@ -220,10 +220,19 @@ HISTORICAL_SOURCE_ARTIFACT_SHA256 = {
     ),
 }
 
-# No source artifact in the 21-file historical manifest has a legitimate
-# post-review change at this phase.  Future maintained changes must be explicit
-# here and must not rewrite HISTORICAL_SOURCE_ARTIFACT_SHA256.
-MAINTAINED_SOURCE_ARTIFACT_SHA256_OVERRIDES: dict[str, str] = {}
+# Legitimate post-review source changes are explicit here and never rewrite
+# HISTORICAL_SOURCE_ARTIFACT_SHA256.
+MAINTAINED_SOURCE_ARTIFACT_SHA256_OVERRIDES: dict[str, str] = {
+    "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md": (
+        "75ae56e8fecc423cda353ef118ca8859ddd06f5e95e31e2f72659ecfca1a54f2"
+    ),
+    "docs/capability-supply-chain/nvidia-skills-admission.md": (
+        "ad9129242540d241d82b8fcd35f7ecb1da1c4559937ec20b3c424ae88faa316d"
+    ),
+    "tests/test_skill_admission_evaluator.py": (
+        "45ba9f2f8369bf0c127993c480e5091a1a2ee8f7ca2a0be2f579b3de38011b83"
+    ),
+}
 MAINTAINED_SOURCE_ARTIFACT_SHA256 = {
     relative_path: MAINTAINED_SOURCE_ARTIFACT_SHA256_OVERRIDES.get(
         relative_path, historical_digest

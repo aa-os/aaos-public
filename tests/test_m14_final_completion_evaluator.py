@@ -10,6 +10,8 @@ from unittest import mock
 
 from runtime.m14_final_completion_evaluator import (
     EXPECTED_BUNDLE as RUNTIME_EXPECTED_BUNDLE,
+    EXPECTED_MAINTAINED_BUNDLE_SHA256 as RUNTIME_EXPECTED_MAINTAINED_BUNDLE_SHA256,
+    EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
     EXPECTED_MAINTAINED_COMPLETION_READINESS_AUXILIARY_DEPENDENCIES,
     evaluate_file,
     evaluate_m14_final_completion,
@@ -100,10 +102,10 @@ EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
         "m14-completion-readiness-future-readme-path.json"
     ): "e65e4558bc25504ebea24dd8479ac5c40e1ecc588cd3262e729fe77b193d2673",
     "runtime/m14_completion_readiness_evaluator.py": (
-        "c87bdf875c3cce8893693a60a913f1adc97b2b49b7922ad038aaf6f80cc585c5"
+        "c9dbf73ee66b2e6e002ed82f2c16913d23b13c0b22d70ee56dc7761b7b4069b3"
     ),
     "tests/test_m14_completion_readiness_evaluator.py": (
-        "9ba54dbb7b6c4a3d5ce4d4f46e1919f5e259a8bcbd6ce247d4c5b7b1dbae21f9"
+        "6faf721f987379bc5220e022017f9a3a3c91555a58264de6c0a36ff8a8241b1b"
     ),
 }
 EXPECTED_AUXILIARY_DEPENDENCY = {
@@ -315,6 +317,53 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
             self.assertTrue((ROOT / entry["relative_path"]).is_file())
 
     def test_08_all_bundle_sha256_digests_match(self):
+        expected_overrides = {
+            "runtime/m14_completion_readiness_evaluator.py": (
+                "c9dbf73ee66b2e6e002ed82f2c16913d23b13c0b22d70ee56dc7761b7b4069b3"
+            ),
+            "tests/test_m14_completion_readiness_evaluator.py": (
+                "6faf721f987379bc5220e022017f9a3a3c91555a58264de6c0a36ff8a8241b1b"
+            ),
+        }
+        historical = {
+            entry["relative_path"]: entry["sha256"] for entry in EXPECTED_BUNDLE
+        }
+        self.assertEqual(
+            historical,
+            {
+                "examples/public-integration-pack-pilot/"
+                "m14-completion-readiness-future-readme-path.json": (
+                    "e65e4558bc25504ebea24dd8479ac5c40e1ecc588cd3262e729fe77b193d2673"
+                ),
+                "runtime/m14_completion_readiness_evaluator.py": (
+                    "c3e1a9b36b94750f4ec6fe00c2fda7def4c033eb2a7100100fc31a4378deb956"
+                ),
+                "tests/test_m14_completion_readiness_evaluator.py": (
+                    "7aec68924201a6facb5d9248c065346e774b49cf6377161d8c2c0931df30c7ed"
+                ),
+            },
+        )
+        self.assertEqual(
+            EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
+            expected_overrides,
+        )
+        self.assertEqual(
+            RUNTIME_EXPECTED_MAINTAINED_BUNDLE_SHA256,
+            EXPECTED_MAINTAINED_BUNDLE_SHA256,
+        )
+        self.assertEqual(
+            set(RUNTIME_EXPECTED_MAINTAINED_BUNDLE_SHA256),
+            set(historical),
+        )
+        self.assertIsNot(RUNTIME_EXPECTED_MAINTAINED_BUNDLE_SHA256, historical)
+        self.assertNotIn(
+            "runtime/m14_final_completion_evaluator.py",
+            EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
+        )
+        self.assertNotIn(
+            "tests/test_m14_final_completion_evaluator.py",
+            EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
+        )
         for entry in EXPECTED_BUNDLE:
             self.assertEqual(
                 sha256_repository_file(
@@ -322,6 +371,16 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
                 ),
                 EXPECTED_MAINTAINED_BUNDLE_SHA256[entry["relative_path"]],
             )
+            if entry["relative_path"] in expected_overrides:
+                self.assertNotEqual(
+                    EXPECTED_MAINTAINED_BUNDLE_SHA256[entry["relative_path"]],
+                    entry["sha256"],
+                )
+            else:
+                self.assertEqual(
+                    EXPECTED_MAINTAINED_BUNDLE_SHA256[entry["relative_path"]],
+                    entry["sha256"],
+                )
         self.assertEqual(
             self.fixture["completion_readiness_bundle"],
             EXPECTED_BUNDLE,
@@ -333,6 +392,24 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
             EXPECTED_BUNDLE[2]["sha256"],
         )
         self.assertTrue(self.evaluate()["completion_readiness_bundle_integrity_valid"])
+
+        tree = ast.parse(self.evaluator_source)
+        digest_map_names = {
+            "EXPECTED_BUNDLE",
+            "EXPECTED_MAINTAINED_BUNDLE_SHA256",
+        }
+        for node in ast.walk(tree):
+            names = {
+                child.id
+                for child in ast.walk(node)
+                if isinstance(child, ast.Name)
+            }
+            if isinstance(node, ast.BoolOp) and isinstance(node.op, ast.Or):
+                self.assertFalse(digest_map_names <= names)
+            if isinstance(node, ast.Compare) and any(
+                isinstance(operator, (ast.In, ast.NotIn)) for operator in node.ops
+            ):
+                self.assertFalse(digest_map_names <= names)
 
     def test_09_missing_bundle_file_fails(self):
         with self.temporary_repository() as root:

@@ -944,35 +944,137 @@ class M14ReleaseProofLinkageEvaluatorTests(unittest.TestCase):
         self.assert_invalid(self.evaluate(specimen), "release_approved")
 
     def test_85_maintained_operational_digest_overlay_is_narrow_and_explicit(self):
+        expected_overrides = {
+            "runtime/m14_operational_readiness_evaluator.py": (
+                "d3c6e22ff3ab7a885378ba6732a1cf91879f801e39226b720e3fb847ac8bbffb"
+            ),
+            "tests/test_m14_operational_readiness_evaluator.py": (
+                "00d8dbad46190020f50661f08c413d383d327be55c93c5d2313b8204eb131d5b"
+            ),
+        }
         self.assertEqual(
             MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256_OVERRIDES,
+            expected_overrides,
+        )
+        historical = {
+            entry["relative_path"]: entry["sha256"] for entry in EXPECTED_BUNDLE
+        }
+        self.assertEqual(
+            historical,
             {
+                "examples/public-integration-pack-pilot/"
+                "m14-operational-readiness-fixtures.json": (
+                    "249d97afe928c6087f84f2b7bb061cbcf75f4a258341c18262bc5525b57317ae"
+                ),
                 "runtime/m14_operational_readiness_evaluator.py": (
-                    "265f6d3ad2a9803fe1fe119c1ed9d2129bba47d616b09fda7b03b52306480e97"
+                    "8a7a2b996cc2d7022c7456e044724e503d350d516f867caf3138f60615def1ff"
                 ),
                 "tests/test_m14_operational_readiness_evaluator.py": (
-                    "2ac69dc2d9c5e8c69b0bc52c09a68944c15f440a6e91f066d8ba6b4534d893a5"
+                    "5b32b25bc225914283a3ee4a3dac6569d495e03c0726494120580c41cfc159b7"
                 ),
             },
         )
         self.assertEqual(
-            MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256[
-                EXPECTED_BUNDLE[0]["relative_path"]
-            ],
-            EXPECTED_BUNDLE[0]["sha256"],
+            set(MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256),
+            set(historical),
         )
+        for relative_path, maintained_digest in (
+            MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256.items()
+        ):
+            self.assertEqual(
+                sha256_repository_file(ROOT, relative_path, mode="text"),
+                maintained_digest,
+            )
+            if relative_path in expected_overrides:
+                self.assertNotEqual(maintained_digest, historical[relative_path])
+            else:
+                self.assertEqual(maintained_digest, historical[relative_path])
 
     def test_86_historical_source_digests_are_independent_of_maintained_overlay(self):
+        expected_overrides = {
+            "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md": (
+                "75ae56e8fecc423cda353ef118ca8859ddd06f5e95e31e2f72659ecfca1a54f2"
+            ),
+            "docs/capability-supply-chain/nvidia-skills-admission.md": (
+                "ad9129242540d241d82b8fcd35f7ecb1da1c4559937ec20b3c424ae88faa316d"
+            ),
+            "tests/test_skill_admission_evaluator.py": (
+                "45ba9f2f8369bf0c127993c480e5091a1a2ee8f7ca2a0be2f579b3de38011b83"
+            ),
+        }
+        expected_historical_for_overrides = {
+            "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md": (
+                "d28987ceeb419d36f43e32f9fba6fa82c7233ce3355117ebac5f9c45cfae97a3"
+            ),
+            "docs/capability-supply-chain/nvidia-skills-admission.md": (
+                "f49b51dd960df118a002c7e3fef685bf39f4006f8372373c0cb1fa7b635f8f49"
+            ),
+            "tests/test_skill_admission_evaluator.py": (
+                "7cfd8b7f801a9a9da0546ae64499b234cbd1882fbba64b7a169b01b866ec6abd"
+            ),
+        }
         fixture_digests = {
             entry["relative_path"]: entry["sha256"]
             for entry in self.readiness["source_artifact_manifest"]
         }
         self.assertEqual(fixture_digests, HISTORICAL_SOURCE_ARTIFACT_SHA256)
-        self.assertEqual(MAINTAINED_SOURCE_ARTIFACT_SHA256_OVERRIDES, {})
         self.assertEqual(
+            MAINTAINED_SOURCE_ARTIFACT_SHA256_OVERRIDES,
+            expected_overrides,
+        )
+        self.assertEqual(
+            set(MAINTAINED_SOURCE_ARTIFACT_SHA256),
+            set(HISTORICAL_SOURCE_ARTIFACT_SHA256),
+        )
+        self.assertIsNot(
             MAINTAINED_SOURCE_ARTIFACT_SHA256,
             HISTORICAL_SOURCE_ARTIFACT_SHA256,
         )
+        for relative_path, historical_digest in expected_historical_for_overrides.items():
+            self.assertEqual(
+                HISTORICAL_SOURCE_ARTIFACT_SHA256[relative_path],
+                historical_digest,
+            )
+        for relative_path, maintained_digest in MAINTAINED_SOURCE_ARTIFACT_SHA256.items():
+            self.assertEqual(
+                sha256_repository_file(ROOT, relative_path, mode="text"),
+                maintained_digest,
+            )
+            if relative_path in expected_overrides:
+                self.assertNotEqual(
+                    maintained_digest,
+                    HISTORICAL_SOURCE_ARTIFACT_SHA256[relative_path],
+                )
+            else:
+                self.assertEqual(
+                    maintained_digest,
+                    HISTORICAL_SOURCE_ARTIFACT_SHA256[relative_path],
+                )
+
+        digest_map_pairs = (
+            {
+                "HISTORICAL_SOURCE_ARTIFACT_SHA256",
+                "MAINTAINED_SOURCE_ARTIFACT_SHA256",
+            },
+            {
+                "EXPECTED_BUNDLE",
+                "MAINTAINED_OPERATIONAL_READINESS_BUNDLE_SHA256",
+            },
+        )
+        for node in ast.walk(self.tree):
+            names = {
+                child.id
+                for child in ast.walk(node)
+                if isinstance(child, ast.Name)
+            }
+            if isinstance(node, ast.BoolOp) and isinstance(node.op, ast.Or):
+                for digest_map_pair in digest_map_pairs:
+                    self.assertFalse(digest_map_pair <= names)
+            if isinstance(node, ast.Compare) and any(
+                isinstance(operator, (ast.In, ast.NotIn)) for operator in node.ops
+            ):
+                for digest_map_pair in digest_map_pairs:
+                    self.assertFalse(digest_map_pair <= names)
 
     def test_87_end_to_end_lf_repository_text_passes(self):
         temporary, root = self.temporary_evidence_repository()

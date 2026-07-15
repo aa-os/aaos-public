@@ -1,10 +1,12 @@
 # M14 External Skill Capability Supply Chain and Admission Gate
 
-Status: M14 active work, not complete.
+Document state: M14 completed.
 
-Related work: this work may close #192 when its implementing pull request is merged; it references the M14 tracker #201 and merged pull requests #202, #204, #205, and #206. It does not close #201.
+Release state: Included in published v0.13.0.
 
-Target future release path: v0.13.0, not released.
+Historical implementation evidence: PR #208.
+
+Historical completed references: source issue #192 and M14 tracker #201. Related M14 context includes PR #202, PR #204, PR #205, and PR #206.
 
 ## 1. Purpose and scope
 
@@ -483,10 +485,16 @@ Allowed evaluator outputs are limited to validation, readiness, candidate-routin
 
 Forbidden outputs include claims of skill execution, installation, activation, execution or deployment approval, permission grant, risk acceptance, final admission approval, audit closure, waiver grant, fail-closed or rollback execution, Decision Proof verification or sealing, authority transfer, final governance judgment, M14 completion, v0.13.0 release, or closure of #201.
 
-## 19. M14 active-work and future v0.13.0 status
+## 19. M14 completed and published v0.13.0 status
 
-This document is M14 active work and does not declare M14 complete. The implementing pull request may close capability-supply-chain issue #192. It references, but must not close, M14 tracker #201.
+This document was completed as part of M14 and is included in published v0.13.0. Historical implementation evidence is PR #208. Source issue #192 and M14 tracker #201 are historical completed references.
 
-The work builds on the boundaries established by merged PR #202 (voice runtime), merged PR #204 (public output gate), merged PR #205 (MODA mapping), and merged PR #206 (AI PR provenance). Those references provide M14 context; none transfers governance authority to an external skill or proves this admission gate complete.
+The completed work builds on the boundaries established by merged PR #202 (voice runtime), merged PR #204 (public output gate), merged PR #205 (MODA mapping), and merged PR #206 (AI PR provenance). Those references provide historical M14 context; none transfers governance authority to an external skill.
 
-v0.13.0 is a target future release path and is not released. This work does not create or modify release files, add a GitHub Actions workflow, update the README, create a release, claim a release tag, or make a completion declaration. Release readiness, release approval, and any future release act remain separate AAOS governance steps.
+This document records completed release state; it does not create or modify release state. It does not create or modify release files, add a GitHub Actions workflow, update the README, create a release, or claim a release tag. Release readiness, release approval, and release acts remain separate AAOS governance steps.
+
+Package integrity or skill admission evidence does not approve installation, activation, execution, deployment, or risk acceptance.
+
+Decision Proof sealing remains AAOS-owned.
+
+AAOS remains the decision sovereignty layer.

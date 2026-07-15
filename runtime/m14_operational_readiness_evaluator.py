@@ -260,8 +260,22 @@ EXPECTED_HISTORICAL_ARTIFACT_SHA256 = {
 
 # Current repository integrity is independently maintained.  Later legitimate
 # source changes belong here; they never overwrite the historical map above.
+EXPECTED_MAINTAINED_ARTIFACT_SHA256_OVERRIDES = {
+    "docs/public-integration-pack/m14-moda-ai-risk-framework-mapping.md": (
+        "75ae56e8fecc423cda353ef118ca8859ddd06f5e95e31e2f72659ecfca1a54f2"
+    ),
+    "docs/capability-supply-chain/nvidia-skills-admission.md": (
+        "ad9129242540d241d82b8fcd35f7ecb1da1c4559937ec20b3c424ae88faa316d"
+    ),
+    "tests/test_skill_admission_evaluator.py": (
+        "45ba9f2f8369bf0c127993c480e5091a1a2ee8f7ca2a0be2f579b3de38011b83"
+    ),
+}
 EXPECTED_MAINTAINED_ARTIFACT_SHA256 = {
-    **EXPECTED_HISTORICAL_ARTIFACT_SHA256,
+    relative_path: EXPECTED_MAINTAINED_ARTIFACT_SHA256_OVERRIDES.get(
+        relative_path, historical_digest
+    )
+    for relative_path, historical_digest in EXPECTED_HISTORICAL_ARTIFACT_SHA256.items()
 }
 
 EXPECTED_TOP_LEVEL_VALUES = {
