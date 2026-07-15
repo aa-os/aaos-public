@@ -30,7 +30,7 @@ The following values are closed enumerations for `m15-learning-proof/v1`:
 | `authorization_outcome` | `deny`, `allow-ephemeral`, `allow-evaluation-only`, `allow-memory`, `allow-skill`, `allow-training`, `quarantine`, `require-review` |
 | `lifecycle_state` | `proposed`, `verified`, `quarantined`, `active`, `stale`, `incompatible`, `superseded`, `revoked`, `deletion-pending`, `deleted` |
 
-Issue #232 does not define a binding transformation-type enumeration. Therefore, `transformation_type` is a required non-empty string rather than a closed enum. Values such as `none`, `normalization`, `summarization`, `rule`, `memory`, `skill`, and `adapter` come from the illustrative source design in #217 and are not promoted to binding M15 vocabulary by this contract.
+Issue #232 does not define a binding transformation-type enumeration. Therefore, `transformation_type` remains an open vocabulary, but every value must be a 1–64 character machine token matching `^[a-z][a-z0-9-]{0,63}$` exactly. The evaluator does not trim, lowercase, or otherwise normalize the caller value. Values such as `none`, `normalization`, `summarization`, `rule`, `memory`, `skill`, and `adapter` come from the illustrative source design in #217 and are not promoted to binding M15 vocabulary by this contract.
 
 The Learning Sovereignty Boundary governs these operation names from tracker #231: `capture`, `processing`, `retention`, `transformation`, `evaluation`, `memory creation`, `skill creation`, `training`, `distillation`, `export`, `sharing`, `revocation`, and `deletion`. Listing an operation is not authorization to perform it.
 
@@ -56,7 +56,7 @@ Every Learning Proof is a single JSON object with exactly the following required
 | `processing_boundary` | Closed sovereignty-boundary enum. |
 | `retention_boundary` | Closed sovereignty-boundary enum. |
 | `boundary_evidence_reference` | Governed reference with prefix `urn:aaos:m15:boundary-evidence:` or `null`; mandatory when either boundary is `external` or `public`. |
-| `transformation_type` | Non-empty string; not a closed enum in this version. |
+| `transformation_type` | Open-vocabulary machine token matching `^[a-z][a-z0-9-]{0,63}$` exactly; not a closed enum in this version. |
 | `transformation_input_references` | Non-empty array of unique, non-empty references. |
 | `transformation_output_reference` | Non-empty reference. |
 | `lifecycle_state` | Closed lifecycle enum. |
@@ -124,6 +124,8 @@ A lifecycle state of `superseded`, `revoked`, `deletion-pending`, or `deleted` c
 - `decision_proof_sealed`
 
 Additional claim fields are retained for fail-closed evaluator inspection; they are not an extension mechanism for granting authority. A negative outer state cannot hide a nested affirmative claim.
+
+`transformation_type` is also scanned for affirmative forbidden authority semantics in both prose-like and tokenized forms. A syntactically valid token such as `release-approval-granted`, `execution-authorized`, `learning-proof-sealed`, or `decision-proof-sealed` fails the authority boundary. Inert identifiers and references—including Learning Proof, source, authority-basis, boundary-evidence, transformation input/output, Decision Proof, and lifecycle references—are not treated as current authority merely because their names contain historical authority-related terms; their independent reuse and authority-basis rules still apply.
 
 The exact required statement is:
 

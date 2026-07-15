@@ -427,6 +427,23 @@ class M15LearningProofEvaluatorTests(unittest.TestCase):
             result["findings"],
         )
 
+    def assert_transformation_authority_claim_rejected(self, value):
+        artifact = self.fixture()
+        baseline = copy.deepcopy(artifact)
+        self.assert_valid_evidence(self.evaluate(baseline))
+
+        artifact["transformation_type"] = value
+        self.assertNotEqual(artifact, baseline, "regression mutation must not be a no-op")
+        self.assertEqual(validate_schema_subset(artifact, self.schema), [])
+
+        result = self.evaluate(artifact)
+        self.assert_invalid(
+            result,
+            "affirmative_forbidden_prose_claim:transformation_type",
+        )
+        self.assertTrue(result["schema_valid"])
+        self.assertFalse(result["authority_boundary_valid"])
+
     def test_01_schema_and_all_public_fixtures_are_structurally_valid(self):
         self.assertEqual(
             self.schema["$schema"],
@@ -1133,6 +1150,125 @@ class M15LearningProofEvaluatorTests(unittest.TestCase):
             "related_decision_proof_reference",
         )
         self.assertFalse(result["authorization_evidence_valid"])
+
+    def test_54_normalization_remains_a_valid_transformation_type(self):
+        artifact = self.fixture()
+        expected_pattern = r"^[a-z][a-z0-9-]{0,63}$"
+        self.assertEqual(artifact["transformation_type"], "normalization")
+        self.assertEqual(
+            self.schema["properties"]["transformation_type"]["pattern"],
+            expected_pattern,
+        )
+        self.assertEqual(
+            evaluator_module.TRANSFORMATION_TYPE_PATTERN.pattern,
+            expected_pattern,
+        )
+        self.assertEqual(validate_schema_subset(artifact, self.schema), [])
+        self.assert_valid_evidence(self.evaluate(artifact))
+
+    def test_55_whitespace_prose_transformation_type_fails_structure(self):
+        artifact = self.fixture()
+        baseline = copy.deepcopy(artifact)
+        self.assert_valid_evidence(self.evaluate(baseline))
+
+        artifact["transformation_type"] = "release approval granted"
+        self.assertNotEqual(artifact, baseline, "regression mutation must not be a no-op")
+        self.assertIn(
+            "$.transformation_type:pattern",
+            validate_schema_subset(artifact, self.schema),
+        )
+
+        result = self.evaluate(artifact)
+        self.assert_invalid(result, "transformation_type_invalid")
+        self.assertFalse(result["schema_valid"])
+
+    def test_56_release_approval_token_fails_authority_validation(self):
+        for value in (
+            "release-approval-granted",
+            "release-authorization-granted",
+            "releaseapprovalgranted",
+        ):
+            with self.subTest(value=value):
+                self.assert_transformation_authority_claim_rejected(value)
+
+    def test_57_deployment_approval_token_fails_authority_validation(self):
+        for value in (
+            "deployment-approved",
+            "deployment-authorization-granted",
+            "deploymentapprovalgranted",
+        ):
+            with self.subTest(value=value):
+                self.assert_transformation_authority_claim_rejected(value)
+
+    def test_58_execution_authorization_token_fails_authority_validation(self):
+        for value in (
+            "execution-authorized",
+            "execution-authorization-granted",
+        ):
+            with self.subTest(value=value):
+                self.assert_transformation_authority_claim_rejected(value)
+
+    def test_59_risk_acceptance_token_fails_authority_validation(self):
+        for value in ("risk-accepted", "riskacceptancegranted"):
+            with self.subTest(value=value):
+                self.assert_transformation_authority_claim_rejected(value)
+
+    def test_60_rollback_execution_token_fails_authority_validation(self):
+        self.assert_transformation_authority_claim_rejected("rollback-executed")
+
+    def test_61_audit_closure_token_fails_authority_validation(self):
+        for value in ("audit-closed", "audit-closure-granted"):
+            with self.subTest(value=value):
+                self.assert_transformation_authority_claim_rejected(value)
+
+    def test_62_waiver_token_fails_authority_validation(self):
+        for value in ("waiver-granted", "waiver-issued"):
+            with self.subTest(value=value):
+                self.assert_transformation_authority_claim_rejected(value)
+
+    def test_63_authority_transfer_token_fails_authority_validation(self):
+        for value in ("authority-transferred", "authority-transfer-accepted"):
+            with self.subTest(value=value):
+                self.assert_transformation_authority_claim_rejected(value)
+
+    def test_64_learning_proof_sealed_token_fails_authority_validation(self):
+        for value in (
+            "learning-proof-sealed",
+            "learning-proof-sealing-completed",
+        ):
+            with self.subTest(value=value):
+                self.assert_transformation_authority_claim_rejected(value)
+
+    def test_65_decision_proof_sealed_token_fails_authority_validation(self):
+        for value in (
+            "decision-proof-sealed",
+            "decision-proof-sealing-confirmed",
+        ):
+            with self.subTest(value=value):
+                self.assert_transformation_authority_claim_rejected(value)
+
+    def test_66_transformation_authority_finding_uses_exact_field_path(self):
+        artifact = self.fixture()
+        artifact["transformation_type"] = "execution authorized"
+        result = self.evaluate(artifact)
+        self.assert_invalid(
+            result,
+            "affirmative_forbidden_prose_claim:transformation_type",
+        )
+        self.assertFalse(result["authority_boundary_valid"])
+
+    def test_67_historical_authority_identifier_in_source_reference_is_inert(self):
+        artifact = self.fixture()
+        artifact["source_reference"] = (
+            "urn:aaos:m15:synthetic-source:historical-release-approval-granted"
+        )
+        self.assert_valid_evidence(self.evaluate(artifact))
+
+    def test_68_all_public_fixtures_remain_valid_evidence(self):
+        for name, artifact in self.fixtures.items():
+            with self.subTest(name=name):
+                self.assertEqual(validate_schema_subset(artifact, self.schema), [])
+                self.assert_valid_evidence(self.evaluate(artifact))
 
 
 if __name__ == "__main__":

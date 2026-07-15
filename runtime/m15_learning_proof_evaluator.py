@@ -221,6 +221,7 @@ NON_PERSISTENT_LIFECYCLE_STATES = frozenset(
 EXTERNAL_BOUNDARIES = frozenset({"external", "public"})
 
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+TRANSFORMATION_TYPE_PATTERN = re.compile(r"^[a-z][a-z0-9-]{0,63}$")
 AUTHORITY_BASIS_PATTERN = re.compile(
     r"^urn:aaos:m15:authority-basis:[A-Za-z0-9][A-Za-z0-9._:/-]*$"
 )
@@ -234,17 +235,17 @@ RFC3339_PATTERN = re.compile(
 PROSE_AUTHORITY_PATTERNS = tuple(
     re.compile(pattern)
     for pattern in (
-        r"release.*(?:approved|authorized|approval_(?:granted|confirmed|accepted))",
-        r"deployment.*(?:approved|authorized|approval_(?:granted|confirmed))",
-        r"execution.*(?:authorized|approved|allowed|permission_granted)",
-        r"risk.*(?:accepted|acceptance_(?:granted|approved|confirmed))",
+        r"release.*(?:approved|authorized|approval_?(?:granted|confirmed|accepted)|authorization_?(?:granted|approved|confirmed|accepted))",
+        r"deployment.*(?:approved|authorized|approval_?(?:granted|confirmed)|authorization_?(?:granted|approved|confirmed|accepted))",
+        r"execution.*(?:authorized|approved|allowed|permission_?granted|authorization_?(?:granted|approved|confirmed|accepted))",
+        r"risk.*(?:accepted|acceptance_?(?:granted|approved|confirmed))",
         r"rollback.*(?:executed|performed|completed)",
         r"deletion.*(?:executed|performed|completed)",
-        r"audit.*(?:closed|closure_(?:approved|confirmed|completed))",
-        r"waiver.*(?:granted|approved|accepted)",
-        r"authority.*(?:transferred|transfer_(?:granted|approved|completed))",
-        r"learning_proof.*sealed",
-        r"decision_proof.*sealed",
+        r"audit.*(?:closed|closure_?(?:granted|approved|confirmed|completed))",
+        r"waiver.*(?:granted|approved|accepted|issued)",
+        r"authority.*(?:transferred|transfer_?(?:granted|approved|completed|accepted))",
+        r"learning_?proof.*(?:sealed|sealing_?(?:completed|confirmed|granted|approved))",
+        r"decision_?proof.*(?:sealed|sealing_?(?:completed|confirmed|granted|approved))",
         r"persistent_retention.*(?:authorized|approved|allowed)",
         r"(?:memory|skill|training).*(?:authorized|approved|allowed)",
         r"decision_proof.*(?:became|converted|created).*memory",
@@ -261,11 +262,13 @@ NEGATIVE_PROSE_PHRASES = (
     "not_performed",
     "not_completed",
     "not_closed",
+    "not_issued",
     "not_sealed",
     "not_transferred",
     "non_authoritative",
     "unauthorized",
     "unapproved",
+    "unissued",
     "denied",
     "rejected",
     "prohibited",
@@ -374,6 +377,13 @@ def _structure_findings(artifact: Mapping[str, Any]) -> list[str]:
     for field in required_strings:
         if not _is_nonempty_string(artifact.get(field)):
             findings.append(f"field_must_be_nonempty_string:{field}")
+
+    transformation_type = artifact.get("transformation_type")
+    if not (
+        isinstance(transformation_type, str)
+        and TRANSFORMATION_TYPE_PATTERN.fullmatch(transformation_type)
+    ):
+        findings.append("transformation_type_invalid")
 
     authority_basis = artifact.get("authority_basis_reference")
     if _is_nonempty_string(authority_basis) and not AUTHORITY_BASIS_PATTERN.fullmatch(
@@ -728,6 +738,22 @@ def _contamination_findings(artifact: Mapping[str, Any]) -> list[str]:
 def _authority_boundary_findings(artifact: Mapping[str, Any]) -> list[str]:
     findings: list[str] = []
     authority_claims = artifact.get("authority_claims")
+
+    transformation_type = artifact.get("transformation_type")
+    findings.extend(
+        scan_forbidden_authority_claims(
+            transformation_type,
+            forbidden_keys=FORBIDDEN_AUTHORITY_KEYS,
+            forbidden_tokens=FORBIDDEN_AUTHORITY_TOKENS,
+            path=("transformation_type",),
+        )
+    )
+    findings.extend(
+        _scan_prose_authority_claims(
+            transformation_type,
+            path=("transformation_type",),
+        )
+    )
 
     if isinstance(authority_claims, Mapping):
         dynamic_keys = tuple(
