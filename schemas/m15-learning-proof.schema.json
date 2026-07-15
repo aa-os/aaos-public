@@ -1,0 +1,619 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/m15-learning-proof.schema.json",
+  "title": "AAOS M15 Learning Proof",
+  "description": "Deterministic, evidence-only M15 Track A Learning Proof contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "learning_proof_id",
+    "source_type",
+    "source_reference",
+    "source_owner",
+    "source_integrity_hash",
+    "source_self_asserted_trust_marker",
+    "sensitivity",
+    "requested_purpose",
+    "authorized_purpose",
+    "authorization_outcome",
+    "authority_basis_reference",
+    "policy_version",
+    "processing_boundary",
+    "retention_boundary",
+    "boundary_evidence_reference",
+    "transformation_type",
+    "transformation_input_references",
+    "transformation_output_reference",
+    "lifecycle_state",
+    "effective_timestamp",
+    "expiration_timestamp",
+    "superseded_by_reference",
+    "rollback_target",
+    "deletion_evidence_reference",
+    "related_decision_proof_reference",
+    "contamination_detected",
+    "contamination_evidence_references",
+    "authority_claims",
+    "evaluator_findings",
+    "non_authoritative_boundary_statement"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "m15-learning-proof/v1"
+    },
+    "learning_proof_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "prompt",
+        "trace",
+        "correction",
+        "evaluation",
+        "decision",
+        "tool-output",
+        "specification",
+        "generated-artifact"
+      ]
+    },
+    "source_reference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_owner": {
+      "type": "string",
+      "enum": [
+        "organization",
+        "employee",
+        "customer",
+        "provider",
+        "shared",
+        "unknown"
+      ]
+    },
+    "source_integrity_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_self_asserted_trust_marker": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "sensitivity": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "confidential",
+        "restricted"
+      ]
+    },
+    "requested_purpose": {
+      "type": "string",
+      "enum": [
+        "ephemeral-inference",
+        "evaluation",
+        "memory",
+        "skill",
+        "training",
+        "audit"
+      ]
+    },
+    "authorized_purpose": {
+      "enum": [
+        "ephemeral-inference",
+        "evaluation",
+        "memory",
+        "skill",
+        "training",
+        "audit",
+        null
+      ]
+    },
+    "authorization_outcome": {
+      "type": "string",
+      "enum": [
+        "deny",
+        "allow-ephemeral",
+        "allow-evaluation-only",
+        "allow-memory",
+        "allow-skill",
+        "allow-training",
+        "quarantine",
+        "require-review"
+      ]
+    },
+    "authority_basis_reference": {
+      "type": "string",
+      "pattern": "^urn:aaos:m15:authority-basis:[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "processing_boundary": {
+      "type": "string",
+      "enum": [
+        "local",
+        "organization",
+        "tenant",
+        "approved-provider",
+        "external",
+        "public"
+      ]
+    },
+    "retention_boundary": {
+      "type": "string",
+      "enum": [
+        "local",
+        "organization",
+        "tenant",
+        "approved-provider",
+        "external",
+        "public"
+      ]
+    },
+    "boundary_evidence_reference": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^urn:aaos:m15:boundary-evidence:[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "transformation_type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,63}$"
+    },
+    "transformation_input_references": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "transformation_output_reference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "verified",
+        "quarantined",
+        "active",
+        "stale",
+        "incompatible",
+        "superseded",
+        "revoked",
+        "deletion-pending",
+        "deleted"
+      ]
+    },
+    "effective_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiration_timestamp": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "superseded_by_reference": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "rollback_target": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "deletion_evidence_reference": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "related_decision_proof_reference": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "contamination_detected": {
+      "type": "boolean"
+    },
+    "contamination_evidence_references": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "authority_claims": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "release_approved",
+        "deployment_approved",
+        "execution_authorized",
+        "risk_accepted",
+        "rollback_executed",
+        "deletion_executed",
+        "audit_closed",
+        "waiver_granted",
+        "authority_transferred",
+        "learning_proof_sealed",
+        "decision_proof_sealed"
+      ],
+      "properties": {
+        "release_approved": {
+          "const": false
+        },
+        "deployment_approved": {
+          "const": false
+        },
+        "execution_authorized": {
+          "const": false
+        },
+        "risk_accepted": {
+          "const": false
+        },
+        "rollback_executed": {
+          "const": false
+        },
+        "deletion_executed": {
+          "const": false
+        },
+        "audit_closed": {
+          "const": false
+        },
+        "waiver_granted": {
+          "const": false
+        },
+        "authority_transferred": {
+          "const": false
+        },
+        "learning_proof_sealed": {
+          "const": false
+        },
+        "decision_proof_sealed": {
+          "const": false
+        }
+      }
+    },
+    "evaluator_findings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "evaluation_only_authorization_recorded",
+          "decision_proof_linkage_is_non_authoritative",
+          "self_asserted_trust_marker_ignored",
+          "rejection_evidence_recorded",
+          "source_contamination_detected",
+          "revoked_or_poisoned_source_dependency_detected",
+          "learning_artifact_quarantined",
+          "persistence_and_execution_not_authorized",
+          "synthetic_identity_label_present",
+          "synthetic_reviewer_label_present",
+          "verification_success_observed",
+          "schema_validity_observed"
+        ]
+      }
+    },
+    "non_authoritative_boundary_statement": {
+      "type": "string",
+      "const": "This Learning Proof is evidence only; it grants no persistence, training, skill, tool, execution, rollback, deletion, sealing, or governance authority."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "authorization_outcome": {
+            "const": "allow-ephemeral"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "requested_purpose": {
+            "const": "ephemeral-inference"
+          },
+          "authorized_purpose": {
+            "const": "ephemeral-inference"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authorization_outcome": {
+            "const": "allow-evaluation-only"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "requested_purpose": {
+            "const": "evaluation"
+          },
+          "authorized_purpose": {
+            "const": "evaluation"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authorization_outcome": {
+            "const": "allow-memory"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "requested_purpose": {
+            "const": "memory"
+          },
+          "authorized_purpose": {
+            "const": "memory"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authorization_outcome": {
+            "const": "allow-skill"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "requested_purpose": {
+            "const": "skill"
+          },
+          "authorized_purpose": {
+            "const": "skill"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authorization_outcome": {
+            "const": "allow-training"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "requested_purpose": {
+            "const": "training"
+          },
+          "authorized_purpose": {
+            "const": "training"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authorization_outcome": {
+            "enum": [
+              "deny",
+              "quarantine",
+              "require-review"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authorized_purpose": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authorization_outcome": {
+            "const": "deny"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lifecycle_state": {
+            "not": {
+              "const": "active"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authorization_outcome": {
+            "const": "quarantine"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "quarantined"
+          },
+          "contamination_detected": {
+            "const": true
+          },
+          "contamination_evidence_references": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "contamination_detected": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authorization_outcome": {
+            "const": "quarantine"
+          },
+          "authorized_purpose": {
+            "const": null
+          },
+          "lifecycle_state": {
+            "const": "quarantined"
+          },
+          "contamination_evidence_references": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "anyOf": [
+          {
+            "properties": {
+              "processing_boundary": {
+                "enum": [
+                  "external",
+                  "public"
+                ]
+              }
+            }
+          },
+          {
+            "properties": {
+              "retention_boundary": {
+                "enum": [
+                  "external",
+                  "public"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "then": {
+        "properties": {
+          "boundary_evidence_reference": {
+            "type": "string",
+            "pattern": "^urn:aaos:m15:boundary-evidence:[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "enum": [
+              "quarantined",
+              "superseded",
+              "revoked",
+              "deletion-pending",
+              "deleted"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authorized_purpose": {
+            "not": {
+              "enum": [
+                "memory",
+                "skill",
+                "training"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "deleted"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "deletion_evidence_reference": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

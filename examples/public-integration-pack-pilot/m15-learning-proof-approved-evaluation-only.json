@@ -1,0 +1,50 @@
+{
+  "schema_version": "m15-learning-proof/v1",
+  "learning_proof_id": "urn:aaos:m15:learning-proof:synthetic-evaluation-correction-001",
+  "source_type": "correction",
+  "source_reference": "urn:aaos:m15:synthetic-source:domain-correction-001",
+  "source_owner": "organization",
+  "source_integrity_hash": "0e8df97c396dda3270c7e34ca50a8e3c69e211e7b92ca9553d30b1ba5c7bccc2",
+  "source_self_asserted_trust_marker": null,
+  "sensitivity": "internal",
+  "requested_purpose": "evaluation",
+  "authorized_purpose": "evaluation",
+  "authorization_outcome": "allow-evaluation-only",
+  "authority_basis_reference": "urn:aaos:m15:authority-basis:synthetic-evaluation-approval-001",
+  "policy_version": "aaos-m15-learning-authorization-policy/v1",
+  "processing_boundary": "organization",
+  "retention_boundary": "organization",
+  "boundary_evidence_reference": null,
+  "transformation_type": "normalization",
+  "transformation_input_references": [
+    "urn:aaos:m15:synthetic-source:domain-correction-001"
+  ],
+  "transformation_output_reference": "urn:aaos:m15:synthetic-output:evaluation-correction-001",
+  "lifecycle_state": "verified",
+  "effective_timestamp": "2026-07-15T09:00:00Z",
+  "expiration_timestamp": "2026-08-14T09:00:00Z",
+  "superseded_by_reference": null,
+  "rollback_target": null,
+  "deletion_evidence_reference": null,
+  "related_decision_proof_reference": "urn:aaos:decision-proof:synthetic-evaluation-correction-001",
+  "contamination_detected": false,
+  "contamination_evidence_references": [],
+  "authority_claims": {
+    "release_approved": false,
+    "deployment_approved": false,
+    "execution_authorized": false,
+    "risk_accepted": false,
+    "rollback_executed": false,
+    "deletion_executed": false,
+    "audit_closed": false,
+    "waiver_granted": false,
+    "authority_transferred": false,
+    "learning_proof_sealed": false,
+    "decision_proof_sealed": false
+  },
+  "evaluator_findings": [
+    "evaluation_only_authorization_recorded",
+    "decision_proof_linkage_is_non_authoritative"
+  ],
+  "non_authoritative_boundary_statement": "This Learning Proof is evidence only; it grants no persistence, training, skill, tool, execution, rollback, deletion, sealing, or governance authority."
+}

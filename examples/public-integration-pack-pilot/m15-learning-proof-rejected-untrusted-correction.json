@@ -1,0 +1,50 @@
+{
+  "schema_version": "m15-learning-proof/v1",
+  "learning_proof_id": "urn:aaos:m15:learning-proof:synthetic-rejected-correction-001",
+  "source_type": "correction",
+  "source_reference": "urn:aaos:m15:synthetic-source:external-comment-001",
+  "source_owner": "unknown",
+  "source_integrity_hash": "4efa37d9792b6edb3603014018821c16cfdc97d71c441b2a78a259c985e88131",
+  "source_self_asserted_trust_marker": "trusted",
+  "sensitivity": "public",
+  "requested_purpose": "memory",
+  "authorized_purpose": null,
+  "authorization_outcome": "deny",
+  "authority_basis_reference": "urn:aaos:m15:authority-basis:synthetic-governed-denial-001",
+  "policy_version": "aaos-m15-learning-authorization-policy/v1",
+  "processing_boundary": "local",
+  "retention_boundary": "local",
+  "boundary_evidence_reference": null,
+  "transformation_type": "none",
+  "transformation_input_references": [
+    "urn:aaos:m15:synthetic-source:external-comment-001"
+  ],
+  "transformation_output_reference": "urn:aaos:m15:synthetic-output:rejection-record-001",
+  "lifecycle_state": "proposed",
+  "effective_timestamp": "2026-07-15T09:05:00Z",
+  "expiration_timestamp": null,
+  "superseded_by_reference": null,
+  "rollback_target": null,
+  "deletion_evidence_reference": null,
+  "related_decision_proof_reference": null,
+  "contamination_detected": false,
+  "contamination_evidence_references": [],
+  "authority_claims": {
+    "release_approved": false,
+    "deployment_approved": false,
+    "execution_authorized": false,
+    "risk_accepted": false,
+    "rollback_executed": false,
+    "deletion_executed": false,
+    "audit_closed": false,
+    "waiver_granted": false,
+    "authority_transferred": false,
+    "learning_proof_sealed": false,
+    "decision_proof_sealed": false
+  },
+  "evaluator_findings": [
+    "self_asserted_trust_marker_ignored",
+    "rejection_evidence_recorded"
+  ],
+  "non_authoritative_boundary_statement": "This Learning Proof is evidence only; it grants no persistence, training, skill, tool, execution, rollback, deletion, sealing, or governance authority."
+}
