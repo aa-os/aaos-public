@@ -342,11 +342,28 @@ class M12ReleaseReadinessEvaluatorTests(unittest.TestCase):
 
     def test_missing_aaos_authority_statement_fails(self):
         release_linkage = copy.deepcopy(self.release_linkage)
-        release_linkage["decision_proof_sealing_boundary_statement"] = ""
-        release_linkage["aaos_retained_authority_statement"] = ""
-        release_linkage["sovereignty_statement"] = ""
+        checklist = copy.deepcopy(self.checklist)
+        original_release_linkage = copy.deepcopy(release_linkage)
+        original_checklist = copy.deepcopy(checklist)
+        targets = (
+            "decision_proof_sealing_boundary_statement",
+            "aaos_retained_authority_statement",
+            "sovereignty_statement",
+        )
+        for record in (release_linkage, checklist):
+            for target in targets:
+                self.assertEqual(list(record).count(target), 1)
+                self.assertIsInstance(record[target], str)
+                self.assertTrue(record[target].strip())
+                record[target] = ""
 
-        result = self.evaluate(release_linkage=release_linkage)
+        self.assertNotEqual(release_linkage, original_release_linkage)
+        self.assertNotEqual(checklist, original_checklist)
+
+        result = self.evaluate(
+            release_linkage=release_linkage,
+            checklist=checklist,
+        )
 
         self.assertTrue(result["m12_release_readiness_invalid"])
         self.assertIn(

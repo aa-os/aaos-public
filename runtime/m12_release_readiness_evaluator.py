@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from runtime.authority_semantics import scan_forbidden_authority_claims
+
 
 REQUIRED_RELEASE_FIELDS = {
     "artifact_id": "missing_release_artifact_id",
@@ -194,6 +196,11 @@ SAFE_CONTEXT_KEYS = {
     "forbidden_evaluator_outputs",
 }
 
+FORBIDDEN_AUTHORITY_KEYS = FORBIDDEN_EVALUATOR_OUTPUTS | {
+    "release_approval",
+    "released",
+}
+
 
 
 def _as_dict(value: Any) -> dict[str, Any]:
@@ -229,6 +236,9 @@ def _text(value: Any) -> str:
 
 
 def _iter_claim_text(value: Any, parent_key: str | None = None) -> list[str]:
+    if parent_key in SAFE_CONTEXT_KEYS:
+        return []
+
     if isinstance(value, dict):
         text: list[str] = []
         for key, item in value.items():
@@ -240,9 +250,6 @@ def _iter_claim_text(value: Any, parent_key: str | None = None) -> list[str]:
         for item in value:
             text.extend(_iter_claim_text(item, parent_key))
         return text
-
-    if parent_key in SAFE_CONTEXT_KEYS:
-        return []
 
     return [_text(value)]
 
@@ -274,28 +281,21 @@ def _boundary_language(*records: dict[str, Any]) -> str:
 def detect_m12_release_readiness_forbidden_claims(
     value: Any, parent_key: str | None = None
 ) -> set[str]:
-    claims: set[str] = set()
+    claims = set(
+        scan_forbidden_authority_claims(
+            value,
+            forbidden_keys=FORBIDDEN_AUTHORITY_KEYS,
+            forbidden_tokens=FORBIDDEN_EVALUATOR_OUTPUTS,
+            skip_keys=SAFE_CONTEXT_KEYS,
+        )
+    )
 
-    if isinstance(value, dict):
-        for key, item in value.items():
-            claims.update(detect_m12_release_readiness_forbidden_claims(item, str(key)))
-        return claims
-
-    if isinstance(value, list):
-        for item in value:
-            claims.update(detect_m12_release_readiness_forbidden_claims(item, parent_key))
-        return claims
-
-    if parent_key in SAFE_CONTEXT_KEYS:
-        return claims
-
-    normalized = _text(value)
-    if normalized in FORBIDDEN_EVALUATOR_OUTPUTS:
-        claims.add(normalized)
-
-    for phrase in BOUNDARY_CLAIM_FINDINGS:
-        if phrase in normalized:
-            claims.add(phrase)
+    for normalized in _iter_claim_text(value, parent_key):
+        if normalized in FORBIDDEN_EVALUATOR_OUTPUTS:
+            claims.add(normalized)
+        for phrase in BOUNDARY_CLAIM_FINDINGS:
+            if phrase in normalized:
+                claims.add(phrase)
 
     return claims
 

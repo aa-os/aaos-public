@@ -177,7 +177,31 @@ class M13RuntimeApprovalGateEvaluatorTests(unittest.TestCase):
                 "trace"
             ]
         )
+        self.assertEqual(list(trace).count("approval_binding"), 1)
+        original_binding = copy.deepcopy(trace["approval_binding"])
+        self.assertTrue(original_binding)
         trace.pop("approval_binding")
+        self.assertNotEqual(trace.get("approval_binding"), original_binding)
+
+        result = evaluate_approval_gate_trace(trace)
+
+        self.assertTrue(result["approval_gate_trace_invalid"])
+        self.assertTrue(result["fail_closed_recommended"])
+        self.assertIn("approval_binding_missing", result["trace_findings"])
+
+    def test_missing_nested_approval_binding_id_fails_closed(self):
+        trace = copy.deepcopy(
+            fixture_by_id(self.artifact, "valid_halt_approval_release_execution_trace")[
+                "trace"
+            ]
+        )
+        binding = trace["approval_binding"]
+        target = "blocked_tool_call_id"
+        self.assertEqual(list(binding).count(target), 1)
+        original_value = binding[target]
+        self.assertTrue(original_value)
+        binding[target] = ""
+        self.assertNotEqual(binding[target], original_value)
 
         result = evaluate_approval_gate_trace(trace)
 

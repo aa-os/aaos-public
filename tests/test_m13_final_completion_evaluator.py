@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import json
 import sys
 import unittest
@@ -9,7 +10,19 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from runtime.m13_final_completion_evaluator import (  # noqa: E402
+    EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256,
+    HISTORICAL_README_SNAPSHOT_EVIDENCE_ROLE,
+    HISTORICAL_README_SNAPSHOT_PATH,
+    HISTORICAL_README_SNAPSHOT_PHASE,
+    HISTORICAL_README_SNAPSHOT_SOURCE_BLOB,
+    HISTORICAL_README_SNAPSHOT_SOURCE_COMMIT,
+    README_RELEASE_ENTRY,
+    README_STATUS,
     evaluate_m13_final_completion,
+    load_historical_readme_snapshot,
+)
+from runtime.repository_artifact_digest import (  # noqa: E402
+    canonicalize_utf8_repository_text,
 )
 
 
@@ -20,6 +33,7 @@ ARTIFACT_PATH = (
     / "m13-final-completion-release-state.json"
 )
 README_PATH = ROOT / "README.md"
+SNAPSHOT_PATH = ROOT / HISTORICAL_README_SNAPSHOT_PATH
 
 FORBIDDEN_RESULT_KEYS = {
     "github_release_created",
@@ -47,7 +61,7 @@ def load_text(path):
 class M13FinalCompletionEvaluatorTests(unittest.TestCase):
     def setUp(self):
         self.artifact = load_json(ARTIFACT_PATH)
-        self.readme_text = load_text(README_PATH)
+        self.readme_text = load_historical_readme_snapshot(ROOT)
 
     def evaluate(self, artifact=None, readme_text=None):
         return evaluate_m13_final_completion(
@@ -68,6 +82,61 @@ class M13FinalCompletionEvaluatorTests(unittest.TestCase):
         self.assertEqual(result["missing_evidence"], [])
         for forbidden_key in FORBIDDEN_RESULT_KEYS:
             self.assertNotIn(forbidden_key, result)
+
+    def test_historical_readme_snapshot_identity_is_explicit_and_bound(self):
+        self.assertEqual(
+            HISTORICAL_README_SNAPSHOT_PATH,
+            (
+                "examples/public-integration-pack-pilot/"
+                "m13-final-completion-readme-snapshot.md"
+            ),
+        )
+        self.assertEqual(
+            HISTORICAL_README_SNAPSHOT_SOURCE_COMMIT,
+            "d387e824f8c01c5afd6625982bb4f2d9fa1b829d",
+        )
+        self.assertEqual(
+            HISTORICAL_README_SNAPSHOT_SOURCE_BLOB,
+            "de1f4483fa0a2b1b41edc386583260ea7b409438",
+        )
+        self.assertEqual(
+            HISTORICAL_README_SNAPSHOT_PHASE,
+            "m13_final_completion_v0_12_release_state",
+        )
+        self.assertEqual(
+            HISTORICAL_README_SNAPSHOT_EVIDENCE_ROLE,
+            "post_release_auxiliary_historical_readme_evidence",
+        )
+
+        raw = SNAPSHOT_PATH.read_bytes()
+        canonical = canonicalize_utf8_repository_text(raw)
+        git_blob = hashlib.sha1(
+            f"blob {len(canonical)}\0".encode("ascii") + canonical,
+            usedforsecurity=False,
+        ).hexdigest()
+        canonical_digest = hashlib.sha256(canonical).hexdigest()
+        self.assertEqual(git_blob, HISTORICAL_README_SNAPSHOT_SOURCE_BLOB)
+        self.assertEqual(
+            canonical_digest,
+            EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256,
+        )
+
+    def test_current_readme_is_not_an_alternate_final_completion_source(self):
+        current_readme = load_text(README_PATH)
+        self.assertNotEqual(current_readme, self.readme_text)
+        self.assertTrue(self.evaluate()["m13_final_completion_valid"])
+
+        current_result = self.evaluate(readme_text=current_readme)
+
+        self.assertFalse(current_result["m13_final_completion_valid"])
+        self.assertIn(
+            "readme_m13_completion_status_missing",
+            current_result["final_completion_findings"],
+        )
+        self.assertIn(
+            "readme_next_phase_final_planning_missing",
+            current_result["final_completion_findings"],
+        )
 
     def test_missing_177_linkage_fails(self):
         artifact = copy.deepcopy(self.artifact)
@@ -149,10 +218,9 @@ class M13FinalCompletionEvaluatorTests(unittest.TestCase):
         )
 
     def test_readme_missing_v012_release_entry_fails(self):
-        readme_text = self.readme_text.replace(
-            "- v0.12.0 — M13 External Consumer Registry Hardening and Operational Readiness\n",
-            "",
-        )
+        self.assertEqual(self.readme_text.count(README_RELEASE_ENTRY), 1)
+        readme_text = self.readme_text.replace(README_RELEASE_ENTRY, "", 1)
+        self.assertNotEqual(readme_text, self.readme_text)
 
         result = self.evaluate(readme_text=readme_text)
 
@@ -160,10 +228,12 @@ class M13FinalCompletionEvaluatorTests(unittest.TestCase):
         self.assertIn("readme_v0_12_0_release_entry_missing", result["final_completion_findings"])
 
     def test_readme_failing_to_declare_m13_complete_fails(self):
-        readme_text = self.readme_text.replace(
-            "M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, and M13 are complete.",
-            "M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, and M12 are complete.",
+        replacement = (
+            "M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, and M12 are complete."
         )
+        self.assertEqual(self.readme_text.count(README_STATUS), 1)
+        readme_text = self.readme_text.replace(README_STATUS, replacement, 1)
+        self.assertNotEqual(readme_text, self.readme_text)
 
         result = self.evaluate(readme_text=readme_text)
 
@@ -248,6 +318,27 @@ class M13FinalCompletionEvaluatorTests(unittest.TestCase):
         self.assertTrue(result["m13_final_completion_invalid"])
         self.assertTrue(result["escalation_required"])
         self.assertIn("forbidden_evaluator_output_claim_detected", result["final_completion_findings"])
+
+    def test_negative_outer_output_cannot_hide_nested_authority_claim(self):
+        artifact = copy.deepcopy(self.artifact)
+        self.assertNotIn("evaluator_output", artifact)
+        artifact["evaluator_output"] = {
+            "status": "evidence_only",
+            "decision": {
+                "authority": "not_transferred",
+                "waiver": "granted",
+            },
+        }
+        self.assertNotEqual(artifact, self.artifact)
+
+        result = self.evaluate(artifact)
+
+        self.assertTrue(result["m13_final_completion_invalid"])
+        self.assertTrue(result["escalation_required"])
+        self.assertIn(
+            "forbidden_evaluator_output_claim_detected",
+            result["final_completion_findings"],
+        )
 
 
 if __name__ == "__main__":

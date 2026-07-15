@@ -5,6 +5,8 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
+from runtime.authority_semantics import scan_forbidden_authority_claims
+
 
 REQUIRED_ARTIFACT_FIELDS = {
     "artifact_id": "missing_artifact_id",
@@ -130,6 +132,10 @@ SAFE_CONTEXT_KEYS = {
     "negative_fixture_boundary",
 }
 
+FORBIDDEN_AUTHORITY_KEYS = FORBIDDEN_EVALUATOR_OUTPUTS | {
+    "evaluator_outputs",
+}
+
 
 
 def _as_dict(value: Any) -> dict[str, Any]:
@@ -212,24 +218,17 @@ def _iter_claim_text(value: Any, parent_key: str | None = None) -> list[str]:
 def detect_runtime_approval_gate_forbidden_claims(
     value: Any, parent_key: str | None = None
 ) -> set[str]:
-    claims: set[str] = set()
-
-    if parent_key in SAFE_CONTEXT_KEYS:
-        return claims
-
-    if isinstance(value, dict):
-        for key, item in value.items():
-            claims.update(detect_runtime_approval_gate_forbidden_claims(item, str(key)))
-        return claims
-
-    if isinstance(value, list):
-        for item in value:
-            claims.update(detect_runtime_approval_gate_forbidden_claims(item, parent_key))
-        return claims
-
-    normalized = _text(value)
-    if normalized in FORBIDDEN_EVALUATOR_OUTPUTS:
-        claims.add(normalized)
+    claims = set(
+        scan_forbidden_authority_claims(
+            value,
+            forbidden_keys=FORBIDDEN_AUTHORITY_KEYS,
+            forbidden_tokens=FORBIDDEN_EVALUATOR_OUTPUTS,
+            skip_keys=SAFE_CONTEXT_KEYS,
+        )
+    )
+    for normalized in _iter_claim_text(value, parent_key):
+        if normalized in FORBIDDEN_EVALUATOR_OUTPUTS:
+            claims.add(normalized)
     return claims
 
 
@@ -452,6 +451,15 @@ def _evaluate_fixture_expectations(
 
 def _gate_event_bound_to_tool_call(trace: dict[str, Any]) -> bool:
     gate_event = _as_dict(trace.get("gate_event"))
+    if not all(
+        [
+            _has_value(trace, "gate_event_id"),
+            _has_value(trace, "blocked_tool_call_id"),
+            _has_value(gate_event, "event_id"),
+            _has_value(gate_event, "blocked_tool_call_id"),
+        ]
+    ):
+        return False
     return (
         gate_event.get("event_id") == trace.get("gate_event_id")
         and gate_event.get("blocked_tool_call_id") == trace.get("blocked_tool_call_id")
@@ -461,6 +469,15 @@ def _gate_event_bound_to_tool_call(trace: dict[str, Any]) -> bool:
 
 def _approval_bound_to_tool_call(trace: dict[str, Any]) -> bool:
     binding = _as_dict(trace.get("approval_binding"))
+    if not all(
+        [
+            _has_value(trace, "approval_event_id"),
+            _has_value(trace, "blocked_tool_call_id"),
+            _has_value(binding, "approval_event_id"),
+            _has_value(binding, "blocked_tool_call_id"),
+        ]
+    ):
+        return False
     return (
         binding.get("approval_event_id") == trace.get("approval_event_id")
         and binding.get("blocked_tool_call_id") == trace.get("blocked_tool_call_id")

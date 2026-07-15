@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from runtime.authority_semantics import scan_forbidden_authority_claims
+
 
 REQUIRED_FIXTURE_FIELDS = {
     "fixture_id": "missing_fixture_id",
@@ -207,6 +209,17 @@ SAFE_CONTEXT_KEYS = {
     "must_not",
 }
 
+FORBIDDEN_AUTHORITY_KEYS = FORBIDDEN_EVALUATOR_OUTPUTS | {
+    "authority_granting",
+    "approved",
+    "approval_granted",
+    "execute_fail_closed",
+    "execute_rollback",
+    "released",
+    "documentation_output",
+    "evaluator_output",
+}
+
 EXPECTED_DOCUMENTATION_PATH = "docs/public-integration-pack/m13-external-consumer-onboarding.md"
 
 
@@ -264,27 +277,20 @@ def _iter_claim_text(value: Any, parent_key: str | None = None) -> list[str]:
 
 
 def detect_onboarding_forbidden_claims(value: Any, parent_key: str | None = None) -> set[str]:
-    claims: set[str] = set()
-
-    if parent_key in SAFE_CONTEXT_KEYS:
-        return claims
-
-    if isinstance(value, dict):
-        for key, item in value.items():
-            claims.update(detect_onboarding_forbidden_claims(item, str(key)))
-        return claims
-
-    if isinstance(value, list):
-        for item in value:
-            claims.update(detect_onboarding_forbidden_claims(item, parent_key))
-        return claims
-
-    normalized = _text(value)
-    if normalized in FORBIDDEN_EVALUATOR_OUTPUTS:
-        claims.add(normalized)
-    for phrase in BOUNDARY_CLAIM_FINDINGS:
-        if phrase in normalized:
-            claims.add(phrase)
+    claims = set(
+        scan_forbidden_authority_claims(
+            value,
+            forbidden_keys=FORBIDDEN_AUTHORITY_KEYS,
+            forbidden_tokens=FORBIDDEN_EVALUATOR_OUTPUTS,
+            skip_keys=SAFE_CONTEXT_KEYS,
+        )
+    )
+    for normalized in _iter_claim_text(value, parent_key):
+        if normalized in FORBIDDEN_EVALUATOR_OUTPUTS:
+            claims.add(normalized)
+        for phrase in BOUNDARY_CLAIM_FINDINGS:
+            if phrase in normalized:
+                claims.add(phrase)
     return claims
 
 
@@ -411,10 +417,11 @@ def evaluate_m13_external_consumer_onboarding(
     if not _required_boundary_language_present(_boundary_language(fixture)):
         add_missing("missing_aaos_authority_boundary_statement", "aaos_retained_authority_statement")
 
-    for phrase, finding in BOUNDARY_CLAIM_FINDINGS.items():
-        if phrase in _boundary_language(fixture):
-            findings.append(finding)
-            boundary_violation = True
+    for claim_text in _iter_claim_text(fixture):
+        for phrase, finding in BOUNDARY_CLAIM_FINDINGS.items():
+            if phrase in claim_text:
+                findings.append(finding)
+                boundary_violation = True
 
     forbidden_claims = detect_onboarding_forbidden_claims(fixture)
     if forbidden_claims:

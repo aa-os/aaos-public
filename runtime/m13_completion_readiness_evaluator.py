@@ -2,7 +2,36 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
+
+from runtime.authority_semantics import (
+    is_explicit_negative_authority_value,
+    scan_forbidden_authority_claims,
+)
+from runtime.repository_artifact_digest import (
+    canonicalize_utf8_repository_text,
+    sha256_repository_file,
+)
+
+
+HISTORICAL_README_SNAPSHOT_PATH = (
+    "examples/public-integration-pack-pilot/"
+    "m13-completion-readiness-readme-snapshot.md"
+)
+HISTORICAL_README_SNAPSHOT_SOURCE_COMMIT = (
+    "4e2485a0390a81aa31508777dce5cccc3f344b62"
+)
+HISTORICAL_README_SNAPSHOT_SOURCE_BLOB = (
+    "5d77feffb9dcdcaf527c69e154fae76351115da8"
+)
+EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256 = (
+    "205a0b0f50bd2dfb229f33d2510b709d8b2b5335528bbb2ec7d085deed9223f8"
+)
+HISTORICAL_README_SNAPSHOT_PHASE = "m13_completion_readiness_pre_final_transition"
+HISTORICAL_README_SNAPSHOT_EVIDENCE_ROLE = (
+    "post_release_auxiliary_historical_readme_evidence"
+)
 
 
 REQUIRED_ARTIFACT_FIELDS = {
@@ -194,27 +223,51 @@ README_REQUIRED_PHRASES = {
     "Future README status path: v0.12.0 / M13 remains a future-only path until a final completion PR.",
 }
 
-SAFE_NEGATED_PHRASES = {
-    "not m13_complete",
-    "must not declare m13 complete",
-    "not released",
-    "not release publication",
-    "not release approval",
-    "not m13 completion",
-    "not sealed",
-    "not close #176",
-    "#176 remains open",
-    "close_tracker_issue_176",
-    "declare_m13_complete",
-    "declare_v0_12_0_released",
-}
-
 SAFE_CONTEXT_KEYS = {
     "allowed_evaluator_outputs",
     "forbidden_evaluator_outputs",
     "authority_boundary",
     "must_not",
 }
+
+FORBIDDEN_AUTHORITY_KEYS = FORBIDDEN_EVALUATOR_OUTPUTS | {
+    "release_approval",
+    "release_created",
+    "release_tag_created",
+    "release_notes_published",
+    "m13_complete",
+    "issue_176_closed",
+    "decision_proof_sealed",
+    "released",
+    "evaluator_output",
+}
+
+KNOWN_EXPLICIT_NEGATIVE_CLAIM_TEXTS = {
+    (
+        "completion readiness is evidence review only. it may link m13 "
+        "hardening artifacts and maintain a future-only readme status path, "
+        "but it must not declare m13 complete, close #176, declare v0.12.0 "
+        "released, approve releases, create releases, create tags, publish "
+        "release notes, accept risk, seal decision proof, close audits, grant "
+        "waivers, transfer authority, or make final governance judgments."
+    )
+}
+
+
+def load_historical_readme_snapshot(repository_root: str | Path) -> str:
+    """Load the explicit PR #198 phase snapshot after canonical digest checks."""
+
+    observed = sha256_repository_file(
+        repository_root,
+        HISTORICAL_README_SNAPSHOT_PATH,
+        mode="text",
+    )
+    if observed != EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256:
+        raise ValueError("M13 completion-readiness README snapshot digest mismatch")
+
+    path = Path(repository_root) / Path(HISTORICAL_README_SNAPSHOT_PATH)
+    canonical = canonicalize_utf8_repository_text(path.read_bytes())
+    return canonical.decode("utf-8")
 
 
 
@@ -271,36 +324,33 @@ def _iter_claim_text(value: Any, parent_key: str | None = None) -> list[str]:
 
 
 def _is_safe_negated(text: str) -> bool:
-    return any(phrase in text for phrase in SAFE_NEGATED_PHRASES)
+    normalized = _text(text)
+    return (
+        is_explicit_negative_authority_value(normalized)
+        or normalized in KNOWN_EXPLICIT_NEGATIVE_CLAIM_TEXTS
+    )
 
 
 
 def detect_completion_readiness_forbidden_claims(
     value: Any, parent_key: str | None = None
 ) -> set[str]:
-    claims: set[str] = set()
-
-    if parent_key in SAFE_CONTEXT_KEYS:
-        return claims
-
-    if isinstance(value, dict):
-        for key, item in value.items():
-            claims.update(detect_completion_readiness_forbidden_claims(item, str(key)))
-        return claims
-
-    if isinstance(value, list):
-        for item in value:
-            claims.update(detect_completion_readiness_forbidden_claims(item, parent_key))
-        return claims
-
-    normalized = _text(value)
-    if _is_safe_negated(normalized):
-        return claims
-    if normalized in FORBIDDEN_EVALUATOR_OUTPUTS:
-        claims.add(normalized)
-    for phrase in BOUNDARY_CLAIM_FINDINGS:
-        if phrase in normalized:
-            claims.add(phrase)
+    claims = set(
+        scan_forbidden_authority_claims(
+            value,
+            forbidden_keys=FORBIDDEN_AUTHORITY_KEYS,
+            forbidden_tokens=FORBIDDEN_EVALUATOR_OUTPUTS,
+            skip_keys=SAFE_CONTEXT_KEYS,
+        )
+    )
+    for normalized in _iter_claim_text(value, parent_key):
+        if _is_safe_negated(normalized):
+            continue
+        if normalized in FORBIDDEN_EVALUATOR_OUTPUTS:
+            claims.add(normalized)
+        for phrase in BOUNDARY_CLAIM_FINDINGS:
+            if phrase in normalized:
+                claims.add(phrase)
     return claims
 
 
@@ -408,10 +458,11 @@ def evaluate_m13_completion_readiness(
     boundary_language = _boundary_language(artifact)
     if not _required_boundary_language_present(boundary_language):
         add_missing("missing_aaos_completion_readiness_boundary_statement", "aaos_retained_authority_statement")
-    for phrase, finding in BOUNDARY_CLAIM_FINDINGS.items():
-        if phrase in boundary_language and not _is_safe_negated(boundary_language):
-            findings.append(finding)
-            boundary_violation = True
+    for claim_text in _iter_claim_text(artifact):
+        for phrase, finding in BOUNDARY_CLAIM_FINDINGS.items():
+            if phrase in claim_text:
+                findings.append(finding)
+                boundary_violation = True
 
     forbidden_claims = detect_completion_readiness_forbidden_claims(artifact)
     if forbidden_claims:
