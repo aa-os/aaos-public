@@ -10,6 +10,9 @@ from runtime.authority_semantics import (
     scan_forbidden_authority_claims,
 )
 from runtime.repository_artifact_digest import (
+    RepositoryArtifactFileTypeError,
+    RepositoryArtifactPathError,
+    RepositoryArtifactTextError,
     canonicalize_utf8_repository_text,
     sha256_repository_file,
 )
@@ -32,6 +35,10 @@ HISTORICAL_README_SNAPSHOT_PHASE = "m13_completion_readiness_pre_final_transitio
 HISTORICAL_README_SNAPSHOT_EVIDENCE_ROLE = (
     "post_release_auxiliary_historical_readme_evidence"
 )
+
+
+class _HistoricalReadmeSnapshotDigestMismatch(ValueError):
+    """Raised when the bound historical README content no longer matches."""
 
 
 REQUIRED_ARTIFACT_FIELDS = {
@@ -254,18 +261,27 @@ KNOWN_EXPLICIT_NEGATIVE_CLAIM_TEXTS = {
 }
 
 
-def load_historical_readme_snapshot(repository_root: str | Path) -> str:
+def load_historical_readme_snapshot(
+    repository_root: str | Path | None = None,
+) -> str:
     """Load the explicit PR #198 phase snapshot after canonical digest checks."""
 
+    resolved_root = (
+        Path(__file__).resolve().parents[1]
+        if repository_root is None
+        else Path(repository_root)
+    )
     observed = sha256_repository_file(
-        repository_root,
+        resolved_root,
         HISTORICAL_README_SNAPSHOT_PATH,
         mode="text",
     )
     if observed != EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256:
-        raise ValueError("M13 completion-readiness README snapshot digest mismatch")
+        raise _HistoricalReadmeSnapshotDigestMismatch(
+            "M13 completion-readiness README snapshot digest mismatch"
+        )
 
-    path = Path(repository_root) / Path(HISTORICAL_README_SNAPSHOT_PATH)
+    path = resolved_root / Path(HISTORICAL_README_SNAPSHOT_PATH)
     canonical = canonicalize_utf8_repository_text(path.read_bytes())
     return canonical.decode("utf-8")
 
@@ -356,7 +372,9 @@ def detect_completion_readiness_forbidden_claims(
 
 
 def evaluate_m13_completion_readiness(
-    artifact: dict[str, Any], readme_text: str | None = None
+    artifact: dict[str, Any],
+    readme_text: str | None = None,
+    repository_root: str | Path | None = None,
 ) -> dict[str, Any]:
     findings: list[str] = []
     missing_evidence: list[str] = []
@@ -469,7 +487,32 @@ def evaluate_m13_completion_readiness(
         findings.append("authority_transfer_claim_detected")
         boundary_violation = True
 
-    readme_future_path_present = readme_text is None
+    readme_future_path_present = False
+    if readme_text is None:
+        snapshot_finding: str | None = None
+        try:
+            readme_text = load_historical_readme_snapshot(repository_root)
+        except FileNotFoundError:
+            snapshot_finding = "historical_readme_snapshot_missing"
+        except UnicodeDecodeError:
+            snapshot_finding = "historical_readme_snapshot_invalid_utf8"
+        except RepositoryArtifactTextError:
+            snapshot_finding = "historical_readme_snapshot_lone_cr"
+        except _HistoricalReadmeSnapshotDigestMismatch:
+            snapshot_finding = "historical_readme_snapshot_digest_mismatch"
+        except (
+            RepositoryArtifactFileTypeError,
+            RepositoryArtifactPathError,
+            OSError,
+            TypeError,
+            RuntimeError,
+        ):
+            snapshot_finding = "historical_readme_snapshot_path_invalid"
+
+        if snapshot_finding is not None:
+            add_missing(snapshot_finding, HISTORICAL_README_SNAPSHOT_PATH)
+            not_ready = True
+
     if readme_text is not None:
         readme_result = _evaluate_readme_future_path(readme_text)
         readme_future_path_present = readme_result["readme_future_path_present"]

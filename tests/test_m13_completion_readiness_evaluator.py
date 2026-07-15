@@ -1,14 +1,18 @@
 import copy
 import hashlib
 import json
+import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+import runtime.m13_completion_readiness_evaluator as completion_evaluator  # noqa: E402
 from runtime.m13_completion_readiness_evaluator import (  # noqa: E402
     EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256,
     HISTORICAL_README_SNAPSHOT_EVIDENCE_ROLE,
@@ -53,11 +57,18 @@ class M13CompletionReadinessEvaluatorTests(unittest.TestCase):
         self.artifact = load_json(ARTIFACT_PATH)
         self.readme_text = load_historical_readme_snapshot(ROOT)
 
-    def evaluate(self, artifact=None, readme_text=None):
+    def evaluate(self, artifact=None, readme_text=None, repository_root=None):
         return evaluate_m13_completion_readiness(
             self.artifact if artifact is None else artifact,
-            self.readme_text if readme_text is None else readme_text,
+            readme_text=readme_text,
+            repository_root=repository_root,
         )
+
+    def write_default_snapshot(self, repository_root, raw):
+        path = Path(repository_root) / HISTORICAL_README_SNAPSHOT_PATH
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(raw)
+        return path
 
     def mutate_semantic_boundary(self, key, original, replacement):
         semantic_boundaries = self.artifact["semantic_boundaries"]
@@ -118,6 +129,94 @@ class M13CompletionReadinessEvaluatorTests(unittest.TestCase):
         self.assertEqual(
             canonical_digest,
             EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256,
+        )
+
+    def test_default_historical_snapshot_is_validated_independent_of_cwd(self):
+        original_cwd = Path.cwd()
+        with tempfile.TemporaryDirectory() as unrelated_cwd:
+            try:
+                os.chdir(unrelated_cwd)
+                result = evaluate_m13_completion_readiness(self.artifact)
+            finally:
+                os.chdir(original_cwd)
+
+        self.assertTrue(result["completion_readiness_valid"])
+        self.assertTrue(result["readme_future_path_present"])
+        self.assertEqual(result["completion_readiness_findings"], [])
+
+    def test_explicit_valid_historical_readme_text_still_passes(self):
+        with tempfile.TemporaryDirectory() as empty_root:
+            result = self.evaluate(
+                readme_text=self.readme_text,
+                repository_root=empty_root,
+            )
+
+        self.assertTrue(result["completion_readiness_valid"])
+        self.assertTrue(result["readme_future_path_present"])
+
+    def test_missing_default_historical_snapshot_fails_closed(self):
+        with tempfile.TemporaryDirectory() as empty_root:
+            result = self.evaluate(repository_root=empty_root)
+
+        self.assertTrue(result["completion_readiness_invalid"])
+        self.assertFalse(result["readme_future_path_present"])
+        self.assertIn(
+            "historical_readme_snapshot_missing",
+            result["completion_readiness_findings"],
+        )
+
+    def test_omitting_readme_text_cannot_bypass_snapshot_digest_mismatch(self):
+        raw = SNAPSHOT_PATH.read_bytes()
+        target = b"# AAOS Public"
+        self.assertEqual(raw.count(target), 1)
+        mutated = raw.replace(target, b"# AXOS Public", 1)
+        self.assertNotEqual(mutated, raw)
+
+        with tempfile.TemporaryDirectory() as repository_root:
+            self.write_default_snapshot(repository_root, mutated)
+            result = self.evaluate(repository_root=repository_root)
+
+        self.assertTrue(result["completion_readiness_invalid"])
+        self.assertFalse(result["readme_future_path_present"])
+        self.assertIn(
+            "historical_readme_snapshot_digest_mismatch",
+            result["completion_readiness_findings"],
+        )
+
+    def test_malformed_utf8_default_historical_snapshot_fails_closed(self):
+        with tempfile.TemporaryDirectory() as repository_root:
+            self.write_default_snapshot(repository_root, b"\xffhistorical-readme")
+            result = self.evaluate(repository_root=repository_root)
+
+        self.assertTrue(result["completion_readiness_invalid"])
+        self.assertIn(
+            "historical_readme_snapshot_invalid_utf8",
+            result["completion_readiness_findings"],
+        )
+
+    def test_lone_cr_default_historical_snapshot_fails_closed(self):
+        with tempfile.TemporaryDirectory() as repository_root:
+            self.write_default_snapshot(repository_root, b"historical\rreadme\n")
+            result = self.evaluate(repository_root=repository_root)
+
+        self.assertTrue(result["completion_readiness_invalid"])
+        self.assertIn(
+            "historical_readme_snapshot_lone_cr",
+            result["completion_readiness_findings"],
+        )
+
+    def test_path_substituted_default_historical_snapshot_fails_closed(self):
+        with patch.object(
+            completion_evaluator,
+            "HISTORICAL_README_SNAPSHOT_PATH",
+            "../README.md",
+        ):
+            result = self.evaluate(repository_root=ROOT)
+
+        self.assertTrue(result["completion_readiness_invalid"])
+        self.assertIn(
+            "historical_readme_snapshot_path_invalid",
+            result["completion_readiness_findings"],
         )
 
     def test_current_readme_is_not_an_alternate_completion_readiness_source(self):
