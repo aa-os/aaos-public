@@ -9,6 +9,8 @@ from pathlib import Path
 from unittest import mock
 
 from runtime.m14_final_completion_evaluator import (
+    EXPECTED_BUNDLE as RUNTIME_EXPECTED_BUNDLE,
+    EXPECTED_MAINTAINED_COMPLETION_READINESS_AUXILIARY_DEPENDENCIES,
     evaluate_file,
     evaluate_m14_final_completion,
     load_fixture,
@@ -35,6 +37,10 @@ READINESS_FIXTURE_PATH = (
 )
 README_PATH = ROOT / "README.md"
 EVALUATOR_PATH = ROOT / "runtime" / "m14_final_completion_evaluator.py"
+AUXILIARY_SNAPSHOT_PATH = (
+    "examples/public-integration-pack-pilot/"
+    "m14-completion-readiness-readme-snapshot.md"
+)
 
 EXPECTED_CHANGED_FILES = [
     "README.md",
@@ -94,11 +100,21 @@ EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
         "m14-completion-readiness-future-readme-path.json"
     ): "e65e4558bc25504ebea24dd8479ac5c40e1ecc588cd3262e729fe77b193d2673",
     "runtime/m14_completion_readiness_evaluator.py": (
-        "3130bb98c22ba4c6b657d94be92cc57c8e6ae3319e71f6b7a7e90b02761d9f54"
+        "c87bdf875c3cce8893693a60a913f1adc97b2b49b7922ad038aaf6f80cc585c5"
     ),
     "tests/test_m14_completion_readiness_evaluator.py": (
-        "cafb84d2f52cf9f13e79bb3609499e9f2781ff99cee9663914ec84b028aa1c43"
+        "9ba54dbb7b6c4a3d5ce4d4f46e1919f5e259a8bcbd6ce247d4c5b7b1dbae21f9"
     ),
+}
+EXPECTED_AUXILIARY_DEPENDENCY = {
+    "relative_path": AUXILIARY_SNAPSHOT_PATH,
+    "sha256": "a72061d2614b107e9780d31070ccae4ad683596c4873c6d1dac6a77fdf01d269",
+    "digest_algorithm": "sha256",
+    "canonicalization_mode": "text",
+    "evidence_role": "historical_completion_readiness_readme_snapshot",
+    "historical_pr_214_bundle_member": False,
+    "executable_by_final_completion_evaluator": False,
+    "authority_role": "evidence_only_non_authoritative",
 }
 EXPECTED_MANUAL_STEPS = [
     "verify final PR merged into main",
@@ -210,6 +226,7 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
             for relative_path in [
                 "README.md",
                 *(entry["relative_path"] for entry in EXPECTED_BUNDLE),
+                AUXILIARY_SNAPSHOT_PATH,
             ]:
                 source = ROOT / relative_path
                 target = root / relative_path
@@ -1186,6 +1203,156 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
         self.assertIs(self.fixture["decision_proof_sealed_by_this_artifact"], False)
         self.assertNotIn("decision_proof_sealed", result)
         self.assertNotIn("decision_proof_sealed_by_evaluator", result["outputs"])
+
+    def test_103_snapshot_auxiliary_dependency_path_is_exact(self):
+        self.assertEqual(
+            EXPECTED_MAINTAINED_COMPLETION_READINESS_AUXILIARY_DEPENDENCIES,
+            (EXPECTED_AUXILIARY_DEPENDENCY,),
+        )
+        dependency = EXPECTED_AUXILIARY_DEPENDENCY
+        self.assertEqual(dependency["relative_path"], AUXILIARY_SNAPSHOT_PATH)
+        self.assertTrue((ROOT / dependency["relative_path"]).is_file())
+        self.assertIs(
+            dependency["executable_by_final_completion_evaluator"], False
+        )
+
+    def test_104_snapshot_auxiliary_dependency_digest_is_exact(self):
+        dependency = EXPECTED_AUXILIARY_DEPENDENCY
+        self.assertEqual(
+            sha256_repository_file(
+                ROOT, dependency["relative_path"], mode="text"
+            ),
+            dependency["sha256"],
+        )
+        result = self.evaluate()
+        self.assertTrue(
+            result[
+                "completion_readiness_auxiliary_dependencies_integrity_valid"
+            ]
+        )
+
+    def test_105_missing_snapshot_auxiliary_dependency_fails(self):
+        with self.temporary_repository() as root:
+            (root / AUXILIARY_SNAPSHOT_PATH).unlink()
+            result = self.evaluate(repository_root=root)
+        self.assertFalse(result["m14_final_completion_valid"])
+        self.assertFalse(
+            result[
+                "completion_readiness_auxiliary_dependencies_integrity_valid"
+            ]
+        )
+        self.assertIn(
+            f"completion_readiness_auxiliary_dependency_missing:{AUXILIARY_SNAPSHOT_PATH}",
+            result["findings"],
+        )
+        self.assertIn(AUXILIARY_SNAPSHOT_PATH, result["missing_evidence"])
+
+    def test_106_mutated_snapshot_auxiliary_dependency_fails(self):
+        with self.temporary_repository() as root:
+            path = root / AUXILIARY_SNAPSHOT_PATH
+            original = path.read_bytes()
+            path.write_bytes(original + b"historical digest mutation\n")
+            self.assertNotEqual(path.read_bytes(), original)
+            result = self.evaluate(repository_root=root)
+        self.assertFalse(result["m14_final_completion_valid"])
+        self.assertFalse(
+            result[
+                "completion_readiness_auxiliary_dependencies_integrity_valid"
+            ]
+        )
+        self.assertIn(
+            "completion_readiness_auxiliary_dependency_maintained_digest_mismatch:"
+            f"{AUXILIARY_SNAPSHOT_PATH}",
+            result["findings"],
+        )
+
+    def test_107_snapshot_auxiliary_path_substitution_fails(self):
+        substitute_path = (
+            "examples/public-integration-pack-pilot/"
+            "m14-completion-readiness-readme-substitute.md"
+        )
+        with self.temporary_repository() as root:
+            expected_path = root / AUXILIARY_SNAPSHOT_PATH
+            content = expected_path.read_bytes()
+            expected_path.unlink()
+            substitute = root / substitute_path
+            substitute.write_bytes(content)
+            self.assertTrue(substitute.is_file())
+            result = self.evaluate(repository_root=root)
+        self.assertFalse(
+            result[
+                "completion_readiness_auxiliary_dependencies_integrity_valid"
+            ]
+        )
+        self.assertIn(
+            f"completion_readiness_auxiliary_dependency_missing:{AUXILIARY_SNAPSHOT_PATH}",
+            result["findings"],
+        )
+
+    def test_108_snapshot_auxiliary_crlf_is_canonically_equivalent(self):
+        with self.temporary_repository(line_endings="crlf") as root:
+            raw = (root / AUXILIARY_SNAPSHOT_PATH).read_bytes()
+            self.assertIn(b"\r\n", raw)
+            self.assertEqual(
+                sha256_repository_file(
+                    root, AUXILIARY_SNAPSHOT_PATH, mode="text"
+                ),
+                EXPECTED_AUXILIARY_DEPENDENCY["sha256"],
+            )
+            result = self.evaluate(repository_root=root)
+        self.assertTrue(
+            result[
+                "completion_readiness_auxiliary_dependencies_integrity_valid"
+            ]
+        )
+
+    def test_109_historical_pr_214_bundle_remains_unchanged(self):
+        self.assertEqual(len(self.fixture["completion_readiness_bundle"]), 3)
+        self.assertEqual(self.fixture["completion_readiness_bundle"], EXPECTED_BUNDLE)
+        self.assertEqual(RUNTIME_EXPECTED_BUNDLE, tuple(EXPECTED_BUNDLE))
+        self.assertNotIn(
+            AUXILIARY_SNAPSHOT_PATH,
+            {
+                entry["relative_path"]
+                for entry in self.fixture["completion_readiness_bundle"]
+            },
+        )
+        self.assertIs(
+            EXPECTED_AUXILIARY_DEPENDENCY["historical_pr_214_bundle_member"],
+            False,
+        )
+
+    def test_110_snapshot_auxiliary_integrity_grants_no_authority(self):
+        result = self.evaluate()
+        self.assertTrue(
+            result[
+                "completion_readiness_auxiliary_dependencies_integrity_valid"
+            ]
+        )
+        self.assertTrue(result["authority_boundaries_preserved"])
+        self.assertFalse(result["escalation_required"])
+        self.assertEqual(
+            EXPECTED_AUXILIARY_DEPENDENCY["authority_role"],
+            "evidence_only_non_authoritative",
+        )
+        for forbidden in (
+            "release_authority_granted_by_evaluator",
+            "authority_transferred",
+            "decision_proof_sealed_by_evaluator",
+        ):
+            self.assertNotIn(forbidden, result)
+            self.assertNotIn(forbidden, result["outputs"])
+        with self.temporary_repository() as root:
+            path = root / AUXILIARY_SNAPSHOT_PATH
+            path.write_bytes(path.read_bytes() + b"integrity-only mutation\n")
+            invalid_result = self.evaluate(repository_root=root)
+        self.assertFalse(
+            invalid_result[
+                "completion_readiness_auxiliary_dependencies_integrity_valid"
+            ]
+        )
+        self.assertTrue(invalid_result["authority_boundaries_preserved"])
+        self.assertFalse(invalid_result["escalation_required"])
 
 
 if __name__ == "__main__":

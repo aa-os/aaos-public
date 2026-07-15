@@ -21,10 +21,15 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from runtime.m14_completion_readiness_evaluator import (  # noqa: E402
+    CURRENT_README_VALIDATION_OWNER,
     EXPECTED_BUNDLE,
     EXPECTED_CHANGED_FILES,
+    EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256,
     EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
     EXPECTED_NEXT_PHASE_BLOCK,
+    HISTORICAL_EVIDENCE_PHASE,
+    HISTORICAL_README_SNAPSHOT_PATH,
+    HISTORICAL_README_SNAPSHOT_SOURCE_COMMIT,
     REQUIRED_ALLOWED_OUTPUTS,
     REQUIRED_BOUNDARY_STATEMENTS,
     REQUIRED_FORBIDDEN_OUTPUTS,
@@ -50,6 +55,7 @@ FIXTURE_PATH = (
     / "m14-completion-readiness-future-readme-path.json"
 )
 README_PATH = ROOT / "README.md"
+SNAPSHOT_PATH = ROOT / HISTORICAL_README_SNAPSHOT_PATH
 EVALUATOR_PATH = ROOT / "runtime" / "m14_completion_readiness_evaluator.py"
 RELEASE_PROOF_FIXTURE_PATH = (
     ROOT
@@ -78,6 +84,16 @@ SOURCE_MODULES = {
 
 EXPECTED_RESULT_FIELDS = {
     "valid",
+    "historical_readme_snapshot_present",
+    "historical_readme_snapshot_integrity_valid",
+    "historical_readme_prefix_integrity_valid",
+    "historical_readme_next_phase_state_valid",
+    "historical_readme_releases_state_valid",
+    "historical_readme_current_status_state_valid",
+    "historical_readme_phase_state_valid",
+    "historical_evidence_phase",
+    "current_readme_checked_by_completion_readiness_evaluator",
+    "current_readme_validation_owner",
     "readme_present",
     "readme_prefix_integrity_valid",
     "readme_next_phase_valid",
@@ -239,6 +255,45 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
     def assert_valid(self, result):
         self.assertTrue(result["valid"], result["findings"])
         self.assertEqual(result["findings"], [])
+        self.assertTrue(result["historical_readme_snapshot_present"])
+        self.assertTrue(result["historical_readme_snapshot_integrity_valid"])
+        self.assertTrue(result["historical_readme_prefix_integrity_valid"])
+        self.assertTrue(result["historical_readme_next_phase_state_valid"])
+        self.assertTrue(result["historical_readme_releases_state_valid"])
+        self.assertTrue(result["historical_readme_current_status_state_valid"])
+        self.assertTrue(result["historical_readme_phase_state_valid"])
+        self.assertEqual(
+            result["historical_evidence_phase"], HISTORICAL_EVIDENCE_PHASE
+        )
+        self.assertFalse(
+            result["current_readme_checked_by_completion_readiness_evaluator"]
+        )
+        self.assertEqual(
+            result["current_readme_validation_owner"],
+            CURRENT_README_VALIDATION_OWNER,
+        )
+        # The legacy names are compatibility aliases for historical snapshot
+        # evidence, not claims about the current README.md.
+        self.assertEqual(
+            result["readme_present"],
+            result["historical_readme_snapshot_present"],
+        )
+        self.assertEqual(
+            result["readme_prefix_integrity_valid"],
+            result["historical_readme_prefix_integrity_valid"],
+        )
+        self.assertEqual(
+            result["readme_next_phase_valid"],
+            result["historical_readme_next_phase_state_valid"],
+        )
+        self.assertEqual(
+            result["released_versions_section_preserved"],
+            result["historical_readme_releases_state_valid"],
+        )
+        self.assertEqual(
+            result["current_status_section_preserved"],
+            result["historical_readme_current_status_state_valid"],
+        )
         self.assertTrue(result["readme_present"])
         self.assertTrue(result["readme_prefix_integrity_valid"])
         self.assertTrue(result["readme_next_phase_valid"])
@@ -278,10 +333,20 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
                 result["findings"],
             )
 
-    def temporary_repository(self, *, include_readme=True, skip_bundle_path=None):
+    def temporary_repository(
+        self,
+        *,
+        include_snapshot=True,
+        include_current_readme=False,
+        skip_bundle_path=None,
+    ):
         temporary = tempfile.TemporaryDirectory()
         root = Path(temporary.name)
-        if include_readme:
+        if include_snapshot:
+            snapshot_target = root / HISTORICAL_README_SNAPSHOT_PATH
+            snapshot_target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(SNAPSHOT_PATH, snapshot_target)
+        if include_current_readme:
             shutil.copyfile(README_PATH, root / "README.md")
         for entry in EXPECTED_BUNDLE:
             relative_path = entry["relative_path"]
@@ -294,7 +359,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         return temporary, root
 
     def set_repository_text_line_endings(self, root, *, crlf):
-        relative_paths = ["README.md"] + [
+        relative_paths = [HISTORICAL_README_SNAPSHOT_PATH] + [
             entry["relative_path"] for entry in EXPECTED_BUNDLE
         ]
         for relative_path in relative_paths:
@@ -309,12 +374,16 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
     def evaluate_readme_mutation(self, old, new):
         temporary, root = self.temporary_repository()
         self.addCleanup(temporary.cleanup)
-        readme_path = root / "README.md"
+        baseline = self.evaluate(repository_root=root)
+        self.assertTrue(baseline["valid"], baseline["findings"])
+        readme_path = root / HISTORICAL_README_SNAPSHOT_PATH
         text = canonicalize_utf8_repository_text(readme_path.read_bytes()).decode(
             "utf-8", errors="strict"
         )
         self.assertEqual(text.count(old), 1, old)
-        readme_path.write_bytes(text.replace(old, new, 1).encode("utf-8"))
+        mutated = text.replace(old, new, 1)
+        self.assertNotEqual(mutated, text)
+        readme_path.write_bytes(mutated.encode("utf-8"))
         return self.evaluate(repository_root=root)
 
     def evaluate_release_proof_mutation(self, mutator):
@@ -334,10 +403,12 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         self.assert_valid(self.evaluate())
 
     def test_02_readme_missing_blocks_readiness(self):
-        temporary, root = self.temporary_repository(include_readme=False)
+        temporary, root = self.temporary_repository(include_snapshot=False)
         self.addCleanup(temporary.cleanup)
         result = self.evaluate(repository_root=root)
-        self.assert_invalid(result, "readme")
+        self.assert_invalid(result, "historical_readme_snapshot_missing")
+        self.assertFalse(result["historical_readme_snapshot_present"])
+        self.assertFalse(result["historical_readme_snapshot_integrity_valid"])
         self.assertFalse(result["readme_present"])
 
     def test_03_next_phase_heading_missing_blocks_readiness(self):
@@ -753,7 +824,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
                 "M13 Additions",
             ],
         )
-        readme = canonicalize_utf8_repository_text(README_PATH.read_bytes())
+        readme = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
         heading = b"## Next Phase"
         self.assertEqual(readme.count(heading), 1)
         prefix = readme[: readme.index(heading)]
@@ -767,7 +838,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         expected = self.fixture["readme_expected_next_phase"]
         self.assertEqual(expected["heading"], "## Next Phase")
         self.assertEqual(expected["complete_expected_block"], EXPECTED_NEXT_PHASE_BLOCK)
-        readme = canonicalize_utf8_repository_text(README_PATH.read_bytes())
+        readme = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
         offset = readme.index(b"## Next Phase")
         self.assertEqual(readme[offset:], EXPECTED_NEXT_PHASE_BLOCK.encode("utf-8"))
         self.assertTrue(readme.endswith(b"\n"))
@@ -1079,7 +1150,8 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
     def test_77_expected_baseline_result_matches_public_result(self):
         result = self.evaluate()
         baseline = self.fixture["expected_baseline_result"]
-        self.assertEqual(set(baseline), EXPECTED_RESULT_FIELDS)
+        self.assertTrue(set(baseline) < EXPECTED_RESULT_FIELDS)
+        self.assertEqual(set(result), EXPECTED_RESULT_FIELDS)
         for field, expected in baseline.items():
             with self.subTest(field=field):
                 self.assertEqual(result[field], expected)
@@ -1298,6 +1370,191 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         result = self.evaluate(repository_root=root)
 
         self.assertTrue(result["release_proof_bundle_integrity_valid"], result["findings"])
+        self.assertFalse(result["release_approved"])
+        self.assertFalse(result["released"])
+        self.assertFalse(result["m14_complete"])
+        self.assertTrue(result["authority_boundaries_preserved"])
+        self.assertTrue(set(result["outputs"]).isdisjoint(REQUIRED_FORBIDDEN_OUTPUTS))
+
+    def test_101_snapshot_identity_is_bound_to_commit_a7b5cbc(self):
+        self.assertEqual(
+            HISTORICAL_README_SNAPSHOT_PATH,
+            (
+                "examples/public-integration-pack-pilot/"
+                "m14-completion-readiness-readme-snapshot.md"
+            ),
+        )
+        self.assertEqual(
+            HISTORICAL_README_SNAPSHOT_SOURCE_COMMIT,
+            "a7b5cbc2026468dde3d937e9366a780894570548",
+        )
+        canonical = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
+        self.assertEqual(len(canonical), 42183)
+        self.assertEqual(canonical.count(b"\n"), 1156)
+        self.assertTrue(canonical.endswith(b"\n"))
+        self.assertFalse(canonical.endswith(b"\r\n"))
+
+    def test_102_snapshot_canonical_digest_is_exact(self):
+        self.assertEqual(
+            EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256,
+            "a72061d2614b107e9780d31070ccae4ad683596c4873c6d1dac6a77fdf01d269",
+        )
+        self.assertEqual(
+            canonical_sha256(SNAPSHOT_PATH),
+            EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256,
+        )
+
+    def test_103_lf_and_crlf_snapshots_are_canonically_equivalent(self):
+        temporary, root = self.temporary_repository()
+        self.addCleanup(temporary.cleanup)
+        path = root / HISTORICAL_README_SNAPSHOT_PATH
+        canonical = canonicalize_utf8_repository_text(path.read_bytes())
+
+        path.write_bytes(canonical)
+        lf_result = self.evaluate(repository_root=root)
+        lf_digest = sha256_repository_file(
+            root, HISTORICAL_README_SNAPSHOT_PATH, mode="text"
+        )
+
+        path.write_bytes(canonical.replace(b"\n", b"\r\n"))
+        crlf_result = self.evaluate(repository_root=root)
+        crlf_digest = sha256_repository_file(
+            root, HISTORICAL_README_SNAPSHOT_PATH, mode="text"
+        )
+
+        self.assert_valid(lf_result)
+        self.assert_valid(crlf_result)
+        self.assertEqual(lf_digest, EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256)
+        self.assertEqual(crlf_digest, lf_digest)
+
+    def test_104_malformed_utf8_historical_snapshot_fails_deterministically(self):
+        temporary, root = self.temporary_repository()
+        self.addCleanup(temporary.cleanup)
+        (root / HISTORICAL_README_SNAPSHOT_PATH).write_bytes(b"not utf-8: \xff\n")
+
+        result = self.evaluate(repository_root=root)
+
+        self.assert_invalid(result, "historical_readme_snapshot_malformed_utf8")
+        self.assertTrue(result["historical_readme_snapshot_present"])
+        self.assertFalse(result["historical_readme_snapshot_integrity_valid"])
+
+    def test_105_lone_cr_historical_snapshot_fails_deterministically(self):
+        temporary, root = self.temporary_repository()
+        self.addCleanup(temporary.cleanup)
+        (root / HISTORICAL_README_SNAPSHOT_PATH).write_bytes(
+            b"line one\rline two\n"
+        )
+
+        result = self.evaluate(repository_root=root)
+
+        self.assert_invalid(result, "historical_readme_snapshot_lone_cr")
+        self.assertTrue(result["historical_readme_snapshot_present"])
+        self.assertFalse(result["historical_readme_snapshot_integrity_valid"])
+
+    def test_106_snapshot_path_substitution_does_not_fall_back_to_readme(self):
+        temporary, root = self.temporary_repository(include_snapshot=False)
+        self.addCleanup(temporary.cleanup)
+        shutil.copyfile(SNAPSHOT_PATH, root / "README.md")
+
+        result = self.evaluate(repository_root=root)
+
+        self.assert_invalid(result, "historical_readme_snapshot_missing")
+        self.assertFalse(result["historical_readme_snapshot_present"])
+        self.assertFalse(result["historical_readme_snapshot_integrity_valid"])
+
+    def test_107_historical_snapshot_digest_mutation_fails(self):
+        temporary, root = self.temporary_repository()
+        self.addCleanup(temporary.cleanup)
+        path = root / HISTORICAL_README_SNAPSHOT_PATH
+        path.write_bytes(path.read_bytes() + b"historical digest drift\n")
+
+        result = self.evaluate(repository_root=root)
+
+        self.assert_invalid(result, "historical_readme_snapshot_digest_mismatch")
+        self.assertTrue(result["historical_readme_snapshot_present"])
+        self.assertFalse(result["historical_readme_snapshot_integrity_valid"])
+
+    def test_108_current_readme_is_independent_from_historical_readiness(self):
+        self.assertNotEqual(
+            canonicalize_utf8_repository_text(README_PATH.read_bytes()),
+            canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes()),
+        )
+        temporary, root = self.temporary_repository(include_current_readme=True)
+        self.addCleanup(temporary.cleanup)
+
+        current_result = self.evaluate(repository_root=root)
+        (root / "README.md").write_bytes(
+            b"Current README state is owned by final completion.\n"
+        )
+        mutated_current_result = self.evaluate(repository_root=root)
+        (root / "README.md").unlink()
+        absent_current_result = self.evaluate(repository_root=root)
+
+        for result in (
+            current_result,
+            mutated_current_result,
+            absent_current_result,
+        ):
+            self.assert_valid(result)
+            self.assertFalse(
+                result["current_readme_checked_by_completion_readiness_evaluator"]
+            )
+
+    def test_109_historical_releases_state_is_explicit(self):
+        snapshot = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
+        releases_start = snapshot.index(b"## Releases")
+        current_start = snapshot.index(b"## Current Status")
+        releases = snapshot[releases_start:current_start]
+        result = self.evaluate()
+
+        self.assertIn(b"- v0.12.0 ", releases)
+        self.assertNotIn(b"v0.13.0", releases)
+        self.assertTrue(result["historical_readme_releases_state_valid"])
+        self.assertEqual(
+            result["released_versions_section_preserved"],
+            result["historical_readme_releases_state_valid"],
+        )
+
+    def test_110_historical_current_status_state_is_explicit(self):
+        snapshot = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
+        current_start = snapshot.index(b"## Current Status")
+        next_heading = snapshot.index(b"\n## ", current_start + 1)
+        current = snapshot[current_start:next_heading]
+        result = self.evaluate()
+
+        self.assertIn(b"and M13 are complete.", current)
+        self.assertNotIn(b"M14 completed:", current)
+        self.assertNotIn(b"v0.13.0", current)
+        self.assertTrue(result["historical_readme_current_status_state_valid"])
+        self.assertEqual(
+            result["current_status_section_preserved"],
+            result["historical_readme_current_status_state_valid"],
+        )
+
+    def test_111_historical_next_phase_state_and_owner_are_explicit(self):
+        snapshot = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
+        next_phase = snapshot[snapshot.index(b"## Next Phase") :]
+        result = self.evaluate()
+
+        self.assertEqual(next_phase, EXPECTED_NEXT_PHASE_BLOCK.encode("utf-8"))
+        self.assertTrue(result["historical_readme_next_phase_state_valid"])
+        self.assertTrue(result["historical_readme_phase_state_valid"])
+        self.assertEqual(
+            result["historical_evidence_phase"], "pre_final_m14_transition"
+        )
+        self.assertFalse(
+            result["current_readme_checked_by_completion_readiness_evaluator"]
+        )
+        self.assertEqual(
+            result["current_readme_validation_owner"],
+            "m14_final_completion_evaluator",
+        )
+
+    def test_112_historical_snapshot_integrity_grants_no_governance_authority(self):
+        result = self.evaluate()
+
+        self.assertTrue(result["historical_readme_snapshot_integrity_valid"])
+        self.assertTrue(result["historical_readme_phase_state_valid"])
         self.assertFalse(result["release_approved"])
         self.assertFalse(result["released"])
         self.assertFalse(result["m14_complete"])

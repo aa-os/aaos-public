@@ -2,11 +2,11 @@
 
 The evaluator treats repository files as inert evidence.  It reads JSON and
 README text, preserves the recorded PR #214 digests as historical evidence,
-recomputes canonical repository-text SHA-256 digests for maintained files, and
-reports whether the recorded transition is internally consistent.  It never
-imports or executes another evaluator or test, runs commands or workflows,
-queries GitHub, publishes a release, changes tracker state, or exercises
-governance authority.
+recomputes canonical repository-text SHA-256 digests for maintained files and
+separately bound auxiliary dependencies, and reports whether the recorded
+transition is internally consistent.  It never imports or executes another
+evaluator or test, runs commands or workflows, queries GitHub, publishes a
+release, changes tracker state, or exercises governance authority.
 """
 
 from __future__ import annotations
@@ -91,12 +91,28 @@ EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
         "m14-completion-readiness-future-readme-path.json"
     ): "e65e4558bc25504ebea24dd8479ac5c40e1ecc588cd3262e729fe77b193d2673",
     "runtime/m14_completion_readiness_evaluator.py": (
-        "3130bb98c22ba4c6b657d94be92cc57c8e6ae3319e71f6b7a7e90b02761d9f54"
+        "c87bdf875c3cce8893693a60a913f1adc97b2b49b7922ad038aaf6f80cc585c5"
     ),
     "tests/test_m14_completion_readiness_evaluator.py": (
-        "cafb84d2f52cf9f13e79bb3609499e9f2781ff99cee9663914ec84b028aa1c43"
+        "9ba54dbb7b6c4a3d5ce4d4f46e1919f5e259a8bcbd6ce247d4c5b7b1dbae21f9"
     ),
 }
+
+EXPECTED_MAINTAINED_COMPLETION_READINESS_AUXILIARY_DEPENDENCIES = (
+    {
+        "relative_path": (
+            "examples/public-integration-pack-pilot/"
+            "m14-completion-readiness-readme-snapshot.md"
+        ),
+        "sha256": "a72061d2614b107e9780d31070ccae4ad683596c4873c6d1dac6a77fdf01d269",
+        "digest_algorithm": "sha256",
+        "canonicalization_mode": "text",
+        "evidence_role": "historical_completion_readiness_readme_snapshot",
+        "historical_pr_214_bundle_member": False,
+        "executable_by_final_completion_evaluator": False,
+        "authority_role": "evidence_only_non_authoritative",
+    },
+)
 
 EXPECTED_TOP_LEVEL = {
     "artifact_id": "m14-final-completion-release-state",
@@ -798,6 +814,100 @@ def _validate_bundle(
             else:
                 readiness_fixture = loaded
     return present, integrity, readiness_fixture
+
+
+def _validate_completion_readiness_auxiliary_dependencies(
+    root: Path, findings: list[str], missing: list[str]
+) -> bool:
+    """Validate maintained, inert dependencies outside the historical bundle."""
+
+    integrity = True
+    if (
+        len(EXPECTED_MAINTAINED_COMPLETION_READINESS_AUXILIARY_DEPENDENCIES)
+        != 1
+    ):
+        _add(findings, "completion_readiness_auxiliary_dependency_count_invalid")
+        integrity = False
+    for dependency in EXPECTED_MAINTAINED_COMPLETION_READINESS_AUXILIARY_DEPENDENCIES:
+        if not isinstance(dependency, Mapping):
+            _add(findings, "completion_readiness_auxiliary_dependency_binding_invalid")
+            integrity = False
+            continue
+        relative_path = dependency.get("relative_path")
+        expected_digest = dependency.get("sha256")
+        binding_valid = bool(
+            isinstance(relative_path, str)
+            and dependency.get("digest_algorithm") == "sha256"
+            and dependency.get("canonicalization_mode") == "text"
+            and dependency.get("historical_pr_214_bundle_member") is False
+            and dependency.get("executable_by_final_completion_evaluator") is False
+            and dependency.get("authority_role")
+            == "evidence_only_non_authoritative"
+            and isinstance(expected_digest, str)
+            and re.fullmatch(r"[0-9a-f]{64}", expected_digest) is not None
+        )
+        if not binding_valid:
+            _add(findings, "completion_readiness_auxiliary_dependency_binding_invalid")
+            integrity = False
+            if not isinstance(relative_path, str):
+                continue
+
+        path = _safe_repository_path(root, relative_path)
+        if path is None:
+            _add(
+                findings,
+                f"completion_readiness_auxiliary_dependency_path_unsafe:{relative_path}",
+            )
+            integrity = False
+            continue
+        try:
+            observed = sha256_repository_file(root, relative_path, mode="text")
+        except UnicodeDecodeError:
+            _add(
+                findings,
+                f"completion_readiness_auxiliary_dependency_malformed_utf8:{relative_path}",
+            )
+            integrity = False
+            continue
+        except RepositoryArtifactTextError:
+            _add(
+                findings,
+                "completion_readiness_auxiliary_dependency_lone_carriage_return:"
+                f"{relative_path}",
+            )
+            integrity = False
+            continue
+        except RepositoryArtifactPathError:
+            _add(
+                findings,
+                f"completion_readiness_auxiliary_dependency_path_unsafe:{relative_path}",
+            )
+            integrity = False
+            continue
+        except (FileNotFoundError, RepositoryArtifactFileTypeError):
+            _add(
+                findings,
+                f"completion_readiness_auxiliary_dependency_missing:{relative_path}",
+            )
+            _add(missing, relative_path)
+            integrity = False
+            continue
+        except OSError:
+            _add(
+                findings,
+                f"completion_readiness_auxiliary_dependency_unreadable:{relative_path}",
+            )
+            _add(missing, relative_path)
+            integrity = False
+            continue
+        if observed != expected_digest:
+            _add(
+                findings,
+                "completion_readiness_auxiliary_dependency_maintained_digest_mismatch:"
+                f"{relative_path}",
+            )
+            integrity = False
+    return integrity
 
 
 def _validate_pre_transition(
@@ -1505,6 +1615,9 @@ def evaluate_m14_final_completion(
     bundle_present, bundle_integrity, readiness_fixture = _validate_bundle(
         payload, root, findings, missing
     )
+    auxiliary_dependencies_integrity = (
+        _validate_completion_readiness_auxiliary_dependencies(root, findings, missing)
+    )
     readiness_state_valid = _validate_pre_transition(
         payload, readiness_fixture, findings, missing
     )
@@ -1530,6 +1643,7 @@ def evaluate_m14_final_completion(
         and release_valid
         and bundle_present
         and bundle_integrity
+        and auxiliary_dependencies_integrity
         and readiness_state_valid
         and linkage_valid
         and manual_steps_valid
@@ -1552,6 +1666,9 @@ def evaluate_m14_final_completion(
         "github_release_pending_manual_publication": core_valid,
         "completion_readiness_bundle_present": bundle_present,
         "completion_readiness_bundle_integrity_valid": bundle_integrity,
+        "completion_readiness_auxiliary_dependencies_integrity_valid": (
+            auxiliary_dependencies_integrity
+        ),
         "completion_readiness_state_valid": readiness_state_valid,
         "readme_release_state_valid": readme_valid,
         "manual_release_steps_valid": manual_steps_valid,
@@ -1581,6 +1698,9 @@ def evaluate_m14_final_completion(
         "github_release_pending_manual_publication": core_valid,
         "completion_readiness_bundle_present": bundle_present,
         "completion_readiness_bundle_integrity_valid": bundle_integrity,
+        "completion_readiness_auxiliary_dependencies_integrity_valid": (
+            auxiliary_dependencies_integrity
+        ),
         "completion_readiness_state_valid": readiness_state_valid,
         "readme_release_state_valid": readme_valid,
         "manual_release_steps_valid": manual_steps_valid,

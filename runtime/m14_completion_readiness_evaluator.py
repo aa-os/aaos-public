@@ -1,9 +1,10 @@
-"""Deterministic M14 completion-readiness and future README-path evaluation.
+"""Deterministic historical M14 completion-readiness evaluation.
 
 Repository files and fixture content are treated as inert evidence.  This module
 does not import or execute other M14 evaluators or tests, run manifest commands
 or workflows, query GitHub, approve a release, complete M14, or seal Decision
-Proof.
+Proof.  It validates the immutable pre-final-transition README snapshot and
+leaves current README validation to the M14 final-completion evaluator.
 """
 
 from __future__ import annotations
@@ -32,6 +33,23 @@ EXPECTED_CHANGED_FILES = (
     "runtime/m14_completion_readiness_evaluator.py",
     "tests/test_m14_completion_readiness_evaluator.py",
 )
+
+# PR #214 validated README.md while that file still represented the
+# pre-final M14 transition.  The maintained evaluator binds that historical
+# evidence to an immutable repository snapshot so the current README can move
+# forward under the final-completion evaluator without rewriting history.
+HISTORICAL_README_SNAPSHOT_PATH = (
+    "examples/public-integration-pack-pilot/"
+    "m14-completion-readiness-readme-snapshot.md"
+)
+HISTORICAL_README_SNAPSHOT_SOURCE_COMMIT = (
+    "a7b5cbc2026468dde3d937e9366a780894570548"
+)
+EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256 = (
+    "a72061d2614b107e9780d31070ccae4ad683596c4873c6d1dac6a77fdf01d269"
+)
+HISTORICAL_EVIDENCE_PHASE = "pre_final_m14_transition"
+CURRENT_README_VALIDATION_OWNER = "m14_final_completion_evaluator"
 
 EXPECTED_README_PREFIX_SHA256 = (
     "07f45b06b56e8e52eb517a1f37bac47714ddc870d40707940962683405e72f63"
@@ -914,34 +932,62 @@ def _validate_readme_configuration(
     return valid
 
 
-def _validate_readme(
+def _validate_historical_readme_snapshot(
     payload: Mapping[str, Any], root: Path, findings: list[str]
-) -> tuple[bool, bool, bool, bool, bool]:
+) -> tuple[bool, bool, bool, bool, bool, bool]:
     configuration_valid = _validate_readme_configuration(payload, findings)
-    path = _safe_repository_path(root, "README.md")
+    path = _safe_repository_path(root, HISTORICAL_README_SNAPSHOT_PATH)
     present = path is not None and path.is_file()
-    if not present:
-        _add(findings, "readme_missing")
-        return False, False, False, False, False
 
     try:
-        data = canonicalize_utf8_repository_text(path.read_bytes())
-        text = data.decode("utf-8", errors="strict")
+        observed_digest = sha256_repository_file(
+            root,
+            HISTORICAL_README_SNAPSHOT_PATH,
+            mode="text",
+        )
+    except RepositoryArtifactPathError:
+        _add(findings, "historical_readme_snapshot_path_invalid")
+        return False, False, False, False, False, False
+    except FileNotFoundError:
+        _add(findings, "historical_readme_snapshot_missing")
+        return False, False, False, False, False, False
+    except RepositoryArtifactFileTypeError:
+        _add(findings, "historical_readme_snapshot_not_regular")
+        return False, False, False, False, False, False
     except UnicodeDecodeError:
-        _add(findings, "readme_malformed_utf8")
-        return True, False, False, False, False
+        _add(findings, "historical_readme_snapshot_malformed_utf8")
+        return present, False, False, False, False, False
     except RepositoryArtifactTextError:
-        _add(findings, "readme_lone_cr")
-        return True, False, False, False, False
+        _add(findings, "historical_readme_snapshot_lone_cr")
+        return present, False, False, False, False, False
     except OSError:
-        _add(findings, "readme_unreadable")
-        return True, False, False, False, False
+        _add(findings, "historical_readme_snapshot_unreadable")
+        return present, False, False, False, False, False
+
+    snapshot_integrity_valid = (
+        observed_digest == EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256
+    )
+    if not snapshot_integrity_valid:
+        _add(findings, "historical_readme_snapshot_digest_mismatch")
+
+    try:
+        assert path is not None
+        data = canonicalize_utf8_repository_text(path.read_bytes())
+    except UnicodeDecodeError:
+        _add(findings, "historical_readme_snapshot_malformed_utf8")
+        return present, False, False, False, False, False
+    except RepositoryArtifactTextError:
+        _add(findings, "historical_readme_snapshot_lone_cr")
+        return present, False, False, False, False, False
+    except OSError:
+        _add(findings, "historical_readme_snapshot_unreadable")
+        return present, False, False, False, False, False
 
     next_positions = _heading_positions(data, "## Next Phase")
     if not next_positions:
-        _add(findings, "readme_next_phase_heading_missing")
+        _add(findings, "historical_readme_next_phase_heading_missing")
     elif len(next_positions) != 1:
-        _add(findings, "readme_next_phase_heading_duplicated")
+        _add(findings, "historical_readme_next_phase_heading_duplicated")
 
     prefix_valid = configuration_valid and len(next_positions) == 1
     next_phase_valid = configuration_valid and len(next_positions) == 1
@@ -949,11 +995,15 @@ def _validate_readme(
         heading_start = next_positions[0]
         prefix = data[:heading_start]
         if _sha256_repository_text_bytes(prefix) != EXPECTED_README_PREFIX_SHA256:
-            _add(findings, "readme_immutable_prefix_digest_mismatch")
+            _add(findings, "historical_readme_immutable_prefix_digest_mismatch")
             prefix_valid = False
         actual_block = data[heading_start:]
         if actual_block != EXPECTED_NEXT_PHASE_BLOCK.encode("utf-8"):
-            _add(findings, "readme_next_phase_block_mismatch_or_unexpected_trailing_content")
+            _add(
+                findings,
+                "historical_readme_next_phase_block_mismatch_or_unexpected_"
+                "trailing_content",
+            )
             next_phase_valid = False
     else:
         prefix_valid = False
@@ -963,35 +1013,35 @@ def _validate_readme(
     releases_bytes = sections.get("## Releases")
     releases_preserved = releases_bytes is not None
     if releases_bytes is None:
-        _add(findings, "readme_releases_section_missing")
+        _add(findings, "historical_readme_releases_section_missing")
     else:
         if (
             _sha256_repository_text_bytes(releases_bytes)
             != EXPECTED_RELEASES_SECTION_SHA256
         ):
-            _add(findings, "readme_releases_section_modified")
+            _add(findings, "historical_readme_releases_section_modified")
             releases_preserved = False
         releases_text = releases_bytes.decode("utf-8")
         listed_versions = re.findall(
             r"(?m)^-\s+(v\d+\.\d+\.\d+)\b", releases_text
         )
         if not listed_versions or listed_versions[-1] != "v0.12.0":
-            _add(findings, "readme_latest_released_version_invalid")
+            _add(findings, "historical_readme_latest_released_version_invalid")
             releases_preserved = False
         if "v0.13.0" in releases_text:
-            _add(findings, "readme_v0_13_0_release_entry_forbidden")
+            _add(findings, "historical_readme_v0_13_0_release_entry_forbidden")
             releases_preserved = False
 
     current_bytes = sections.get("## Current Status")
     current_preserved = current_bytes is not None
     if current_bytes is None:
-        _add(findings, "readme_current_status_section_missing")
+        _add(findings, "historical_readme_current_status_section_missing")
     else:
         if (
             _sha256_repository_text_bytes(current_bytes)
             != EXPECTED_CURRENT_STATUS_SECTION_SHA256
         ):
-            _add(findings, "readme_current_status_section_modified")
+            _add(findings, "historical_readme_current_status_section_modified")
             current_preserved = False
         current_text = current_bytes.decode("utf-8")
         required_complete = (
@@ -999,30 +1049,53 @@ def _validate_readme(
             "and M13 are complete."
         )
         if required_complete not in current_text:
-            _add(findings, "readme_m1_through_m13_completion_state_invalid")
+            _add(
+                findings,
+                "historical_readme_m1_through_m13_completion_state_invalid",
+            )
             current_preserved = False
         if re.search(r"(?im)^\s*M14\s+completed:\s*$", current_text):
-            _add(findings, "readme_m14_completed_heading_forbidden")
+            _add(findings, "historical_readme_m14_completed_heading_forbidden")
             current_preserved = False
         if re.search(r"(?i)\bM14\b[^\r\n]{0,100}\bcomplete(?:d)?\b", current_text):
-            _add(findings, "readme_m14_completion_declaration_forbidden")
+            _add(
+                findings,
+                "historical_readme_m14_completion_declaration_forbidden",
+            )
             current_preserved = False
         if "v0.13.0" in current_text:
-            _add(findings, "readme_v0_13_0_released_status_forbidden")
+            _add(
+                findings,
+                "historical_readme_v0_13_0_released_status_forbidden",
+            )
             current_preserved = False
 
     if len(next_positions) == 1:
         next_text = data[next_positions[0] :].decode("utf-8")
         for statement in REQUIRED_NEXT_PHASE_STATEMENTS:
             if statement not in next_text:
-                _add(findings, f"readme_next_phase_statement_missing:{_token(statement)}")
+                _add(
+                    findings,
+                    "historical_readme_next_phase_statement_missing:"
+                    f"{_token(statement)}",
+                )
                 next_phase_valid = False
         for source_pr in EXPECTED_SOURCE_PRS:
             if source_pr not in next_text:
-                _add(findings, f"readme_evidence_link_missing:{source_pr}")
+                _add(
+                    findings,
+                    f"historical_readme_evidence_link_missing:{source_pr}",
+                )
                 next_phase_valid = False
 
-    return present, prefix_valid, next_phase_valid, releases_preserved, current_preserved
+    return (
+        present,
+        snapshot_integrity_valid,
+        prefix_valid,
+        next_phase_valid,
+        releases_preserved,
+        current_preserved,
+    )
 
 
 def _validate_release_proof_bundle(
@@ -1717,12 +1790,19 @@ def evaluate_m14_completion_readiness(
 
     top_valid = _validate_top_level(payload, findings)
     (
-        readme_present,
+        historical_snapshot_present,
+        historical_snapshot_integrity,
         prefix_integrity,
         next_phase_valid,
         releases_preserved,
         current_preserved,
-    ) = _validate_readme(payload, root, findings)
+    ) = _validate_historical_readme_snapshot(payload, root, findings)
+    historical_phase_state_valid = bool(
+        prefix_integrity
+        and next_phase_valid
+        and releases_preserved
+        and current_preserved
+    )
     bundle_present, bundle_integrity, release_fixture = _validate_release_proof_bundle(
         payload, root, findings
     )
@@ -1755,7 +1835,8 @@ def evaluate_m14_completion_readiness(
     coverage = bool(
         refs_valid
         and evidence_packet_valid
-        and readme_present
+        and historical_snapshot_present
+        and historical_snapshot_integrity
         and prefix_integrity
         and next_phase_valid
         and releases_preserved
@@ -1767,7 +1848,8 @@ def evaluate_m14_completion_readiness(
 
     valid = bool(
         top_valid
-        and readme_present
+        and historical_snapshot_present
+        and historical_snapshot_integrity
         and prefix_integrity
         and next_phase_valid
         and releases_preserved
@@ -1800,7 +1882,19 @@ def evaluate_m14_completion_readiness(
     )
     return {
         "valid": valid,
-        "readme_present": readme_present,
+        "historical_readme_snapshot_present": historical_snapshot_present,
+        "historical_readme_snapshot_integrity_valid": historical_snapshot_integrity,
+        "historical_readme_prefix_integrity_valid": prefix_integrity,
+        "historical_readme_next_phase_state_valid": next_phase_valid,
+        "historical_readme_releases_state_valid": releases_preserved,
+        "historical_readme_current_status_state_valid": current_preserved,
+        "historical_readme_phase_state_valid": historical_phase_state_valid,
+        "historical_evidence_phase": HISTORICAL_EVIDENCE_PHASE,
+        "current_readme_checked_by_completion_readiness_evaluator": False,
+        "current_readme_validation_owner": CURRENT_README_VALIDATION_OWNER,
+        # Compatibility aliases below refer only to the immutable historical
+        # snapshot.  They do not describe or validate the current README.md.
+        "readme_present": historical_snapshot_present,
         "readme_prefix_integrity_valid": prefix_integrity,
         "readme_next_phase_valid": next_phase_valid,
         "released_versions_section_preserved": releases_preserved,
