@@ -1,0 +1,160 @@
+{
+  "schema_version": "m15-lineage-rollback-portability/v1",
+  "track_c_record_id": "urn:aaos:m15:track-c:synthetic:learning-proof-rollback-authority-001",
+  "record_kind": "rollback-readiness",
+  "effective_timestamp": "2026-07-16T12:40:00Z",
+  "dependency_graph": {
+    "graph_id": "urn:aaos:m15:dependency-graph:synthetic:learning-proof-rollback-authority-001",
+    "graph_version": "1.0.0",
+    "graph_integrity_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "artifacts": [
+      {
+        "artifact_id": "urn:aaos:m15:learning-proof:synthetic-evaluation-correction-001",
+        "artifact_type": "learning-proof",
+        "artifact_version": "m15-learning-proof/v1",
+        "artifact_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+        "digest_role": "track-c-evidence-record",
+        "upstream_dependencies": [],
+        "downstream_dependents": [],
+        "dependency_purpose": "learning-lineage",
+        "dependency_criticality": "critical",
+        "processing_boundary": "organization",
+        "retention_boundary": "organization",
+        "provider_specific_dependency": false,
+        "rollback_sensitivity": "high",
+        "deletion_sensitivity": "high"
+      },
+      {
+        "artifact_id": "urn:aaos:capability-pack:synthetic:verified-001",
+        "artifact_type": "capability-memory-pack",
+        "artifact_version": "m15-capability-memory-pack/v1",
+        "artifact_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+        "digest_role": "track-c-evidence-record",
+        "upstream_dependencies": [],
+        "downstream_dependents": [],
+        "dependency_purpose": "capability-use",
+        "dependency_criticality": "high",
+        "processing_boundary": "organization",
+        "retention_boundary": "organization",
+        "provider_specific_dependency": false,
+        "rollback_sensitivity": "high",
+        "deletion_sensitivity": "high"
+      },
+      {
+        "artifact_id": "urn:aaos:decision-proof:synthetic-evaluation-correction-001",
+        "artifact_type": "decision-proof",
+        "artifact_version": "decision-proof/v1",
+        "artifact_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+        "digest_role": "track-c-evidence-record",
+        "upstream_dependencies": [],
+        "downstream_dependents": [],
+        "dependency_purpose": "decision-trace",
+        "dependency_criticality": "high",
+        "processing_boundary": "organization",
+        "retention_boundary": "organization",
+        "provider_specific_dependency": false,
+        "rollback_sensitivity": "medium",
+        "deletion_sensitivity": "high"
+      },
+      {
+        "artifact_id": "urn:aaos:capability-pack:synthetic:previous-001",
+        "artifact_type": "capability-memory-pack",
+        "artifact_version": "m15-capability-memory-pack/v0",
+        "artifact_digest": "6666666666666666666666666666666666666666666666666666666666666666",
+        "digest_role": "artifact-content",
+        "upstream_dependencies": [],
+        "downstream_dependents": [],
+        "dependency_purpose": "standalone-evidence",
+        "dependency_criticality": "high",
+        "processing_boundary": "organization",
+        "retention_boundary": "organization",
+        "provider_specific_dependency": false,
+        "rollback_sensitivity": "high",
+        "deletion_sensitivity": "high"
+      }
+    ],
+    "completeness_declared": true,
+    "completeness_evidence_reference": "urn:aaos:m15:dependency-completeness-evidence:synthetic:learning-proof-rollback-authority-001",
+    "unresolved_dependencies": [],
+    "graph_snapshot_reference": "urn:aaos:m15:dependency-graph-snapshot:synthetic:learning-proof-rollback-authority-001"
+  },
+  "lineage_evidence": null,
+  "rollback_evidence": {
+    "rollback_request_id": "urn:aaos:m15:rollback-request:synthetic:learning-proof-authority-001",
+    "current_artifact": {
+      "artifact_id": "urn:aaos:capability-pack:synthetic:verified-001",
+      "artifact_version": "m15-capability-memory-pack/v1",
+      "artifact_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    "target_artifact": {
+      "artifact_id": "urn:aaos:capability-pack:synthetic:previous-001",
+      "artifact_version": "m15-capability-memory-pack/v0",
+      "artifact_digest": "6666666666666666666666666666666666666666666666666666666666666666"
+    },
+    "dependency_graph_snapshot_reference": "urn:aaos:m15:dependency-graph-snapshot:synthetic:learning-proof-rollback-authority-001",
+    "affected_dependents": [],
+    "incompatible_dependents": [],
+    "unresolved_dependents": [],
+    "compatibility_assessment": "compatible",
+    "required_human_review": true,
+    "authorization_reference": null,
+    "execution_evidence_reference": null,
+    "readiness_state": "ready-for-human-review",
+    "execution_state": "not-executed",
+    "completion_claim": false,
+    "reason_codes": [
+      "dependency-evidence-complete",
+      "compatibility-confirmed",
+      "human-review-required",
+      "authorization-not-recorded",
+      "execution-not-attempted"
+    ]
+  },
+  "deletion_evidence": null,
+  "portability_drill": null,
+  "cross_track_linkage": {
+    "learning_proof": {
+      "reference": "urn:aaos:m15:learning-proof:synthetic-evaluation-correction-001",
+      "schema_version": "m15-learning-proof/v1",
+      "track_c_evidence_record_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "source_integrity_hash": "0e8df97c396dda3270c7e34ca50a8e3c69e211e7b92ca9553d30b1ba5c7bccc2",
+      "usage": "rollback-authority"
+    },
+    "capability_memory_pack": {
+      "reference": "urn:aaos:capability-pack:synthetic:verified-001",
+      "schema_version": "m15-capability-memory-pack/v1",
+      "track_c_evidence_record_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+      "derived_spec_manifest_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "usage": "non-executable-evidence"
+    },
+    "decision_proof": {
+      "reference": "urn:aaos:decision-proof:synthetic-evaluation-correction-001",
+      "schema_version": "decision-proof/v1",
+      "track_c_evidence_record_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+      "usage": "linkage-only"
+    },
+    "linkage_purpose": "evidence-only"
+  },
+  "authority_claims": {
+    "release_approved": false,
+    "governance_authority_granted": false,
+    "policy_authority_granted": false,
+    "identity_authority_granted": false,
+    "risk_accepted": false,
+    "deployment_approved": false,
+    "rollback_authorized": false,
+    "rollback_executed": false,
+    "deletion_authorized": false,
+    "deletion_executed": false,
+    "production_execution_allowed": false,
+    "audit_closed": false,
+    "waiver_granted": false,
+    "authority_transferred": false,
+    "capability_pack_installed": false,
+    "capability_pack_executable": false,
+    "learning_proof_sealed": false,
+    "decision_proof_sealed": false
+  },
+  "extensions": {},
+  "non_authoritative_boundary_statement": "This Track C record is evidence only; it authorizes and executes no lifecycle action, rollback, deletion, provider disconnection, replacement-model use, installation, deployment, production workflow, risk acceptance, audit closure, waiver, authority transfer, Learning Proof sealing, or Decision Proof sealing."
+}
