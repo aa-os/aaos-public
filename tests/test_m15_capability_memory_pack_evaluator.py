@@ -21,6 +21,7 @@ import runtime.m15_capability_memory_pack_evaluator as evaluator_module
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schemas" / "m15-capability-memory-pack.schema.json"
 EVALUATOR_PATH = ROOT / "runtime" / "m15_capability_memory_pack_evaluator.py"
+CONTRACT_PATH = ROOT / "docs" / "learning-governance" / "m15-capability-memory-pack-contract.md"
 FIXTURE_PATHS = {
     "verified": ROOT
     / "examples"
@@ -42,6 +43,22 @@ FIXTURE_PATHS = {
     / "examples"
     / "public-integration-pack-pilot"
     / "m15-capability-pack-revoked.json",
+    "source_digest_mismatch": ROOT
+    / "examples"
+    / "public-integration-pack-pilot"
+    / "m15-capability-pack-source-digest-mismatch.json",
+    "altered_derived": ROOT
+    / "examples"
+    / "public-integration-pack-pilot"
+    / "m15-capability-pack-altered-derived-specification.json",
+    "missing_license_boundary": ROOT
+    / "examples"
+    / "public-integration-pack-pilot"
+    / "m15-capability-pack-missing-license-usage-boundary-evidence.json",
+    "executable_authority": ROOT
+    / "examples"
+    / "public-integration-pack-pilot"
+    / "m15-capability-pack-executable-authority-claim.json",
 }
 
 SCHEMA_VERSION = "m15-capability-memory-pack/v1"
@@ -77,7 +94,9 @@ SHA256_PATTERN = r"^[0-9a-f]{64}$"
 BOUNDARY_STATEMENT = (
     "This Capability Memory Pack is evidence only; runtime eligibility means "
     "eligibility for independent policy review, not installation, registration, "
-    "deployment, execution, risk acceptance, or AAOS sealing authority."
+    "deployment, execution, risk acceptance, Learning Proof sealing, or Decision "
+    "Proof sealing. Capability Pack sealing is undefined and out of scope for M15 "
+    "Track B. A capability pack must not claim sealed status or sealing authority."
 )
 EXPECTED_RESULT_KEYS = {
     "valid",
@@ -1594,6 +1613,123 @@ class M15CapabilityMemoryPackEvaluatorTests(unittest.TestCase):
                         )
                     ):
                         self.assertIn("synthetic", value.casefold(), (path, value))
+
+    def test_69_source_digest_mismatch_fixture_is_quarantined_evidence(self):
+        artifact = self.fixture("source_digest_mismatch")
+        result = self.evaluate(artifact)
+        self.assert_valid_record(result)
+        self.assertTrue(result["schema_valid"])
+        self.assertFalse(result["artifact_digest_bindings_valid"])
+        self.assertTrue(result["graph_binding_valid"])
+        self.assertTrue(result["lifecycle_valid"])
+        self.assertFalse(result["retrieval_eligible"])
+        self.assertFalse(result["runtime_eligible"])
+        self.assertFalse(result["verified_pack_eligible"])
+        self.assertEqual(result["evidence_disposition"], "quarantined-evidence")
+        self.assertEqual(result["findings"], ["pack_source_manifest_digest_mismatch"])
+
+    def test_70_altered_derived_specification_fixture_is_quarantined_evidence(self):
+        artifact = self.fixture("altered_derived")
+        result = self.evaluate(artifact)
+        self.assert_valid_record(result)
+        self.assertTrue(result["schema_valid"])
+        self.assertFalse(result["artifact_digest_bindings_valid"])
+        self.assertTrue(result["graph_binding_valid"])
+        self.assertTrue(result["lifecycle_valid"])
+        self.assertFalse(result["retrieval_eligible"])
+        self.assertFalse(result["runtime_eligible"])
+        self.assertFalse(result["verified_pack_eligible"])
+        self.assertEqual(result["evidence_disposition"], "quarantined-evidence")
+        self.assertEqual(
+            result["findings"],
+            ["derived_artifact_digest_mismatch:structured-spec"],
+        )
+
+    def test_71_missing_license_boundary_fixture_remains_unverified(self):
+        artifact = self.fixture("missing_license_boundary")
+        result = self.evaluate(artifact)
+        self.assert_valid_record(result)
+        self.assertTrue(result["schema_valid"])
+        self.assertTrue(result["license_manifest_valid"])
+        self.assertTrue(result["lifecycle_valid"])
+        self.assertFalse(result["retrieval_eligible"])
+        self.assertFalse(result["runtime_eligible"])
+        self.assertFalse(result["verified_pack_eligible"])
+        self.assertEqual(result["evidence_disposition"], "unverified-evidence")
+        self.assertEqual(result["findings"], [])
+        self.assertEqual(
+            artifact["license_manifest"]["license_review_status"],
+            "review-required",
+        )
+        self.assertEqual(
+            artifact["license_manifest"]["redistribution_status"],
+            "unknown",
+        )
+        self.assertIsNone(
+            artifact["license_manifest"]["review_evidence_reference"]
+        )
+
+    def test_72_executable_authority_fixture_fails_closed(self):
+        artifact = self.fixture("executable_authority")
+        result = self.evaluate(artifact)
+        self.assert_invalid(result)
+        self.assertTrue(result["schema_valid"])
+        self.assertFalse(result["authority_boundary_valid"])
+        self.assertFalse(result["lifecycle_valid"])
+        self.assertFalse(result["retrieval_eligible"])
+        self.assertFalse(result["runtime_eligible"])
+        self.assertTrue(
+            all(item["executable"] is False for item in artifact["artifact_inventory"])
+        )
+        self.assertTrue(
+            all(value is False for value in artifact["authority_claims"].values())
+        )
+        self.assertEqual(
+            result["findings"],
+            [
+                "affirmative_forbidden_claim:extensions.capability_pack_execution_authority",
+                "verified_lifecycle_requirements_not_met",
+            ],
+        )
+
+    def test_73_contract_preserves_m15_and_sealing_status_boundaries(self):
+        contract = CONTRACT_PATH.read_text(encoding="utf-8")
+        self.assertIn("Tracker #231 remains Open.", contract)
+        self.assertIn("M15 remains active work and is not complete.", contract)
+        self.assertIn(
+            "`v0.14.0` remains a future release path and is not published.",
+            contract,
+        )
+        self.assertIn(
+            "Capability Pack sealing is undefined and out of scope for M15 Track B.",
+            contract,
+        )
+        self.assertIn(
+            "A capability pack must not claim sealed status or sealing authority.",
+            contract,
+        )
+        self.assertNotIn(
+            "Capability Pack sealing remains " + "AAOS-owned.",
+            contract,
+        )
+        self.assertIn("Learning Proof sealing remains AAOS-owned.", contract)
+        self.assertIn("Decision Proof sealing remains AAOS-owned.", contract)
+        self.assertIn("AAOS remains the decision sovereignty layer.", contract)
+        self.assertEqual(
+            self.schema["properties"]["non_authoritative_boundary_statement"][
+                "const"
+            ],
+            BOUNDARY_STATEMENT,
+        )
+        self.assertEqual(
+            evaluator_module.NON_AUTHORITATIVE_BOUNDARY_STATEMENT,
+            BOUNDARY_STATEMENT,
+        )
+        for artifact in self.fixtures.values():
+            self.assertEqual(
+                artifact["non_authoritative_boundary_statement"],
+                BOUNDARY_STATEMENT,
+            )
 
 
 if __name__ == "__main__":

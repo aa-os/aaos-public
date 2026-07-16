@@ -1,6 +1,6 @@
 {
   "schema_version": "m15-capability-memory-pack/v1",
-  "capability_pack_id": "urn:aaos:capability-pack:synthetic:stale-specification-001",
+  "capability_pack_id": "urn:aaos:capability-pack:synthetic:executable-authority-claim-001",
   "manifest_references": {
     "source_manifest_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "license_manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -8,17 +8,17 @@
   },
   "source_manifest": {
     "manifest_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    "source_reference": "urn:aaos:synthetic-source:capability-pack-stale-001",
+    "source_reference": "urn:aaos:synthetic-source:capability-pack-executable-authority-claim-001",
     "source_status": "active",
     "immutable_commit_or_content_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-    "upstream_api_version": "synthetic-api/v2"
+    "upstream_api_version": "synthetic-api/v1"
   },
   "license_manifest": {
     "manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "license_identifier": "LicenseRef-AAOS-Synthetic-Permissive-1.0",
     "redistribution_status": "allowed",
     "license_review_status": "reviewed",
-    "review_evidence_reference": "urn:aaos:synthetic-license-review:capability-pack-stale-001",
+    "review_evidence_reference": "urn:aaos:synthetic-license-review:capability-pack-executable-authority-claim-001",
     "revocation_evidence_reference": null
   },
   "derived_spec_manifest": {
@@ -26,7 +26,7 @@
     "source_manifest_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "license_manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "source_api_version": "synthetic-api/v1",
-    "derivation_evidence_reference": "urn:aaos:synthetic-derivation-evidence:capability-pack-stale-001",
+    "derivation_evidence_reference": "urn:aaos:synthetic-derivation-evidence:capability-pack-executable-authority-claim-001",
     "artifact_digests": {
       "structured-spec": "1111111111111111111111111111111111111111111111111111111111111111",
       "workflow-graph": "2222222222222222222222222222222222222222222222222222222222222222",
@@ -96,12 +96,12 @@
     "observed_runtime_name": "aaos-synthetic-review-runtime",
     "observed_runtime_version": "1.0.0-synthetic",
     "compatibility_result": "compatible",
-    "compatibility_evidence_reference": "urn:aaos:synthetic-runtime-evidence:capability-pack-stale-001"
+    "compatibility_evidence_reference": "urn:aaos:synthetic-runtime-evidence:capability-pack-executable-authority-claim-001"
   },
-  "lifecycle_state": "stale",
+  "lifecycle_state": "verified",
   "lifecycle_evidence": {
-    "stale_reason": "synthetic-upstream-api-version-drift",
-    "version_drift_detected": true,
+    "stale_reason": null,
+    "version_drift_detected": false,
     "quarantine_reason": null,
     "contamination_detected": false,
     "superseded_by_reference": null,
@@ -111,8 +111,8 @@
     "pack_status": "active",
     "revocation_evidence_reference": null
   },
-  "related_learning_proof_reference": "urn:aaos:learning-proof:synthetic:capability-pack-stale-001",
-  "related_decision_proof_reference": "urn:aaos:decision-proof:synthetic:capability-pack-stale-001",
+  "related_learning_proof_reference": "urn:aaos:learning-proof:synthetic:capability-pack-executable-authority-claim-001",
+  "related_decision_proof_reference": "urn:aaos:decision-proof:synthetic:capability-pack-executable-authority-claim-001",
   "authority_claims": {
     "installation_approved": false,
     "tool_registration_approved": false,
@@ -129,10 +129,11 @@
     "decision_proof_sealed": false
   },
   "extensions": {
-    "synthetic_evidence_label": "synthetic-capability-memory-pack-stale"
+    "synthetic_evidence_label": "synthetic-capability-memory-pack-rejected-case",
+    "capability_pack_execution_authority": true
   },
   "retrieval_eligible": true,
-  "runtime_eligible": false,
-  "evidence_disposition": "stale-evidence",
+  "runtime_eligible": true,
+  "evidence_disposition": "verified-read-only",
   "non_authoritative_boundary_statement": "This Capability Memory Pack is evidence only; runtime eligibility means eligibility for independent policy review, not installation, registration, deployment, execution, risk acceptance, Learning Proof sealing, or Decision Proof sealing. Capability Pack sealing is undefined and out of scope for M15 Track B. A capability pack must not claim sealed status or sealing authority."
 }

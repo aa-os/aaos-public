@@ -63,7 +63,9 @@ ARTIFACT_ROLE_SET = frozenset(ARTIFACT_ROLES)
 NON_AUTHORITATIVE_BOUNDARY_STATEMENT = (
     "This Capability Memory Pack is evidence only; runtime eligibility means "
     "eligibility for independent policy review, not installation, registration, "
-    "deployment, execution, risk acceptance, or AAOS sealing authority."
+    "deployment, execution, risk acceptance, Learning Proof sealing, or Decision "
+    "Proof sealing. Capability Pack sealing is undefined and out of scope for M15 "
+    "Track B. A capability pack must not claim sealed status or sealing authority."
 )
 
 REQUIRED_TOP_LEVEL_FIELDS = frozenset(

@@ -18,7 +18,7 @@ A structurally valid evidence record is not necessarily a verified pack. The eva
 
 The exact required boundary statement is:
 
-> This Capability Memory Pack is evidence only; runtime eligibility means eligibility for independent policy review, not installation, registration, deployment, execution, risk acceptance, or AAOS sealing authority.
+> This Capability Memory Pack is evidence only; runtime eligibility means eligibility for independent policy review, not installation, registration, deployment, execution, risk acceptance, Learning Proof sealing, or Decision Proof sealing. Capability Pack sealing is undefined and out of scope for M15 Track B. A capability pack must not claim sealed status or sealing authority.
 
 ## Closed vocabulary
 
@@ -154,7 +154,7 @@ Additional authority-claim fields and extension structures are recursively inspe
 
 Open machine-token fields are scanned for tokenized authority claims. Inert identifiers, manifest references, evidence references, versions, paths, and digest fields are not treated as current authority merely because an identifier contains authority-related historical text.
 
-Capability Pack sealing remains AAOS-owned. Learning Proof sealing remains AAOS-owned. Decision Proof sealing remains AAOS-owned. AAOS remains the decision sovereignty layer.
+Capability Pack sealing is undefined and out of scope for M15 Track B. A capability pack must not claim sealed status or sealing authority. Learning Proof sealing remains AAOS-owned. Decision Proof sealing remains AAOS-owned. AAOS remains the decision sovereignty layer.
 
 ## Sensitive-value boundary
 
@@ -166,12 +166,16 @@ Findings identify only a deterministic category and field path; they do not echo
 
 ## Public fixtures and execution safety
 
-The five public fixtures contain synthetic URNs, synthetic names, synthetic versions, and declared raw digests only. They contain no production account identifiers, credentials, personal data, external vendor content, or executable artifacts.
+The nine public fixtures contain synthetic URNs, synthetic names, synthetic versions, and declared raw digests only. They contain no production account identifiers, credentials, personal data, external vendor content, network locations, or executable artifacts.
 
 - `m15-capability-pack-valid-verified.json` demonstrates a fully consistent verified evidence pack.
 - `m15-capability-pack-stale-specification.json` demonstrates explicit API-version drift and valid stale evidence.
 - `m15-capability-pack-altered-graph.json` demonstrates quarantined graph and immutable-source binding mismatches.
 - `m15-capability-pack-incompatible-runtime.json` demonstrates exact runtime-version incompatibility with no fallback.
 - `m15-capability-pack-revoked.json` demonstrates revocation overriding otherwise consistent digest and runtime declarations.
+- `m15-capability-pack-source-digest-mismatch.json` demonstrates a quarantined pack-level source-manifest digest mismatch.
+- `m15-capability-pack-altered-derived-specification.json` demonstrates a quarantined altered derived structured-specification digest.
+- `m15-capability-pack-missing-license-usage-boundary-evidence.json` demonstrates valid unverified evidence when license review and redistribution-boundary evidence are not available.
+- `m15-capability-pack-executable-authority-claim.json` demonstrates fail-closed rejection when a capability pack is incorrectly treated as executable authority; every declared artifact remains non-executable.
 
 The evaluator treats all fixture content as inert mappings. It performs no network access, subprocess execution, dynamic fixture import, file access, file mutation, external repository import, or external state transition.
