@@ -1,0 +1,792 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/m15-lineage-rollback-portability.schema.json",
+  "title": "AAOS M15 Lineage, Rollback, Deletion Evidence, and Model-Removal Portability Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "track_c_record_id",
+    "record_kind",
+    "effective_timestamp",
+    "dependency_graph",
+    "lineage_evidence",
+    "rollback_evidence",
+    "deletion_evidence",
+    "portability_drill",
+    "cross_track_linkage",
+    "authority_claims",
+    "extensions",
+    "non_authoritative_boundary_statement"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "m15-lineage-rollback-portability/v1"
+    },
+    "track_c_record_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "record_kind": {
+      "enum": [
+        "dependency-graph",
+        "supersession",
+        "revocation",
+        "rollback-readiness",
+        "deletion-pending",
+        "deleted",
+        "model-removal-portability"
+      ]
+    },
+    "effective_timestamp": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "dependency_graph": {
+      "$ref": "#/$defs/dependencyGraph"
+    },
+    "lineage_evidence": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/lineageEvidence"}
+      ]
+    },
+    "rollback_evidence": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/rollbackEvidence"}
+      ]
+    },
+    "deletion_evidence": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/deletionEvidence"}
+      ]
+    },
+    "portability_drill": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/portabilityDrill"}
+      ]
+    },
+    "cross_track_linkage": {
+      "$ref": "#/$defs/crossTrackLinkage"
+    },
+    "authority_claims": {
+      "type": "object",
+      "required": [
+        "release_approved",
+        "governance_authority_granted",
+        "policy_authority_granted",
+        "identity_authority_granted",
+        "risk_accepted",
+        "deployment_approved",
+        "rollback_authorized",
+        "rollback_executed",
+        "deletion_authorized",
+        "deletion_executed",
+        "production_execution_allowed",
+        "audit_closed",
+        "waiver_granted",
+        "authority_transferred",
+        "capability_pack_installed",
+        "capability_pack_executable",
+        "learning_proof_sealed",
+        "decision_proof_sealed"
+      ],
+      "properties": {
+        "release_approved": {"const": false},
+        "governance_authority_granted": {"const": false},
+        "policy_authority_granted": {"const": false},
+        "identity_authority_granted": {"const": false},
+        "risk_accepted": {"const": false},
+        "deployment_approved": {"const": false},
+        "rollback_authorized": {"const": false},
+        "rollback_executed": {"const": false},
+        "deletion_authorized": {"const": false},
+        "deletion_executed": {"const": false},
+        "production_execution_allowed": {"const": false},
+        "audit_closed": {"const": false},
+        "waiver_granted": {"const": false},
+        "authority_transferred": {"const": false},
+        "capability_pack_installed": {"const": false},
+        "capability_pack_executable": {"const": false},
+        "learning_proof_sealed": {"const": false},
+        "decision_proof_sealed": {"const": false}
+      },
+      "additionalProperties": true
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "non_authoritative_boundary_statement": {
+      "const": "This Track C record is evidence only; it authorizes and executes no lifecycle action, rollback, deletion, provider disconnection, replacement-model use, installation, deployment, production workflow, risk acceptance, audit closure, waiver, authority transfer, Learning Proof sealing, or Decision Proof sealing."
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"record_kind": {"const": "dependency-graph"}}},
+      "then": {
+        "properties": {
+          "lineage_evidence": {"type": "null"},
+          "rollback_evidence": {"type": "null"},
+          "deletion_evidence": {"type": "null"},
+          "portability_drill": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"record_kind": {"enum": ["supersession", "revocation"]}}},
+      "then": {
+        "properties": {
+          "lineage_evidence": {"$ref": "#/$defs/lineageEvidence"},
+          "rollback_evidence": {"type": "null"},
+          "deletion_evidence": {"type": "null"},
+          "portability_drill": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"record_kind": {"const": "rollback-readiness"}}},
+      "then": {
+        "properties": {
+          "lineage_evidence": {"type": "null"},
+          "rollback_evidence": {"$ref": "#/$defs/rollbackEvidence"},
+          "deletion_evidence": {"type": "null"},
+          "portability_drill": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"record_kind": {"enum": ["deletion-pending", "deleted"]}}},
+      "then": {
+        "properties": {
+          "lineage_evidence": {"type": "null"},
+          "rollback_evidence": {"type": "null"},
+          "deletion_evidence": {"$ref": "#/$defs/deletionEvidence"},
+          "portability_drill": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"record_kind": {"const": "model-removal-portability"}}},
+      "then": {
+        "properties": {
+          "lineage_evidence": {"type": "null"},
+          "rollback_evidence": {"type": "null"},
+          "deletion_evidence": {"type": "null"},
+          "portability_drill": {"$ref": "#/$defs/portabilityDrill"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 256,
+      "pattern": "^urn:aaos:[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+    },
+    "reference": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 512,
+      "pattern": "^urn:aaos:[A-Za-z0-9][A-Za-z0-9:._/-]*$"
+    },
+    "nullableReference": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/reference"}
+      ]
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._/+:-]*$"
+    },
+    "machineToken": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?!.*-00:00$)[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "boundary": {
+      "enum": ["local", "organization", "tenant", "approved-provider", "external", "public"]
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "artifact_version", "artifact_digest"],
+      "properties": {
+        "artifact_id": {"$ref": "#/$defs/identifier"},
+        "artifact_version": {"$ref": "#/$defs/version"},
+        "artifact_digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "dependencyBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "artifact_version", "artifact_digest"],
+      "properties": {
+        "artifact_id": {"$ref": "#/$defs/identifier"},
+        "artifact_version": {"$ref": "#/$defs/version"},
+        "artifact_digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "graphArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "artifact_type",
+        "artifact_version",
+        "artifact_digest",
+        "digest_role",
+        "upstream_dependencies",
+        "downstream_dependents",
+        "dependency_purpose",
+        "dependency_criticality",
+        "processing_boundary",
+        "retention_boundary",
+        "provider_specific_dependency",
+        "rollback_sensitivity",
+        "deletion_sensitivity"
+      ],
+      "properties": {
+        "artifact_id": {"$ref": "#/$defs/identifier"},
+        "artifact_type": {
+          "enum": [
+            "learning-proof",
+            "decision-proof",
+            "capability-memory-pack",
+            "organizational-memory",
+            "rule",
+            "skill",
+            "private-evaluation",
+            "adapter",
+            "copy",
+              "derived-artifact",
+              "export-manifest",
+              "lifecycle-evidence",
+              "other"
+          ]
+        },
+        "artifact_version": {"$ref": "#/$defs/version"},
+        "artifact_digest": {"$ref": "#/$defs/digest"},
+        "digest_role": {
+          "enum": ["track-c-evidence-record", "artifact-content", "export-manifest"]
+        },
+        "upstream_dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/dependencyBinding"}
+        },
+        "downstream_dependents": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/dependencyBinding"}
+        },
+        "dependency_purpose": {
+          "enum": [
+            "standalone-evidence",
+            "learning-lineage",
+            "capability-use",
+            "evaluation-input",
+            "memory-derivation",
+            "decision-trace",
+            "export-portability"
+          ]
+        },
+        "dependency_criticality": {"enum": ["low", "medium", "high", "critical"]},
+        "processing_boundary": {"$ref": "#/$defs/boundary"},
+        "retention_boundary": {"$ref": "#/$defs/boundary"},
+        "provider_specific_dependency": {"type": "boolean"},
+        "rollback_sensitivity": {"enum": ["none", "low", "medium", "high", "blocking"]},
+        "deletion_sensitivity": {"enum": ["none", "low", "medium", "high", "blocking"]}
+      }
+    },
+    "unresolvedDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_artifact_id", "related_artifact_id", "direction", "reason_code"],
+      "properties": {
+        "source_artifact_id": {"$ref": "#/$defs/identifier"},
+        "related_artifact_id": {"$ref": "#/$defs/identifier"},
+        "direction": {"enum": ["upstream", "downstream"]},
+        "reason_code": {"$ref": "#/$defs/machineToken"}
+      }
+    },
+    "dependencyGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "graph_id",
+        "graph_version",
+        "graph_integrity_digest",
+        "artifacts",
+        "completeness_declared",
+        "completeness_evidence_reference",
+        "unresolved_dependencies",
+        "graph_snapshot_reference"
+      ],
+      "properties": {
+        "graph_id": {"$ref": "#/$defs/identifier"},
+        "graph_version": {"$ref": "#/$defs/version"},
+        "graph_integrity_digest": {"$ref": "#/$defs/digest"},
+        "artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/graphArtifact"}
+        },
+        "completeness_declared": {"type": "boolean"},
+        "completeness_evidence_reference": {"$ref": "#/$defs/nullableReference"},
+        "unresolved_dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/unresolvedDependency"}
+        },
+        "graph_snapshot_reference": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "lineageEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "affected_artifact",
+        "current_version",
+        "replacement_reference",
+        "reason",
+        "effective_timestamp",
+        "known_downstream_dependents",
+        "unresolved_dependents",
+        "archival_evidence_state",
+        "archival_evidence_reference",
+        "revocation_evidence_reference",
+        "evidence_digests",
+        "downstream_removal_claimed"
+      ],
+      "properties": {
+        "action": {"enum": ["supersession", "revocation"]},
+        "affected_artifact": {"$ref": "#/$defs/artifactReference"},
+        "current_version": {"$ref": "#/$defs/version"},
+        "replacement_reference": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/artifactReference"}
+          ]
+        },
+        "reason": {"$ref": "#/$defs/machineToken"},
+        "effective_timestamp": {"$ref": "#/$defs/timestamp"},
+        "known_downstream_dependents": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/artifactReference"}
+        },
+        "unresolved_dependents": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/artifactReference"}
+        },
+        "archival_evidence_state": {"enum": ["retained", "pending", "not-retained", "unknown"]},
+        "archival_evidence_reference": {"$ref": "#/$defs/nullableReference"},
+        "revocation_evidence_reference": {"$ref": "#/$defs/nullableReference"},
+        "evidence_digests": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/digest"}
+        },
+        "downstream_removal_claimed": {"type": "boolean"}
+      }
+    },
+    "rollbackEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rollback_request_id",
+        "current_artifact",
+        "target_artifact",
+        "dependency_graph_snapshot_reference",
+        "affected_dependents",
+        "incompatible_dependents",
+        "unresolved_dependents",
+        "compatibility_assessment",
+        "required_human_review",
+        "authorization_reference",
+        "execution_evidence_reference",
+        "readiness_state",
+        "execution_state",
+        "completion_claim",
+        "reason_codes"
+      ],
+      "properties": {
+        "rollback_request_id": {"$ref": "#/$defs/identifier"},
+        "current_artifact": {"$ref": "#/$defs/artifactReference"},
+        "target_artifact": {"$ref": "#/$defs/artifactReference"},
+        "dependency_graph_snapshot_reference": {"$ref": "#/$defs/reference"},
+        "affected_dependents": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/artifactReference"}
+        },
+        "incompatible_dependents": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/artifactReference"}
+        },
+        "unresolved_dependents": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/artifactReference"}
+        },
+        "compatibility_assessment": {"enum": ["compatible", "incompatible", "unknown"]},
+        "required_human_review": {"type": "boolean"},
+        "authorization_reference": {"$ref": "#/$defs/nullableReference"},
+        "execution_evidence_reference": {"$ref": "#/$defs/nullableReference"},
+        "readiness_state": {"enum": ["ready-for-human-review", "blocked", "insufficient-evidence"]},
+        "execution_state": {"enum": ["not-executed", "execution-evidence-present", "execution-claimed"]},
+        "completion_claim": {"type": "boolean"},
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "dependency-evidence-complete",
+              "dependency-evidence-incomplete",
+              "compatibility-confirmed",
+              "incompatible-dependent",
+              "unresolved-dependent",
+              "human-review-required",
+              "authorization-not-recorded",
+              "execution-not-attempted",
+              "execution-evidence-present",
+              "execution-evidence-missing"
+            ]
+          }
+        }
+      }
+    },
+    "dependentEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "artifact_version", "artifact_digest", "evidence_state"],
+      "properties": {
+        "artifact_id": {"$ref": "#/$defs/identifier"},
+        "artifact_version": {"$ref": "#/$defs/version"},
+        "artifact_digest": {"$ref": "#/$defs/digest"},
+        "evidence_state": {"enum": ["known", "retained", "deletion-pending", "qualified-deleted", "unknown"]}
+      }
+    },
+    "independentDeletionEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_type", "evidence_reference", "evidence_digest", "qualification"],
+      "properties": {
+        "evidence_type": {
+          "enum": [
+            "local-deletion",
+            "physical-erasure",
+            "provider-deletion",
+            "backup-deletion",
+            "cache-deletion",
+            "training-data-removal",
+            "model-unlearning",
+            "derived-artifact-deletion",
+            "external-system-deletion"
+          ]
+        },
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "evidence_digest": {"$ref": "#/$defs/digest"},
+        "qualification": {"enum": ["locally-observed", "provider-attested", "independently-verified"]}
+      }
+    },
+    "deletionEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deletion_request_id",
+        "target_artifact",
+        "deletion_scope",
+        "known_copies",
+        "derived_artifacts",
+        "downstream_dependents",
+        "unresolved_dependencies",
+        "retention_boundary",
+        "authorization_reference",
+        "local_deletion_evidence_reference",
+        "independent_deletion_evidence",
+        "residual_risk_statement",
+        "evidence_qualification",
+        "completion_status",
+        "reason_codes",
+        "physical_erasure_claimed",
+        "provider_deletion_claimed",
+        "backup_deletion_claimed",
+        "cache_deletion_claimed",
+        "training_data_removal_claimed",
+        "model_unlearning_claimed",
+        "all_derived_artifacts_deleted_claimed",
+        "all_external_systems_deleted_claimed"
+      ],
+      "properties": {
+        "deletion_request_id": {"$ref": "#/$defs/identifier"},
+        "target_artifact": {"$ref": "#/$defs/artifactReference"},
+        "deletion_scope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "local-record",
+              "known-copy",
+              "derived-artifact",
+              "provider-copy",
+              "backup",
+              "cache",
+              "training-data",
+              "model-weights",
+              "external-system"
+            ]
+          }
+        },
+        "known_copies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/dependentEvidence"}
+        },
+        "derived_artifacts": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/dependentEvidence"}
+        },
+        "downstream_dependents": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/dependentEvidence"}
+        },
+        "unresolved_dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/artifactReference"}
+        },
+        "retention_boundary": {"$ref": "#/$defs/boundary"},
+        "authorization_reference": {"$ref": "#/$defs/nullableReference"},
+        "local_deletion_evidence_reference": {"$ref": "#/$defs/nullableReference"},
+        "independent_deletion_evidence": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/independentDeletionEvidence"}
+        },
+        "residual_risk_statement": {"type": "string", "minLength": 1, "maxLength": 512},
+        "evidence_qualification": {
+          "enum": ["request-only", "pending-unresolved", "qualified-local-deletion", "qualified-external-deletion"]
+        },
+        "completion_status": {"enum": ["pending", "incomplete", "qualified-deleted", "claimed-complete"]},
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "deletion-request-recorded",
+              "unresolved-copy",
+              "unresolved-dependent",
+              "local-deletion-evidence-present",
+              "qualified-deleted-evidence",
+              "physical-erasure-not-proven",
+              "provider-deletion-not-proven",
+              "residual-risk-remains",
+              "independent-evidence-missing"
+            ]
+          }
+        },
+        "physical_erasure_claimed": {"type": "boolean"},
+        "provider_deletion_claimed": {"type": "boolean"},
+        "backup_deletion_claimed": {"type": "boolean"},
+        "cache_deletion_claimed": {"type": "boolean"},
+        "training_data_removal_claimed": {"type": "boolean"},
+        "model_unlearning_claimed": {"type": "boolean"},
+        "all_derived_artifacts_deleted_claimed": {"type": "boolean"},
+        "all_external_systems_deleted_claimed": {"type": "boolean"}
+      }
+    },
+    "providerDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact", "provider_reference", "replacement_requirement", "status"],
+      "properties": {
+        "artifact": {"$ref": "#/$defs/artifactReference"},
+        "provider_reference": {"$ref": "#/$defs/reference"},
+        "replacement_requirement": {"type": "string", "minLength": 1, "maxLength": 256},
+        "status": {"enum": ["supported", "blocking", "quarantined"]}
+      }
+    },
+    "portabilityDrill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "drill_id",
+        "simulation_only",
+        "original_model_reference",
+        "replacement_model_requirements",
+        "learning_proof_readable",
+        "decision_proof_references_interpretable",
+        "capability_packs_readable",
+        "private_evaluations_usable",
+        "organizational_memory_interpretable",
+        "export_manifests_available",
+        "provider_specific_dependencies_identified",
+        "provider_specific_dependencies",
+        "degraded_mode_represented",
+        "deletion_and_revocation_evidence_available",
+        "unsupported_dependencies_quarantined",
+        "portability_blockers_visible",
+        "portability_blockers",
+        "portability_state",
+        "replacement_model_authorized",
+        "provider_disconnected",
+        "original_model_invoked",
+        "replacement_model_invoked",
+        "live_data_migrated",
+        "provider_account_accessed",
+        "credentials_used",
+        "provider_settings_modified",
+        "confidential_information_exported",
+        "production_workflow_executed",
+        "reason_codes"
+      ],
+      "properties": {
+        "drill_id": {"$ref": "#/$defs/identifier"},
+        "simulation_only": {"type": "boolean"},
+        "original_model_reference": {"$ref": "#/$defs/reference"},
+        "replacement_model_requirements": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "learning_proof_readable": {"type": "boolean"},
+        "decision_proof_references_interpretable": {"type": "boolean"},
+        "capability_packs_readable": {"type": "boolean"},
+        "private_evaluations_usable": {"type": "boolean"},
+        "organizational_memory_interpretable": {"type": "boolean"},
+        "export_manifests_available": {"type": "boolean"},
+        "provider_specific_dependencies_identified": {"type": "boolean"},
+        "provider_specific_dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/providerDependency"}
+        },
+        "degraded_mode_represented": {"type": "boolean"},
+        "deletion_and_revocation_evidence_available": {"type": "boolean"},
+        "unsupported_dependencies_quarantined": {"type": "boolean"},
+        "portability_blockers_visible": {"type": "boolean"},
+        "portability_blockers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/machineToken"}
+        },
+        "portability_state": {"enum": ["portable-in-simulation", "blocked", "degraded"]},
+        "replacement_model_authorized": {"type": "boolean"},
+        "provider_disconnected": {"type": "boolean"},
+        "original_model_invoked": {"type": "boolean"},
+        "replacement_model_invoked": {"type": "boolean"},
+        "live_data_migrated": {"type": "boolean"},
+        "provider_account_accessed": {"type": "boolean"},
+        "credentials_used": {"type": "boolean"},
+        "provider_settings_modified": {"type": "boolean"},
+        "confidential_information_exported": {"type": "boolean"},
+        "production_workflow_executed": {"type": "boolean"},
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "simulation-only",
+              "evidence-readable",
+              "degraded-mode-represented",
+              "provider-specific-dependency",
+              "portability-blocker-visible",
+              "unsupported-dependency-quarantined",
+              "replacement-model-not-authorized",
+              "production-execution-not-attempted"
+            ]
+          }
+        }
+      }
+    },
+    "learningProofLinkage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reference",
+        "schema_version",
+        "track_c_evidence_record_digest",
+        "source_integrity_hash",
+        "usage"
+      ],
+      "properties": {
+        "reference": {"$ref": "#/$defs/reference"},
+        "schema_version": {"const": "m15-learning-proof/v1"},
+        "track_c_evidence_record_digest": {"$ref": "#/$defs/digest"},
+        "source_integrity_hash": {"$ref": "#/$defs/digest"},
+        "usage": {
+          "enum": ["linkage-only", "rollback-authority", "deletion-authority", "installation-authority", "execution-authority"]
+        }
+      }
+    },
+    "capabilityPackLinkage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reference",
+        "schema_version",
+        "track_c_evidence_record_digest",
+        "derived_spec_manifest_digest",
+        "usage"
+      ],
+      "properties": {
+        "reference": {"$ref": "#/$defs/reference"},
+        "schema_version": {"const": "m15-capability-memory-pack/v1"},
+        "track_c_evidence_record_digest": {"$ref": "#/$defs/digest"},
+        "derived_spec_manifest_digest": {"$ref": "#/$defs/digest"},
+        "usage": {"enum": ["non-executable-evidence", "installation-authority", "executable-authority"]}
+      }
+    },
+    "decisionProofLinkage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "schema_version", "track_c_evidence_record_digest", "usage"],
+      "properties": {
+        "reference": {"$ref": "#/$defs/reference"},
+        "schema_version": {"$ref": "#/$defs/version"},
+        "track_c_evidence_record_digest": {"$ref": "#/$defs/digest"},
+        "usage": {"enum": ["linkage-only", "deletion-execution-authority", "execution-authority"]}
+      }
+    },
+    "crossTrackLinkage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["learning_proof", "capability_memory_pack", "decision_proof", "linkage_purpose"],
+      "properties": {
+        "learning_proof": {"$ref": "#/$defs/learningProofLinkage"},
+        "capability_memory_pack": {"$ref": "#/$defs/capabilityPackLinkage"},
+        "decision_proof": {"$ref": "#/$defs/decisionProofLinkage"},
+        "linkage_purpose": {"const": "evidence-only"}
+      }
+    }
+  }
+}
