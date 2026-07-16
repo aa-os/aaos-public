@@ -1,0 +1,965 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/m15-capability-memory-pack.schema.json",
+  "title": "AAOS M15 Evidence-Bound Capability Memory Pack",
+  "description": "Deterministic, evidence-only M15 Track B Capability Memory Pack contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "capability_pack_id",
+    "manifest_references",
+    "source_manifest",
+    "license_manifest",
+    "derived_spec_manifest",
+    "artifact_inventory",
+    "graph_binding",
+    "runtime_compatibility",
+    "lifecycle_state",
+    "lifecycle_evidence",
+    "revocation",
+    "authority_claims",
+    "extensions",
+    "retrieval_eligible",
+    "runtime_eligible",
+    "evidence_disposition",
+    "non_authoritative_boundary_statement"
+  ],
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+        "non_empty_string": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+    },
+    "optional_reference": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "artifact_role": {
+      "type": "string",
+      "enum": [
+        "structured-spec",
+        "workflow-graph",
+        "examples",
+        "error-taxonomy",
+        "graph-snapshot",
+        "verification-report"
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "path",
+        "digest",
+        "media_type",
+        "executable"
+      ],
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/artifact_role"
+        },
+        "path": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "media_type": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9.+-]*/[a-z0-9][a-z0-9.+-]*$"
+        },
+        "executable": {
+          "const": false
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "m15-capability-memory-pack/v1"
+    },
+    "capability_pack_id": {
+      "$ref": "#/$defs/non_empty_string"
+    },
+    "manifest_references": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_manifest_digest",
+        "license_manifest_digest",
+        "derived_spec_manifest_digest"
+      ],
+      "properties": {
+        "source_manifest_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "license_manifest_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "derived_spec_manifest_digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "source_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_digest",
+        "source_reference",
+        "source_status",
+        "immutable_commit_or_content_digest",
+        "upstream_api_version"
+      ],
+      "properties": {
+        "manifest_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "source_reference": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "source_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "revoked"
+          ]
+        },
+        "immutable_commit_or_content_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "upstream_api_version": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "license_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_digest",
+        "license_identifier",
+        "redistribution_status",
+        "license_review_status",
+        "review_evidence_reference",
+        "revocation_evidence_reference"
+      ],
+      "properties": {
+        "manifest_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "license_identifier": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "redistribution_status": {
+          "type": "string",
+          "enum": [
+            "allowed",
+            "restricted",
+            "prohibited",
+            "unknown"
+          ]
+        },
+        "license_review_status": {
+          "type": "string",
+          "enum": [
+            "reviewed",
+            "review-required",
+            "revoked"
+          ]
+        },
+        "review_evidence_reference": {
+          "$ref": "#/$defs/optional_reference"
+        },
+        "revocation_evidence_reference": {
+          "$ref": "#/$defs/optional_reference"
+        }
+      }
+    },
+    "derived_spec_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_digest",
+        "source_manifest_digest",
+        "license_manifest_digest",
+        "source_api_version",
+        "derivation_evidence_reference",
+        "artifact_digests"
+      ],
+      "properties": {
+        "manifest_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "source_manifest_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "license_manifest_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "source_api_version": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "derivation_evidence_reference": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "artifact_digests": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "structured-spec",
+            "workflow-graph",
+            "examples",
+            "error-taxonomy",
+            "graph-snapshot",
+            "verification-report"
+          ],
+          "properties": {
+            "structured-spec": {
+              "$ref": "#/$defs/digest"
+            },
+            "workflow-graph": {
+              "$ref": "#/$defs/digest"
+            },
+            "examples": {
+              "$ref": "#/$defs/digest"
+            },
+            "error-taxonomy": {
+              "$ref": "#/$defs/digest"
+            },
+            "graph-snapshot": {
+              "$ref": "#/$defs/digest"
+            },
+            "verification-report": {
+              "$ref": "#/$defs/digest"
+            }
+          }
+        }
+      }
+    },
+    "artifact_inventory": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/artifact"
+      },
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "structured-spec"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "workflow-graph"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "examples"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "error-taxonomy"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "graph-snapshot"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "verification-report"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ]
+    },
+    "graph_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "graph_snapshot_digest",
+        "structured_spec_digest",
+        "workflow_graph_digest",
+        "source_manifest_digest",
+        "immutable_source_binding",
+        "graph_altered",
+        "integrity_evidence_reference"
+      ],
+      "properties": {
+        "graph_snapshot_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "structured_spec_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "workflow_graph_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "source_manifest_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "immutable_source_binding": {
+          "$ref": "#/$defs/digest"
+        },
+        "graph_altered": {
+          "type": "boolean"
+        },
+        "integrity_evidence_reference": {
+          "$ref": "#/$defs/optional_reference"
+        }
+      }
+    },
+    "runtime_compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compatibility_mode",
+        "expected_runtime_name",
+        "expected_runtime_version",
+        "observed_runtime_name",
+        "observed_runtime_version",
+        "compatibility_result",
+        "compatibility_evidence_reference"
+      ],
+      "properties": {
+        "compatibility_mode": {
+          "type": "string",
+          "enum": [
+            "exact"
+          ]
+        },
+        "expected_runtime_name": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "expected_runtime_version": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "observed_runtime_name": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "observed_runtime_version": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "compatibility_result": {
+          "type": "string",
+          "enum": [
+            "compatible",
+            "incompatible",
+            "unknown"
+          ]
+        },
+        "compatibility_evidence_reference": {
+          "$ref": "#/$defs/optional_reference"
+        }
+      }
+    },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "verified",
+        "stale",
+        "incompatible",
+        "quarantined",
+        "superseded",
+        "revoked"
+      ]
+    },
+    "lifecycle_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stale_reason",
+        "version_drift_detected",
+        "quarantine_reason",
+        "contamination_detected",
+        "superseded_by_reference",
+        "archival_evidence_retained"
+      ],
+      "properties": {
+        "stale_reason": {
+          "$ref": "#/$defs/optional_reference"
+        },
+        "version_drift_detected": {
+          "type": "boolean"
+        },
+        "quarantine_reason": {
+          "$ref": "#/$defs/optional_reference"
+        },
+        "contamination_detected": {
+          "type": "boolean"
+        },
+        "superseded_by_reference": {
+          "$ref": "#/$defs/optional_reference"
+        },
+        "archival_evidence_retained": {
+          "type": "boolean"
+        }
+      }
+    },
+    "revocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pack_status",
+        "revocation_evidence_reference"
+      ],
+      "properties": {
+        "pack_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "revoked"
+          ]
+        },
+        "revocation_evidence_reference": {
+          "$ref": "#/$defs/optional_reference"
+        }
+      }
+    },
+    "related_learning_proof_reference": {
+      "$ref": "#/$defs/optional_reference"
+    },
+    "related_decision_proof_reference": {
+      "$ref": "#/$defs/optional_reference"
+    },
+    "authority_claims": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "installation_approved",
+        "tool_registration_approved",
+        "deployment_approved",
+        "execution_authorized",
+        "production_execution_allowed",
+        "risk_accepted",
+        "rollback_executed",
+        "audit_closed",
+        "waiver_granted",
+        "authority_transferred",
+        "capability_pack_sealed",
+        "learning_proof_sealed",
+        "decision_proof_sealed"
+      ],
+      "properties": {
+        "installation_approved": {
+          "const": false
+        },
+        "tool_registration_approved": {
+          "const": false
+        },
+        "deployment_approved": {
+          "const": false
+        },
+        "execution_authorized": {
+          "const": false
+        },
+        "production_execution_allowed": {
+          "const": false
+        },
+        "risk_accepted": {
+          "const": false
+        },
+        "rollback_executed": {
+          "const": false
+        },
+        "audit_closed": {
+          "const": false
+        },
+        "waiver_granted": {
+          "const": false
+        },
+        "authority_transferred": {
+          "const": false
+        },
+        "capability_pack_sealed": {
+          "const": false
+        },
+        "learning_proof_sealed": {
+          "const": false
+        },
+        "decision_proof_sealed": {
+          "const": false
+        }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "retrieval_eligible": {
+      "type": "boolean"
+    },
+    "runtime_eligible": {
+      "type": "boolean"
+    },
+    "evidence_disposition": {
+      "type": "string",
+      "enum": [
+        "verified-read-only",
+        "stale-evidence",
+        "quarantined-evidence",
+        "incompatible-evidence",
+        "revoked-evidence",
+        "unverified-evidence"
+      ]
+    },
+    "non_authoritative_boundary_statement": {
+      "type": "string",
+      "const": "This Capability Memory Pack is evidence only; runtime eligibility means eligibility for independent policy review, not installation, registration, deployment, execution, risk acceptance, Learning Proof sealing, or Decision Proof sealing. Capability Pack sealing is undefined and out of scope for M15 Track B. A capability pack must not claim sealed status or sealing authority."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "license_manifest": {
+            "properties": {
+              "license_review_status": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "license_manifest": {
+            "properties": {
+              "review_evidence_reference": {
+                "$ref": "#/$defs/non_empty_string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "graph_binding": {
+            "properties": {
+              "graph_altered": {
+                "const": true
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "graph_binding": {
+            "properties": {
+              "integrity_evidence_reference": {
+                "$ref": "#/$defs/non_empty_string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "license_manifest": {
+            "properties": {
+              "license_review_status": {
+                "const": "revoked"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "license_manifest": {
+            "properties": {
+              "revocation_evidence_reference": {
+                "$ref": "#/$defs/non_empty_string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "runtime_compatibility": {
+            "properties": {
+              "compatibility_result": {
+                "enum": [
+                  "compatible",
+                  "incompatible"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "runtime_compatibility": {
+            "properties": {
+              "compatibility_evidence_reference": {
+                "$ref": "#/$defs/non_empty_string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "unverified"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "retrieval_eligible": {
+            "const": false
+          },
+          "runtime_eligible": {
+            "const": false
+          },
+          "evidence_disposition": {
+            "const": "unverified-evidence"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "verified"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "source_manifest": {
+            "properties": {
+              "source_status": {
+                "const": "active"
+              }
+            }
+          },
+          "license_manifest": {
+            "properties": {
+              "redistribution_status": {
+                "const": "allowed"
+              },
+              "license_review_status": {
+                "const": "reviewed"
+              },
+              "review_evidence_reference": {
+                "$ref": "#/$defs/non_empty_string"
+              }
+            }
+          },
+          "graph_binding": {
+            "properties": {
+              "graph_altered": {
+                "const": false
+              }
+            }
+          },
+          "runtime_compatibility": {
+            "properties": {
+              "compatibility_result": {
+                "const": "compatible"
+              },
+              "compatibility_evidence_reference": {
+                "$ref": "#/$defs/non_empty_string"
+              }
+            }
+          },
+          "lifecycle_evidence": {
+            "properties": {
+              "stale_reason": {
+                "type": "null"
+              },
+              "version_drift_detected": {
+                "const": false
+              },
+              "quarantine_reason": {
+                "type": "null"
+              },
+              "contamination_detected": {
+                "const": false
+              },
+              "superseded_by_reference": {
+                "type": "null"
+              }
+            }
+          },
+          "revocation": {
+            "properties": {
+              "pack_status": {
+                "const": "active"
+              }
+            }
+          },
+          "retrieval_eligible": {
+            "const": true
+          },
+          "runtime_eligible": {
+            "const": true
+          },
+          "evidence_disposition": {
+            "const": "verified-read-only"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "stale"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lifecycle_evidence": {
+            "properties": {
+              "stale_reason": {
+                "$ref": "#/$defs/non_empty_string"
+              },
+              "version_drift_detected": {
+                "const": true
+              }
+            }
+          },
+          "runtime_eligible": {
+            "const": false
+          },
+          "evidence_disposition": {
+            "const": "stale-evidence"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "incompatible"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "runtime_eligible": {
+            "const": false
+          },
+          "evidence_disposition": {
+            "const": "incompatible-evidence"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "quarantined"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lifecycle_evidence": {
+            "properties": {
+              "quarantine_reason": {
+                "$ref": "#/$defs/non_empty_string"
+              }
+            }
+          },
+          "retrieval_eligible": {
+            "const": false
+          },
+          "runtime_eligible": {
+            "const": false
+          },
+          "evidence_disposition": {
+            "const": "quarantined-evidence"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "superseded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lifecycle_evidence": {
+            "properties": {
+              "superseded_by_reference": {
+                "$ref": "#/$defs/non_empty_string"
+              }
+            }
+          },
+          "runtime_eligible": {
+            "const": false
+          },
+          "evidence_disposition": {
+            "const": "stale-evidence"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "revoked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "revocation": {
+            "properties": {
+              "revocation_evidence_reference": {
+                "$ref": "#/$defs/non_empty_string"
+              }
+            }
+          },
+          "retrieval_eligible": {
+            "const": false
+          },
+          "runtime_eligible": {
+            "const": false
+          },
+          "evidence_disposition": {
+            "const": "revoked-evidence"
+          }
+        },
+        "anyOf": [
+          {
+            "properties": {
+              "source_manifest": {
+                "properties": {
+                  "source_status": {
+                    "const": "revoked"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "license_manifest": {
+                "properties": {
+                  "license_review_status": {
+                    "const": "revoked"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "revocation": {
+                "properties": {
+                  "pack_status": {
+                    "const": "revoked"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

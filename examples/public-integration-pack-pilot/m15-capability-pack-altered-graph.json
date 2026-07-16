@@ -1,0 +1,138 @@
+{
+  "schema_version": "m15-capability-memory-pack/v1",
+  "capability_pack_id": "urn:aaos:capability-pack:synthetic:altered-graph-001",
+  "manifest_references": {
+    "source_manifest_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "license_manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "derived_spec_manifest_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "source_manifest": {
+    "manifest_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "source_reference": "urn:aaos:synthetic-source:capability-pack-altered-graph-001",
+    "source_status": "active",
+    "immutable_commit_or_content_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "upstream_api_version": "synthetic-api/v1"
+  },
+  "license_manifest": {
+    "manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "license_identifier": "LicenseRef-AAOS-Synthetic-Permissive-1.0",
+    "redistribution_status": "allowed",
+    "license_review_status": "reviewed",
+    "review_evidence_reference": "urn:aaos:synthetic-license-review:capability-pack-altered-graph-001",
+    "revocation_evidence_reference": null
+  },
+  "derived_spec_manifest": {
+    "manifest_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "source_manifest_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "license_manifest_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "source_api_version": "synthetic-api/v1",
+    "derivation_evidence_reference": "urn:aaos:synthetic-derivation-evidence:capability-pack-altered-graph-001",
+    "artifact_digests": {
+      "structured-spec": "1111111111111111111111111111111111111111111111111111111111111111",
+      "workflow-graph": "2222222222222222222222222222222222222222222222222222222222222222",
+      "examples": "3333333333333333333333333333333333333333333333333333333333333333",
+      "error-taxonomy": "4444444444444444444444444444444444444444444444444444444444444444",
+      "graph-snapshot": "5555555555555555555555555555555555555555555555555555555555555555",
+      "verification-report": "6666666666666666666666666666666666666666666666666666666666666666"
+    }
+  },
+  "artifact_inventory": [
+    {
+      "role": "structured-spec",
+      "path": "synthetic/capability-pack/structured-spec.json",
+      "digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "media_type": "application/json",
+      "executable": false
+    },
+    {
+      "role": "workflow-graph",
+      "path": "synthetic/capability-pack/workflow-graph.json",
+      "digest": "2222222222222222222222222222222222222222222222222222222222222222",
+      "media_type": "application/json",
+      "executable": false
+    },
+    {
+      "role": "examples",
+      "path": "synthetic/capability-pack/examples.json",
+      "digest": "3333333333333333333333333333333333333333333333333333333333333333",
+      "media_type": "application/json",
+      "executable": false
+    },
+    {
+      "role": "error-taxonomy",
+      "path": "synthetic/capability-pack/error-taxonomy.json",
+      "digest": "4444444444444444444444444444444444444444444444444444444444444444",
+      "media_type": "application/json",
+      "executable": false
+    },
+    {
+      "role": "graph-snapshot",
+      "path": "synthetic/capability-pack/graph-snapshot.json",
+      "digest": "5555555555555555555555555555555555555555555555555555555555555555",
+      "media_type": "application/json",
+      "executable": false
+    },
+    {
+      "role": "verification-report",
+      "path": "synthetic/capability-pack/verification-report.json",
+      "digest": "6666666666666666666666666666666666666666666666666666666666666666",
+      "media_type": "application/json",
+      "executable": false
+    }
+  ],
+  "graph_binding": {
+    "graph_snapshot_digest": "7777777777777777777777777777777777777777777777777777777777777777",
+    "structured_spec_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+    "workflow_graph_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+    "source_manifest_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "immutable_source_binding": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "graph_altered": true,
+    "integrity_evidence_reference": "urn:aaos:synthetic-integrity-evidence:altered-graph-and-source-binding-001"
+  },
+  "runtime_compatibility": {
+    "compatibility_mode": "exact",
+    "expected_runtime_name": "aaos-synthetic-review-runtime",
+    "expected_runtime_version": "1.0.0-synthetic",
+    "observed_runtime_name": "aaos-synthetic-review-runtime",
+    "observed_runtime_version": "1.0.0-synthetic",
+    "compatibility_result": "compatible",
+    "compatibility_evidence_reference": "urn:aaos:synthetic-runtime-evidence:capability-pack-altered-graph-001"
+  },
+  "lifecycle_state": "quarantined",
+  "lifecycle_evidence": {
+    "stale_reason": null,
+    "version_drift_detected": false,
+    "quarantine_reason": "synthetic-graph-and-immutable-source-binding-mismatch",
+    "contamination_detected": false,
+    "superseded_by_reference": null,
+    "archival_evidence_retained": false
+  },
+  "revocation": {
+    "pack_status": "active",
+    "revocation_evidence_reference": null
+  },
+  "related_learning_proof_reference": "urn:aaos:learning-proof:synthetic:capability-pack-altered-graph-001",
+  "related_decision_proof_reference": "urn:aaos:decision-proof:synthetic:capability-pack-altered-graph-001",
+  "authority_claims": {
+    "installation_approved": false,
+    "tool_registration_approved": false,
+    "deployment_approved": false,
+    "execution_authorized": false,
+    "production_execution_allowed": false,
+    "risk_accepted": false,
+    "rollback_executed": false,
+    "audit_closed": false,
+    "waiver_granted": false,
+    "authority_transferred": false,
+    "capability_pack_sealed": false,
+    "learning_proof_sealed": false,
+    "decision_proof_sealed": false
+  },
+  "extensions": {
+    "synthetic_evidence_label": "synthetic-capability-memory-pack-altered-graph"
+  },
+  "retrieval_eligible": false,
+  "runtime_eligible": false,
+  "evidence_disposition": "quarantined-evidence",
+  "non_authoritative_boundary_statement": "This Capability Memory Pack is evidence only; runtime eligibility means eligibility for independent policy review, not installation, registration, deployment, execution, risk acceptance, Learning Proof sealing, or Decision Proof sealing. Capability Pack sealing is undefined and out of scope for M15 Track B. A capability pack must not claim sealed status or sealing authority."
+}
