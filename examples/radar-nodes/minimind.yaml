@@ -1,3 +1,28 @@
-description: |
-  This directory contains tests for governance contracts, schemas, and runtime evaluators.
-  Tests should verify that external sources remain evidence candidates and do not become governance authorities.
+source_url: "https://github.com/jingyaogong/minimind"
+source_name: "MiniMind"
+source_type: "model-runtime"
+claimed_capability: "Provides a white-box small-model codebase for local inference, training-pipeline inspection, and controlled tool-use or replay experiments."
+aaos_layer_mapping:
+  - L3
+  - L4
+  - L4.5
+  - L6
+evidence_produced:
+  - model_identity
+  - runtime_configuration
+  - training_pipeline_reference
+  - inference_trace
+  - prompt_response_trace
+  - tool_use_experiment
+  - runtime_failure
+  - drift_detection_input
+  - verification_harness_input
+  - model_swappability_baseline
+  - replay_packet
+decision_boundary: "MiniMind may be evaluated as a local runtime specimen and evidence source, but its output cannot define policy, authorize an action, approve a decision, set verification criteria, close an audit, seal Decision Proof or Learning Proof, or replace AAOS L0/L1/L2 authority."
+not_authority_statement: "Runtime specimen, not governance authority; verification subject, not verification authority; model output, not decision approval; local inference, not sovereignty proof."
+risk_if_misclassified: "A local, inspectable model could be mistaken for safety proof, production permission, verification authority, decision approval, or evidence that AAOS sovereignty controls are unnecessary."
+required_admission_record: "minimind_admission_record.json"
+required_replay_or_audit_evidence: "minimind_verification_replay_packet.json"
+proposed_adapter_issue: "#9 — AAOS × MiniMind Local Model Runtime Governance Adapter Pack"
+status: "candidate"
