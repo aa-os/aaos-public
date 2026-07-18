@@ -1,0 +1,15 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-17",
+  "title": "M15 record containing credentials or secret-shaped content",
+  "source_track": "cross-track",
+  "synthetic": true,
+  "expected_outcome": "quarantine",
+  "record": {
+    "artifact_type": "cross-track",
+    "capability_manifest": {
+      "diagnostic": "sk-SYNTHETIC123456789"
+    }
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

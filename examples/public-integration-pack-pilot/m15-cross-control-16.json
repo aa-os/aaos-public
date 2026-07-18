@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-16",
+  "title": "bot provenance comment treated as identity proof",
+  "source_track": "provenance",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "provenance",
+    "claim": "bot provenance comment treated as identity proof"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-19",
+  "title": "Learning Proof digest reused as a Decision Proof digest",
+  "source_track": "track-a",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "Learning Proof",
+    "claim": "Learning Proof digest reused as a Decision Proof digest"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

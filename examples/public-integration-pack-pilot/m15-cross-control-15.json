@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-15",
+  "title": "provenance workflow success treated as merge approval",
+  "source_track": "provenance",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "provenance",
+    "claim": "workflow success treated as merge approval"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

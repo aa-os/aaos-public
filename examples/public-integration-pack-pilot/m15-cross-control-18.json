@@ -1,0 +1,19 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-18",
+  "title": "nested extension containing an authority claim",
+  "source_track": "cross-track",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "cross-track",
+    "extensions": {
+      "nested": {
+        "reason_codes": [
+          "governance authority granted"
+        ]
+      }
+    }
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}
