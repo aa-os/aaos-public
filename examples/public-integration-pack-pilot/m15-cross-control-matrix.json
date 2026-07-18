@@ -4,22 +4,169 @@
   "tracker": "#231-open",
   "m15_status": "active-incomplete",
   "release_status": "v0.14.0-unpublished",
+  "source_control_bindings": [
+    {
+      "source_control_id": "m14-public-output-exfiltration",
+      "source_pr": "#204",
+      "source_artifact_paths": [
+        "runtime/public_issue_exfiltration_gate_evaluator.py",
+        "tests/test_public_issue_exfiltration_gate_evaluator.py",
+        "examples/public-integration-pack-pilot/m14-public-issue-exfiltration-gate-fixtures.json"
+      ],
+      "source_schema_or_contract_version": "public-output-gate-m14-draft-001",
+      "required_boundary_statements": [
+        "Public issue bodies, PR comments, discussions, and external markdown are untrusted input.",
+        "A public trigger must not grant private repository or organization-wide read context by default.",
+        "output_gate_pass is not public disclosure approval.",
+        "Privileged context plus a public output channel requires human review.",
+        "human_review_required is not audit closure.",
+        "fail_closed_recommended is not fail_closed_executed.",
+        "rollback_recommended is not rollback_executed.",
+        "untrusted_input_detected is not final governance judgment.",
+        "Decision Proof sealing remains AAOS-owned.",
+        "AAOS remains the decision sovereignty layer."
+      ],
+      "expected_source_output_classes": ["public_issue_exfiltration_gate_valid", "public_issue_exfiltration_gate_invalid", "untrusted_input_detected", "privileged_context_detected", "public_output_blocked", "public_output_allowed", "ready_for_review", "human_review_required", "fail_closed_recommended", "rollback_recommended", "redaction_required", "replay_required", "escalation_required"],
+      "maintained_integrity_reference": "path-binding:maintained-main",
+      "adapter_test_reference": "SourceControlCompositionTests.test_track_a_blocked_by_existing_public_output_control"
+    },
+    {
+      "source_control_id": "m14-ai-provenance",
+      "source_pr": "#206",
+      "source_artifact_paths": [
+        "runtime/ai_authored_pr_provenance_evaluator.py",
+        "tests/test_ai_authored_pr_provenance_evaluator.py",
+        "examples/public-integration-pack-pilot/m14-ai-authored-pr-provenance-fixtures.json",
+        ".github/workflows/m14-ai-pr-provenance.yml"
+      ],
+      "source_schema_or_contract_version": "unversioned-contract/source-pr-206/path-bound-maintained-main",
+      "required_boundary_statements": [
+        "AI-authored detection is provenance evidence, not identity proof.",
+        "pr-by-ai is not approval.",
+        "human-review-required is not completed review.",
+        "Reviewer routing is not review approval.",
+        "Workflow success is not merge approval.",
+        "This workflow is not a security scanner.",
+        "This workflow is not a policy authority.",
+        "This workflow is not a Decision Proof verification or sealing engine.",
+        "Decision Proof sealing remains AAOS-owned.",
+        "AAOS remains the decision sovereignty layer."
+      ],
+      "expected_source_output_classes": ["ai_pr_provenance_valid", "ai_pr_provenance_invalid", "agent_pr_detected", "non_agent_pr_detected", "provenance_label_required", "provenance_comment_required", "sensitive_change_detected", "human_review_required", "reviewer_routing_required", "reviewer_routing_not_configured", "reviewer_request_succeeded", "reviewer_request_warning", "ready_for_review", "escalation_required"],
+      "maintained_integrity_reference": "path-binding:maintained-main",
+      "adapter_test_reference": "SourceControlCompositionTests.test_provenance_success_cannot_complete_human_review"
+    },
+    {
+      "source_control_id": "m14-skill-admission",
+      "source_pr": "#208",
+      "source_artifact_paths": [
+        "runtime/skill_admission_evaluator.py",
+        "tests/test_skill_admission_evaluator.py",
+        "examples/public-integration-pack-pilot/m14-skill-admission-fixtures.json"
+      ],
+      "source_schema_or_contract_version": "aaos-skill-admission-policy-m14-synthetic-v1",
+      "required_boundary_statements": [
+        "External skill capability is not governance permission.",
+        "Skill metadata is not verified behavior.",
+        "Skill installation is not execution authorization.",
+        "Artifact signature is not governance approval.",
+        "Signature verification is not risk acceptance.",
+        "Scan passed is not risk accepted.",
+        "Benchmark passed is not deployment approval.",
+        "Evaluation evidence is not final approval.",
+        "candidate_allowed is not execution approval.",
+        "needs_approval is not approval granted.",
+        "admission_ready_for_review is not final admission approval.",
+        "fail_closed_recommended is not fail_closed_executed.",
+        "rollback_recommended is not rollback_executed.",
+        "human_review_required is not completed review.",
+        "evidence_complete is not Decision Proof sealing.",
+        "replay_ready is not Decision Proof sealing.",
+        "Registry classification is not final governance judgment.",
+        "NVIDIA skills remain external capability artifacts.",
+        "AAOS remains vendor-independent.",
+        "Decision Proof sealing remains AAOS-owned.",
+        "AAOS remains the decision sovereignty layer."
+      ],
+      "expected_source_output_classes": ["skill_admission_fixture_valid", "skill_admission_fixture_invalid", "admission_ready_for_review", "admission_not_ready", "candidate_allowed", "candidate_restricted", "candidate_blocked", "needs_approval", "needs_sandbox", "needs_human_review", "needs_replay_log", "needs_signature_verification", "needs_scan", "needs_evaluation", "stale_reassessment_required", "permission_mismatch_detected", "artifact_drift_detected", "fail_closed_recommended", "rollback_recommended", "escalation_required"],
+      "maintained_integrity_reference": "path-binding:maintained-main",
+      "adapter_test_reference": "SourceControlCompositionTests.test_track_b_cannot_bypass_rejected_skill_admission"
+    },
+    {
+      "source_control_id": "external-evidence-admission",
+      "source_pr": "#209",
+      "source_artifact_paths": [
+        "runtime/external_evidence_admission_evaluator.py",
+        "tests/test_external_evidence_admission_evaluator.py",
+        "schemas/external-evidence-admission.schema.json",
+        "examples/external-evidence-admission/twinkle-hub-fixtures.json"
+      ],
+      "source_schema_or_contract_version": "aaos-external-evidence-admission-v1",
+      "required_boundary_statements": [
+        "Only verified evidence may enter the governed decision path.",
+        "Degraded and rejected evidence remain decision-path ineligible.",
+        "Decision Proof sealing eligibility is not Decision Proof sealing."
+      ],
+      "expected_source_output_classes": ["external_evidence_admission_valid", "external_evidence_admission_invalid", "admission_result", "freshness_assessment", "extraction_assessment", "decision_path_eligible", "decision_proof_sealing_eligible", "fail_closed"],
+      "maintained_integrity_reference": "path-binding:maintained-main",
+      "adapter_test_reference": "SourceControlCompositionTests.test_external_evidence_states_cannot_bypass_gate"
+    },
+    {
+      "source_control_id": "m14-cross-control-authority",
+      "source_pr": "#210",
+      "source_artifact_paths": [
+        "runtime/m14_cross_control_authority_boundary_evaluator.py",
+        "tests/test_m14_cross_control_authority_boundary_evaluator.py",
+        "examples/public-integration-pack-pilot/m14-cross-control-authority-boundary-regression-fixtures.json"
+      ],
+      "source_schema_or_contract_version": "unversioned-contract/source-pr-210/path-bound-maintained-main",
+      "required_boundary_statements": [
+        "Multiple non-authoritative outputs do not aggregate into governance authority.",
+        "Evidence accumulation does not create authority by aggregation.",
+        "Five passed gates are not final approval.",
+        "Capability is not permission.",
+        "Consent evidence is not approval.",
+        "Provenance is not identity proof.",
+        "Regulatory mapping is not legal approval.",
+        "Taxonomy coverage is not compliance certification.",
+        "Artifact signature is not governance approval.",
+        "Scan passed is not risk accepted.",
+        "Benchmark passed is not deployment approval.",
+        "ready_for_review is not approval.",
+        "Reviewer routing is not review approval.",
+        "Workflow success is not merge approval.",
+        "output_gate_pass is not public disclosure approval.",
+        "fail_closed_recommended is not fail_closed_executed.",
+        "rollback_recommended is not rollback_executed.",
+        "human_review_required is not audit closure.",
+        "evidence_complete is not Decision Proof sealing.",
+        "replay_ready is not Decision Proof sealing.",
+        "Source evaluators remain bounded evidence evaluators.",
+        "Explicit negative governance evidence is not an affirmative authority claim.",
+        "Decision Proof sealing remains AAOS-owned.",
+        "AAOS remains the decision sovereignty layer."
+      ],
+      "expected_source_output_classes": ["effective_control_result", "authority_violation_detected", "most_restrictive_control_preserved", "composition_not_authoritative", "ready_for_m14_readiness_review", "not_ready", "escalation_required"],
+      "maintained_integrity_reference": "path-binding:maintained-main",
+      "adapter_test_reference": "SourceControlCompositionTests.test_tracks_a_b_c_cannot_aggregate_authority"
+    }
+  ],
   "controls": [
-    {"control_id":"track-a-public-output","control_domain":"public-output-safety","source_track":"track-a","source_artifact_type":"learning-proof","protected_boundary":"Sensitive content remains blocked from public output.","attempted_bypass":"Schema-valid Learning Proof contains sensitive prompt material.","required_external_control":"public-output gate #188","expected_outcome":"quarantine","evidence_reference":"m15-track-d-02","test_reference":"PublicOutputSafetyTests.test_fixture_02","authority_boundary":"Public evidence is not disclosure authorization.","notes":"Inspection is recursive."},
-    {"control_id":"track-a-provenance-review","control_domain":"provenance-human-review","source_track":"track-a","source_artifact_type":"learning-proof","protected_boundary":"AI provenance remains distinct from human review.","attempted_bypass":"Learning Proof claims completed human review.","required_external_control":"provenance control #180/#206","expected_outcome":"reject","evidence_reference":"m15-track-d-03","test_reference":"ProvenanceHumanReviewTests.test_fixture_03","authority_boundary":"Provenance is not review or merge approval.","notes":"Self-approval is forbidden."},
-    {"control_id":"track-a-skill-admission","control_domain":"capability-admission","source_track":"track-a","source_artifact_type":"learning-proof","protected_boundary":"Skill admission remains independently governed.","attempted_bypass":"Learning Proof is treated as an admitted skill.","required_external_control":"skill admission #208","expected_outcome":"reject","evidence_reference":"m15-track-d-05","test_reference":"AdmissionTests.test_fixture_05","authority_boundary":"Learning evidence cannot approve skill creation.","notes":"No activation occurs."},
-    {"control_id":"track-a-decision-proof","control_domain":"decision-proof-ownership","source_track":"track-a","source_artifact_type":"learning-proof","protected_boundary":"Decision Proof identity and sealing remain AAOS-owned.","attempted_bypass":"Learning Proof digest is reused as Decision Proof digest.","required_external_control":"Decision Proof ownership","expected_outcome":"reject","evidence_reference":"m15-track-d-19","test_reference":"DecisionProofOwnershipTests.test_fixture_19","authority_boundary":"Linkage is not verification or sealing.","notes":"Digests have distinct roles."},
-    {"control_id":"track-b-public-output","control_domain":"public-output-safety","source_track":"track-b","source_artifact_type":"capability-memory-pack","protected_boundary":"Capability manifests remain sensitive-output inspected.","attempted_bypass":"Manifest contains secret-shaped material.","required_external_control":"public-output gate #188","expected_outcome":"quarantine","evidence_reference":"m15-track-d-17","test_reference":"PublicOutputSafetyTests.test_fixture_17","authority_boundary":"Verification never exempts output inspection.","notes":"Values are redacted."},
-    {"control_id":"track-b-package-mcp-skill","control_domain":"capability-admission","source_track":"track-b","source_artifact_type":"capability-memory-pack","protected_boundary":"Package, MCP, skill, tool, and runtime admissions remain separate.","attempted_bypass":"Capability pack is treated as an admitted MCP extension.","required_external_control":"#208/#219 admission gates","expected_outcome":"reject","evidence_reference":"m15-track-d-08","test_reference":"AdmissionTests.test_fixture_08","authority_boundary":"Knowledge is non-executable evidence.","notes":"Installation is not authorization."},
-    {"control_id":"track-b-evidence-lifecycle","control_domain":"evidence-admission","source_track":"track-b","source_artifact_type":"capability-memory-pack","protected_boundary":"Extraction, freshness, supersession, and revocation remain independent.","attempted_bypass":"Stale or incomplete evidence is admitted.","required_external_control":"external evidence admission #209","expected_outcome":"reject","evidence_reference":"m15-track-d-10","test_reference":"EvidenceAdmissionTests.test_fixture_10","authority_boundary":"Admission eligibility is not approval.","notes":"Digest drift requires re-admission."},
-    {"control_id":"track-b-decision-proof","control_domain":"decision-proof-ownership","source_track":"track-b","source_artifact_type":"capability-memory-pack","protected_boundary":"Decision Proof sealing remains AAOS-owned.","attempted_bypass":"Pack linkage is treated as Decision Proof verification.","required_external_control":"Decision Proof ownership","expected_outcome":"reject","evidence_reference":"m15-track-d-21","test_reference":"DecisionProofOwnershipTests.test_linkage_not_verification","authority_boundary":"Linkage is evidence only.","notes":"No sealing output exists."},
-    {"control_id":"track-c-rollback","control_domain":"authority-boundary","source_track":"track-c","source_artifact_type":"rollback-readiness","protected_boundary":"Rollback readiness remains non-authoritative.","attempted_bypass":"Readiness is treated as rollback authorization.","required_external_control":"AAOS lifecycle authorization","expected_outcome":"reject","evidence_reference":"m15-track-d-12","test_reference":"AuthorityBoundaryTests.test_fixture_12","authority_boundary":"Readiness is not authorization or execution.","notes":"Simulation only."},
-    {"control_id":"track-c-deletion","control_domain":"authority-boundary","source_track":"track-c","source_artifact_type":"deletion-evidence","protected_boundary":"Deletion evidence cannot prove physical or provider erasure.","attempted_bypass":"Evidence claims physical erasure.","required_external_control":"AAOS deletion authorization","expected_outcome":"reject","evidence_reference":"m15-track-d-13","test_reference":"AuthorityBoundaryTests.test_fixture_13","authority_boundary":"Evidence is not deletion authority.","notes":"Provider operation is absent."},
-    {"control_id":"track-c-portability","control_domain":"authority-boundary","source_track":"track-c","source_artifact_type":"portability-evidence","protected_boundary":"Portability remains distinct from replacement-model authority.","attempted_bypass":"Evidence authorizes replacement-model use.","required_external_control":"AAOS migration and runtime authorization","expected_outcome":"reject","evidence_reference":"m15-track-d-14","test_reference":"AuthorityBoundaryTests.test_fixture_14","authority_boundary":"Simulation is not production execution.","notes":"No model invocation."},
-    {"control_id":"track-c-decision-proof","control_domain":"decision-proof-ownership","source_track":"track-c","source_artifact_type":"lifecycle-evidence","protected_boundary":"Decision Proof references cannot become lifecycle execution evidence.","attempted_bypass":"Reference is reused as deletion execution evidence.","required_external_control":"Decision Proof ownership","expected_outcome":"reject","evidence_reference":"m15-track-d-20","test_reference":"DecisionProofOwnershipTests.test_fixture_20","authority_boundary":"Linkage is not execution authority.","notes":"AAOS owns sealing."},
-    {"control_id":"composition-authority","control_domain":"authority-boundary","source_track":"cross-track","source_artifact_type":"cross-track-linkage","protected_boundary":"Non-authoritative records cannot aggregate authority.","attempted_bypass":"Composition produces executable-capability authority.","required_external_control":"most restrictive independent control","expected_outcome":"reject","evidence_reference":"m15-track-d-21","test_reference":"AuthorityBoundaryTests.test_fixture_21","authority_boundary":"No authority by aggregation.","notes":"All source controls survive composition."},
-    {"control_id":"composition-sensitive-output","control_domain":"public-output-safety","source_track":"cross-track","source_artifact_type":"cross-track-linkage","protected_boundary":"Composition cannot expose sensitive content.","attempted_bypass":"Linked M15 record contains credential-shaped content.","required_external_control":"public-output gate #188","expected_outcome":"quarantine","evidence_reference":"m15-track-d-17","test_reference":"PublicOutputSafetyTests.test_fixture_17","authority_boundary":"Public linkage is not disclosure permission.","notes":"Recursive inspection applies."},
-    {"control_id":"composition-m15-release","control_domain":"release-m15-status","source_track":"cross-track","source_artifact_type":"milestone-evidence","protected_boundary":"Tracker and release state remain separately governed.","attempted_bypass":"Evidence closes #231 or authorizes v0.14.0.","required_external_control":"M15 completion and release review","expected_outcome":"reject","evidence_reference":"m15-track-d-23","test_reference":"ReleaseM15StatusTests.test_fixture_23","authority_boundary":"Track D cannot complete M15 or publish a release.","notes":"#231 remains Open."}
+    {"control_id":"track-a-public-output","source_control_id":"m14-public-output-exfiltration","control_domain":"public-output-safety","source_track":"track-a","source_artifact_type":"learning-proof","protected_boundary":"Sensitive content remains blocked from public output.","attempted_bypass":"Schema-valid Learning Proof contains sensitive prompt material.","required_external_control":"M14 public-output exfiltration gate","expected_outcome":"quarantine","evidence_reference":"m15-track-d-02","test_reference":"SourceControlCompositionTests.test_track_a_blocked_by_existing_public_output_control","authority_boundary":"Public evidence is not disclosure authorization.","notes":"Structured adapter routes to the existing gate."},
+    {"control_id":"track-a-provenance-review","source_control_id":"m14-ai-provenance","control_domain":"provenance-human-review","source_track":"track-a","source_artifact_type":"learning-proof","protected_boundary":"AI provenance remains distinct from human review.","attempted_bypass":"Learning Proof claims completed human review.","required_external_control":"M14 AI provenance and reviewer routing","expected_outcome":"reject","evidence_reference":"m15-track-d-03","test_reference":"SourceControlCompositionTests.test_provenance_success_cannot_complete_human_review","authority_boundary":"Provenance is not review or merge approval.","notes":"Actual workflow evaluator output remains non-authoritative."},
+    {"control_id":"track-a-skill-admission","source_control_id":"m14-skill-admission","control_domain":"capability-admission","source_track":"track-a","source_artifact_type":"learning-proof","protected_boundary":"Skill admission remains independently governed.","attempted_bypass":"Learning Proof is treated as an admitted skill.","required_external_control":"M14 external skill admission","expected_outcome":"reject","evidence_reference":"m15-track-d-05","test_reference":"SourceControlCompositionTests.test_track_a_learning_proof_cannot_bypass_rejected_skill_admission","authority_boundary":"Learning evidence cannot approve skill creation.","notes":"No activation occurs."},
+    {"control_id":"track-a-decision-proof","source_control_id":"m14-cross-control-authority","control_domain":"decision-proof-ownership","source_track":"track-a","source_artifact_type":"learning-proof","protected_boundary":"Decision Proof identity and sealing remain AAOS-owned.","attempted_bypass":"Learning Proof digest is reused as Decision Proof digest.","required_external_control":"M14 cross-control authority boundary","expected_outcome":"reject","evidence_reference":"m15-track-d-19","test_reference":"DecisionProofOwnershipTests.test_fixture_19","authority_boundary":"Linkage is not verification or sealing.","notes":"Digests have distinct roles."},
+    {"control_id":"track-b-public-output","source_control_id":"m14-public-output-exfiltration","control_domain":"public-output-safety","source_track":"track-b","source_artifact_type":"capability-memory-pack","protected_boundary":"Capability manifests remain sensitive-output inspected.","attempted_bypass":"Manifest contains secret-shaped material.","required_external_control":"M14 public-output exfiltration gate","expected_outcome":"quarantine","evidence_reference":"m15-track-d-17","test_reference":"PublicOutputSafetyTests.test_fixture_17","authority_boundary":"Verification never exempts output inspection.","notes":"Values are redacted."},
+    {"control_id":"track-b-package-mcp-skill","source_control_id":"m14-skill-admission","control_domain":"capability-admission","source_track":"track-b","source_artifact_type":"capability-memory-pack","protected_boundary":"Package, MCP, skill, tool, and runtime admissions remain separate.","attempted_bypass":"Capability pack is treated as an admitted MCP extension.","required_external_control":"M14 skill admission plus separate MCP research #219","expected_outcome":"reject","evidence_reference":"m15-track-d-08","test_reference":"SourceControlCompositionTests.test_track_b_cannot_bypass_rejected_skill_admission","authority_boundary":"Knowledge is non-executable evidence.","notes":"Installation is not authorization."},
+    {"control_id":"track-b-evidence-lifecycle","source_control_id":"external-evidence-admission","control_domain":"evidence-admission","source_track":"track-b","source_artifact_type":"capability-memory-pack","protected_boundary":"Extraction, freshness, supersession, and revocation remain independent.","attempted_bypass":"Stale or incomplete evidence is admitted.","required_external_control":"External evidence admission gate","expected_outcome":"reject","evidence_reference":"m15-track-d-10","test_reference":"SourceControlCompositionTests.test_external_evidence_states_cannot_bypass_gate","authority_boundary":"Admission eligibility is not approval.","notes":"Unsupported alteration and revocation markers fail the closed source schema."},
+    {"control_id":"track-b-decision-proof","source_control_id":"m14-cross-control-authority","control_domain":"decision-proof-ownership","source_track":"track-b","source_artifact_type":"capability-memory-pack","protected_boundary":"Decision Proof sealing remains AAOS-owned.","attempted_bypass":"Pack linkage is treated as Decision Proof verification.","required_external_control":"M14 cross-control authority boundary","expected_outcome":"reject","evidence_reference":"m15-track-d-21","test_reference":"DecisionProofOwnershipTests.test_linkage_is_not_verification","authority_boundary":"Linkage is evidence only.","notes":"No sealing output exists."},
+    {"control_id":"track-c-rollback","source_control_id":"m14-cross-control-authority","control_domain":"authority-boundary","source_track":"track-c","source_artifact_type":"rollback-readiness","protected_boundary":"Rollback readiness remains non-authoritative.","attempted_bypass":"Readiness is treated as rollback authorization.","required_external_control":"M14 cross-control authority boundary","expected_outcome":"reject","evidence_reference":"m15-track-d-12","test_reference":"AuthorityBoundaryTests.test_fixture_12","authority_boundary":"Readiness is not authorization or execution.","notes":"Simulation only."},
+    {"control_id":"track-c-deletion","source_control_id":"m14-cross-control-authority","control_domain":"authority-boundary","source_track":"track-c","source_artifact_type":"deletion-evidence","protected_boundary":"Deletion evidence cannot prove physical or provider erasure.","attempted_bypass":"Evidence claims physical erasure.","required_external_control":"M14 cross-control authority boundary","expected_outcome":"reject","evidence_reference":"m15-track-d-13","test_reference":"AuthorityBoundaryTests.test_fixture_13","authority_boundary":"Evidence is not deletion authority.","notes":"Provider operation is absent."},
+    {"control_id":"track-c-portability","source_control_id":"m14-cross-control-authority","control_domain":"authority-boundary","source_track":"track-c","source_artifact_type":"portability-evidence","protected_boundary":"Portability remains distinct from replacement-model authority.","attempted_bypass":"Evidence authorizes replacement-model use.","required_external_control":"M14 cross-control authority boundary","expected_outcome":"reject","evidence_reference":"m15-track-d-14","test_reference":"AuthorityBoundaryTests.test_fixture_14","authority_boundary":"Simulation is not production execution.","notes":"No model invocation."},
+    {"control_id":"track-c-decision-proof","source_control_id":"m14-cross-control-authority","control_domain":"decision-proof-ownership","source_track":"track-c","source_artifact_type":"lifecycle-evidence","protected_boundary":"Decision Proof references cannot become lifecycle execution evidence.","attempted_bypass":"Reference is reused as deletion execution evidence.","required_external_control":"M14 cross-control authority boundary","expected_outcome":"reject","evidence_reference":"m15-track-d-20","test_reference":"DecisionProofOwnershipTests.test_fixture_20","authority_boundary":"Linkage is not execution authority.","notes":"AAOS owns sealing."},
+    {"control_id":"composition-authority","source_control_id":"m14-cross-control-authority","control_domain":"authority-boundary","source_track":"cross-track","source_artifact_type":"cross-track-linkage","protected_boundary":"Non-authoritative records cannot aggregate authority.","attempted_bypass":"Composition produces executable-capability authority.","required_external_control":"M14 cross-control authority boundary","expected_outcome":"reject","evidence_reference":"m15-track-d-21","test_reference":"SourceControlCompositionTests.test_tracks_a_b_c_cannot_aggregate_authority","authority_boundary":"No authority by aggregation.","notes":"All source controls survive composition."},
+    {"control_id":"composition-sensitive-output","source_control_id":"m14-public-output-exfiltration","control_domain":"public-output-safety","source_track":"cross-track","source_artifact_type":"cross-track-linkage","protected_boundary":"Composition cannot expose sensitive content.","attempted_bypass":"Linked M15 record contains credential-shaped content.","required_external_control":"M14 public-output exfiltration gate","expected_outcome":"quarantine","evidence_reference":"m15-track-d-17","test_reference":"PublicOutputSafetyTests.test_fixture_17","authority_boundary":"Public linkage is not disclosure permission.","notes":"Recursive inspection applies."},
+    {"control_id":"composition-m15-release","source_control_id":"m14-cross-control-authority","control_domain":"release-m15-status","source_track":"cross-track","source_artifact_type":"milestone-evidence","protected_boundary":"Tracker and release state remain separately governed.","attempted_bypass":"Evidence closes #231 or authorizes v0.14.0.","required_external_control":"M14 cross-control authority boundary","expected_outcome":"reject","evidence_reference":"m15-track-d-23","test_reference":"ReleaseM15StatusTests.test_fixture_23","authority_boundary":"Track D cannot complete M15 or publish a release.","notes":"#231 remains Open."}
   ],
   "non_authoritative_boundary_statement": "Track D evidence grants no authority; Learning Proof and Decision Proof sealing remain AAOS-owned; AAOS remains the decision sovereignty layer."
 }

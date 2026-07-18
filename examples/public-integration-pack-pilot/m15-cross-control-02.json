@@ -8,8 +8,10 @@
   "record": {
     "artifact_type": "Learning Proof",
     "nested": {
-      "prompt": "synthetic confidential example",
-      "api_key": "REDACTED-SYNTHETIC"
+      "prompt_specimen": {
+        "classification": "confidential",
+        "content": "synthetic confidential prompt material for output-gate testing"
+      }
     }
   },
   "notes": "Synthetic evidence only; no external operation or authority."

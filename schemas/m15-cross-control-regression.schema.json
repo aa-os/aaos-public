@@ -8,13 +8,30 @@
   ],
   "$defs": {
     "token": {"type": "string", "pattern": "^[a-z][a-z0-9-]{0,95}$"},
+    "outputClass": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,127}$"},
     "reference": {"type": "string", "minLength": 2, "maxLength": 512},
+    "sourceControlBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_control_id", "source_pr", "source_artifact_paths", "source_schema_or_contract_version", "required_boundary_statements", "expected_source_output_classes", "maintained_integrity_reference", "adapter_test_reference"],
+      "properties": {
+        "source_control_id": {"$ref": "#/$defs/token"},
+        "source_pr": {"type": "string", "pattern": "^#[0-9]+$"},
+        "source_artifact_paths": {"type": "array", "minItems": 3, "items": {"type": "string", "minLength": 8}},
+        "source_schema_or_contract_version": {"type": "string", "minLength": 8},
+        "required_boundary_statements": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 8}},
+        "expected_source_output_classes": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/outputClass"}},
+        "maintained_integrity_reference": {"const": "path-binding:maintained-main"},
+        "adapter_test_reference": {"type": "string", "minLength": 8}
+      }
+    },
     "matrixEntry": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["control_id", "control_domain", "source_track", "source_artifact_type", "protected_boundary", "attempted_bypass", "required_external_control", "expected_outcome", "evidence_reference", "test_reference", "authority_boundary", "notes"],
+      "required": ["control_id", "source_control_id", "control_domain", "source_track", "source_artifact_type", "protected_boundary", "attempted_bypass", "required_external_control", "expected_outcome", "evidence_reference", "test_reference", "authority_boundary", "notes"],
       "properties": {
         "control_id": {"$ref": "#/$defs/token"},
+        "source_control_id": {"$ref": "#/$defs/token"},
         "control_domain": {"enum": ["public-output-safety", "provenance-human-review", "capability-admission", "evidence-admission", "authority-boundary", "decision-proof-ownership", "release-m15-status"]},
         "source_track": {"enum": ["track-a", "track-b", "track-c", "cross-track"]},
         "source_artifact_type": {"$ref": "#/$defs/token"},
@@ -31,13 +48,14 @@
     "matrix": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema_version", "matrix_id", "tracker", "m15_status", "release_status", "controls", "non_authoritative_boundary_statement"],
+      "required": ["schema_version", "matrix_id", "tracker", "m15_status", "release_status", "source_control_bindings", "controls", "non_authoritative_boundary_statement"],
       "properties": {
         "schema_version": {"const": "m15-cross-control-regression/v1"},
         "matrix_id": {"const": "m15-track-d-cross-control-matrix"},
         "tracker": {"const": "#231-open"},
         "m15_status": {"const": "active-incomplete"},
         "release_status": {"const": "v0.14.0-unpublished"},
+        "source_control_bindings": {"type": "array", "minItems": 5, "items": {"$ref": "#/$defs/sourceControlBinding"}},
         "controls": {"type": "array", "minItems": 15, "items": {"$ref": "#/$defs/matrixEntry"}},
         "non_authoritative_boundary_statement": {"const": "Track D evidence grants no authority; Learning Proof and Decision Proof sealing remain AAOS-owned; AAOS remains the decision sovereignty layer."}
       }
