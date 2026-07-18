@@ -1,0 +1,16 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-02",
+  "title": "Learning Proof containing sensitive prompt material",
+  "source_track": "track-a",
+  "synthetic": true,
+  "expected_outcome": "quarantine",
+  "record": {
+    "artifact_type": "Learning Proof",
+    "nested": {
+      "prompt": "synthetic confidential example",
+      "api_key": "REDACTED-SYNTHETIC"
+    }
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

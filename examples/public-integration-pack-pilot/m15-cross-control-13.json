@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-13",
+  "title": "deletion evidence treated as proof of physical erasure",
+  "source_track": "track-c",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "deletion-evidence",
+    "claim": "deletion evidence treated as physical erasure proved"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

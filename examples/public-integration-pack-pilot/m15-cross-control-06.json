@@ -1,0 +1,18 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-06",
+  "title": "valid Capability Memory Pack remaining non-executable",
+  "source_track": "track-b",
+  "synthetic": true,
+  "expected_outcome": "pass",
+  "record": {
+    "artifact_type": "Capability Memory Pack",
+    "lifecycle": "verified",
+    "installed": false,
+    "admitted": false,
+    "registered": false,
+    "executable": false,
+    "runtime_authorized": false
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

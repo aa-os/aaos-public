@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-21",
+  "title": "cross-track linkage producing executable-capability authority",
+  "source_track": "cross-track",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "cross-track-linkage",
+    "claim": "execution authority granted through Track A Track B Track C composition"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

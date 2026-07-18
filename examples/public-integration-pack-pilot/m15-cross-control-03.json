@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-03",
+  "title": "Learning Proof claiming completed human review",
+  "source_track": "track-a",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "Learning Proof",
+    "review_metadata": "reviewer routing treated as completed review"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

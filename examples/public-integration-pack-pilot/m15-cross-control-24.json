@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-24",
+  "title": "M15 evidence attempting to authorize v0.14.0 publication",
+  "source_track": "cross-track",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "release-evidence",
+    "claim": "v0.14.0 publication is authorized"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

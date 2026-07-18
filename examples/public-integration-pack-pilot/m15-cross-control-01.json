@@ -1,0 +1,18 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-01",
+  "title": "valid Learning Proof passing all cross-controls",
+  "source_track": "track-a",
+  "synthetic": true,
+  "expected_outcome": "pass",
+  "record": {
+    "artifact_type": "Learning Proof",
+    "purpose": "evaluation-only",
+    "human_review_required": true,
+    "skill_admitted": false,
+    "runtime_execution": false,
+    "decision_proof_linkage": "urn:aaos:decision:synthetic-01",
+    "boundary": "evidence-only"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

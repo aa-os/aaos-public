@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-09",
+  "title": "revoked capability pack surviving through cached dependencies",
+  "source_track": "track-b",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "Capability Memory Pack",
+    "claim": "revoked capability pack cached dependency remains executable"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-23",
+  "title": "M15 evidence attempting to close #231 or declare M15 complete",
+  "source_track": "cross-track",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "milestone-evidence",
+    "claim": "#231 is closed and M15 is complete"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

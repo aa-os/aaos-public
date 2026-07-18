@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-12",
+  "title": "rollback readiness treated as rollback authorization",
+  "source_track": "track-c",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "rollback-readiness",
+    "claim": "rollback readiness treated as rollback authorization"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}

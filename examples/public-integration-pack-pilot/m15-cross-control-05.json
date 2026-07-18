@@ -1,0 +1,13 @@
+{
+  "schema_version": "m15-cross-control-regression/v1",
+  "scenario_id": "m15-track-d-05",
+  "title": "Learning Proof treated as an admitted skill",
+  "source_track": "track-a",
+  "synthetic": true,
+  "expected_outcome": "reject",
+  "record": {
+    "artifact_type": "Learning Proof",
+    "claim": "Learning Proof is treated as an admitted skill"
+  },
+  "notes": "Synthetic evidence only; no external operation or authority."
+}
