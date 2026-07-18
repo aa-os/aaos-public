@@ -2,9 +2,9 @@
 
 ## Status and scope
 
-This contract implements only M15 Track E1 from issue #242. The supported maintained-manifest schema version is `m15-operational-readiness/v1`, and the supported standalone synthetic-scenario version is `m15-operational-readiness-scenario/v1`.
+This contract implements only M15 Track E1 from issue #242. It supports three strict document kinds: maintained manifest `m15-operational-readiness/v1`, independently supplied repository observation evidence `m15-operational-readiness-observation/v1`, and standalone synthetic scenario `m15-operational-readiness-scenario/v1`.
 
-E1 is deterministic, offline, read-only, contract-first, simulation-only, additive, and backward-compatible. It inventories, integrity-binds, validates, and reports the maintained Track A–D implementation state. It does not implement Track E2, E3, or E4.
+E1 is deterministic, offline, read-only, contract-first, simulation-only, additive, and backward-compatible. It inventories, integrity-binds, observes, validates, and reports the maintained Track A-D implementation state. It does not implement Track E2, E3, or E4.
 
 Tracker #231 remains Open. M15 remains active and incomplete. `v0.14.0` remains unpublished. E1 does not modify README completion or release declarations, create or authorize a tag, publish or authorize `v0.14.0`, create or authorize a GitHub Release, close or authorize closure of #231, or approve M15 completion.
 
@@ -61,9 +61,28 @@ The machine-readable `artifact_integrity_inventory` contains exactly the 67 mate
 - 4 evaluators; and
 - 4 focused test modules.
 
-The per-track totals are Track A 7, Track B 13, Track C 18, and Track D 29. Every entry binds the exact track, source issue, implementation PR, artifact type, repository-relative path, maintained canonical digest, and covering test module. Every entry also states that the E1 evaluator must not execute it.
+The per-track totals are Track A 7, Track B 13, Track C 18, and Track D 29. Every entry binds the exact artifact identifier, track, source issue, implementation PR, artifact type, repository-relative path, maintained canonical digest, covering test module, lifecycle status, evidence reference, authority boundary, notes, and nullable deferred reason. Every entry also states that the E1 evaluator must not execute it.
+
+The closed artifact-status vocabulary is `present`, `missing`, `digest_mismatch`, `unverified`, `superseded`, `deferred`, and `not_applicable`. All 67 artifacts are required. The maintained record declares each as `present`, but the evaluator does not trust that declaration: it compares every artifact identifier and path with the reviewed inventory and every observed digest with the reviewed canonical digest.
+
+- A required `missing`, `digest_mismatch`, or `not_applicable` status is blocking.
+- A required `unverified` status is not ready.
+- A required `superseded` or `deferred` status is not ready pending an explicit maintained re-baseline.
+- `deferred` without a non-empty deferred reason is blocked because the lifecycle evidence is internally incomplete.
+- An observed missing file, unsafe path, or digest mismatch remains blocking regardless of the declared status.
+- `present` requires the exact observed canonical digest and a null deferred reason.
+
+Artifact lifecycle state is evidence only. It does not authorize completion, tracker closure, README changes, execution, tag creation, or release publication.
 
 The Track D matrix remains material evidence in its own right. Its five independently maintained control bindings and fifteen control rows are not flattened into a new E1 authority surface. Track D pass, reject, or quarantine results must not be translated into completion authority.
+
+## Maintained-control dependency inventory
+
+`maintained_control_dependency_inventory` records five Track D source controls separately from the 67 Track A-D material artifacts. Its seventeen dependency paths are not added to the material-artifact count or type totals.
+
+The five records bind the maintained controls from PRs #204, #206, #208, #209, and #210. Each record carries the exact source-control identifier, source PR, source schema or contract version, `path-binding:maintained-main` integrity reference, dependent Track A-D or cross-track bindings derived from the Track D control rows, per-path canonical-text SHA-256 objects, required boundary statements, covering test references, evidence reference, and non-authoritative status. The two source controls without native version fields retain the exact `unversioned-contract/.../path-bound-maintained-main` labels; E1 must not invent versions for them.
+
+The evaluator compares the dependency inventory with an independently reviewed five-control baseline and with the Track D matrix. Missing, extra, substituted, or drifted control identifiers, source PRs, dependent Tracks, path sets, digests, versions, boundary statements, or covering tests are blocking. A dependency binding is evidence that an independently maintained control remains bound; it is not control admission, execution authority, completion approval, or release authority.
 
 ## Canonical SHA-256 convention
 
@@ -71,7 +90,15 @@ E1 reuses `runtime.repository_artifact_digest.sha256_repository_file` with `mode
 
 Paths must use exact POSIX repository-relative spelling. Empty, dot, dot-dot, backslash, drive, alternate-stream, trailing-dot, trailing-space, case-aliased, symlink, junction, escaping, missing, and non-regular-file paths fail closed.
 
-The E1 inventory is new maintained-main repository-file evidence. It does not overwrite, substitute for, reinterpret, normalize, or claim authority from any historical digest evidence or any Track A–C record-internal digest field.
+The E1 inventory is new maintained-main repository-file evidence. It does not overwrite, substitute for, reinterpret, normalize, or claim authority from any historical digest evidence or any Track A-D record-internal digest field.
+
+## Repository observation evidence
+
+The strict `m15-operational-readiness-observation/v1` document is a third document kind, separate from both the maintained manifest and synthetic scenarios. It binds the same maintained repository, branch, and exact maintained-main SHA as the manifest. It contains exactly 67 artifact observations and exactly 17 maintained-control dependency-path observations.
+
+Each artifact observation binds the reviewed artifact identifier and path, one closed lifecycle status, an observed canonical digest or null where no digest could be established, an inert evidence reference, the fixed authority boundary, notes, and a nullable deferred reason. Each dependency observation binds its maintained-control identifier, source-control identifier, path, status, observed canonical digest or null, evidence reference, boundary, and notes. Identifiers and paths must match the maintained manifest exactly; an observation cannot substitute a differently named artifact or control path.
+
+Observation evidence is supplied to the evaluator and is not generated by it. The evaluator does not execute a source evaluator or verification command to create favorable observations. Observation evidence records bounded repository state only; it is not completion approval, tracker #231 closure, README authorization, tag authorization, release authorization, execution authority, or governance authority.
 
 ## Verification-command manifest
 
@@ -91,7 +118,13 @@ The machine-readable `verification_command_manifest` contains one required decla
 12. release-state and M15-status tests; and
 13. the full maintained repository suite.
 
-The manifest sets `PYTHONDONTWRITEBYTECODE=1`, requires exit code zero, and records commands as argv arrays. It explicitly states that the E1 evaluator does not execute commands and that the manifest does not record execution results. Exact run counts, failures, errors, and skips are external verification evidence reported with the PR; neither command presence nor a passing suite is completion or release authorization.
+The command manifest sets `PYTHONDONTWRITEBYTECODE=1`, requires exit code zero, and records commands as argv arrays. Its truth fields are exact: `execution_results_recorded: true`, `commands_executed_by_evaluator: false`, `results_supplied_as_external_verification_evidence: true`, and `verification_results_are_completion_approval: false`. Each command also retains `executed_by_evaluator: false`.
+
+`verification_result_manifest` supplies exactly one externally produced result record for each of the thirteen command identifiers. Each record binds a unique verification identifier, the command identifier, the external evidence source, exact maintained-main SHA, reviewed expected test count, observed test count, passes, failures, errors, skips, `exit_code`, `result`, evidence reference, `executed_by_evaluator: false`, and `verification_results_are_completion_approval: false`. The only result values are `pass` and `fail`.
+
+The evaluator checks result records against independently reviewed command identifiers and exact expected counts. `passes + failures + errors + skips` must equal the observed test count. Expected and observed counts must match. `pass` is coherent only with exit code zero and zero failures and errors; `fail` is required otherwise. A failure, error, nonzero exit code, count mismatch, arithmetic inconsistency, command or verification-identifier substitution, evidence-binding inconsistency, or missing or mismatched maintained-main SHA is blocking. A structurally assessable result array missing a required command result is not ready; a missing or malformed result manifest is blocked. Any unexpected skip is not ready. Result evidence remains external: the E1 evaluator records and validates it but never executes its command.
+
+Exact counts, failures, errors, and skips remain verification evidence. Neither command presence nor a passing result is completion or release authorization.
 
 ## Deterministic outcomes
 
@@ -107,9 +140,9 @@ Outcome precedence is deterministic:
 2. otherwise, any readiness finding produces `not_ready`;
 3. otherwise, the result is `ready_for_completion_review`.
 
-Blocking findings include an unassessable or malformed manifest; maintained-main or Track A–D binding drift; an incomplete, substituted, unsafe, unreadable, missing, non-regular, non-UTF-8, lone-CR, or digest-drifted artifact; a missing or drifted Track D matrix; an execution claim; an authority or release-boundary violation; or a known repository-local completion blocker.
+Blocking findings include an unassessable or malformed manifest or observation document; maintained-main or Track A-D binding drift; an incomplete, substituted, unsafe, unreadable, missing, non-regular, non-UTF-8, lone-CR, or digest-drifted required artifact; required `not_applicable` status; deferred status without a reason; a missing or drifted Track D matrix or maintained-control dependency; a verification failure, error, nonzero exit, count mismatch, arithmetic inconsistency, malformed result, or result-binding inconsistency; an execution claim; an authority or release-boundary violation; or a known repository-local completion blocker.
 
-`not_ready` is reserved for a structurally assessable package whose deterministic test-coverage mapping or required verification-command coverage is incomplete. A self-declared expected outcome never controls evaluator classification.
+`not_ready` is reserved for a structurally assessable package whose deterministic test-coverage mapping, required command coverage, or required verification-result coverage is incomplete; whose otherwise coherent result evidence includes an unexpected skip; or whose required artifact remains `unverified`, `superseded`, or validly deferred. A self-declared expected outcome never controls evaluator classification.
 
 Findings are sorted and deduplicated. Findings identify reviewed field or path names, not arbitrary hostile values. The evaluator does not mutate caller inputs.
 
@@ -125,7 +158,18 @@ The checked-in scenario records are complete, inert JSON documents covering:
 - a false command-execution claim;
 - completion approval, tracker closure, M15 completion, README authorization, tag, and release/GitHub Release escalation attempts;
 - a known repository-local blocker; and
-- an unsupported scenario schema version.
+- an unsupported scenario schema version;
+- a failed E1 targeted test;
+- a verification test error;
+- an unexpected verification skip;
+- a missing required verification result;
+- an observed test-count mismatch;
+- a verification result without the maintained-main SHA;
+- a required unverified artifact;
+- a deferred artifact without a reason; and
+- Track D external-control dependency drift.
+
+The failed-test, test-error, count-mismatch, missing-main-SHA, deferred-without-reason, and maintained-control-drift scenarios are `blocked`. The unexpected-skip, missing-result, and required-unverified-artifact scenarios are `not_ready`. Blocking findings always take precedence over readiness findings.
 
 Fixtures contain no live credentials, personal data, production account identifiers, provider operations, executable content, or external state transitions. In-memory adversarial mutations may supplement these files but do not replace them.
 

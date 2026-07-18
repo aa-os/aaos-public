@@ -1,37 +1,24 @@
-"""Deterministic, offline evaluator for the M15 Track E1 readiness record.
+"""Deterministic, caller-data-only evaluator for M15 Track E1 readiness.
 
-The evaluator reads inert repository text and compares it with the reviewed
-maintained-main inventory.  It does not invoke source evaluators, execute the
-verification command manifest, inspect Git or GitHub, mutate files, or grant
-completion or release authority.
+The evaluator accepts inert manifest and repository-observation mappings.  It
+does not read files, inspect Git or GitHub, invoke source controls, execute the
+verification command manifest, mutate caller data, or grant completion or
+release authority.
 """
 
 from __future__ import annotations
 
-import json
 import re
 from collections import Counter
 from collections.abc import Mapping, Sequence
-from pathlib import Path
 from typing import Any
-
-from runtime.repository_artifact_digest import (
-    RepositoryArtifactFileTypeError,
-    RepositoryArtifactPathError,
-    RepositoryArtifactTextError,
-    sha256_repository_file,
-)
 
 
 MANIFEST_SCHEMA_VERSION = "m15-operational-readiness/v1"
 SCENARIO_SCHEMA_VERSION = "m15-operational-readiness-scenario/v1"
 RESULT_SCHEMA_VERSION = "m15-operational-readiness-result/v1"
+OBSERVATION_SCHEMA_VERSION = "m15-operational-readiness-observation/v1"
 MAINTAINED_MAIN_SHA = "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
-MANIFEST_PATH = (
-    "examples/public-integration-pack-pilot/"
-    "m15-operational-readiness-manifest.json"
-)
-REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 
 READY_FOR_COMPLETION_REVIEW = "ready_for_completion_review"
 NOT_READY = "not_ready"
@@ -74,6 +61,15 @@ EXPECTED_SCENARIO_TITLES = {
     "m15-e1-16": "Operational readiness claims release authority or publication",
     "m15-e1-17": "Known repository-local completion blocker remains unresolved",
     "m15-e1-18": "Unsupported operational-readiness scenario schema version",
+    "m15-e1-19": "E1 targeted verification reports a test failure",
+    "m15-e1-20": "Verification reports a test error",
+    "m15-e1-21": "Verification reports an unexpected skip",
+    "m15-e1-22": "Required verification result is missing",
+    "m15-e1-23": "Observed verification test count does not match the reviewed count",
+    "m15-e1-24": "Verification result omits the maintained-main binding",
+    "m15-e1-25": "Required material artifact remains unverified",
+    "m15-e1-26": "Deferred material artifact has no reason",
+    "m15-e1-27": "Track D external-control dependency binding has drifted",
 }
 
 
@@ -201,6 +197,12 @@ def _required_artifacts() -> dict[str, dict[str, str]]:
                 **common,
                 "artifact_type": "cross-control-matrix",
             }
+    for track_id in _TRACK_METADATA:
+        track_paths = sorted(
+            path for path, metadata in result.items() if metadata["track_id"] == track_id
+        )
+        for index, path in enumerate(track_paths, start=1):
+            result[path]["artifact_id"] = f"m15-e1-{track_id}-artifact-{index:02d}"
     return result
 
 
@@ -363,6 +365,204 @@ EXPECTED_VERIFICATION_COMMANDS: dict[str, dict[str, Any]] = {
     },
 }
 
+EXPECTED_VERIFICATION_RESULT_COUNTS = {
+    "run_m15_e1_targeted_tests": 103,
+    "run_m15_track_a_tests": 68,
+    "run_m15_track_b_tests": 73,
+    "run_m15_track_c_tests": 180,
+    "run_m15_track_d_tests": 79,
+    "run_m14_public_output_tests": 23,
+    "run_m14_provenance_tests": 47,
+    "run_m14_skill_admission_tests": 135,
+    "run_external_evidence_admission_tests": 31,
+    "run_m14_cross_control_authority_tests": 107,
+    "run_decision_proof_ownership_tests": 30,
+    "run_release_state_and_m15_status_tests": 17,
+    "run_full_maintained_repository_suite": 1755,
+}
+EXPECTED_VERIFICATION_IDS = {
+    command_id: f"m15-e1-verification-{index:02d}"
+    for index, command_id in enumerate(EXPECTED_VERIFICATION_COMMANDS, start=1)
+}
+
+EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES = {
+    "m14-public-output-exfiltration": {
+        "dependency_id": "m15-e1-maintained-control-01",
+        "source_pr": "#204",
+        "source_schema_or_contract_version": "public-output-gate-m14-draft-001",
+        "dependent_tracks": ("track-a", "track-b", "cross-track"),
+        "path_digests": {
+            "runtime/public_issue_exfiltration_gate_evaluator.py": "f3453af5c1829a28c791b665640e24940ececdc211e364360635bfe39573e81d",
+            "tests/test_public_issue_exfiltration_gate_evaluator.py": "e3ab2be88dfeb8ec85a9cd12936f33b54476e46c22eeebe650648a8678d962bc",
+            "examples/public-integration-pack-pilot/m14-public-issue-exfiltration-gate-fixtures.json": "ac682908ba081cfc58726046efcb928c51e64eb2037f03354fda80afeb0846a9",
+        },
+        "boundary_statements": (
+            "Public issue bodies, PR comments, discussions, and external markdown are untrusted input.",
+            "A public trigger must not grant private repository or organization-wide read context by default.",
+            "output_gate_pass is not public disclosure approval.",
+            "Privileged context plus a public output channel requires human review.",
+            "human_review_required is not audit closure.",
+            "fail_closed_recommended is not fail_closed_executed.",
+            "rollback_recommended is not rollback_executed.",
+            "untrusted_input_detected is not final governance judgment.",
+            "Decision Proof sealing remains AAOS-owned.",
+            "AAOS remains the decision sovereignty layer.",
+        ),
+        "covering_test_references": (
+            "SourceControlCompositionTests.test_track_a_blocked_by_existing_public_output_control",
+        ),
+    },
+    "m14-ai-provenance": {
+        "dependency_id": "m15-e1-maintained-control-02",
+        "source_pr": "#206",
+        "source_schema_or_contract_version": "unversioned-contract/source-pr-206/path-bound-maintained-main",
+        "dependent_tracks": ("track-a",),
+        "path_digests": {
+            "runtime/ai_authored_pr_provenance_evaluator.py": "465a0aba8beb49a6d6ad55e0bfce65ab74f5368164c758841ab202c50432ef35",
+            "tests/test_ai_authored_pr_provenance_evaluator.py": "e648d2606d38f05063d72be0fa270a0191a28dca24a5fc07e80414faa4fc1f8f",
+            "examples/public-integration-pack-pilot/m14-ai-authored-pr-provenance-fixtures.json": "e72636d1871f2c1232c811aec41ca9724be1505916d4804a05be75e600f3808a",
+            ".github/workflows/m14-ai-pr-provenance.yml": "af8ba9426f1bda5c2b9a09fad7a2b03ef2c4d04a178e4f414519bf837ff19bf1",
+        },
+        "boundary_statements": (
+            "AI-authored detection is provenance evidence, not identity proof.",
+            "pr-by-ai is not approval.",
+            "human-review-required is not completed review.",
+            "Reviewer routing is not review approval.",
+            "Workflow success is not merge approval.",
+            "This workflow is not a security scanner.",
+            "This workflow is not a policy authority.",
+            "This workflow is not a Decision Proof verification or sealing engine.",
+            "Decision Proof sealing remains AAOS-owned.",
+            "AAOS remains the decision sovereignty layer.",
+        ),
+        "covering_test_references": (
+            "SourceControlCompositionTests.test_provenance_success_cannot_complete_human_review",
+        ),
+    },
+    "m14-skill-admission": {
+        "dependency_id": "m15-e1-maintained-control-03",
+        "source_pr": "#208",
+        "source_schema_or_contract_version": "aaos-skill-admission-policy-m14-synthetic-v1",
+        "dependent_tracks": ("track-a", "track-b"),
+        "path_digests": {
+            "runtime/skill_admission_evaluator.py": "bb81697df1be79b96a6af373ce63314a01ac73392b3cdb97981abaddbe6a4400",
+            "tests/test_skill_admission_evaluator.py": "45ba9f2f8369bf0c127993c480e5091a1a2ee8f7ca2a0be2f579b3de38011b83",
+            "examples/public-integration-pack-pilot/m14-skill-admission-fixtures.json": "4fc229be3883a2681f8ebfc3f2eb828514cd3a2d6729c5841bab5a7efe609509",
+        },
+        "boundary_statements": (
+            "External skill capability is not governance permission.",
+            "Skill metadata is not verified behavior.",
+            "Skill installation is not execution authorization.",
+            "Artifact signature is not governance approval.",
+            "Signature verification is not risk acceptance.",
+            "Scan passed is not risk accepted.",
+            "Benchmark passed is not deployment approval.",
+            "Evaluation evidence is not final approval.",
+            "candidate_allowed is not execution approval.",
+            "needs_approval is not approval granted.",
+            "admission_ready_for_review is not final admission approval.",
+            "fail_closed_recommended is not fail_closed_executed.",
+            "rollback_recommended is not rollback_executed.",
+            "human_review_required is not completed review.",
+            "evidence_complete is not Decision Proof sealing.",
+            "replay_ready is not Decision Proof sealing.",
+            "Registry classification is not final governance judgment.",
+            "NVIDIA skills remain external capability artifacts.",
+            "AAOS remains vendor-independent.",
+            "Decision Proof sealing remains AAOS-owned.",
+            "AAOS remains the decision sovereignty layer.",
+        ),
+        "covering_test_references": (
+            "SourceControlCompositionTests.test_track_b_cannot_bypass_rejected_skill_admission",
+        ),
+    },
+    "external-evidence-admission": {
+        "dependency_id": "m15-e1-maintained-control-04",
+        "source_pr": "#209",
+        "source_schema_or_contract_version": "aaos-external-evidence-admission-v1",
+        "dependent_tracks": ("track-b",),
+        "path_digests": {
+            "runtime/external_evidence_admission_evaluator.py": "3271905c87a0b6914bbb48d7b77b1a6bb51741a2acdd36fbfeb973dc287c9884",
+            "tests/test_external_evidence_admission_evaluator.py": "3d077cc6699217f2076fa98e098761af145ffd60210be2e0c40a66b8cfe98aa7",
+            "schemas/external-evidence-admission.schema.json": "adc866d069143c688657d8938f18e76d9448d9223fa4ba2e3e857f62af462ebd",
+            "examples/external-evidence-admission/twinkle-hub-fixtures.json": "3c02b06822ba5d11e1863c640ff8f34d474994d4e412e88aed39b17b7aeb32c1",
+        },
+        "boundary_statements": (
+            "Only verified evidence may enter the governed decision path.",
+            "Degraded and rejected evidence remain decision-path ineligible.",
+            "Decision Proof sealing eligibility is not Decision Proof sealing.",
+        ),
+        "covering_test_references": (
+            "SourceControlCompositionTests.test_external_evidence_states_cannot_bypass_gate",
+        ),
+    },
+    "m14-cross-control-authority": {
+        "dependency_id": "m15-e1-maintained-control-05",
+        "source_pr": "#210",
+        "source_schema_or_contract_version": "unversioned-contract/source-pr-210/path-bound-maintained-main",
+        "dependent_tracks": ("track-a", "track-b", "track-c", "cross-track"),
+        "path_digests": {
+            "runtime/m14_cross_control_authority_boundary_evaluator.py": "51a413dc5303d64d49e958ffde970925ffc5aebead3435f8cf714e6112e1b48c",
+            "tests/test_m14_cross_control_authority_boundary_evaluator.py": "5a4a5e764655382e2b19aa5a4e8a5a6a2b5082ade733e7125d88dfd2ba6cfc52",
+            "examples/public-integration-pack-pilot/m14-cross-control-authority-boundary-regression-fixtures.json": "f44b6d3298922608096c10f248955fa4c25e8d4a3452d6d7c585f9237129809d",
+        },
+        "boundary_statements": (
+            "Multiple non-authoritative outputs do not aggregate into governance authority.",
+            "Evidence accumulation does not create authority by aggregation.",
+            "Five passed gates are not final approval.",
+            "Capability is not permission.",
+            "Consent evidence is not approval.",
+            "Provenance is not identity proof.",
+            "Regulatory mapping is not legal approval.",
+            "Taxonomy coverage is not compliance certification.",
+            "Artifact signature is not governance approval.",
+            "Scan passed is not risk accepted.",
+            "Benchmark passed is not deployment approval.",
+            "ready_for_review is not approval.",
+            "Reviewer routing is not review approval.",
+            "Workflow success is not merge approval.",
+            "output_gate_pass is not public disclosure approval.",
+            "fail_closed_recommended is not fail_closed_executed.",
+            "rollback_recommended is not rollback_executed.",
+            "human_review_required is not audit closure.",
+            "evidence_complete is not Decision Proof sealing.",
+            "replay_ready is not Decision Proof sealing.",
+            "Source evaluators remain bounded evidence evaluators.",
+            "Explicit negative governance evidence is not an affirmative authority claim.",
+            "Decision Proof sealing remains AAOS-owned.",
+            "AAOS remains the decision sovereignty layer.",
+        ),
+        "covering_test_references": (
+            "SourceControlCompositionTests.test_tracks_a_b_c_cannot_aggregate_authority",
+        ),
+    },
+}
+
+ARTIFACT_LIFECYCLE_STATUSES = frozenset(
+    {"present", "missing", "digest_mismatch", "unverified", "superseded", "deferred", "not_applicable"}
+)
+ARTIFACT_BOUNDARY_STATEMENT = (
+    "Artifact lifecycle and integrity status is evidence only; it grants no "
+    "completion, tracker-closure, README, tag, release, execution, or governance authority."
+)
+ARTIFACT_OBSERVATION_BOUNDARY_STATEMENT = (
+    "Artifact observation is evidence only; it grants no completion, tracker-closure, "
+    "README, tag, release, execution, or governance authority."
+)
+DEPENDENCY_BOUNDARY_STATEMENT = (
+    "Maintained-control dependency binding is evidence only; it does not grant control "
+    "admission, completion, release, execution, or governance authority."
+)
+DEPENDENCY_OBSERVATION_BOUNDARY_STATEMENT = (
+    "Maintained-control dependency observation is evidence only; it does not grant control "
+    "admission, completion, release, execution, or governance authority."
+)
+OBSERVATION_BOUNDARY_STATEMENT = (
+    "Observation evidence records bounded repository state only; it is not completion "
+    "approval, tracker #231 closure, README authorization, tag authorization, release "
+    "authorization, execution authority, or governance authority."
+)
+
 _MANIFEST_FIELDS = frozenset(
     {
         "schema_version",
@@ -377,6 +577,8 @@ _MANIFEST_FIELDS = frozenset(
         "source_track_bindings",
         "artifact_integrity_inventory",
         "verification_command_manifest",
+        "verification_result_manifest",
+        "maintained_control_dependency_inventory",
         "known_repository_local_completion_blockers",
         "governance_boundary",
         "allowed_outcomes",
@@ -410,17 +612,23 @@ _INVENTORY_FIELDS = frozenset(
 )
 _ARTIFACT_FIELDS = frozenset(
     {
+        "artifact_id",
         "track_id",
         "source_issue",
         "implementation_pr",
         "relative_path",
         "artifact_type",
+        "status",
         "required",
         "digest_algorithm",
         "digest_mode",
         "maintained_canonical_sha256",
         "test_module",
         "executable_by_evaluator",
+        "evidence_reference",
+        "authority_boundary",
+        "notes",
+        "deferred_reason",
     }
 )
 _VERIFICATION_FIELDS = frozenset(
@@ -428,8 +636,9 @@ _VERIFICATION_FIELDS = frozenset(
         "command_count",
         "environment",
         "execution_policy",
-        "executed_by_evaluator",
         "execution_results_recorded",
+        "commands_executed_by_evaluator",
+        "results_supplied_as_external_verification_evidence",
         "verification_results_are_completion_approval",
         "commands",
     }
@@ -461,6 +670,110 @@ _GOVERNANCE_FIELDS = frozenset(
         "authority_transferred",
     }
 )
+_VERIFICATION_RESULT_MANIFEST_FIELDS = frozenset(
+    {
+        "result_count",
+        "results_supplied_as_external_verification_evidence",
+        "executed_by_evaluator",
+        "verification_results_are_completion_approval",
+        "results",
+    }
+)
+_VERIFICATION_RESULT_FIELDS = frozenset(
+    {
+        "verification_id",
+        "command_id",
+        "evidence_source",
+        "maintained_main_commit_sha",
+        "expected_test_count",
+        "observed_test_count",
+        "passes",
+        "failures",
+        "errors",
+        "skips",
+        "exit_code",
+        "result",
+        "evidence_reference",
+        "executed_by_evaluator",
+        "verification_results_are_completion_approval",
+    }
+)
+_DEPENDENCY_PATH_FIELDS = frozenset(
+    {
+        "relative_path",
+        "digest_algorithm",
+        "digest_mode",
+        "maintained_canonical_sha256",
+    }
+)
+_DEPENDENCY_FIELDS = frozenset(
+    {
+        "dependency_id",
+        "source_control_id",
+        "source_pr",
+        "source_schema_or_contract_version",
+        "dependent_tracks",
+        "maintained_integrity_reference",
+        "path_digests",
+        "boundary_statements",
+        "covering_test_references",
+        "status",
+        "evidence_reference",
+        "authority_boundary",
+        "notes",
+    }
+)
+_DEPENDENCY_INVENTORY_FIELDS = frozenset(
+    {
+        "dependency_count",
+        "dependency_artifact_count",
+        "included_in_material_artifact_count",
+        "maintained_main_commit_sha",
+        "dependencies",
+    }
+)
+_OBSERVATION_FIELDS = frozenset(
+    {
+        "schema_version",
+        "document_type",
+        "record_id",
+        "issue",
+        "track",
+        "maintained_repository",
+        "maintained_branch",
+        "maintained_main_commit_sha",
+        "artifact_observation_count",
+        "dependency_observation_count",
+        "artifact_observations",
+        "dependency_observations",
+        "generated_by_evaluator",
+        "non_authoritative_boundary_statement",
+    }
+)
+_ARTIFACT_OBSERVATION_FIELDS = frozenset(
+    {
+        "artifact_id",
+        "relative_path",
+        "status",
+        "observed_canonical_sha256",
+        "evidence_reference",
+        "authority_boundary",
+        "notes",
+        "deferred_reason",
+    }
+)
+_DEPENDENCY_OBSERVATION_FIELDS = frozenset(
+    {
+        "dependency_id",
+        "source_control_id",
+        "relative_path",
+        "status",
+        "observed_canonical_sha256",
+        "evidence_reference",
+        "authority_boundary",
+        "notes",
+    }
+)
 _SCENARIO_FIELDS = frozenset(
     {
         "schema_version",
@@ -484,7 +797,16 @@ _SCENARIO_STATE_FIELDS = frozenset(
         "cross_control_matrix_bound",
         "test_coverage_complete",
         "verification_command_manifest_complete",
+        "verification_result_manifest_complete",
+        "verification_result_main_binding_valid",
+        "verification_result_counts_valid",
+        "verification_failures",
+        "verification_errors",
+        "verification_skips",
         "verification_execution_claimed",
+        "required_artifact_status",
+        "artifact_deferred_reason",
+        "maintained_control_dependencies_valid",
         "authority_boundary_valid",
         "completion_approval_claimed",
         "tracker_closure_claimed",
@@ -509,12 +831,52 @@ def _is_sha256(value: Any) -> bool:
     return isinstance(value, str) and bool(_DIGEST_RE.fullmatch(value))
 
 
+def _is_nonempty_string(value: Any) -> bool:
+    return isinstance(value, str) and bool(value)
+
+
+def _is_nonnegative_integer(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 0
+
+
+def _apply_artifact_lifecycle(
+    status: Any,
+    deferred_reason: Any,
+    identity: str,
+    finding_prefix: str,
+    blocking: set[str],
+    readiness: set[str],
+) -> None:
+    if status not in ARTIFACT_LIFECYCLE_STATUSES:
+        blocking.add(f"{finding_prefix}_status_invalid:{identity}")
+        return
+    if deferred_reason is not None and not _is_nonempty_string(deferred_reason):
+        blocking.add(f"{finding_prefix}_deferred_reason_invalid:{identity}")
+    if status == "present":
+        if deferred_reason is not None:
+            blocking.add(f"{finding_prefix}_present_has_deferred_reason:{identity}")
+    elif status in {"missing", "digest_mismatch", "not_applicable"}:
+        blocking.add(f"{finding_prefix}_status_blocking:{identity}:{status}")
+    elif status == "deferred":
+        if not _is_nonempty_string(deferred_reason):
+            blocking.add(f"{finding_prefix}_deferred_reason_missing:{identity}")
+        else:
+            readiness.add(f"{finding_prefix}_status_not_ready:{identity}:deferred")
+    else:
+        readiness.add(f"{finding_prefix}_status_not_ready:{identity}:{status}")
+
+
 def _result(
     blocking_findings: set[str],
     readiness_findings: set[str],
     *,
     evaluated_artifact_count: int = 0,
+    evaluated_artifact_observation_count: int = 0,
+    evaluated_source_track_binding_count: int = 0,
+    evaluated_maintained_control_dependency_count: int = 0,
+    evaluated_dependency_observation_count: int = 0,
     evaluated_verification_command_count: int = 0,
+    evaluated_verification_result_count: int = 0,
 ) -> dict[str, Any]:
     blocking = sorted(blocking_findings)
     readiness = sorted(readiness_findings)
@@ -534,7 +896,16 @@ def _result(
         "blocking_findings": blocking,
         "readiness_findings": readiness,
         "evaluated_artifact_count": evaluated_artifact_count,
+        "evaluated_artifact_observation_count": evaluated_artifact_observation_count,
+        "evaluated_source_track_binding_count": evaluated_source_track_binding_count,
+        "evaluated_maintained_control_dependency_count": evaluated_maintained_control_dependency_count,
+        "evaluated_dependency_observation_count": evaluated_dependency_observation_count,
         "evaluated_verification_command_count": evaluated_verification_command_count,
+        "evaluated_verification_result_count": evaluated_verification_result_count,
+        "caller_data_only": True,
+        "file_io_performed": False,
+        "external_controls_invoked": False,
+        "verification_commands_executed": False,
         "non_authoritative_boundary_statement": NON_AUTHORITATIVE_BOUNDARY_STATEMENT,
     }
 
@@ -570,23 +941,8 @@ def _validate_track_bindings(value: Any, blocking: set[str]) -> None:
         blocking.add(f"source_track_binding_missing:{track_id}")
 
 
-def _artifact_read_finding(path: str, error: BaseException) -> str:
-    if isinstance(error, FileNotFoundError):
-        return f"artifact_missing:{path}"
-    if isinstance(error, RepositoryArtifactPathError):
-        return f"artifact_path_unsafe:{path}"
-    if isinstance(error, RepositoryArtifactFileTypeError):
-        return f"artifact_not_regular:{path}"
-    if isinstance(error, RepositoryArtifactTextError):
-        return f"artifact_lone_carriage_return:{path}"
-    if isinstance(error, UnicodeDecodeError):
-        return f"artifact_malformed_utf8:{path}"
-    return f"artifact_unreadable:{path}"
-
-
 def _validate_inventory(
     value: Any,
-    repository_root: Path,
     blocking: set[str],
     readiness: set[str],
 ) -> int:
@@ -639,6 +995,7 @@ def _validate_inventory(
         entry = observed[relative_path]
         expected = REQUIRED_ARTIFACTS[relative_path]
         for field in (
+            "artifact_id",
             "track_id",
             "source_issue",
             "implementation_pr",
@@ -656,6 +1013,20 @@ def _validate_inventory(
             blocking.add(f"artifact_execution_boundary_invalid:{relative_path}")
         if entry.get("test_module") != expected["test_module"]:
             readiness.add(f"test_coverage_incomplete:{expected['track_id']}")
+        if not _is_nonempty_string(entry.get("evidence_reference")):
+            blocking.add(f"artifact_evidence_reference_invalid:{relative_path}")
+        if entry.get("authority_boundary") != ARTIFACT_BOUNDARY_STATEMENT:
+            blocking.add(f"artifact_authority_boundary_invalid:{relative_path}")
+        if not _is_nonempty_string(entry.get("notes")):
+            blocking.add(f"artifact_notes_invalid:{relative_path}")
+        _apply_artifact_lifecycle(
+            entry.get("status"),
+            entry.get("deferred_reason"),
+            relative_path,
+            "artifact_declared",
+            blocking,
+            readiness,
+        )
         declared_digest = entry.get("maintained_canonical_sha256")
         if not _is_sha256(declared_digest):
             blocking.add(f"artifact_digest_shape_invalid:{relative_path}")
@@ -663,29 +1034,351 @@ def _validate_inventory(
         expected_digest = EXPECTED_MAINTAINED_ARTIFACT_DIGESTS[relative_path]
         if declared_digest != expected_digest:
             blocking.add(f"artifact_declared_digest_mismatch:{relative_path}")
-        try:
-            observed_digest = sha256_repository_file(
-                repository_root,
-                relative_path,
-                mode="text",
-            )
-        except (
-            FileNotFoundError,
-            RepositoryArtifactPathError,
-            RepositoryArtifactFileTypeError,
-            RepositoryArtifactTextError,
-            UnicodeDecodeError,
-            OSError,
-        ) as error:
-            blocking.add(_artifact_read_finding(relative_path, error))
-            continue
-        if observed_digest != expected_digest:
-            blocking.add(f"artifact_maintained_digest_mismatch:{relative_path}")
 
     matrix_path = _TRACK_METADATA["track-d"]["matrix"]
     if matrix_path not in observed:
         blocking.add("track_d_cross_control_matrix_not_bound")
     return len(observed)
+
+
+def _validate_repository_observation(
+    value: Any,
+    blocking: set[str],
+) -> Mapping[str, Any] | None:
+    if not _mapping_has_exact_fields(value, _OBSERVATION_FIELDS):
+        blocking.add("repository_observation_shape_invalid")
+        return None
+    if value.get("schema_version") != OBSERVATION_SCHEMA_VERSION:
+        blocking.add("repository_observation_schema_version_mismatch")
+    if value.get("document_type") != "maintained-operational-readiness-observation":
+        blocking.add("repository_observation_document_type_invalid")
+    if value.get("record_id") != "urn:aaos:m15:operational-readiness:e1:maintained-main:observation":
+        blocking.add("repository_observation_record_id_invalid")
+    if value.get("issue") != "#242" or value.get("track") != "E1":
+        blocking.add("repository_observation_scope_binding_mismatch")
+    if value.get("maintained_repository") != "aa-os/aaos-public":
+        blocking.add("repository_observation_repository_mismatch")
+    if value.get("maintained_branch") != "main":
+        blocking.add("repository_observation_branch_mismatch")
+    if value.get("maintained_main_commit_sha") != MAINTAINED_MAIN_SHA:
+        blocking.add("repository_observation_main_sha_mismatch")
+    if value.get("artifact_observation_count") != len(REQUIRED_ARTIFACTS):
+        blocking.add("artifact_observation_count_invalid")
+    dependency_path_count = sum(
+        len(metadata["path_digests"])
+        for metadata in EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES.values()
+    )
+    if value.get("dependency_observation_count") != dependency_path_count:
+        blocking.add("dependency_observation_count_invalid")
+    if value.get("generated_by_evaluator") is not False:
+        blocking.add("repository_observation_generation_claim_invalid")
+    if value.get("non_authoritative_boundary_statement") != OBSERVATION_BOUNDARY_STATEMENT:
+        blocking.add("repository_observation_boundary_invalid")
+    return value
+
+
+def _validate_artifact_observations(
+    value: Any,
+    blocking: set[str],
+    readiness: set[str],
+) -> int:
+    if not isinstance(value, list):
+        blocking.add("artifact_observations_invalid")
+        return 0
+    observations: dict[str, Mapping[str, Any]] = {}
+    for index, observation in enumerate(value):
+        if not _mapping_has_exact_fields(observation, _ARTIFACT_OBSERVATION_FIELDS):
+            blocking.add(f"artifact_observation_shape_invalid:{index}")
+            continue
+        relative_path = observation.get("relative_path")
+        if not isinstance(relative_path, str) or relative_path not in REQUIRED_ARTIFACTS:
+            blocking.add(f"artifact_observation_identity_invalid:{index}")
+            continue
+        if relative_path in observations:
+            blocking.add(f"artifact_observation_duplicate:{relative_path}")
+            continue
+        observations[relative_path] = observation
+
+    for relative_path in sorted(set(REQUIRED_ARTIFACTS) - set(observations)):
+        blocking.add(f"artifact_observation_missing:{relative_path}")
+    if len(value) != len(REQUIRED_ARTIFACTS):
+        blocking.add("artifact_observation_coverage_incomplete")
+
+    for relative_path in sorted(observations):
+        observation = observations[relative_path]
+        expected = REQUIRED_ARTIFACTS[relative_path]
+        if observation.get("artifact_id") != expected["artifact_id"]:
+            blocking.add(f"artifact_observation_id_mismatch:{relative_path}")
+        if not _is_nonempty_string(observation.get("evidence_reference")):
+            blocking.add(f"artifact_observation_evidence_reference_invalid:{relative_path}")
+        if observation.get("authority_boundary") != ARTIFACT_OBSERVATION_BOUNDARY_STATEMENT:
+            blocking.add(f"artifact_observation_authority_boundary_invalid:{relative_path}")
+        if not _is_nonempty_string(observation.get("notes")):
+            blocking.add(f"artifact_observation_notes_invalid:{relative_path}")
+        status = observation.get("status")
+        _apply_artifact_lifecycle(
+            status,
+            observation.get("deferred_reason"),
+            relative_path,
+            "artifact_observation",
+            blocking,
+            readiness,
+        )
+        observed_digest = observation.get("observed_canonical_sha256")
+        if status != "present":
+            if observed_digest is not None and not _is_sha256(observed_digest):
+                blocking.add(f"artifact_observed_digest_shape_invalid:{relative_path}")
+            continue
+        if not _is_sha256(observed_digest):
+            blocking.add(f"artifact_observed_digest_shape_invalid:{relative_path}")
+            continue
+        expected_digest = EXPECTED_MAINTAINED_ARTIFACT_DIGESTS[relative_path]
+        if observed_digest != expected_digest:
+            blocking.add(f"artifact_observed_digest_mismatch:{relative_path}")
+    return len(observations)
+
+
+def _validate_maintained_control_dependency_inventory(
+    value: Any,
+    blocking: set[str],
+) -> int:
+    if not _mapping_has_exact_fields(value, _DEPENDENCY_INVENTORY_FIELDS):
+        blocking.add("maintained_control_dependency_inventory_shape_invalid")
+        return 0
+    if value.get("dependency_count") != len(EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES):
+        blocking.add("maintained_control_dependency_count_invalid")
+    expected_path_count = sum(
+        len(metadata["path_digests"])
+        for metadata in EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES.values()
+    )
+    if value.get("dependency_artifact_count") != expected_path_count:
+        blocking.add("maintained_control_dependency_artifact_count_invalid")
+    if value.get("included_in_material_artifact_count") is not False:
+        blocking.add("maintained_control_dependency_material_count_boundary_invalid")
+    if value.get("maintained_main_commit_sha") != MAINTAINED_MAIN_SHA:
+        blocking.add("maintained_control_dependency_main_sha_mismatch")
+
+    dependencies = value.get("dependencies")
+    if not isinstance(dependencies, list):
+        blocking.add("maintained_control_dependencies_invalid")
+        return 0
+    observed: dict[str, Mapping[str, Any]] = {}
+    for index, dependency in enumerate(dependencies):
+        if not _mapping_has_exact_fields(dependency, _DEPENDENCY_FIELDS):
+            blocking.add(f"maintained_control_dependency_shape_invalid:{index}")
+            continue
+        control_id = dependency.get("source_control_id")
+        if control_id not in EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES or control_id in observed:
+            blocking.add(f"maintained_control_dependency_identity_invalid:{index}")
+            continue
+        observed[control_id] = dependency
+    for control_id in sorted(set(EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES) - set(observed)):
+        blocking.add(f"maintained_control_dependency_missing:{control_id}")
+    if len(dependencies) != len(EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES):
+        blocking.add("maintained_control_dependency_coverage_mismatch")
+
+    for control_id in sorted(observed):
+        dependency = observed[control_id]
+        expected = EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES[control_id]
+        for field in (
+            "dependency_id",
+            "source_pr",
+            "source_schema_or_contract_version",
+        ):
+            if dependency.get(field) != expected[field]:
+                blocking.add(f"maintained_control_dependency_{field}_mismatch:{control_id}")
+        if dependency.get("dependent_tracks") != list(expected["dependent_tracks"]):
+            blocking.add(f"maintained_control_dependency_dependent_tracks_mismatch:{control_id}")
+        if dependency.get("maintained_integrity_reference") != "path-binding:maintained-main":
+            blocking.add(f"maintained_control_dependency_integrity_reference_invalid:{control_id}")
+        if dependency.get("boundary_statements") != list(expected["boundary_statements"]):
+            blocking.add(f"maintained_control_dependency_boundaries_mismatch:{control_id}")
+        if dependency.get("covering_test_references") != list(expected["covering_test_references"]):
+            blocking.add(f"maintained_control_dependency_tests_mismatch:{control_id}")
+        if dependency.get("status") != "bound":
+            blocking.add(f"maintained_control_dependency_status_invalid:{control_id}")
+        if not _is_nonempty_string(dependency.get("evidence_reference")):
+            blocking.add(f"maintained_control_dependency_evidence_reference_invalid:{control_id}")
+        if dependency.get("authority_boundary") != DEPENDENCY_BOUNDARY_STATEMENT:
+            blocking.add(f"maintained_control_dependency_authority_boundary_invalid:{control_id}")
+        if not _is_nonempty_string(dependency.get("notes")):
+            blocking.add(f"maintained_control_dependency_notes_invalid:{control_id}")
+
+        path_digests = dependency.get("path_digests")
+        if not isinstance(path_digests, list):
+            blocking.add(f"maintained_control_dependency_paths_invalid:{control_id}")
+            continue
+        observed_paths: dict[str, Mapping[str, Any]] = {}
+        for index, path_digest in enumerate(path_digests):
+            if not _mapping_has_exact_fields(path_digest, _DEPENDENCY_PATH_FIELDS):
+                blocking.add(f"maintained_control_dependency_path_shape_invalid:{control_id}:{index}")
+                continue
+            path = path_digest.get("relative_path")
+            if not isinstance(path, str) or path not in expected["path_digests"] or path in observed_paths:
+                blocking.add(f"maintained_control_dependency_path_identity_invalid:{control_id}:{index}")
+                continue
+            observed_paths[path] = path_digest
+        if set(observed_paths) != set(expected["path_digests"]):
+            blocking.add(f"maintained_control_dependency_path_coverage_mismatch:{control_id}")
+        if len(path_digests) != len(expected["path_digests"]):
+            blocking.add(f"maintained_control_dependency_path_count_mismatch:{control_id}")
+        for path in sorted(observed_paths):
+            path_digest = observed_paths[path]
+            if path_digest.get("digest_algorithm") != "sha256":
+                blocking.add(f"maintained_control_dependency_digest_algorithm_invalid:{control_id}:{path}")
+            if path_digest.get("digest_mode") != "canonical-text":
+                blocking.add(f"maintained_control_dependency_digest_mode_invalid:{control_id}:{path}")
+            if path_digest.get("maintained_canonical_sha256") != expected["path_digests"][path]:
+                blocking.add(f"maintained_control_dependency_digest_mismatch:{control_id}:{path}")
+    return len(observed)
+
+
+def _validate_dependency_observations(
+    value: Any,
+    blocking: set[str],
+) -> int:
+    if not isinstance(value, list):
+        blocking.add("dependency_observations_invalid")
+        return 0
+    expected_rows: dict[tuple[str, str], tuple[str, str]] = {}
+    for control_id, metadata in EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES.items():
+        for path, digest in metadata["path_digests"].items():
+            expected_rows[(metadata["dependency_id"], path)] = (control_id, digest)
+    observations: dict[tuple[str, str], Mapping[str, Any]] = {}
+    for index, observation in enumerate(value):
+        if not _mapping_has_exact_fields(observation, _DEPENDENCY_OBSERVATION_FIELDS):
+            blocking.add(f"dependency_observation_shape_invalid:{index}")
+            continue
+        identity = (observation.get("dependency_id"), observation.get("relative_path"))
+        if identity not in expected_rows or identity in observations:
+            blocking.add(f"dependency_observation_identity_invalid:{index}")
+            continue
+        observations[identity] = observation
+    if set(observations) != set(expected_rows):
+        blocking.add("dependency_observation_coverage_mismatch")
+    if len(value) != len(expected_rows):
+        blocking.add("dependency_observation_count_mismatch")
+    for identity in sorted(observations):
+        observation = observations[identity]
+        control_id, expected_digest = expected_rows[identity]
+        dependency_id, path = identity
+        if observation.get("source_control_id") != control_id:
+            blocking.add(f"dependency_observation_control_mismatch:{dependency_id}:{path}")
+        if observation.get("status") != "present":
+            blocking.add(f"dependency_observation_status_invalid:{dependency_id}:{path}")
+        observed_digest = observation.get("observed_canonical_sha256")
+        if not _is_sha256(observed_digest):
+            blocking.add(f"dependency_observation_digest_shape_invalid:{dependency_id}:{path}")
+        elif observed_digest != expected_digest:
+            blocking.add(f"dependency_observation_digest_mismatch:{dependency_id}:{path}")
+        if not _is_nonempty_string(observation.get("evidence_reference")):
+            blocking.add(f"dependency_observation_evidence_reference_invalid:{dependency_id}:{path}")
+        if observation.get("authority_boundary") != DEPENDENCY_OBSERVATION_BOUNDARY_STATEMENT:
+            blocking.add(f"dependency_observation_authority_boundary_invalid:{dependency_id}:{path}")
+        if not _is_nonempty_string(observation.get("notes")):
+            blocking.add(f"dependency_observation_notes_invalid:{dependency_id}:{path}")
+    return len(observations)
+
+
+def _validate_verification_results(
+    value: Any,
+    blocking: set[str],
+    readiness: set[str],
+) -> int:
+    if not isinstance(value, list):
+        blocking.add("verification_results_invalid")
+        return 0
+    results: dict[str, Mapping[str, Any]] = {}
+    for index, result in enumerate(value):
+        if not _mapping_has_exact_fields(result, _VERIFICATION_RESULT_FIELDS):
+            blocking.add(f"verification_result_shape_invalid:{index}")
+            continue
+        command_id = result.get("command_id")
+        if command_id not in EXPECTED_VERIFICATION_RESULT_COUNTS or command_id in results:
+            blocking.add(f"verification_result_identity_invalid:{index}")
+            continue
+        results[command_id] = result
+    for command_id in sorted(set(EXPECTED_VERIFICATION_RESULT_COUNTS) - set(results)):
+        readiness.add(f"verification_result_missing:{command_id}")
+    if len(value) != len(EXPECTED_VERIFICATION_RESULT_COUNTS):
+        readiness.add("verification_result_coverage_incomplete")
+
+    for command_id in sorted(results):
+        result = results[command_id]
+        if result.get("verification_id") != EXPECTED_VERIFICATION_IDS[command_id]:
+            blocking.add(f"verification_result_id_mismatch:{command_id}")
+        if result.get("evidence_source") != "externally-supplied-maintained-repository-test-execution":
+            blocking.add(f"verification_result_evidence_source_invalid:{command_id}")
+        if result.get("maintained_main_commit_sha") != MAINTAINED_MAIN_SHA:
+            blocking.add(f"verification_result_main_sha_mismatch:{command_id}")
+        if result.get("executed_by_evaluator") is not False:
+            blocking.add(f"verification_result_execution_claim:{command_id}")
+        if result.get("verification_results_are_completion_approval") is not False:
+            blocking.add(f"verification_result_completion_approval_claim:{command_id}")
+        if not _is_nonempty_string(result.get("evidence_reference")):
+            blocking.add(f"verification_result_evidence_reference_invalid:{command_id}")
+        for field in (
+            "expected_test_count",
+            "observed_test_count",
+            "passes",
+            "failures",
+            "errors",
+            "skips",
+        ):
+            if not _is_nonnegative_integer(result.get(field)):
+                blocking.add(f"verification_result_count_invalid:{command_id}:{field}")
+        if not isinstance(result.get("exit_code"), int) or isinstance(result.get("exit_code"), bool):
+            blocking.add(f"verification_result_exit_code_invalid:{command_id}")
+        expected_count = EXPECTED_VERIFICATION_RESULT_COUNTS[command_id]
+        if result.get("expected_test_count") != expected_count:
+            blocking.add(f"verification_result_expected_count_mismatch:{command_id}")
+        if result.get("observed_test_count") != expected_count:
+            blocking.add(f"verification_result_observed_count_mismatch:{command_id}")
+        counts = [result.get(field) for field in ("passes", "failures", "errors", "skips")]
+        if all(_is_nonnegative_integer(count) for count in counts):
+            if sum(counts) != result.get("observed_test_count"):
+                blocking.add(f"verification_result_arithmetic_mismatch:{command_id}")
+        failures = result.get("failures")
+        errors = result.get("errors")
+        skips = result.get("skips")
+        exit_code = result.get("exit_code")
+        if _is_nonnegative_integer(failures) and failures:
+            blocking.add(f"verification_result_failures_present:{command_id}")
+        if _is_nonnegative_integer(errors) and errors:
+            blocking.add(f"verification_result_errors_present:{command_id}")
+        if _is_nonnegative_integer(skips) and skips:
+            readiness.add(f"verification_result_skips_present:{command_id}")
+        if isinstance(exit_code, int) and not isinstance(exit_code, bool) and exit_code != 0:
+            blocking.add(f"verification_result_nonzero_exit:{command_id}")
+        coherent_pass = exit_code == 0 and failures == 0 and errors == 0
+        expected_result = "pass" if coherent_pass else "fail"
+        if result.get("result") not in {"pass", "fail"}:
+            blocking.add(f"verification_result_value_invalid:{command_id}")
+        elif result.get("result") != expected_result:
+            blocking.add(f"verification_result_coherence_invalid:{command_id}")
+    return len(results)
+
+
+def _validate_verification_result_manifest(
+    value: Any,
+    blocking: set[str],
+    readiness: set[str],
+) -> int:
+    if not _mapping_has_exact_fields(value, _VERIFICATION_RESULT_MANIFEST_FIELDS):
+        blocking.add("verification_result_manifest_shape_invalid")
+        return 0
+    result_count = value.get("result_count")
+    if not _is_nonnegative_integer(result_count):
+        blocking.add("verification_result_count_invalid")
+    elif result_count != len(EXPECTED_VERIFICATION_RESULT_COUNTS):
+        readiness.add("verification_result_count_incomplete")
+    if value.get("results_supplied_as_external_verification_evidence") is not True:
+        blocking.add("verification_result_external_evidence_boundary_invalid")
+    if value.get("executed_by_evaluator") is not False:
+        blocking.add("verification_result_manifest_execution_claim")
+    if value.get("verification_results_are_completion_approval") is not False:
+        blocking.add("verification_result_manifest_completion_approval_claim")
+    return _validate_verification_results(value.get("results"), blocking, readiness)
 
 
 def _validate_verification_manifest(
@@ -700,12 +1393,14 @@ def _validate_verification_manifest(
         readiness.add("verification_command_count_incomplete")
     if value.get("environment") != {"PYTHONDONTWRITEBYTECODE": "1"}:
         blocking.add("verification_environment_invalid")
-    if value.get("execution_policy") != "declarative-only-not-executed-by-evaluator":
+    if value.get("execution_policy") != "declarative-commands-with-supplied-external-results":
         blocking.add("verification_execution_policy_invalid")
-    if value.get("executed_by_evaluator") is not False:
+    if value.get("execution_results_recorded") is not True:
+        blocking.add("verification_result_recording_invalid")
+    if value.get("commands_executed_by_evaluator") is not False:
         blocking.add("verification_execution_claimed")
-    if value.get("execution_results_recorded") is not False:
-        blocking.add("verification_result_recording_claim_invalid")
+    if value.get("results_supplied_as_external_verification_evidence") is not True:
+        blocking.add("verification_external_result_boundary_invalid")
     if value.get("verification_results_are_completion_approval") is not False:
         blocking.add("verification_promoted_to_completion_approval")
 
@@ -767,10 +1462,9 @@ def _validate_governance(value: Any, blocking: set[str]) -> None:
 
 def evaluate_operational_readiness(
     manifest: Mapping[str, Any],
-    *,
-    repository_root: str | Path = REPOSITORY_ROOT,
+    observation: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Evaluate one maintained E1 manifest without executing its contents."""
+    """Evaluate caller-supplied maintained E1 manifest and observation evidence."""
 
     blocking: set[str] = set()
     readiness: set[str] = set()
@@ -813,23 +1507,8 @@ def evaluate_operational_readiness(
 
     _validate_track_bindings(manifest.get("source_track_bindings"), blocking)
     _validate_governance(manifest.get("governance_boundary"), blocking)
-
-    root = Path(repository_root)
-    if not root.is_absolute():
-        blocking.add("repository_root_not_absolute")
-        return _result(blocking, readiness)
-    try:
-        root = root.resolve(strict=True)
-    except OSError:
-        blocking.add("repository_root_unavailable")
-        return _result(blocking, readiness)
-    if not root.is_dir():
-        blocking.add("repository_root_not_directory")
-        return _result(blocking, readiness)
-
     artifact_count = _validate_inventory(
         manifest.get("artifact_integrity_inventory"),
-        root,
         blocking,
         readiness,
     )
@@ -838,11 +1517,39 @@ def evaluate_operational_readiness(
         blocking,
         readiness,
     )
+    verification_result_count = _validate_verification_result_manifest(
+        manifest.get("verification_result_manifest"),
+        blocking,
+        readiness,
+    )
+    dependency_count = _validate_maintained_control_dependency_inventory(
+        manifest.get("maintained_control_dependency_inventory"),
+        blocking,
+    )
+
+    artifact_observation_count = 0
+    dependency_observation_count = 0
+    validated_observation = _validate_repository_observation(observation, blocking)
+    if validated_observation is not None:
+        artifact_observation_count = _validate_artifact_observations(
+            validated_observation.get("artifact_observations"),
+            blocking,
+            readiness,
+        )
+        dependency_observation_count = _validate_dependency_observations(
+            validated_observation.get("dependency_observations"),
+            blocking,
+        )
     result = _result(
         blocking,
         readiness,
         evaluated_artifact_count=artifact_count,
+        evaluated_artifact_observation_count=artifact_observation_count,
+        evaluated_source_track_binding_count=len(_TRACK_METADATA),
+        evaluated_maintained_control_dependency_count=dependency_count,
+        evaluated_dependency_observation_count=dependency_observation_count,
         evaluated_verification_command_count=command_count,
+        evaluated_verification_result_count=verification_result_count,
     )
     if (
         result["outcome"] == READY_FOR_COMPLETION_REVIEW
@@ -853,7 +1560,12 @@ def evaluate_operational_readiness(
             blocking,
             readiness,
             evaluated_artifact_count=artifact_count,
+            evaluated_artifact_observation_count=artifact_observation_count,
+            evaluated_source_track_binding_count=len(_TRACK_METADATA),
+            evaluated_maintained_control_dependency_count=dependency_count,
+            evaluated_dependency_observation_count=dependency_observation_count,
             evaluated_verification_command_count=command_count,
+            evaluated_verification_result_count=verification_result_count,
         )
     return result
 
@@ -888,7 +1600,15 @@ def evaluate_synthetic_scenario(document: Mapping[str, Any]) -> dict[str, Any]:
     if not _mapping_has_exact_fields(state, _SCENARIO_STATE_FIELDS):
         blocking.add("scenario_evidence_state_shape_invalid")
         return _result(blocking, readiness)
-    boolean_fields = _SCENARIO_STATE_FIELDS - {"known_repository_local_completion_blockers"}
+    non_boolean_fields = {
+        "verification_failures",
+        "verification_errors",
+        "verification_skips",
+        "required_artifact_status",
+        "artifact_deferred_reason",
+        "known_repository_local_completion_blockers",
+    }
+    boolean_fields = _SCENARIO_STATE_FIELDS - non_boolean_fields
     for field in sorted(boolean_fields):
         if not _is_bool(state.get(field)):
             blocking.add(f"scenario_boolean_invalid:{field}")
@@ -901,6 +1621,9 @@ def evaluate_synthetic_scenario(document: Mapping[str, Any]) -> dict[str, Any]:
         "artifact_integrity_valid",
         "internal_consistency_valid",
         "cross_control_matrix_bound",
+        "verification_result_main_binding_valid",
+        "verification_result_counts_valid",
+        "maintained_control_dependencies_valid",
         "authority_boundary_valid",
     ):
         if state.get(field) is False:
@@ -908,11 +1631,29 @@ def evaluate_synthetic_scenario(document: Mapping[str, Any]) -> dict[str, Any]:
     for field in (
         "test_coverage_complete",
         "verification_command_manifest_complete",
+        "verification_result_manifest_complete",
     ):
         if state.get(field) is False:
             readiness.add(f"scenario_readiness_check_failed:{field}")
     if state.get("verification_execution_claimed") is True:
         blocking.add("verification_execution_claimed")
+    for field in ("verification_failures", "verification_errors", "verification_skips"):
+        if not _is_nonnegative_integer(state.get(field)):
+            blocking.add(f"scenario_count_invalid:{field}")
+    if _is_nonnegative_integer(state.get("verification_failures")) and state.get("verification_failures"):
+        blocking.add("scenario_verification_failures_present")
+    if _is_nonnegative_integer(state.get("verification_errors")) and state.get("verification_errors"):
+        blocking.add("scenario_verification_errors_present")
+    if _is_nonnegative_integer(state.get("verification_skips")) and state.get("verification_skips"):
+        readiness.add("scenario_verification_skips_present")
+    _apply_artifact_lifecycle(
+        state.get("required_artifact_status"),
+        state.get("artifact_deferred_reason"),
+        "required-artifact",
+        "scenario_artifact",
+        blocking,
+        readiness,
+    )
     for field in (
         "completion_approval_claimed",
         "tracker_closure_claimed",
@@ -936,44 +1677,28 @@ def evaluate_synthetic_scenario(document: Mapping[str, Any]) -> dict[str, Any]:
     return _result(blocking, readiness)
 
 
-def evaluate_repository_operational_readiness(
-    repository_root: str | Path = REPOSITORY_ROOT,
-) -> dict[str, Any]:
-    """Load and evaluate the maintained manifest from an explicit repository root."""
-
-    root = Path(repository_root)
-    if not root.is_absolute():
-        return _result({"repository_root_not_absolute"}, set())
-    try:
-        manifest_text = (root / Path(MANIFEST_PATH)).read_text(encoding="utf-8")
-        manifest = json.loads(manifest_text)
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
-        return _result({"manifest_unreadable"}, set())
-    if not isinstance(manifest, Mapping):
-        return _result({"manifest_shape_invalid"}, set())
-    return evaluate_operational_readiness(manifest, repository_root=root)
-
-
 __all__ = [
+    "ARTIFACT_LIFECYCLE_STATUSES",
     "BLOCKED",
+    "EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES",
     "EXPECTED_TRACK_COUNTS",
     "EXPECTED_TYPE_COUNTS",
     "EXPECTED_MAINTAINED_ARTIFACT_DIGESTS",
     "EXPECTED_SCENARIO_TITLES",
     "EXPECTED_VERIFICATION_COMMANDS",
+    "EXPECTED_VERIFICATION_IDS",
+    "EXPECTED_VERIFICATION_RESULT_COUNTS",
     "MAINTAINED_MAIN_SHA",
-    "MANIFEST_PATH",
     "MANIFEST_SCHEMA_VERSION",
     "NON_AUTHORITATIVE_BOUNDARY_STATEMENT",
     "NOT_READY",
+    "OBSERVATION_SCHEMA_VERSION",
     "OUTCOMES",
     "READY_FOR_COMPLETION_REVIEW",
-    "REPOSITORY_ROOT",
     "REQUIRED_ARTIFACTS",
     "RESULT_SCHEMA_VERSION",
     "SCENARIO_SCHEMA_VERSION",
     "SYNTHETIC_SCENARIO_BOUNDARY_STATEMENT",
     "evaluate_operational_readiness",
-    "evaluate_repository_operational_readiness",
     "evaluate_synthetic_scenario",
 ]
