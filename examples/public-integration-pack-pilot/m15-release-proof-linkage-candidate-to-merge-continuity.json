@@ -1,0 +1,46 @@
+{
+  "schema_version": "m15-release-proof-linkage-continuity-record/v1",
+  "document_type": "candidate-to-merge-continuity-record",
+  "record_id": "urn:aaos:m15:release-proof-linkage:e2:e1-continuity",
+  "issue": "#248",
+  "source_baseline_commit_sha": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f",
+  "source_baseline_tree_sha": "a0277b8cb697c9e311118f7de67f7f6bf3534fcb",
+  "candidate_commit_sha": "55629976db7f7b8dc9e2153eaf67f054bd9ee708",
+  "candidate_tree_sha": "f4552f630e2dab5b9d34240efa8825f187b4abf1",
+  "merge_commit_sha": "27c92e290cf6ad60bada49b63fe1888511930980",
+  "merge_tree_sha": "f4552f630e2dab5b9d34240efa8825f187b4abf1",
+  "merge_parent_shas": [
+    "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f",
+    "55629976db7f7b8dc9e2153eaf67f054bd9ee708"
+  ],
+  "merge_parent_count": 2,
+  "candidate_is_merge_parent": true,
+  "source_baseline_is_merge_parent": true,
+  "merge_parent_inclusion_verified": true,
+  "base_advancement": {
+    "present": false,
+    "advanced_base_sha": null,
+    "source_baseline_is_ancestor": true,
+    "explanation": null,
+    "evidence_reference": null
+  },
+  "complete_path_coverage": true,
+  "preserved_path_count": 39,
+  "missing_paths": [],
+  "blob_mismatches": [],
+  "digest_mismatches": [],
+  "file_mode_mismatches": [],
+  "unexpected_substitutions": [],
+  "additional_merge_difference_count": 0,
+  "additional_merge_difference_explanations": [],
+  "allowed_relations": [
+    "exact_tree_match",
+    "candidate_change_set_preserved",
+    "drift_detected",
+    "unverified"
+  ],
+  "continuity_relation": "exact_tree_match",
+  "evidence_reference": "git-object-observation:e1-candidate-to-merge",
+  "generated_by_evaluator": false,
+  "non_authoritative_boundary_statement": "Candidate and merge path evidence is inert continuity evidence only; it grants no completion, release, execution, sealing, or governance authority."
+}
