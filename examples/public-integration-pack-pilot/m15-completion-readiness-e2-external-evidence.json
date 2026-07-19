@@ -1,0 +1,21 @@
+{
+  "schema_version": "m15-completion-readiness-e2-external-evidence/v1",
+  "document_kind": "e2-external-evidence-record",
+  "repository": "aa-os/aaos-public",
+  "source_main_base_sha": "27c92e290cf6ad60bada49b63fe1888511930980",
+  "candidate_sha": "efc31e7d24c26d2cea2cb536a4cae257aababb5f",
+  "active_observation_comment_id": 5015690597,
+  "active_observation_reference": "https://github.com/aa-os/aaos-public/pull/249#issuecomment-5015690597",
+  "active_receipt_comment_id": 5015694989,
+  "active_receipt_reference": "https://github.com/aa-os/aaos-public/pull/249#issuecomment-5015694989",
+  "active_receipt_canonical_sha256": "511226a39144791ec47043203878bd22d14ec546e71702c267b66cc47da6af2f",
+  "active_receipt_accepted": true,
+  "superseded_receipt_comment_id": 5015466792,
+  "superseded_receipt_reference": "https://github.com/aa-os/aaos-public/pull/249#issuecomment-5015466792",
+  "superseded_receipt_classification": "superseded-historical-evidence",
+  "superseded_receipt_accepted_as_active": false,
+  "external_evidence_is_completion_authority": false,
+  "external_evidence_is_release_authority": false,
+  "caller_supplied_inert_record": true,
+  "authority_boundary": "Completion readiness is evidence for final human review only; it is not M15 completion, tracker #231 closure, README final-state authorization, release approval, tag authorization, GitHub Release authorization, Decision Proof sealing, Learning Proof sealing, deployment authorization, risk acceptance, rollback execution, deletion execution, fail-closed execution, audit closure, waiver, authority transfer, or final governance judgment."
+}

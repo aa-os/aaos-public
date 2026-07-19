@@ -1,0 +1,20 @@
+{
+  "schema_version": "m15-completion-readiness-scenario/v1",
+  "document_kind": "synthetic-scenario",
+  "scenario_id": "m15-e3-scenario-04",
+  "title": "e2-candidate-not-merge-parent",
+  "synthetic": true,
+  "inert": true,
+  "offline": true,
+  "deterministic": true,
+  "contains_secret": false,
+  "contains_credential": false,
+  "contains_personal_data": false,
+  "contains_private_prompt": false,
+  "contains_production_identifier": false,
+  "contains_executable_payload": false,
+  "contains_argv_or_command_payload": false,
+  "mutation": "e2-candidate-not-merge-parent",
+  "expected_outcome": "blocked",
+  "authority_boundary": "Completion readiness is evidence for final human review only; it is not M15 completion, tracker #231 closure, README final-state authorization, release approval, tag authorization, GitHub Release authorization, Decision Proof sealing, Learning Proof sealing, deployment authorization, risk acceptance, rollback execution, deletion execution, fail-closed execution, audit closure, waiver, authority transfer, or final governance judgment."
+}
