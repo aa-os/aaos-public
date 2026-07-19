@@ -23,6 +23,12 @@ The E3 source-main base is commit
 `f6d074fca2fedecbf654697719179440bc0680d3` with tree
 `f13913426545b77616128223cd195487a415ffde`.
 
+This source base is an immutable Git-object binding, not a mutable branch-ref
+binding. Test-only Git inspection proves that the source base is a commit, its
+tree is the bound tree, and it is an ancestor of the candidate `HEAD`. No E3
+test requires `origin/main` or another mutable branch ref to remain at the
+source-base commit after merge.
+
 The maintained prior-track inventory is derived from the first-parent material
 diff of each merged implementation pull request:
 
@@ -40,6 +46,10 @@ and 50 for E2. Every inventory entry binds its source issue, implementation
 PR, candidate, merge, path, artifact type, Git blob, file mode, canonical text
 SHA-256, covering test, lifecycle state, evidence reference, and authority
 boundary. A runtime result cannot create or repair these observations.
+The runtime embeds an immutable, ordered `EXPECTED_ARTIFACT_BINDINGS` table
+and compares all 156 caller-supplied rows field-for-field. The declared
+inventory digest remains evidence metadata; it cannot replace exact row
+comparison, and the runtime does not calculate that digest.
 
 ## Exact E2 continuity
 
@@ -144,6 +154,13 @@ The maintained matrix has one ordered row for each of tracker #231's 16
 acceptance criteria. Each row contains a source-track binding, an evidence
 reference, an artifact or contract reference, a test reference, a coverage
 state, notes, and the exact non-authoritative boundary.
+
+The runtime embeds `EXPECTED_ACCEPTANCE_CRITERIA` with each criterion's exact
+text, source track, evidence references, artifact references, test references,
+and authority boundary. Non-empty but substituted text or references are
+binding drift and block readiness. The matrix's `all_criteria_covered`
+summary is derived only from matrix-local findings; unrelated package findings
+cannot change that summary.
 
 `covered`, `partial`, `missing`, and `blocked` are the only coverage states.
 Only `covered` with every required reference can contribute to readiness.
@@ -250,6 +267,12 @@ commit-external PR comments. They bind the repository, issue #250, actual PR,
 source-main base, frozen candidate head, candidate tree, timestamps, evidence
 references, and the exact non-authoritative boundary.
 
+For this implementation the actual pull request is bound exactly as PR #251.
+Both records must contain pull request number `251`; the observation evidence
+reference is
+`github:aa-os/aaos-public:pull/251:commit-external-observation`, and the
+receipt must cross-bind that same reference and candidate.
+
 The receipt contains all 17 maintained verification commands, including
 explicit M14 final-completion and M14 completion-readiness regression groups.
 Each command
@@ -260,6 +283,12 @@ external evidence reference. Acceptable execution requires zero failures,
 errors, skips, and exit code, with observed tests at or above the maintained
 minimum. Command presence and exit code zero are not proof of sufficient
 execution.
+
+The immutable `EXPECTED_VERIFICATION_COMMANDS` registry binds each command's
+identifier, full declared logical argv, execution scope, and maintained
+minimum. Both the manifest declaration and receipt row must equal the same
+registry entry. Actual argv may differ only at argv position zero, where
+`python` is replaced by the declared checkout-local Python launcher.
 
 The evaluator validates supplied observation and receipt mappings; it does not
 fetch, execute, or publish them. Verification is neither completion authority

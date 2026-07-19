@@ -11,6 +11,8 @@ from pathlib import Path
 
 import runtime.m15_completion_readiness_evaluator as evaluator_module
 from runtime.m15_completion_readiness_evaluator import (
+    ACCEPTANCE_BINDING_FIELDS,
+    ARTIFACT_BINDING_FIELDS,
     AUTHORIZED_HISTORICAL_COMPATIBILITY_REPAIRS,
     AUTHORIZED_PHASE_AWARE_COMPATIBILITY_REPAIR,
     AUTHORITY_BOUNDARY,
@@ -18,7 +20,12 @@ from runtime.m15_completion_readiness_evaluator import (
     COMMAND_IDS,
     COMMAND_MINIMA,
     CRITERION_IDS,
+    E3_PR_OBSERVATION_EVIDENCE_REFERENCE,
+    E3_PULL_REQUEST_NUMBER,
     E3_AUTHORIZED_COMPATIBILITY_REPAIR,
+    EXPECTED_ACCEPTANCE_CRITERIA,
+    EXPECTED_ARTIFACT_BINDINGS,
+    EXPECTED_VERIFICATION_COMMANDS,
     HISTORICAL_E1_ARTIFACT_BINDING,
     NOT_READY,
     READY,
@@ -289,7 +296,8 @@ def build_external_pr_observation(
     *,
     candidate_head=SYNTHETIC_CANDIDATE_SHA,
     candidate_tree=SYNTHETIC_CANDIDATE_TREE_SHA,
-    pull_request_number=999,
+    pull_request_number=E3_PULL_REQUEST_NUMBER,
+    evidence_reference=E3_PR_OBSERVATION_EVIDENCE_REFERENCE,
 ):
     return {
         "schema_version": "m15-completion-readiness-pr-observation/v1",
@@ -304,7 +312,7 @@ def build_external_pr_observation(
         "execution_subject_type": "pull-request-candidate-checkout",
         "observed_at": "2026-07-19T13:00:00Z",
         "observer": "synthetic-offline-observer",
-        "evidence_reference": "urn:aaos:synthetic:m15:e3:pr-observation:999",
+        "evidence_reference": evidence_reference,
         "external_to_candidate_commit": True,
         "fetched_by_evaluator": False,
         "non_authoritative_boundary_statement": AUTHORITY_BOUNDARY,
@@ -395,6 +403,14 @@ def _receipt_command(package, command_id="e3-targeted"):
     return next(
         item
         for item in package["receipt"]["commands"]
+        if item["command_id"] == command_id
+    )
+
+
+def _manifest_command(package, command_id="e3-targeted"):
+    return next(
+        item
+        for item in package["manifest"]["verification_commands"]
         if item["command_id"] == command_id
     )
 
@@ -524,6 +540,24 @@ class M15CompletionReadinessContractAndSchemaTests(unittest.TestCase):
         self.assertEqual(
             self.schema["$defs"]["sha256"]["pattern"],
             "^[0-9a-f]{64}$",
+        )
+        for definition_name in ("pullRequestObservation", "verificationReceipt"):
+            properties = self.schema["$defs"][definition_name]["properties"]
+            self.assertEqual(
+                properties["pull_request_number"]["const"],
+                E3_PULL_REQUEST_NUMBER,
+            )
+        self.assertEqual(
+            self.schema["$defs"]["pullRequestObservation"]["properties"][
+                "evidence_reference"
+            ]["const"],
+            E3_PR_OBSERVATION_EVIDENCE_REFERENCE,
+        )
+        self.assertEqual(
+            self.schema["$defs"]["verificationReceipt"]["properties"][
+                "observation_evidence_reference"
+            ]["const"],
+            E3_PR_OBSERVATION_EVIDENCE_REFERENCE,
         )
 
     def test_05_schema_closes_outcomes(self):
@@ -661,11 +695,30 @@ class M15CompletionReadinessGitEvidenceTests(unittest.TestCase):
         cls.inventory = load_json(RECORD_PATHS["inventory"])
         cls.continuity = load_json(RECORD_PATHS["continuity"])
 
-    def test_18_source_main_base_and_tree_match_actual_git(self):
-        self.assertEqual(git_text("rev-parse", "origin/main"), SOURCE_MAIN_BASE_SHA)
+    def test_18_source_main_base_object_tree_and_ancestry_are_immutable(self):
+        self.assertEqual(git_text("cat-file", "-t", SOURCE_MAIN_BASE_SHA), "commit")
         self.assertEqual(
-            git_text("rev-parse", "origin/main^{tree}"),
+            git_text("rev-parse", f"{SOURCE_MAIN_BASE_SHA}^{{tree}}"),
             SOURCE_MAIN_BASE_TREE_SHA,
+        )
+        self.assertEqual(
+            git_text("merge-base", SOURCE_MAIN_BASE_SHA, "HEAD"),
+            SOURCE_MAIN_BASE_SHA,
+        )
+
+    def test_18a_source_base_validation_allows_head_to_advance(self):
+        self.assertGreater(
+            int(git_text("rev-list", "--count", f"{SOURCE_MAIN_BASE_SHA}..HEAD")),
+            0,
+        )
+        self.assertEqual(
+            git_text("merge-base", SOURCE_MAIN_BASE_SHA, "HEAD"),
+            SOURCE_MAIN_BASE_SHA,
+        )
+        mutable_main_ref = "origin" + "/main"
+        self.assertNotIn(
+            mutable_main_ref,
+            Path(__file__).read_text(encoding="utf-8"),
         )
 
     def test_19_e2_candidate_and_merge_are_commit_objects(self):
@@ -824,6 +877,11 @@ class M15CompletionReadinessGitEvidenceTests(unittest.TestCase):
                 self.assertTrue(artifact["evidence_reference"])
                 self.assertEqual(artifact["lifecycle_state"], "maintained")
                 self.assertEqual(artifact["authority_boundary"], AUTHORITY_BOUNDARY)
+        observed = tuple(
+            tuple(artifact[field] for field in ARTIFACT_BINDING_FIELDS)
+            for artifact in self.inventory["artifacts"]
+        )
+        self.assertEqual(observed, EXPECTED_ARTIFACT_BINDINGS)
 
     def test_32_inventory_binding_digest_is_canonical(self):
         payload = copy.deepcopy(self.inventory)
@@ -949,6 +1007,10 @@ class M15CompletionReadinessRuntimeTests(unittest.TestCase):
         self.assertTrue(result["readiness_findings"])
         self.assertTrue(result["blocking_findings"])
         self.assertEqual(result["outcome"], BLOCKED)
+        self.assertNotIn(
+            "acceptance-completion-summary-inconsistent",
+            result["blocking_findings"],
+        )
 
     def test_42_missing_pr_observation_is_not_ready(self):
         package = load_package()
@@ -1063,6 +1125,31 @@ class M15CompletionReadinessRuntimeTests(unittest.TestCase):
         package["receipt"]["execution_candidate_head_sha"] = "d" * 40
         self.assertEqual(evaluate_package(package)["outcome"], BLOCKED)
 
+    def test_61a_internally_consistent_wrong_pr_252_is_blocked(self):
+        package = load_package()
+        observation = build_external_pr_observation(
+            pull_request_number=252,
+            evidence_reference=(
+                "github:aa-os/aaos-public:pull/252:commit-external-observation"
+            ),
+        )
+        package["observation"] = observation
+        package["receipt"] = build_external_verification_receipt(
+            package["manifest"],
+            observation,
+        )
+        self.assertTrue(
+            validate_draft_2020_12_subset(package["observation"], load_json(SCHEMA_PATH))
+        )
+        self.assertTrue(
+            validate_draft_2020_12_subset(package["receipt"], load_json(SCHEMA_PATH))
+        )
+        result = evaluate_package(package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertTrue(
+            any("pull_request_number" in finding for finding in result["findings"])
+        )
+
     def test_62_receipt_command_order_is_bound(self):
         package = load_package()
         package["receipt"]["commands"][0], package["receipt"]["commands"][1] = (
@@ -1075,6 +1162,102 @@ class M15CompletionReadinessRuntimeTests(unittest.TestCase):
         package = load_package()
         _receipt_command(package)["actual_argv"][0] = "python"
         self.assertEqual(evaluate_package(package)["outcome"], BLOCKED)
+
+    def test_63a_manifest_and_receipt_arbitrary_command_codrift_blocks(self):
+        package = load_package()
+        manifest_command = _manifest_command(package, "track-a")
+        receipt_command = _receipt_command(package, "track-a")
+        arbitrary = [
+            "python",
+            "-X",
+            "faulthandler",
+            "-m",
+            "unittest",
+            "tests.synthetic_arbitrary",
+            "-v",
+        ]
+        manifest_command["declared_logical_argv"] = arbitrary
+        receipt_command["declared_logical_argv"] = list(arbitrary)
+        receipt_command["actual_argv"] = [ACTUAL_PYTHON_LAUNCHER, *arbitrary[1:]]
+        self.assertEqual(evaluate_package(package)["outcome"], BLOCKED)
+
+    def test_63b_unittest_selector_substitution_blocks(self):
+        package = load_package()
+        manifest_command = _manifest_command(package, "track-a")
+        receipt_command = _receipt_command(package, "track-a")
+        substituted = list(manifest_command["declared_logical_argv"])
+        substituted[-2] = "tests.test_m15_capability_memory_pack_evaluator"
+        manifest_command["declared_logical_argv"] = substituted
+        receipt_command["declared_logical_argv"] = substituted
+        receipt_command["actual_argv"] = [
+            ACTUAL_PYTHON_LAUNCHER,
+            *substituted[1:],
+        ]
+        self.assertEqual(evaluate_package(package)["outcome"], BLOCKED)
+
+    def test_63c_two_command_scopes_cannot_be_exchanged(self):
+        package = load_package()
+        command_ids = ("e3-targeted", "m14-final-completion")
+        manifest_commands = [
+            _manifest_command(package, command_id) for command_id in command_ids
+        ]
+        receipt_commands = [
+            _receipt_command(package, command_id) for command_id in command_ids
+        ]
+        for commands in (manifest_commands, receipt_commands):
+            commands[0]["execution_scope"], commands[1]["execution_scope"] = (
+                commands[1]["execution_scope"],
+                commands[0]["execution_scope"],
+            )
+        self.assertEqual(evaluate_package(package)["outcome"], BLOCKED)
+
+    def test_63d_full_suite_id_cannot_bind_non_discovery_command(self):
+        package = load_package()
+        replacement = list(
+            _manifest_command(package, "e3-targeted")["declared_logical_argv"]
+        )
+        manifest_command = _manifest_command(package, "full-maintained-suite")
+        receipt_command = _receipt_command(package, "full-maintained-suite")
+        manifest_command["declared_logical_argv"] = replacement
+        receipt_command["declared_logical_argv"] = list(replacement)
+        receipt_command["actual_argv"] = [
+            ACTUAL_PYTHON_LAUNCHER,
+            *replacement[1:],
+        ]
+        self.assertEqual(evaluate_package(package)["outcome"], BLOCKED)
+
+    def test_63e_well_formed_artifact_path_and_digest_drift_blocks(self):
+        package = load_package()
+        artifact = package["inventory"]["artifacts"][0]
+        original_binding_digest = package["inventory"]["inventory_binding_sha256"]
+        artifact["repository_path"] = "docs/synthetic/well-formed-substitute.md"
+        artifact["git_blob_sha"] = "d" * 40
+        artifact["canonical_text_sha256"] = "e" * 64
+        self.assertEqual(
+            package["inventory"]["inventory_binding_sha256"],
+            original_binding_digest,
+        )
+        self.assertEqual(evaluate_package(package)["outcome"], BLOCKED)
+
+    def test_63f_acceptance_criterion_text_substitution_blocks(self):
+        package = load_package()
+        package["acceptance"]["criteria"][0]["criterion_text"] = (
+            "Unrelated but well-formed criterion text."
+        )
+        self.assertEqual(evaluate_package(package)["outcome"], BLOCKED)
+
+    def test_63g_arbitrary_acceptance_references_do_not_cover_criterion(self):
+        for field in (
+            "evidence_references",
+            "artifact_references",
+            "test_references",
+        ):
+            with self.subTest(field=field):
+                package = load_package()
+                package["acceptance"]["criteria"][0][field] = [
+                    f"urn:aaos:synthetic:arbitrary:{field}"
+                ]
+                self.assertEqual(evaluate_package(package)["outcome"], BLOCKED)
 
     def test_64_invalid_rfc3339_utc_timestamp_blocks(self):
         package = load_package()
@@ -1193,6 +1376,20 @@ class M15CompletionReadinessCoverageTests(unittest.TestCase):
             CRITERION_IDS,
         )
         self.assertTrue(self.package["acceptance"]["all_criteria_covered"])
+        observed = tuple(
+            tuple(
+                tuple(row[field])
+                if field in {
+                    "evidence_references",
+                    "artifact_references",
+                    "test_references",
+                }
+                else row[field]
+                for field in ACCEPTANCE_BINDING_FIELDS
+            )
+            for row in self.package["acceptance"]["criteria"]
+        )
+        self.assertEqual(observed, EXPECTED_ACCEPTANCE_CRITERIA)
 
     def test_75_blocker_register_is_complete_and_ordered(self):
         self.assertEqual(
@@ -1210,13 +1407,16 @@ class M15CompletionReadinessCoverageTests(unittest.TestCase):
         )
 
     def test_77_verification_manifest_has_all_17_commands_in_order(self):
-        self.assertEqual(
-            tuple(
-                item["command_id"]
-                for item in self.package["manifest"]["verification_commands"]
-            ),
-            COMMAND_IDS,
+        observed = tuple(
+            (
+                item["command_id"],
+                tuple(item["declared_logical_argv"]),
+                item["execution_scope"],
+                item["minimum_tests_observed"],
+            )
+            for item in self.package["manifest"]["verification_commands"]
         )
+        self.assertEqual(observed, EXPECTED_VERIFICATION_COMMANDS)
 
     def test_78_inherited_minimums_match_source_contract(self):
         expected = {
@@ -1293,12 +1493,18 @@ for _scenario_path in SCENARIO_PATHS:
 def _make_criterion_test(index):
     def test(self):
         row = self.package["acceptance"]["criteria"][index]
-        self.assertEqual(row["criterion_id"], CRITERION_IDS[index])
+        observed = tuple(
+            tuple(row[field])
+            if field in {
+                "evidence_references",
+                "artifact_references",
+                "test_references",
+            }
+            else row[field]
+            for field in ACCEPTANCE_BINDING_FIELDS
+        )
+        self.assertEqual(observed, EXPECTED_ACCEPTANCE_CRITERIA[index])
         self.assertEqual(row["coverage_state"], "covered")
-        self.assertIn(row["source_track"], {*TRACK_EXPECTATIONS, "cross-track", "track-e3"})
-        for key in ("evidence_references", "artifact_references", "test_references"):
-            self.assertTrue(row[key])
-            self.assertTrue(all(isinstance(value, str) and value for value in row[key]))
         self.assertEqual(row["authority_boundary"], AUTHORITY_BOUNDARY)
 
     return test
@@ -1319,18 +1525,15 @@ def _make_command_test(command_id):
             for item in self.package["manifest"]["verification_commands"]
             if item["command_id"] == command_id
         )
-        self.assertEqual(declaration["minimum_tests_observed"], COMMAND_MINIMA[command_id])
-        self.assertGreater(declaration["minimum_tests_observed"], 0)
-        self.assertEqual(declaration["declared_logical_argv"][0], "python")
-        self.assertIn(
+        observed = (
+            declaration["command_id"],
+            tuple(declaration["declared_logical_argv"]),
             declaration["execution_scope"],
-            {
-                "e3-candidate-validation",
-                "inherited-regression",
-                "candidate-full-suite-integration",
-                "authorized-compatibility-regression",
-            },
+            declaration["minimum_tests_observed"],
         )
+        expected = EXPECTED_VERIFICATION_COMMANDS[COMMAND_IDS.index(command_id)]
+        self.assertEqual(observed, expected)
+        self.assertGreater(declaration["minimum_tests_observed"], 0)
 
     return test
 
