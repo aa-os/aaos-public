@@ -1,0 +1,1082 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/m15-operational-readiness.schema.json",
+  "title": "AAOS M15 Track E1 Operational Readiness Package",
+  "oneOf": [
+    {"$ref": "#/$defs/maintainedManifest"},
+    {"$ref": "#/$defs/observationEvidence"},
+    {"$ref": "#/$defs/verificationExecutionReceipt"},
+    {"$ref": "#/$defs/syntheticScenario"}
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitCommitSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "artifactLifecycleStatus": {
+      "enum": [
+        "present",
+        "missing",
+        "digest_mismatch",
+        "unverified",
+        "superseded",
+        "deferred",
+        "not_applicable"
+      ]
+    },
+    "trackBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "track_id",
+        "source_issue",
+        "implementation_pr",
+        "head_sha",
+        "merge_sha",
+        "schema_version",
+        "artifact_count",
+        "implementation_state"
+      ],
+      "properties": {
+        "track_id": {"enum": ["track-a", "track-b", "track-c", "track-d"]},
+        "source_issue": {"enum": ["#232", "#234", "#238", "#240"]},
+        "implementation_pr": {"enum": ["#233", "#237", "#239", "#241"]},
+        "head_sha": {"$ref": "#/$defs/gitCommitSha"},
+        "merge_sha": {"$ref": "#/$defs/gitCommitSha"},
+        "schema_version": {
+          "enum": [
+            "m15-learning-proof/v1",
+            "m15-capability-memory-pack/v1",
+            "m15-lineage-rollback-portability/v1",
+            "m15-cross-control-regression/v1"
+          ]
+        },
+        "artifact_count": {"type": "integer", "minimum": 1},
+        "implementation_state": {"const": "merged-into-maintained-main"}
+      }
+    },
+    "artifactEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "track_id",
+        "source_issue",
+        "implementation_pr",
+        "relative_path",
+        "artifact_type",
+        "status",
+        "required",
+        "digest_algorithm",
+        "digest_mode",
+        "maintained_canonical_sha256",
+        "test_module",
+        "executable_by_evaluator",
+        "evidence_reference",
+        "authority_boundary",
+        "notes",
+        "deferred_reason"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^m15-e1-track-[a-d]-artifact-[0-9]{2}$"
+        },
+        "track_id": {"enum": ["track-a", "track-b", "track-c", "track-d"]},
+        "source_issue": {"enum": ["#232", "#234", "#238", "#240"]},
+        "implementation_pr": {"enum": ["#233", "#237", "#239", "#241"]},
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\\\:]+(?:/[^/\\\\:]+)*$"
+        },
+        "artifact_type": {
+          "enum": [
+            "contract",
+            "schema",
+            "fixture",
+            "cross-control-matrix",
+            "evaluator",
+            "test"
+          ]
+        },
+        "status": {"$ref": "#/$defs/artifactLifecycleStatus"},
+        "required": {"const": true},
+        "digest_algorithm": {"const": "sha256"},
+        "digest_mode": {"const": "canonical-text"},
+        "maintained_canonical_sha256": {"$ref": "#/$defs/sha256"},
+        "test_module": {
+          "enum": [
+            "tests.test_m15_learning_proof_evaluator",
+            "tests.test_m15_capability_memory_pack_evaluator",
+            "tests.test_m15_lineage_rollback_portability_evaluator",
+            "tests.test_m15_cross_control_regression_evaluator"
+          ]
+        },
+        "executable_by_evaluator": {"const": false},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "authority_boundary": {
+          "const": "Artifact lifecycle and integrity status is evidence only; it grants no completion, tracker-closure, README, tag, release, execution, or governance authority."
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "deferred_reason": {
+          "oneOf": [
+            {"type": "string", "minLength": 1, "maxLength": 1024},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "artifactInventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "digest_algorithm",
+        "digest_mode",
+        "canonicalization",
+        "historical_digest_evidence_policy",
+        "artifact_count",
+        "track_artifact_counts",
+        "artifact_type_counts",
+        "artifacts"
+      ],
+      "properties": {
+        "digest_algorithm": {"const": "sha256"},
+        "digest_mode": {"const": "canonical-text"},
+        "canonicalization": {"const": "strict-utf8-crlf-to-lf-only"},
+        "historical_digest_evidence_policy": {"const": "preserved-separate-and-unmodified"},
+        "artifact_count": {"const": 67},
+        "track_artifact_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["track-a", "track-b", "track-c", "track-d"],
+          "properties": {
+            "track-a": {"const": 7},
+            "track-b": {"const": 13},
+            "track-c": {"const": 18},
+            "track-d": {"const": 29}
+          }
+        },
+        "artifact_type_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["contract", "schema", "fixture", "cross-control-matrix", "evaluator", "test"],
+          "properties": {
+            "contract": {"const": 4},
+            "schema": {"const": 4},
+            "fixture": {"const": 50},
+            "cross-control-matrix": {"const": 1},
+            "evaluator": {"const": 4},
+            "test": {"const": 4}
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "minItems": 67,
+          "maxItems": 67,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/artifactEntry"}
+        }
+      }
+    },
+    "verificationCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_id",
+        "argv",
+        "test_scope",
+        "verification_scope",
+        "required",
+        "expected_exit_code",
+        "executed_by_evaluator"
+      ],
+      "properties": {
+        "command_id": {
+          "type": "string",
+          "pattern": "^run_[a-z0-9_]+$"
+        },
+        "argv": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "test_scope": {"type": "string", "minLength": 1},
+        "verification_scope": {
+          "enum": [
+            "source-baseline-regression",
+            "e1-candidate-validation",
+            "candidate-full-suite-integration"
+          ]
+        },
+        "required": {"const": true},
+        "expected_exit_code": {"const": 0},
+        "executed_by_evaluator": {"const": false}
+      }
+    },
+    "verificationCommandManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_count",
+        "environment",
+        "execution_policy",
+        "execution_results_recorded",
+        "external_execution_receipt_required",
+        "commands_executed_by_evaluator",
+        "results_supplied_as_external_verification_evidence",
+        "verification_results_are_completion_approval",
+        "commands"
+      ],
+      "properties": {
+        "command_count": {"const": 13},
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["PYTHONDONTWRITEBYTECODE"],
+          "properties": {
+            "PYTHONDONTWRITEBYTECODE": {"const": "1"}
+          }
+        },
+        "execution_policy": {"const": "declarative-commands-with-supplied-external-results"},
+        "execution_results_recorded": {"const": true},
+        "external_execution_receipt_required": {"const": true},
+        "commands_executed_by_evaluator": {"const": false},
+        "results_supplied_as_external_verification_evidence": {"const": true},
+        "verification_results_are_completion_approval": {"const": false},
+        "commands": {
+          "type": "array",
+          "minItems": 13,
+          "maxItems": 13,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/verificationCommand"}
+        }
+      }
+    },
+    "verificationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verification_id",
+        "command_id",
+        "evidence_source",
+        "source_baseline_commit_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "verification_scope",
+        "expected_test_count",
+        "observed_test_count",
+        "passes",
+        "failures",
+        "errors",
+        "skips",
+        "exit_code",
+        "result",
+        "evidence_reference",
+        "external_execution_receipt_required",
+        "executed_by_evaluator",
+        "verification_results_are_completion_approval"
+      ],
+      "properties": {
+        "verification_id": {
+          "type": "string",
+          "pattern": "^m15-e1-verification-[0-9]{2}$"
+        },
+        "command_id": {
+          "type": "string",
+          "pattern": "^run_[a-z0-9_]+$"
+        },
+        "evidence_source": {
+          "const": "external-verification-receipt-required"
+        },
+        "source_baseline_commit_sha": {
+          "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+        },
+        "execution_subject_type": {"const": "pull-request-candidate-checkout"},
+        "execution_candidate_reference": {"const": "pull-request:#243"},
+        "execution_candidate_head_sha": {"type": "null"},
+        "verification_scope": {
+          "enum": [
+            "source-baseline-regression",
+            "e1-candidate-validation",
+            "candidate-full-suite-integration"
+          ]
+        },
+        "expected_test_count": {"type": "integer", "minimum": 0},
+        "observed_test_count": {"type": "integer", "minimum": 0},
+        "passes": {"type": "integer", "minimum": 0},
+        "failures": {"type": "integer", "minimum": 0},
+        "errors": {"type": "integer", "minimum": 0},
+        "skips": {"type": "integer", "minimum": 0},
+        "exit_code": {"type": "integer"},
+        "result": {"enum": ["pass", "fail"]},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "external_execution_receipt_required": {"const": true},
+        "executed_by_evaluator": {"const": false},
+        "verification_results_are_completion_approval": {"const": false}
+      }
+    },
+    "verificationResultManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result_count",
+        "results_supplied_as_external_verification_evidence",
+        "result_records_are_execution_receipts",
+        "external_execution_receipt_required",
+        "executed_by_evaluator",
+        "verification_results_are_completion_approval",
+        "results"
+      ],
+      "properties": {
+        "result_count": {"const": 13},
+        "results_supplied_as_external_verification_evidence": {"const": true},
+        "result_records_are_execution_receipts": {"const": false},
+        "external_execution_receipt_required": {"const": true},
+        "executed_by_evaluator": {"const": false},
+        "verification_results_are_completion_approval": {"const": false},
+        "results": {
+          "type": "array",
+          "minItems": 13,
+          "maxItems": 13,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/verificationResult"}
+        }
+      }
+    },
+    "verificationExecutableBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "declared_launcher",
+        "actual_launcher",
+        "launcher_substitution_detected",
+        "launcher_substitution_declared",
+        "python_implementation",
+        "python_version"
+      ],
+      "properties": {
+        "declared_launcher": {"const": "python"},
+        "actual_launcher": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "launcher_substitution_detected": {"type": "boolean"},
+        "launcher_substitution_declared": {"type": "boolean"},
+        "python_implementation": {"type": "string", "minLength": 1, "maxLength": 128},
+        "python_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+        }
+      }
+    },
+    "verificationExecutionCommandReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verification_id",
+        "command_id",
+        "verification_scope",
+        "source_baseline_commit_sha",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "declared_logical_argv",
+        "actual_argv",
+        "executable_binding",
+        "observed_test_count",
+        "passes",
+        "failures",
+        "errors",
+        "skips",
+        "exit_code",
+        "result",
+        "execution_timestamp",
+        "output_transcript_sha256",
+        "evidence_reference",
+        "executed_by_evaluator",
+        "verification_results_are_completion_approval"
+      ],
+      "properties": {
+        "verification_id": {
+          "type": "string",
+          "pattern": "^m15-e1-verification-[0-9]{2}$"
+        },
+        "command_id": {
+          "type": "string",
+          "pattern": "^run_[a-z0-9_]+$"
+        },
+        "verification_scope": {
+          "enum": [
+            "source-baseline-regression",
+            "e1-candidate-validation",
+            "candidate-full-suite-integration"
+          ]
+        },
+        "source_baseline_commit_sha": {
+          "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+        },
+        "execution_candidate_reference": {"const": "pull-request:#243"},
+        "execution_candidate_head_sha": {
+          "allOf": [
+            {"$ref": "#/$defs/gitCommitSha"},
+            {"not": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"}}
+          ]
+        },
+        "declared_logical_argv": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "actual_argv": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "executable_binding": {"$ref": "#/$defs/verificationExecutableBinding"},
+        "observed_test_count": {"type": "integer", "minimum": 0},
+        "passes": {"type": "integer", "minimum": 0},
+        "failures": {"type": "integer", "minimum": 0},
+        "errors": {"type": "integer", "minimum": 0},
+        "skips": {"type": "integer", "minimum": 0},
+        "exit_code": {"type": "integer"},
+        "result": {"enum": ["pass", "fail"]},
+        "execution_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "output_transcript_sha256": {"$ref": "#/$defs/sha256"},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "executed_by_evaluator": {"const": false},
+        "verification_results_are_completion_approval": {"const": false}
+      }
+    },
+    "verificationExecutionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "repository",
+        "pull_request_number",
+        "source_baseline_commit_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "command_receipt_count",
+        "commands",
+        "external_to_candidate_commit",
+        "executed_by_evaluator",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-operational-readiness-verification-receipt/v1"
+        },
+        "document_type": {"const": "external-verification-execution-receipt"},
+        "repository": {"const": "aa-os/aaos-public"},
+        "pull_request_number": {"const": 243},
+        "source_baseline_commit_sha": {
+          "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+        },
+        "execution_subject_type": {"const": "pull-request-candidate-checkout"},
+        "execution_candidate_reference": {"const": "pull-request:#243"},
+        "execution_candidate_head_sha": {
+          "allOf": [
+            {"$ref": "#/$defs/gitCommitSha"},
+            {"not": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"}}
+          ]
+        },
+        "command_receipt_count": {"const": 13},
+        "commands": {
+          "type": "array",
+          "minItems": 13,
+          "maxItems": 13,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/verificationExecutionCommandReceipt"}
+        },
+        "external_to_candidate_commit": {"const": true},
+        "executed_by_evaluator": {"const": false},
+        "non_authoritative_boundary_statement": {
+          "const": "The external verification receipt is inert, caller-supplied execution evidence only; it is not M15 completion approval, tracker #231 closure, README completion or release authorization, tag authorization, release authorization, or GitHub Release publication authorization."
+        }
+      }
+    },
+    "dependencyPathDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relative_path",
+        "digest_algorithm",
+        "digest_mode",
+        "maintained_canonical_sha256"
+      ],
+      "properties": {
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\\\:]+(?:/[^/\\\\:]+)*$"
+        },
+        "digest_algorithm": {"const": "sha256"},
+        "digest_mode": {"const": "canonical-text"},
+        "maintained_canonical_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "maintainedControlDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependency_id",
+        "source_control_id",
+        "source_pr",
+        "source_schema_or_contract_version",
+        "maintained_integrity_reference",
+        "dependent_tracks",
+        "path_digests",
+        "boundary_statements",
+        "covering_test_references",
+        "status",
+        "evidence_reference",
+        "authority_boundary",
+        "notes"
+      ],
+      "properties": {
+        "dependency_id": {
+          "type": "string",
+          "pattern": "^m15-e1-maintained-control-[0-9]{2}$"
+        },
+        "source_control_id": {
+          "enum": [
+            "m14-public-output-exfiltration",
+            "m14-ai-provenance",
+            "m14-skill-admission",
+            "external-evidence-admission",
+            "m14-cross-control-authority"
+          ]
+        },
+        "source_pr": {"enum": ["#204", "#206", "#208", "#209", "#210"]},
+        "source_schema_or_contract_version": {
+          "enum": [
+            "public-output-gate-m14-draft-001",
+            "unversioned-contract/source-pr-206/path-bound-maintained-main",
+            "aaos-skill-admission-policy-m14-synthetic-v1",
+            "aaos-external-evidence-admission-v1",
+            "unversioned-contract/source-pr-210/path-bound-maintained-main"
+          ]
+        },
+        "maintained_integrity_reference": {"const": "path-binding:maintained-main"},
+        "dependent_tracks": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["track-a", "track-b", "track-c", "cross-track"]
+          }
+        },
+        "path_digests": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/dependencyPathDigest"}
+        },
+        "boundary_statements": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "covering_test_references": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "status": {"const": "bound"},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "authority_boundary": {
+          "const": "Maintained-control dependency binding is evidence only; it does not grant control admission, completion, release, execution, or governance authority."
+        },
+        "notes": {"type": "string", "minLength": 1, "maxLength": 1024}
+      }
+    },
+    "maintainedControlDependencyInventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependency_count",
+        "dependency_artifact_count",
+        "included_in_material_artifact_count",
+        "maintained_main_commit_sha",
+        "dependencies"
+      ],
+      "properties": {
+        "dependency_count": {"const": 5},
+        "dependency_artifact_count": {"const": 17},
+        "included_in_material_artifact_count": {"const": false},
+        "maintained_main_commit_sha": {
+          "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+        },
+        "dependencies": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/maintainedControlDependency"}
+        }
+      }
+    },
+    "governanceBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tracker_231_state",
+        "m15_state",
+        "v0_14_0_state",
+        "completion_approved",
+        "tracker_closure_authorized",
+        "readme_completion_authorized",
+        "readme_release_authorized",
+        "tag_created",
+        "tag_creation_authorized",
+        "release_authorized",
+        "github_release_created",
+        "github_release_publication_authorized",
+        "authority_transferred"
+      ],
+      "properties": {
+        "tracker_231_state": {"const": "open"},
+        "m15_state": {"const": "active-and-incomplete"},
+        "v0_14_0_state": {"const": "unpublished"},
+        "completion_approved": {"const": false},
+        "tracker_closure_authorized": {"const": false},
+        "readme_completion_authorized": {"const": false},
+        "readme_release_authorized": {"const": false},
+        "tag_created": {"const": false},
+        "tag_creation_authorized": {"const": false},
+        "release_authorized": {"const": false},
+        "github_release_created": {"const": false},
+        "github_release_publication_authorized": {"const": false},
+        "authority_transferred": {"const": false}
+      }
+    },
+    "maintainedManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "record_id",
+        "issue",
+        "track",
+        "maintained_repository",
+        "maintained_branch",
+        "maintained_main_commit_sha",
+        "source_baseline_commit_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "parent_tracker",
+        "source_track_bindings",
+        "artifact_integrity_inventory",
+        "verification_command_manifest",
+        "verification_result_manifest",
+        "maintained_control_dependency_inventory",
+        "known_repository_local_completion_blockers",
+        "governance_boundary",
+        "allowed_outcomes",
+        "declared_outcome",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-operational-readiness/v1"},
+        "document_type": {"const": "maintained-operational-readiness-manifest"},
+        "record_id": {"const": "urn:aaos:m15:operational-readiness:e1:maintained-main"},
+        "issue": {"const": "#242"},
+        "track": {"const": "E1"},
+        "maintained_repository": {"const": "aa-os/aaos-public"},
+        "maintained_branch": {"const": "main"},
+        "maintained_main_commit_sha": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+        "source_baseline_commit_sha": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+        "execution_subject_type": {"const": "pull-request-candidate-checkout"},
+        "execution_candidate_reference": {"const": "pull-request:#243"},
+        "execution_candidate_head_sha": {"type": "null"},
+        "parent_tracker": {"const": "#231"},
+        "source_track_bindings": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/trackBinding"}
+        },
+        "artifact_integrity_inventory": {"$ref": "#/$defs/artifactInventory"},
+        "verification_command_manifest": {"$ref": "#/$defs/verificationCommandManifest"},
+        "verification_result_manifest": {"$ref": "#/$defs/verificationResultManifest"},
+        "maintained_control_dependency_inventory": {
+          "$ref": "#/$defs/maintainedControlDependencyInventory"
+        },
+        "known_repository_local_completion_blockers": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "governance_boundary": {"$ref": "#/$defs/governanceBoundary"},
+        "allowed_outcomes": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "prefixItems": [
+            {"const": "ready_for_completion_review"},
+            {"const": "not_ready"},
+            {"const": "blocked"}
+          ],
+          "items": false
+        },
+        "declared_outcome": {
+          "enum": ["ready_for_completion_review", "not_ready", "blocked"]
+        },
+        "non_authoritative_boundary_statement": {
+          "const": "ready_for_completion_review is evidence for a later human completion review only; it is not M15 completion approval, tracker #231 closure, README completion or release authorization, tag authorization, release authorization, or GitHub Release publication authorization."
+        }
+      }
+    },
+    "artifactObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "status",
+        "observed_canonical_sha256",
+        "evidence_reference",
+        "authority_boundary",
+        "notes",
+        "deferred_reason"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^m15-e1-track-[a-d]-artifact-[0-9]{2}$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\\\:]+(?:/[^/\\\\:]+)*$"
+        },
+        "status": {"$ref": "#/$defs/artifactLifecycleStatus"},
+        "observed_canonical_sha256": {
+          "oneOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        },
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "authority_boundary": {
+          "const": "Artifact observation is evidence only; it grants no completion, tracker-closure, README, tag, release, execution, or governance authority."
+        },
+        "notes": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "deferred_reason": {
+          "oneOf": [
+            {"type": "string", "minLength": 1, "maxLength": 1024},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "dependencyObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependency_id",
+        "source_control_id",
+        "relative_path",
+        "status",
+        "observed_canonical_sha256",
+        "evidence_reference",
+        "authority_boundary",
+        "notes"
+      ],
+      "properties": {
+        "dependency_id": {
+          "type": "string",
+          "pattern": "^m15-e1-maintained-control-[0-9]{2}$"
+        },
+        "source_control_id": {
+          "enum": [
+            "m14-public-output-exfiltration",
+            "m14-ai-provenance",
+            "m14-skill-admission",
+            "external-evidence-admission",
+            "m14-cross-control-authority"
+          ]
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\\\:]+(?:/[^/\\\\:]+)*$"
+        },
+        "status": {"$ref": "#/$defs/artifactLifecycleStatus"},
+        "observed_canonical_sha256": {
+          "oneOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        },
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "authority_boundary": {
+          "const": "Maintained-control dependency observation is evidence only; it does not grant control admission, completion, release, execution, or governance authority."
+        },
+        "notes": {"type": "string", "minLength": 1, "maxLength": 1024}
+      }
+    },
+    "observationEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "record_id",
+        "issue",
+        "track",
+        "maintained_repository",
+        "maintained_branch",
+        "maintained_main_commit_sha",
+        "source_baseline_commit_sha",
+        "artifact_observation_count",
+        "dependency_observation_count",
+        "artifact_observations",
+        "dependency_observations",
+        "generated_by_evaluator",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-operational-readiness-observation/v1"},
+        "document_type": {"const": "maintained-operational-readiness-observation"},
+        "record_id": {
+          "const": "urn:aaos:m15:operational-readiness:e1:maintained-main:observation"
+        },
+        "issue": {"const": "#242"},
+        "track": {"const": "E1"},
+        "maintained_repository": {"const": "aa-os/aaos-public"},
+        "maintained_branch": {"const": "main"},
+        "maintained_main_commit_sha": {
+          "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+        },
+        "source_baseline_commit_sha": {
+          "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+        },
+        "artifact_observation_count": {"const": 67},
+        "dependency_observation_count": {"const": 17},
+        "artifact_observations": {
+          "type": "array",
+          "minItems": 67,
+          "maxItems": 67,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/artifactObservation"}
+        },
+        "dependency_observations": {
+          "type": "array",
+          "minItems": 17,
+          "maxItems": 17,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/dependencyObservation"}
+        },
+        "generated_by_evaluator": {"const": false},
+        "non_authoritative_boundary_statement": {
+          "const": "Observation evidence records bounded repository state only; it is not completion approval, tracker #231 closure, README authorization, tag authorization, release authorization, execution authority, or governance authority."
+        }
+      }
+    },
+    "scenarioEvidenceState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_shape_valid",
+        "maintained_main_binding_valid",
+        "source_track_bindings_valid",
+        "artifact_inventory_complete",
+        "artifact_integrity_valid",
+        "internal_consistency_valid",
+        "cross_control_matrix_bound",
+        "test_coverage_complete",
+        "verification_command_manifest_complete",
+        "verification_result_manifest_complete",
+        "verification_result_main_binding_valid",
+        "verification_result_counts_valid",
+        "verification_failures",
+        "verification_errors",
+        "verification_skips",
+        "verification_execution_claimed",
+        "required_artifact_status",
+        "artifact_deferred_reason",
+        "maintained_control_dependencies_valid",
+        "authority_boundary_valid",
+        "completion_approval_claimed",
+        "tracker_closure_claimed",
+        "m15_completion_claimed",
+        "readme_authorization_claimed",
+        "tag_authorization_or_creation_claimed",
+        "release_authorization_or_publication_claimed",
+        "known_repository_local_completion_blockers"
+      ],
+      "properties": {
+        "manifest_shape_valid": {"type": "boolean"},
+        "maintained_main_binding_valid": {"type": "boolean"},
+        "source_track_bindings_valid": {"type": "boolean"},
+        "artifact_inventory_complete": {"type": "boolean"},
+        "artifact_integrity_valid": {"type": "boolean"},
+        "internal_consistency_valid": {"type": "boolean"},
+        "cross_control_matrix_bound": {"type": "boolean"},
+        "test_coverage_complete": {"type": "boolean"},
+        "verification_command_manifest_complete": {"type": "boolean"},
+        "verification_result_manifest_complete": {"type": "boolean"},
+        "verification_result_main_binding_valid": {"type": "boolean"},
+        "verification_result_counts_valid": {"type": "boolean"},
+        "verification_failures": {"type": "integer", "minimum": 0},
+        "verification_errors": {"type": "integer", "minimum": 0},
+        "verification_skips": {"type": "integer", "minimum": 0},
+        "verification_execution_claimed": {"type": "boolean"},
+        "candidate_head_matches_receipt": {"type": "boolean"},
+        "baseline_candidate_sha_distinct": {"type": "boolean"},
+        "external_execution_receipt_present": {"type": "boolean"},
+        "launcher_substitution_declared": {"type": "boolean"},
+        "interpreter_identity_present": {"type": "boolean"},
+        "transcript_digest_present": {"type": "boolean"},
+        "command_result_binding_matches": {"type": "boolean"},
+        "required_artifact_status": {"$ref": "#/$defs/artifactLifecycleStatus"},
+        "artifact_deferred_reason": {
+          "oneOf": [
+            {"type": "string", "minLength": 1, "maxLength": 1024},
+            {"type": "null"}
+          ]
+        },
+        "maintained_control_dependencies_valid": {"type": "boolean"},
+        "authority_boundary_valid": {"type": "boolean"},
+        "completion_approval_claimed": {"type": "boolean"},
+        "tracker_closure_claimed": {"type": "boolean"},
+        "m15_completion_claimed": {"type": "boolean"},
+        "readme_authorization_claimed": {"type": "boolean"},
+        "tag_authorization_or_creation_claimed": {"type": "boolean"},
+        "release_authorization_or_publication_claimed": {"type": "boolean"},
+        "known_repository_local_completion_blockers": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        }
+      }
+    },
+    "syntheticScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "scenario_id",
+        "title",
+        "synthetic",
+        "expected_outcome",
+        "evidence_state",
+        "notes"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-operational-readiness-scenario/v1"},
+        "document_type": {"const": "synthetic-scenario"},
+        "scenario_id": {
+          "enum": [
+            "m15-e1-01",
+            "m15-e1-02",
+            "m15-e1-03",
+            "m15-e1-04",
+            "m15-e1-05",
+            "m15-e1-06",
+            "m15-e1-07",
+            "m15-e1-08",
+            "m15-e1-09",
+            "m15-e1-10",
+            "m15-e1-11",
+            "m15-e1-12",
+            "m15-e1-13",
+            "m15-e1-14",
+            "m15-e1-15",
+            "m15-e1-16",
+            "m15-e1-17",
+            "m15-e1-18",
+            "m15-e1-19",
+            "m15-e1-20",
+            "m15-e1-21",
+            "m15-e1-22",
+            "m15-e1-23",
+            "m15-e1-24",
+            "m15-e1-25",
+            "m15-e1-26",
+            "m15-e1-27",
+            "m15-e1-28",
+            "m15-e1-29",
+            "m15-e1-30",
+            "m15-e1-31",
+            "m15-e1-32",
+            "m15-e1-33",
+            "m15-e1-34"
+          ]
+        },
+        "title": {
+          "enum": [
+            "Valid maintained-main operational-readiness evidence",
+            "Maintained-main commit binding mismatch",
+            "Merged source-track binding mismatch",
+            "Incomplete Track A-D artifact inventory",
+            "Maintained artifact integrity failure",
+            "Operational-readiness internal consistency failure",
+            "Track D cross-control matrix is not bound",
+            "Deterministic test coverage is incomplete",
+            "Verification-command manifest is incomplete",
+            "Verification manifest claims command execution",
+            "Operational readiness claims completion approval",
+            "Operational readiness claims tracker closure",
+            "Operational readiness claims M15 completion",
+            "Operational readiness claims README authorization",
+            "Operational readiness claims tag authority or creation",
+            "Operational readiness claims release authority or publication",
+            "Known repository-local completion blocker remains unresolved",
+            "Unsupported operational-readiness scenario schema version",
+            "E1 targeted verification reports a test failure",
+            "Verification reports a test error",
+            "Verification reports an unexpected skip",
+            "Required verification result is missing",
+            "Observed verification test count does not match the reviewed count",
+            "Verification result omits the maintained-main binding",
+            "Required material artifact remains unverified",
+            "Deferred material artifact has no reason",
+            "Track D external-control dependency binding has drifted",
+            "Candidate-head receipt binding mismatch",
+            "Source-baseline and candidate SHA conflation",
+            "Missing external execution receipt",
+            "Undeclared Python launcher substitution",
+            "Missing Python interpreter version",
+            "Missing verification transcript digest",
+            "Verification command/result binding mismatch"
+          ]
+        },
+        "synthetic": {"const": true},
+        "expected_outcome": {
+          "enum": ["ready_for_completion_review", "not_ready", "blocked"]
+        },
+        "evidence_state": {"$ref": "#/$defs/scenarioEvidenceState"},
+        "notes": {
+          "const": "This standalone scenario is synthetic, inert, offline, and non-authoritative. ready_for_completion_review is evidence for a later human completion review only; it is not M15 completion approval, tracker #231 closure, README completion or release authorization, tag authorization, release authorization, or GitHub Release publication authorization."
+        }
+      }
+    }
+  }
+}
