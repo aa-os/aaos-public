@@ -153,6 +153,10 @@ EXPECTED_M14_COMPLETED_REFS = [
     "#214 Completion Readiness and Future README Path",
     "this final completion PR",
 ]
+HISTORICAL_M14_NEXT_PHASE = (
+    "Future milestone planning will be tracked separately after v0.13.0 "
+    "release publication."
+)
 EXPECTED_ALLOWED_OUTPUTS = {
     "m14_final_completion_valid",
     "m14_final_completion_invalid",
@@ -245,12 +249,22 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
                     raise ValueError("line_endings must be 'lf', 'crlf', or None")
             yield root
 
-    def evaluate_readme_mutation(self, old, new):
+    def evaluate_readme_mutation(self, old, new, *, replace_all=False):
         with self.temporary_repository() as root:
             path = root / "README.md"
             text = path.read_text(encoding="utf-8")
             self.assertIn(old, text)
-            path.write_text(text.replace(old, new, 1), encoding="utf-8")
+            updated = text.replace(old, new) if replace_all else text.replace(old, new, 1)
+            path.write_text(updated, encoding="utf-8")
+            return self.evaluate(repository_root=root)
+
+    def evaluate_next_phase(self, body):
+        with self.temporary_repository() as root:
+            path = root / "README.md"
+            text = path.read_text(encoding="utf-8")
+            start = text.index("## Next Phase")
+            updated = text[:start] + "## Next Phase\n\n" + body.strip() + "\n"
+            path.write_text(updated, encoding="utf-8")
             return self.evaluate(repository_root=root)
 
     def evaluate_readiness_mutation(self, field, value):
@@ -590,55 +604,90 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
             result = self.evaluate_readme_mutation("- " + output + "\n", "")
             self.assertFalse(result["readme_release_state_valid"])
 
-    def test_33_next_phase_post_release_statement_is_exact(self):
-        expected = (
-            "## Next Phase\n\n"
-            "Future milestone planning will be tracked separately after v0.13.0 release publication.\n"
-        )
-        self.assertEqual(self.readme.split("## Next Phase", 1)[1].join(["## Next Phase", ""]), expected)
-        result = self.evaluate_readme_mutation(
-            "Future milestone planning will be tracked separately after v0.13.0 release publication.",
-            "Future planning remains active.",
-        )
-        self.assertFalse(result["readme_release_state_valid"])
-
-    def test_34_obsolete_active_work_wording_is_absent(self):
+    def test_33_next_phase_validation_is_phase_aware(self):
+        current = self.evaluate()
+        self.assertTrue(current["readme_release_state_valid"])
         next_phase = self.readme.split("## Next Phase", 1)[1]
-        for phrase in [
-            "M14 remains active work",
-            "final completion has not been declared",
-            "Tracker: #201 remains Open",
-            "ready_for_final_m14_completion_review is not final completion review completed",
-        ]:
-            self.assertNotIn(phrase, next_phase)
-        result = self.evaluate_readme_mutation(
-            "Future milestone planning will be tracked separately after v0.13.0 release publication.",
-            "Future milestone planning will be tracked separately after v0.13.0 release publication.\n"
-            "M14 remains active work",
-        )
-        self.assertFalse(result["readme_release_state_valid"])
+        self.assertIn("M15 remains active and incomplete", next_phase)
+        self.assertIn("v0.14.0 remains unpublished", next_phase)
 
-    def test_35_obsolete_future_only_wording_is_absent(self):
-        next_phase = self.readme.split("## Next Phase", 1)[1]
-        self.assertNotIn("v0.13.0 remains future-only", next_phase)
-        result = self.evaluate_readme_mutation(
-            "Future milestone planning will be tracked separately after v0.13.0 release publication.",
-            "Future milestone planning will be tracked separately after v0.13.0 release publication.\n"
-            "v0.13.0 remains future-only",
-        )
-        self.assertFalse(result["readme_release_state_valid"])
+        historical = self.evaluate_next_phase(HISTORICAL_M14_NEXT_PHASE)
+        self.assertTrue(historical["readme_release_state_valid"])
+        self.assertTrue(historical["m14_final_completion_valid"])
+
+    def test_34_explicit_m14_active_or_incomplete_next_phase_fails(self):
+        for body in (
+            "M14 remains active work.",
+            "M14 is not complete.",
+            "M14 remains incomplete.",
+        ):
+            with self.subTest(body=body):
+                result = self.evaluate_next_phase(body)
+                self.assertFalse(result["readme_release_state_valid"])
+                self.assertIn("readme_next_phase_reopens_m14", result["findings"])
+
+    def test_35_explicit_v0130_future_or_unpublished_next_phase_fails(self):
+        for body in (
+            "v0.13.0 remains future-only.",
+            "v0.13.0 remains a future release.",
+            "v0.13.0 is unpublished.",
+        ):
+            with self.subTest(body=body):
+                result = self.evaluate_next_phase(body)
+                self.assertFalse(result["readme_release_state_valid"])
+                self.assertIn(
+                    "readme_next_phase_reverts_v0_13_0_release_state",
+                    result["findings"],
+                )
 
     def test_36_decision_proof_sealing_boundary_remains(self):
         phrase = "Decision Proof sealing remains AAOS-owned."
         self.assertIn(phrase, self.readme)
-        result = self.evaluate_readme_mutation(phrase, "Decision Proof sealing moved.")
+        result = self.evaluate_readme_mutation(
+            phrase,
+            "Decision Proof sealing moved.",
+            replace_all=True,
+        )
         self.assertFalse(result["readme_release_state_valid"])
+        self.assertIn(
+            "readme_governance_boundary_missing:Decision Proof sealing remains AAOS-owned.",
+            result["findings"],
+        )
+
+        external = self.evaluate_next_phase(
+            "Decision Proof is externally sealed by an external evaluator."
+        )
+        self.assertFalse(external["readme_release_state_valid"])
+        self.assertIn(
+            "readme_next_phase_claims_external_decision_proof_sealing",
+            external["findings"],
+        )
 
     def test_37_aaos_sovereignty_boundary_remains(self):
         phrase = "AAOS remains the decision sovereignty layer."
         self.assertIn(phrase, self.readme)
-        result = self.evaluate_readme_mutation(phrase, "AAOS is a signal layer.")
+        result = self.evaluate_readme_mutation(
+            phrase,
+            "AAOS is a signal layer.",
+            replace_all=True,
+        )
         self.assertFalse(result["readme_release_state_valid"])
+        self.assertIn(
+            "readme_governance_boundary_missing:AAOS remains the decision sovereignty layer.",
+            result["findings"],
+        )
+
+        for body in (
+            "Governance authority is transferred to an external evaluator.",
+            "Release authority is granted to an external evaluator.",
+        ):
+            with self.subTest(body=body):
+                authority = self.evaluate_next_phase(body)
+                self.assertFalse(authority["readme_release_state_valid"])
+                self.assertIn(
+                    "readme_next_phase_transfers_release_or_governance_authority",
+                    authority["findings"],
+                )
 
     def test_38_evaluator_does_not_query_github(self):
         tree = ast.parse(self.evaluator_source)
