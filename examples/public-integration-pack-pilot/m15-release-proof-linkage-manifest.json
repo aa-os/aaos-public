@@ -56,6 +56,7 @@
         ],
         "test_scope": "M15 Track E2 targeted tests",
         "execution_scope": "e2-candidate-validation",
+        "minimum_tests_observed": 116,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -73,6 +74,7 @@
         ],
         "test_scope": "M15 Track E1 targeted tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 126,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -90,6 +92,7 @@
         ],
         "test_scope": "M15 Track A tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 68,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -107,6 +110,7 @@
         ],
         "test_scope": "M15 Track B tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 73,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -124,6 +128,7 @@
         ],
         "test_scope": "M15 Track C tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 180,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -141,6 +146,7 @@
         ],
         "test_scope": "M15 Track D tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 79,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -158,6 +164,7 @@
         ],
         "test_scope": "M14 public-output tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 23,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -175,6 +182,7 @@
         ],
         "test_scope": "M14 provenance tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 47,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -192,6 +200,7 @@
         ],
         "test_scope": "M14 skill-admission tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 135,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -209,6 +218,7 @@
         ],
         "test_scope": "external-evidence-admission tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 31,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -226,6 +236,7 @@
         ],
         "test_scope": "M14 cross-control authority tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 107,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -248,6 +259,7 @@
         ],
         "test_scope": "Decision Proof ownership tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 30,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -267,6 +279,7 @@
         ],
         "test_scope": "release-state and M15-status tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 17,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
@@ -286,12 +299,15 @@
         ],
         "test_scope": "full maintained repository suite",
         "execution_scope": "candidate-full-suite-integration",
+        "minimum_tests_observed": 1894,
         "required": true,
         "expected_exit_code": 0,
         "executed_by_evaluator": false
       }
     ]
   },
+  "external_pr_observation_required": true,
+  "external_pr_observation_schema_version": "m15-release-proof-linkage-pr-observation/v1",
   "external_verification_receipt_required": true,
   "external_verification_receipt_schema_version": "m15-release-proof-linkage-verification-receipt/v1",
   "allowed_continuity_relations": [

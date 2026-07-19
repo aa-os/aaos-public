@@ -32,6 +32,9 @@ RELEASE_BOUNDARY_REGISTER_SCHEMA_VERSION = (
 VERIFICATION_RECEIPT_SCHEMA_VERSION = (
     "m15-release-proof-linkage-verification-receipt/v1"
 )
+PR_OBSERVATION_SCHEMA_VERSION = (
+    "m15-release-proof-linkage-pr-observation/v1"
+)
 SCENARIO_SCHEMA_VERSION = "m15-release-proof-linkage-scenario/v1"
 RESULT_SCHEMA_VERSION = "m15-release-proof-linkage-result/v1"
 
@@ -53,6 +56,7 @@ E1_PR_NUMBER = 243
 E1_RECEIPT_COMMENT_ID = 5015070053
 E1_RECEIPT_COMMAND_COUNT = 13
 E2_ISSUE_NUMBER = 248
+E2_PULL_REQUEST_NUMBER = 249
 
 RELEASE_PROOF_LINKED = "release_proof_linked"
 NOT_READY = "not_ready"
@@ -98,6 +102,13 @@ VERIFICATION_RECEIPT_BOUNDARY_STATEMENT = (
     "README completion authorization, release-candidate approval, tag "
     "authorization, GitHub Release authorization, Decision Proof sealing, "
     "or Learning Proof sealing."
+)
+PR_OBSERVATION_BOUNDARY_STATEMENT = (
+    "The external pull-request observation is inert caller-supplied "
+    "candidate-binding evidence only; it is not human review approval, "
+    "merge approval, M15 completion approval, tracker #231 closure, "
+    "README completion authorization, tag authorization, GitHub Release "
+    "authorization, Decision Proof sealing, or Learning Proof sealing."
 )
 SCENARIO_BOUNDARY_STATEMENT = (
     "This standalone scenario is synthetic, inert, offline, and "
@@ -189,51 +200,61 @@ EXPECTED_VERIFICATION_COMMANDS: dict[str, dict[str, Any]] = {
         "argv": _unittest_command("tests.test_m15_release_proof_linkage_evaluator"),
         "test_scope": "M15 Track E2 targeted tests",
         "execution_scope": "e2-candidate-validation",
+        "minimum_tests_observed": 116,
     },
     "run_m15_e1_targeted_tests": {
         "argv": _unittest_command("tests.test_m15_operational_readiness_evaluator"),
         "test_scope": "M15 Track E1 targeted tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 126,
     },
     "run_m15_track_a_tests": {
         "argv": _unittest_command("tests.test_m15_learning_proof_evaluator"),
         "test_scope": "M15 Track A tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 68,
     },
     "run_m15_track_b_tests": {
         "argv": _unittest_command("tests.test_m15_capability_memory_pack_evaluator"),
         "test_scope": "M15 Track B tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 73,
     },
     "run_m15_track_c_tests": {
         "argv": _unittest_command("tests.test_m15_lineage_rollback_portability_evaluator"),
         "test_scope": "M15 Track C tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 180,
     },
     "run_m15_track_d_tests": {
         "argv": _unittest_command("tests.test_m15_cross_control_regression_evaluator"),
         "test_scope": "M15 Track D tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 79,
     },
     "run_m14_public_output_tests": {
         "argv": _unittest_command("tests.test_public_issue_exfiltration_gate_evaluator"),
         "test_scope": "M14 public-output tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 23,
     },
     "run_m14_provenance_tests": {
         "argv": _unittest_command("tests.test_ai_authored_pr_provenance_evaluator"),
         "test_scope": "M14 provenance tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 47,
     },
     "run_m14_skill_admission_tests": {
         "argv": _unittest_command("tests.test_skill_admission_evaluator"),
         "test_scope": "M14 skill-admission tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 135,
     },
     "run_external_evidence_admission_tests": {
         "argv": _unittest_command("tests.test_external_evidence_admission_evaluator"),
         "test_scope": "external-evidence-admission tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 31,
     },
     "run_m14_cross_control_authority_tests": {
         "argv": _unittest_command(
@@ -241,6 +262,7 @@ EXPECTED_VERIFICATION_COMMANDS: dict[str, dict[str, Any]] = {
         ),
         "test_scope": "M14 cross-control authority tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 107,
     },
     "run_decision_proof_ownership_tests": {
         "argv": _unittest_command(
@@ -253,6 +275,7 @@ EXPECTED_VERIFICATION_COMMANDS: dict[str, dict[str, Any]] = {
         ),
         "test_scope": "Decision Proof ownership tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 30,
     },
     "run_release_state_and_m15_status_tests": {
         "argv": _unittest_command(
@@ -262,11 +285,13 @@ EXPECTED_VERIFICATION_COMMANDS: dict[str, dict[str, Any]] = {
         ),
         "test_scope": "release-state and M15-status tests",
         "execution_scope": "inherited-regression",
+        "minimum_tests_observed": 17,
     },
     "run_full_maintained_repository_suite": {
         "argv": [*_BASE_UNITTEST, "discover", "-s", "tests", "-v"],
         "test_scope": "full maintained repository suite",
         "execution_scope": "candidate-full-suite-integration",
+        "minimum_tests_observed": 1894,
     },
 }
 
@@ -326,6 +351,10 @@ EXPECTED_SCENARIO_TITLES = {
     "m15-e2-34": "Candidate deletion is preserved",
     "m15-e2-35": "External E2 verification receipt is missing",
     "m15-e2-36": "External E2 verification receipt is inconsistent",
+    "m15-e2-37": "External pull-request observation is missing",
+    "m15-e2-38": "Pull-request observation is bound to another PR",
+    "m15-e2-39": "Observation and receipt candidate heads mismatch",
+    "m15-e2-40": "Verification test count is below maintained minimum",
 }
 
 
@@ -348,6 +377,8 @@ _MANIFEST_FIELDS = frozenset(
         "record_references",
         "expected_candidate_changed_path_count",
         "verification_command_manifest",
+        "external_pr_observation_required",
+        "external_pr_observation_schema_version",
         "external_verification_receipt_required",
         "external_verification_receipt_schema_version",
         "allowed_continuity_relations",
@@ -396,6 +427,7 @@ _COMMAND_FIELDS = frozenset(
         "argv",
         "test_scope",
         "execution_scope",
+        "minimum_tests_observed",
         "required",
         "expected_exit_code",
         "executed_by_evaluator",
@@ -591,6 +623,25 @@ _VERIFICATION_RECEIPT_FIELDS = frozenset(
         "non_authoritative_boundary_statement",
     }
 )
+_PR_OBSERVATION_FIELDS = frozenset(
+    {
+        "schema_version",
+        "document_type",
+        "repository",
+        "issue_number",
+        "pull_request_number",
+        "base_sha",
+        "candidate_head_sha",
+        "candidate_tree_sha",
+        "execution_subject_type",
+        "observed_at",
+        "observer",
+        "evidence_reference",
+        "external_to_candidate_commit",
+        "fetched_by_evaluator",
+        "non_authoritative_boundary_statement",
+    }
+)
 _VERIFICATION_COMMAND_RECEIPT_FIELDS = frozenset(
     {
         "command_id",
@@ -674,6 +725,10 @@ _SCENARIO_STATE_FIELDS = frozenset(
         "candidate_change_set_preserved",
         "additional_merge_differences_explained",
         "future_release_prerequisites_visible",
+        "external_pr_observation_present",
+        "external_pr_observation_pr_number_valid",
+        "observation_receipt_candidate_binding_valid",
+        "verification_test_count_meets_minimum",
         "external_e2_verification_receipt_present",
         "external_e2_verification_receipt_consistent",
         "change_type",
@@ -796,6 +851,10 @@ def _result(
     candidate_path_count: int = 0,
     merge_path_count: int = 0,
     preserved_path_count: int = 0,
+    external_pr_observation_validated: bool = False,
+    observed_pull_request_number: int | None = None,
+    observed_candidate_head_sha: str | None = None,
+    observed_candidate_tree_sha: str | None = None,
     external_verification_receipt_validated: bool = False,
 ) -> dict[str, Any]:
     blocking = sorted(blocking_findings)
@@ -814,6 +873,10 @@ def _result(
         "candidate_changed_path_count": candidate_path_count,
         "merge_result_path_count": merge_path_count,
         "preserved_path_count": preserved_path_count,
+        "external_pr_observation_validated": external_pr_observation_validated,
+        "observed_pull_request_number": observed_pull_request_number,
+        "observed_candidate_head_sha": observed_candidate_head_sha,
+        "observed_candidate_tree_sha": observed_candidate_tree_sha,
         "external_verification_receipt_validated": (
             external_verification_receipt_validated
         ),
@@ -859,6 +922,8 @@ def _validate_manifest(
         "execution_candidate_reference": "branch:feature/m15-release-proof-linkage",
         "parent_tracker": "#231",
         "expected_candidate_changed_path_count": len(EXPECTED_PATHS),
+        "external_pr_observation_required": True,
+        "external_pr_observation_schema_version": PR_OBSERVATION_SCHEMA_VERSION,
         "external_verification_receipt_required": True,
         "external_verification_receipt_schema_version": (
             VERIFICATION_RECEIPT_SCHEMA_VERSION
@@ -952,7 +1017,12 @@ def _validate_manifest(
         readiness.add("verification_command_coverage_incomplete")
     for command_id, command in observed.items():
         expected = EXPECTED_VERIFICATION_COMMANDS[command_id]
-        for field in ("argv", "test_scope", "execution_scope"):
+        for field in (
+            "argv",
+            "test_scope",
+            "execution_scope",
+            "minimum_tests_observed",
+        ):
             if command.get(field) != expected[field]:
                 readiness.add(f"verification_command_binding_invalid:{command_id}:{field}")
         if command.get("required") is not True or command.get("expected_exit_code") != 0:
@@ -1299,10 +1369,70 @@ def _validate_boundary_register(
     return list(REQUIRED_FUTURE_PREREQUISITES)
 
 
+def _validate_pull_request_observation(
+    value: Any,
+    blocking: set[str],
+    readiness: set[str],
+) -> dict[str, Any] | None:
+    if value is None:
+        readiness.add("external_pr_observation_missing")
+        return None
+    observation_blocking_before = set(blocking)
+    if not _mapping_has_exact_fields(value, _PR_OBSERVATION_FIELDS):
+        blocking.add("external_pr_observation_shape_invalid")
+        return None
+    expected_scalars = {
+        "schema_version": PR_OBSERVATION_SCHEMA_VERSION,
+        "document_type": "pull-request-candidate-observation",
+        "repository": "aa-os/aaos-public",
+        "issue_number": E2_ISSUE_NUMBER,
+        "pull_request_number": E2_PULL_REQUEST_NUMBER,
+        "base_sha": STARTING_MAIN_SHA,
+        "execution_subject_type": "pull-request-candidate-checkout",
+        "external_to_candidate_commit": True,
+        "fetched_by_evaluator": False,
+        "non_authoritative_boundary_statement": (
+            PR_OBSERVATION_BOUNDARY_STATEMENT
+        ),
+    }
+    for field, expected in expected_scalars.items():
+        if value.get(field) != expected:
+            blocking.add(f"external_pr_observation_mismatch:{field}")
+    if value.get("external_to_candidate_commit") is not True:
+        blocking.add("external_pr_observation_not_commit_external")
+    if value.get("fetched_by_evaluator") is not False:
+        blocking.add("external_pr_observation_fetched_by_evaluator")
+    candidate_head = value.get("candidate_head_sha")
+    if not _is_object_sha(candidate_head):
+        blocking.add("external_pr_observation_candidate_head_invalid")
+    elif candidate_head == STARTING_MAIN_SHA:
+        blocking.add("external_pr_observation_candidate_equals_base")
+    candidate_tree = value.get("candidate_tree_sha")
+    if not _is_object_sha(candidate_tree):
+        blocking.add("external_pr_observation_candidate_tree_invalid")
+    observed_at = value.get("observed_at")
+    if not isinstance(observed_at, str) or not _RFC3339_RE.fullmatch(observed_at):
+        blocking.add("external_pr_observation_timestamp_invalid")
+    if not _is_nonempty_string(value.get("observer")):
+        blocking.add("external_pr_observation_observer_invalid")
+    if not _is_nonempty_string(value.get("evidence_reference")):
+        blocking.add("external_pr_observation_evidence_reference_invalid")
+    if set(blocking) != observation_blocking_before:
+        return None
+    return {
+        "pull_request_number": E2_PULL_REQUEST_NUMBER,
+        "candidate_head_sha": candidate_head,
+        "candidate_tree_sha": candidate_tree,
+    }
+
+
 def _validate_external_verification_receipt(
     value: Any,
     blocking: set[str],
     readiness: set[str],
+    *,
+    expected_pull_request_number: int,
+    expected_candidate_head_sha: str | None,
 ) -> bool:
     if value is None:
         readiness.add("external_e2_verification_receipt_missing")
@@ -1316,8 +1446,12 @@ def _validate_external_verification_receipt(
         "document_type": "external-verification-execution-receipt",
         "repository": "aa-os/aaos-public",
         "issue_number": E2_ISSUE_NUMBER,
+        "pull_request_number": expected_pull_request_number,
         "source_main_base_sha": STARTING_MAIN_SHA,
         "execution_subject_type": "pull-request-candidate-checkout",
+        "execution_candidate_reference": (
+            f"pull-request:#{expected_pull_request_number}"
+        ),
         "external_to_candidate_commit": True,
         "executed_by_evaluator": False,
         "non_authoritative_boundary_statement": VERIFICATION_RECEIPT_BOUNDARY_STATEMENT,
@@ -1325,20 +1459,14 @@ def _validate_external_verification_receipt(
     for field, expected in expected_scalars.items():
         if value.get(field) != expected:
             blocking.add(f"external_e2_verification_receipt_mismatch:{field}")
-    if not _is_nonnegative_integer(value.get("pull_request_number")) or value.get(
-        "pull_request_number"
-    ) < 1:
-        blocking.add("external_e2_verification_receipt_pr_invalid")
     candidate_head = value.get("execution_candidate_head_sha")
     if not _is_object_sha(candidate_head) or candidate_head == STARTING_MAIN_SHA:
         blocking.add("external_e2_verification_receipt_candidate_invalid")
-    expected_reference = (
-        f"pull-request:#{value.get('pull_request_number')}"
-        if _is_nonnegative_integer(value.get("pull_request_number"))
-        else None
-    )
-    if value.get("execution_candidate_reference") != expected_reference:
-        blocking.add("external_e2_verification_receipt_candidate_reference_invalid")
+    if (
+        expected_candidate_head_sha is not None
+        and candidate_head != expected_candidate_head_sha
+    ):
+        blocking.add("external_e2_verification_receipt_observation_candidate_mismatch")
     if value.get("command_receipt_count") != len(EXPECTED_VERIFICATION_COMMANDS):
         blocking.add("external_e2_verification_receipt_command_count_invalid")
     commands = value.get("commands")
@@ -1367,6 +1495,14 @@ def _validate_external_verification_receipt(
             blocking.add(f"external_e2_verification_scope_mismatch:{command_id}")
         if command.get("execution_candidate_head_sha") != candidate_head:
             blocking.add(f"external_e2_verification_candidate_mismatch:{command_id}")
+        if (
+            expected_candidate_head_sha is not None
+            and command.get("execution_candidate_head_sha")
+            != expected_candidate_head_sha
+        ):
+            blocking.add(
+                f"external_e2_verification_observation_candidate_mismatch:{command_id}"
+            )
         actual_argv = command.get("actual_argv")
         declared_argv = command.get("declared_logical_argv")
         if not isinstance(actual_argv, list) or not actual_argv or not all(
@@ -1401,6 +1537,15 @@ def _validate_external_verification_receipt(
         for field in ("tests_observed", "passes", "failures", "errors", "skips"):
             if not _is_nonnegative_integer(command.get(field)):
                 blocking.add(f"external_e2_verification_count_invalid:{command_id}:{field}")
+        if (
+            _is_nonnegative_integer(command.get("tests_observed"))
+            and command.get("tests_observed")
+            < expected["minimum_tests_observed"]
+        ):
+            blocking.add(
+                "external_e2_verification_test_coverage_below_minimum:"
+                f"{command_id}"
+            )
         counts = [
             command.get(field)
             for field in ("passes", "failures", "errors", "skips")
@@ -1429,8 +1574,10 @@ def _validate_external_verification_receipt(
             blocking.add(f"external_e2_verification_execution_claim:{command_id}")
         if command.get("verification_results_are_release_authority") is not False:
             blocking.add(f"external_e2_verification_release_authority_claim:{command_id}")
-    return set(blocking) == receipt_blocking_before and len(observed) == len(
-        EXPECTED_VERIFICATION_COMMANDS
+    return (
+        expected_candidate_head_sha is not None
+        and set(blocking) == receipt_blocking_before
+        and len(observed) == len(EXPECTED_VERIFICATION_COMMANDS)
     )
 
 
@@ -1441,6 +1588,7 @@ def evaluate_release_proof_linkage(
     continuity_record: Mapping[str, Any],
     e1_receipt_linkage: Mapping[str, Any],
     release_boundary_register: Mapping[str, Any],
+    pull_request_observation: Mapping[str, Any] | None,
     external_verification_receipt: Mapping[str, Any] | None,
 ) -> dict[str, Any]:
     """Evaluate the complete caller-supplied E2 evidence package."""
@@ -1461,6 +1609,9 @@ def evaluate_release_proof_linkage(
     _validate_e1_receipt_linkage(e1_receipt_linkage, blocking, linkage_blockers)
     _validate_boundary_register(
         release_boundary_register, blocking, linkage_blockers
+    )
+    observation_binding = _validate_pull_request_observation(
+        pull_request_observation, blocking, readiness
     )
 
     preserved = 0
@@ -1493,7 +1644,15 @@ def evaluate_release_proof_linkage(
         linkage_blockers.add("missing-continuity-evidence")
 
     receipt_validated = _validate_external_verification_receipt(
-        external_verification_receipt, blocking, readiness
+        external_verification_receipt,
+        blocking,
+        readiness,
+        expected_pull_request_number=E2_PULL_REQUEST_NUMBER,
+        expected_candidate_head_sha=(
+            observation_binding.get("candidate_head_sha")
+            if observation_binding is not None
+            else None
+        ),
     )
     if not blocking and not readiness:
         if manifest.get("declared_continuity_relation") != relation:
@@ -1509,6 +1668,22 @@ def evaluate_release_proof_linkage(
         candidate_path_count=candidate_count,
         merge_path_count=merge_count,
         preserved_path_count=preserved,
+        external_pr_observation_validated=observation_binding is not None,
+        observed_pull_request_number=(
+            observation_binding.get("pull_request_number")
+            if observation_binding is not None
+            else None
+        ),
+        observed_candidate_head_sha=(
+            observation_binding.get("candidate_head_sha")
+            if observation_binding is not None
+            else None
+        ),
+        observed_candidate_tree_sha=(
+            observation_binding.get("candidate_tree_sha")
+            if observation_binding is not None
+            else None
+        ),
         external_verification_receipt_validated=receipt_validated,
     )
 
@@ -1611,6 +1786,14 @@ def evaluate_synthetic_scenario(document: Mapping[str, Any]) -> dict[str, Any]:
         blocking.add("scenario_tracker_231_state_invalid")
     if state.get("m15_state") != "active-and-incomplete":
         blocking.add("scenario_m15_state_invalid")
+    if state.get("external_pr_observation_present") is False:
+        readiness.add("scenario_external_pr_observation_missing")
+    if state.get("external_pr_observation_pr_number_valid") is False:
+        blocking.add("scenario_external_pr_observation_pr_number_invalid")
+    if state.get("observation_receipt_candidate_binding_valid") is False:
+        blocking.add("scenario_observation_receipt_candidate_mismatch")
+    if state.get("verification_test_count_meets_minimum") is False:
+        blocking.add("scenario_verification_test_count_below_minimum")
     if state.get("external_e2_verification_receipt_present") is False:
         readiness.add("scenario_external_e2_verification_receipt_missing")
     if state.get("external_e2_verification_receipt_consistent") is False:
@@ -1660,6 +1843,8 @@ __all__ = [
     "E1_MERGE_SHA",
     "E1_MERGE_TREE_SHA",
     "E1_RECEIPT_LINKAGE_SCHEMA_VERSION",
+    "E2_ISSUE_NUMBER",
+    "E2_PULL_REQUEST_NUMBER",
     "EXACT_TREE_MATCH",
     "EXPECTED_PATHS",
     "EXPECTED_SCENARIO_TITLES",
@@ -1672,6 +1857,8 @@ __all__ = [
     "NOT_READY",
     "OUTCOMES",
     "PATH_EVIDENCE_BOUNDARY_STATEMENT",
+    "PR_OBSERVATION_BOUNDARY_STATEMENT",
+    "PR_OBSERVATION_SCHEMA_VERSION",
     "RELEASE_BOUNDARY_REGISTER_SCHEMA_VERSION",
     "RELEASE_PROOF_LINKED",
     "REQUIRED_FUTURE_PREREQUISITES",

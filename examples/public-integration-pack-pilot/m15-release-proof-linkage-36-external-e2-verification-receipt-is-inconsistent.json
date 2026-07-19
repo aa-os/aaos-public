@@ -44,6 +44,10 @@
     "candidate_change_set_preserved": true,
     "additional_merge_differences_explained": false,
     "future_release_prerequisites_visible": true,
+    "external_pr_observation_present": true,
+    "external_pr_observation_pr_number_valid": true,
+    "observation_receipt_candidate_binding_valid": true,
+    "verification_test_count_meets_minimum": true,
     "external_e2_verification_receipt_present": true,
     "external_e2_verification_receipt_consistent": false,
     "change_type": "addition"

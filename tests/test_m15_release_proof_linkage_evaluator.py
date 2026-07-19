@@ -21,6 +21,8 @@ from runtime.m15_release_proof_linkage_evaluator import (
     E1_EXTERNAL_RECEIPT_SHA256,
     E1_MERGE_SHA,
     E1_MERGE_TREE_SHA,
+    E2_ISSUE_NUMBER,
+    E2_PULL_REQUEST_NUMBER,
     EXACT_TREE_MATCH,
     EXPECTED_PATHS,
     EXPECTED_SCENARIO_TITLES,
@@ -29,6 +31,8 @@ from runtime.m15_release_proof_linkage_evaluator import (
     FUTURE_RELEASE_CANDIDATE_STATE,
     NON_AUTHORITATIVE_BOUNDARY_STATEMENT,
     NOT_READY,
+    PR_OBSERVATION_BOUNDARY_STATEMENT,
+    PR_OBSERVATION_SCHEMA_VERSION,
     RELEASE_PROOF_LINKED,
     REQUIRED_FUTURE_PREREQUISITES,
     REQUIRED_LINKAGE_BLOCKERS,
@@ -69,6 +73,7 @@ SCENARIO_PATHS = sorted(
 )
 ACTUAL_PYTHON_LAUNCHER = ".verification-python/python.exe"
 SYNTHETIC_E2_CANDIDATE_SHA = "c" * 40
+SYNTHETIC_E2_CANDIDATE_TREE_SHA = "d" * 40
 SYNTHETIC_TRANSCRIPT_SHA256 = "a" * 64
 
 
@@ -205,10 +210,37 @@ def validate_draft_2020_12_subset(instance, schema, *, root_schema=None, path="$
     return errors
 
 
+def build_external_pr_observation(
+    *,
+    candidate_head=SYNTHETIC_E2_CANDIDATE_SHA,
+    candidate_tree=SYNTHETIC_E2_CANDIDATE_TREE_SHA,
+    pull_request_number=E2_PULL_REQUEST_NUMBER,
+    issue_number=E2_ISSUE_NUMBER,
+    base_sha=STARTING_MAIN_SHA,
+):
+    return {
+        "schema_version": PR_OBSERVATION_SCHEMA_VERSION,
+        "document_type": "pull-request-candidate-observation",
+        "repository": "aa-os/aaos-public",
+        "issue_number": issue_number,
+        "pull_request_number": pull_request_number,
+        "base_sha": base_sha,
+        "candidate_head_sha": candidate_head,
+        "candidate_tree_sha": candidate_tree,
+        "execution_subject_type": "pull-request-candidate-checkout",
+        "observed_at": "2026-07-19T12:00:00Z",
+        "observer": "synthetic-offline-observer",
+        "evidence_reference": "synthetic-pr-observation:aa-os/aaos-public#249",
+        "external_to_candidate_commit": True,
+        "fetched_by_evaluator": False,
+        "non_authoritative_boundary_statement": PR_OBSERVATION_BOUNDARY_STATEMENT,
+    }
+
+
 def build_external_e2_receipt(
     *,
     candidate_head=SYNTHETIC_E2_CANDIDATE_SHA,
-    pull_request_number=248,
+    pull_request_number=E2_PULL_REQUEST_NUMBER,
 ):
     commands = []
     for command_id, expected in EXPECTED_VERIFICATION_COMMANDS.items():
@@ -216,7 +248,7 @@ def build_external_e2_receipt(
         commands.append(
             {
                 "command_id": command_id,
-                "declared_logical_argv": expected["argv"],
+                "declared_logical_argv": list(expected["argv"]),
                 "actual_argv": actual_argv,
                 "execution_scope": expected["execution_scope"],
                 "execution_candidate_head_sha": candidate_head,
@@ -228,8 +260,8 @@ def build_external_e2_receipt(
                     "python_implementation": "CPython",
                     "python_version": "3.14.6",
                 },
-                "tests_observed": 1,
-                "passes": 1,
+                "tests_observed": expected["minimum_tests_observed"],
+                "passes": expected["minimum_tests_observed"],
                 "failures": 0,
                 "errors": 0,
                 "skips": 0,
@@ -267,6 +299,7 @@ def load_package():
         "continuity_record": load_json(CONTINUITY_PATH),
         "e1_receipt_linkage": load_json(E1_RECEIPT_PATH),
         "release_boundary_register": load_json(BOUNDARY_PATH),
+        "pull_request_observation": build_external_pr_observation(),
         "external_verification_receipt": build_external_e2_receipt(),
     }
 
@@ -279,6 +312,7 @@ def evaluate_package(package):
         package["continuity_record"],
         package["e1_receipt_linkage"],
         package["release_boundary_register"],
+        package["pull_request_observation"],
         package["external_verification_receipt"],
     )
 
@@ -358,11 +392,11 @@ class E2ContractAndSchemaTests(unittest.TestCase):
         cls.schema = load_json(SCHEMA_PATH)
         cls.contract = CONTRACT_PATH.read_text(encoding="utf-8")
 
-    def test_01_schema_is_strict_draft_2020_12_with_eight_document_kinds(self):
+    def test_01_schema_is_strict_draft_2020_12_with_nine_document_kinds(self):
         self.assertEqual(
             self.schema["$schema"], "https://json-schema.org/draft/2020-12/schema"
         )
-        self.assertEqual(len(self.schema["oneOf"]), 8)
+        self.assertEqual(len(self.schema["oneOf"]), 9)
         for name in (
             "releaseProofManifest",
             "candidatePathManifest",
@@ -370,6 +404,7 @@ class E2ContractAndSchemaTests(unittest.TestCase):
             "continuityRecord",
             "e1ReceiptLinkage",
             "releaseBoundaryRegister",
+            "pullRequestObservation",
             "externalVerificationReceipt",
             "syntheticScenario",
         ):
@@ -398,7 +433,7 @@ class E2ContractAndSchemaTests(unittest.TestCase):
                 )
 
     def test_04_all_standalone_scenarios_validate_against_schema(self):
-        self.assertEqual(len(SCENARIO_PATHS), 36)
+        self.assertEqual(len(SCENARIO_PATHS), 40)
         for path in SCENARIO_PATHS:
             with self.subTest(path=path.name):
                 self.assertEqual(
@@ -409,6 +444,12 @@ class E2ContractAndSchemaTests(unittest.TestCase):
         receipt = build_external_e2_receipt()
         self.assertEqual(
             validate_draft_2020_12_subset(receipt, self.schema), []
+        )
+
+    def test_05b_external_pr_observation_contract_validates(self):
+        observation = build_external_pr_observation()
+        self.assertEqual(
+            validate_draft_2020_12_subset(observation, self.schema), []
         )
 
     def test_06_schema_rejects_additional_properties(self):
@@ -449,6 +490,26 @@ class E2ContractAndSchemaTests(unittest.TestCase):
             "subprocess or shell execution",
             "calculate repository or receipt digests",
             "mutate files, caller mappings, Git, GitHub, or external state",
+        ):
+            with self.subTest(text=text):
+                self.assertIn(text, self.contract)
+
+    def test_11_schema_fixes_observation_and_receipt_to_pr_249(self):
+        observation = build_external_pr_observation(pull_request_number=250)
+        self.assertTrue(
+            validate_draft_2020_12_subset(observation, self.schema)
+        )
+        receipt = build_external_e2_receipt(pull_request_number=250)
+        self.assertTrue(validate_draft_2020_12_subset(receipt, self.schema))
+
+    def test_12_contract_defines_observation_and_minimum_coverage_boundaries(self):
+        for text in (
+            "## External Pull-Request Candidate Observation",
+            "human reviewer must independently compare",
+            "does not query GitHub",
+            "## Minimum Verification Coverage",
+            "tests_observed >= minimum_tests_observed",
+            "A count below the minimum fails closed",
         ):
             with self.subTest(text=text):
                 self.assertIn(text, self.contract)
@@ -595,6 +656,18 @@ class MaintainedReleaseProofEvaluationTests(unittest.TestCase):
         self.assertEqual(result["candidate_changed_path_count"], 39)
         self.assertEqual(result["merge_result_path_count"], 39)
         self.assertEqual(result["preserved_path_count"], 39)
+        self.assertTrue(result["external_pr_observation_validated"])
+        self.assertEqual(result["observed_pull_request_number"], 249)
+        self.assertEqual(
+            result["observed_candidate_head_sha"],
+            self.package["external_verification_receipt"][
+                "execution_candidate_head_sha"
+            ],
+        )
+        self.assertEqual(
+            result["observed_candidate_tree_sha"],
+            SYNTHETIC_E2_CANDIDATE_TREE_SHA,
+        )
         self.assertTrue(result["external_verification_receipt_validated"])
         self.assertEqual(result["e2_linkage_blockers"], [])
 
@@ -869,6 +942,160 @@ class MaintainedReleaseProofEvaluationTests(unittest.TestCase):
             NON_AUTHORITATIVE_BOUNDARY_STATEMENT,
         )
 
+    def test_39_missing_external_pr_observation_is_not_ready(self):
+        self.package["pull_request_observation"] = None
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], NOT_READY)
+        self.assertIn(
+            "external_pr_observation_missing", result["readiness_findings"]
+        )
+        self.assertFalse(result["external_pr_observation_validated"])
+        self.assertFalse(result["external_verification_receipt_validated"])
+
+    def test_40_observation_and_receipt_for_another_pr_are_blocked(self):
+        observation = self.package["pull_request_observation"]
+        observation["pull_request_number"] = 250
+        receipt = self.package["external_verification_receipt"]
+        receipt["pull_request_number"] = 250
+        receipt["execution_candidate_reference"] = "pull-request:#250"
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertIn(
+            "external_pr_observation_mismatch:pull_request_number",
+            result["blocking_findings"],
+        )
+
+    def test_41_observation_and_receipt_candidate_head_mismatch_blocks(self):
+        receipt = self.package["external_verification_receipt"]
+        other_candidate = "b" * 40
+        receipt["execution_candidate_head_sha"] = other_candidate
+        for command in receipt["commands"]:
+            command["execution_candidate_head_sha"] = other_candidate
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertIn(
+            "external_e2_verification_receipt_observation_candidate_mismatch",
+            result["blocking_findings"],
+        )
+
+    def test_42_observation_candidate_cannot_equal_base(self):
+        self.package["pull_request_observation"][
+            "candidate_head_sha"
+        ] = STARTING_MAIN_SHA
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertIn(
+            "external_pr_observation_candidate_equals_base",
+            result["blocking_findings"],
+        )
+
+    def test_43_observation_extra_field_blocks(self):
+        self.package["pull_request_observation"]["unexpected"] = True
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertIn(
+            "external_pr_observation_shape_invalid", result["blocking_findings"]
+        )
+
+    def test_44_observation_claiming_evaluator_fetch_blocks(self):
+        self.package["pull_request_observation"]["fetched_by_evaluator"] = True
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertIn(
+            "external_pr_observation_fetched_by_evaluator",
+            result["blocking_findings"],
+        )
+
+    def test_45_full_suite_one_test_cannot_link(self):
+        command = next(
+            item
+            for item in self.package["external_verification_receipt"]["commands"]
+            if item["command_id"] == "run_full_maintained_repository_suite"
+        )
+        command["tests_observed"] = 1
+        command["passes"] = 1
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertIn(
+            "external_e2_verification_test_coverage_below_minimum:"
+            "run_full_maintained_repository_suite",
+            result["blocking_findings"],
+        )
+
+    def test_46_e2_targeted_count_below_minimum_blocks(self):
+        command = self.package["external_verification_receipt"]["commands"][0]
+        minimum = EXPECTED_VERIFICATION_COMMANDS[command["command_id"]][
+            "minimum_tests_observed"
+        ]
+        command["tests_observed"] = minimum - 1
+        command["passes"] = minimum - 1
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertIn(
+            "external_e2_verification_test_coverage_below_minimum:"
+            "run_m15_e2_targeted_tests",
+            result["blocking_findings"],
+        )
+
+    def test_47_count_exactly_at_minimum_links(self):
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], RELEASE_PROOF_LINKED)
+
+    def test_48_count_above_minimum_links(self):
+        command = self.package["external_verification_receipt"]["commands"][0]
+        command["tests_observed"] += 1
+        command["passes"] += 1
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], RELEASE_PROOF_LINKED)
+
+    def test_49_count_arithmetic_mismatch_blocks(self):
+        command = self.package["external_verification_receipt"]["commands"][0]
+        command["passes"] -= 1
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertIn(
+            "external_e2_verification_count_arithmetic_invalid:"
+            "run_m15_e2_targeted_tests",
+            result["blocking_findings"],
+        )
+
+    def test_50_failure_error_and_nonzero_exit_block(self):
+        command = self.package["external_verification_receipt"]["commands"][0]
+        command["passes"] -= 2
+        command["failures"] = 1
+        command["errors"] = 1
+        command["exit_code"] = 1
+        self.assertEqual(evaluate_package(self.package)["outcome"], BLOCKED)
+
+    def test_51_skip_is_not_ready_and_cannot_link(self):
+        command = self.package["external_verification_receipt"]["commands"][0]
+        command["passes"] -= 1
+        command["skips"] = 1
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], NOT_READY)
+        self.assertIn(
+            "external_e2_verification_skips_present:run_m15_e2_targeted_tests",
+            result["readiness_findings"],
+        )
+
+    def test_52_observation_and_receipt_are_not_mutated(self):
+        observation = copy.deepcopy(self.package["pull_request_observation"])
+        receipt = copy.deepcopy(self.package["external_verification_receipt"])
+        evaluate_package(self.package)
+        self.assertEqual(self.package["pull_request_observation"], observation)
+        self.assertEqual(self.package["external_verification_receipt"], receipt)
+
+    def test_53_observation_must_be_commit_external(self):
+        self.package["pull_request_observation"][
+            "external_to_candidate_commit"
+        ] = False
+        result = evaluate_package(self.package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertIn(
+            "external_pr_observation_not_commit_external",
+            result["blocking_findings"],
+        )
+
 
 class PathContinuitySemanticsTests(unittest.TestCase):
     @classmethod
@@ -987,9 +1214,9 @@ class SyntheticScenarioInventoryTests(unittest.TestCase):
         }
 
     def test_00_inventory_is_complete_standalone_and_synthetic(self):
-        self.assertEqual(set(self.by_number), set(range(1, 37)))
-        self.assertEqual(len(SCENARIO_PATHS), 36)
-        self.assertEqual(len({path.name for path in SCENARIO_PATHS}), 36)
+        self.assertEqual(set(self.by_number), set(range(1, 41)))
+        self.assertEqual(len(SCENARIO_PATHS), 40)
+        self.assertEqual(len({path.name for path in SCENARIO_PATHS}), 40)
         for number, document in self.by_number.items():
             with self.subTest(number=number):
                 self.assertTrue(document["synthetic"])
@@ -1065,6 +1292,17 @@ class SyntheticScenarioInventoryTests(unittest.TestCase):
             with self.subTest(number=number):
                 self.assertIn(fragment.lower(), self.by_number[number]["title"].lower())
 
+    def test_39_hardening_scenarios_are_present(self):
+        required_fragments = {
+            37: "observation is missing",
+            38: "another PR",
+            39: "candidate heads mismatch",
+            40: "below maintained minimum",
+        }
+        for number, fragment in required_fragments.items():
+            with self.subTest(number=number):
+                self.assertIn(fragment.lower(), self.by_number[number]["title"].lower())
+
 
 def _make_scenario_test(number):
     def test(self):
@@ -1086,7 +1324,7 @@ def _make_scenario_test(number):
     return test
 
 
-for _scenario_number in range(1, 37):
+for _scenario_number in range(1, 41):
     setattr(
         SyntheticScenarioInventoryTests,
         f"test_{_scenario_number:02d}_standalone_scenario",
@@ -1100,7 +1338,7 @@ class RuntimeEvaluatorBoundaryTests(unittest.TestCase):
         cls.source = EVALUATOR_PATH.read_text(encoding="utf-8")
         cls.tree = ast.parse(cls.source)
 
-    def test_01_public_evaluator_accepts_only_seven_caller_supplied_mappings(self):
+    def test_01_public_evaluator_accepts_only_eight_caller_supplied_mappings(self):
         signature = inspect.signature(evaluate_release_proof_linkage)
         self.assertEqual(
             list(signature.parameters),
@@ -1111,6 +1349,7 @@ class RuntimeEvaluatorBoundaryTests(unittest.TestCase):
                 "continuity_record",
                 "e1_receipt_linkage",
                 "release_boundary_register",
+                "pull_request_observation",
                 "external_verification_receipt",
             ],
         )
@@ -1211,6 +1450,41 @@ class RuntimeEvaluatorBoundaryTests(unittest.TestCase):
             set(EXPECTED_VERIFICATION_COMMANDS),
         )
         self.assertTrue(all(command["executed_by_evaluator"] is False for command in commands))
+        maintained = {command["command_id"]: command for command in commands}
+        self.assertEqual(
+            {
+                command_id: expected["minimum_tests_observed"]
+                for command_id, expected in EXPECTED_VERIFICATION_COMMANDS.items()
+            },
+            {
+                command_id: command["minimum_tests_observed"]
+                for command_id, command in maintained.items()
+            },
+        )
+
+    def test_06b_verification_minima_are_not_lowered(self):
+        self.assertEqual(
+            {
+                command_id: expected["minimum_tests_observed"]
+                for command_id, expected in EXPECTED_VERIFICATION_COMMANDS.items()
+            },
+            {
+                "run_m15_e2_targeted_tests": 116,
+                "run_m15_e1_targeted_tests": 126,
+                "run_m15_track_a_tests": 68,
+                "run_m15_track_b_tests": 73,
+                "run_m15_track_c_tests": 180,
+                "run_m15_track_d_tests": 79,
+                "run_m14_public_output_tests": 23,
+                "run_m14_provenance_tests": 47,
+                "run_m14_skill_admission_tests": 135,
+                "run_external_evidence_admission_tests": 31,
+                "run_m14_cross_control_authority_tests": 107,
+                "run_decision_proof_ownership_tests": 30,
+                "run_release_state_and_m15_status_tests": 17,
+                "run_full_maintained_repository_suite": 1894,
+            },
+        )
 
     def test_07_runtime_outcomes_and_relations_are_closed(self):
         self.assertEqual(

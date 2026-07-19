@@ -9,6 +9,7 @@
     {"$ref": "#/$defs/continuityRecord"},
     {"$ref": "#/$defs/e1ReceiptLinkage"},
     {"$ref": "#/$defs/releaseBoundaryRegister"},
+    {"$ref": "#/$defs/pullRequestObservation"},
     {"$ref": "#/$defs/externalVerificationReceipt"},
     {"$ref": "#/$defs/syntheticScenario"}
   ],
@@ -97,6 +98,7 @@
         "argv",
         "test_scope",
         "execution_scope",
+        "minimum_tests_observed",
         "required",
         "expected_exit_code",
         "executed_by_evaluator"
@@ -116,6 +118,7 @@
             "candidate-full-suite-integration"
           ]
         },
+        "minimum_tests_observed": {"type": "integer", "minimum": 1},
         "required": {"const": true},
         "expected_exit_code": {"const": 0},
         "executed_by_evaluator": {"const": false}
@@ -302,6 +305,8 @@
         "record_references",
         "expected_candidate_changed_path_count",
         "verification_command_manifest",
+        "external_pr_observation_required",
+        "external_pr_observation_schema_version",
         "external_verification_receipt_required",
         "external_verification_receipt_schema_version",
         "allowed_continuity_relations",
@@ -373,6 +378,8 @@
             }
           }
         },
+        "external_pr_observation_required": {"const": true},
+        "external_pr_observation_schema_version": {"const": "m15-release-proof-linkage-pr-observation/v1"},
         "external_verification_receipt_required": {"const": true},
         "external_verification_receipt_schema_version": {"const": "m15-release-proof-linkage-verification-receipt/v1"},
         "allowed_continuity_relations": {
@@ -780,6 +787,46 @@
         "verification_results_are_release_authority": {"const": false}
       }
     },
+    "pullRequestObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "repository",
+        "issue_number",
+        "pull_request_number",
+        "base_sha",
+        "candidate_head_sha",
+        "candidate_tree_sha",
+        "execution_subject_type",
+        "observed_at",
+        "observer",
+        "evidence_reference",
+        "external_to_candidate_commit",
+        "fetched_by_evaluator",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-release-proof-linkage-pr-observation/v1"},
+        "document_type": {"const": "pull-request-candidate-observation"},
+        "repository": {"const": "aa-os/aaos-public"},
+        "issue_number": {"const": 248},
+        "pull_request_number": {"const": 249},
+        "base_sha": {"const": "27c92e290cf6ad60bada49b63fe1888511930980"},
+        "candidate_head_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "candidate_tree_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "execution_subject_type": {"const": "pull-request-candidate-checkout"},
+        "observed_at": {"$ref": "#/$defs/rfc3339Utc"},
+        "observer": {"type": "string", "minLength": 1},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "external_to_candidate_commit": {"const": true},
+        "fetched_by_evaluator": {"const": false},
+        "non_authoritative_boundary_statement": {
+          "const": "The external pull-request observation is inert caller-supplied candidate-binding evidence only; it is not human review approval, merge approval, M15 completion approval, tracker #231 closure, README completion authorization, tag authorization, GitHub Release authorization, Decision Proof sealing, or Learning Proof sealing."
+        }
+      }
+    },
     "externalVerificationReceipt": {
       "type": "object",
       "additionalProperties": false,
@@ -804,10 +851,10 @@
         "document_type": {"const": "external-verification-execution-receipt"},
         "repository": {"const": "aa-os/aaos-public"},
         "issue_number": {"const": 248},
-        "pull_request_number": {"type": "integer", "minimum": 1},
+        "pull_request_number": {"const": 249},
         "source_main_base_sha": {"const": "27c92e290cf6ad60bada49b63fe1888511930980"},
         "execution_subject_type": {"const": "pull-request-candidate-checkout"},
-        "execution_candidate_reference": {"type": "string", "pattern": "^pull-request:#[1-9][0-9]*$"},
+        "execution_candidate_reference": {"const": "pull-request:#249"},
         "execution_candidate_head_sha": {"$ref": "#/$defs/gitObjectSha"},
         "command_receipt_count": {"const": 14},
         "commands": {
@@ -862,6 +909,10 @@
         "candidate_change_set_preserved",
         "additional_merge_differences_explained",
         "future_release_prerequisites_visible",
+        "external_pr_observation_present",
+        "external_pr_observation_pr_number_valid",
+        "observation_receipt_candidate_binding_valid",
+        "verification_test_count_meets_minimum",
         "external_e2_verification_receipt_present",
         "external_e2_verification_receipt_consistent",
         "change_type"
@@ -904,6 +955,10 @@
         "candidate_change_set_preserved": {"type": "boolean"},
         "additional_merge_differences_explained": {"type": "boolean"},
         "future_release_prerequisites_visible": {"type": "boolean"},
+        "external_pr_observation_present": {"type": "boolean"},
+        "external_pr_observation_pr_number_valid": {"type": "boolean"},
+        "observation_receipt_candidate_binding_valid": {"type": "boolean"},
+        "verification_test_count_meets_minimum": {"type": "boolean"},
         "external_e2_verification_receipt_present": {"type": "boolean"},
         "external_e2_verification_receipt_consistent": {"type": "boolean"},
         "change_type": {"enum": ["addition", "modification", "rename", "deletion", "mixed"]}

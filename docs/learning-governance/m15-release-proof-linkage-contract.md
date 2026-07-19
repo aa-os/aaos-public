@@ -8,7 +8,7 @@ Parent tracker: #231 remains Open. M15 remains active and incomplete. Track E3 a
 
 Track E2 answers one bounded question: was the exact Track E1 pull-request candidate covered by the external E1 verification receipt preserved in the E1 merge-result commit?
 
-The package can return `release_proof_linked` only when the supplied historical identities, complete candidate changed-path manifest, corresponding merge-result path manifest, candidate-to-merge continuity record, E1 external-receipt linkage, E2 blocker register, future prerequisite register, and external E2 execution receipt are mutually consistent. This outcome means only that the E1 candidate-to-merge evidence chain is complete and verified.
+The package can return `release_proof_linked` only when the supplied historical identities, complete candidate changed-path manifest, corresponding merge-result path manifest, candidate-to-merge continuity record, E1 external-receipt linkage, E2 blocker register, future prerequisite register, external PR #249 candidate observation, and external E2 execution receipt are mutually consistent. This outcome means only that the E1 candidate-to-merge evidence chain is complete and verified.
 
 Release-proof linkage is evidence only. It is not:
 
@@ -180,9 +180,42 @@ The result explicitly reports these operations as not performed. Test-only helpe
 
 ## Standalone synthetic scenarios
 
-The package supplies 36 standalone synthetic JSON files. Each contains a complete synthetic evidence state, expected outcome, expected relation, and non-authoritative boundary. The first 30 cover every scenario required by #248: exact match, explained base advancement, all specified identity/path/digest/mode/receipt failures, authority-promotion failures, omitted blocker, unverified linkage, missing future identifier, and forbidden Decision Proof or Learning Proof sealing.
+The package supplies 40 standalone synthetic JSON files. Each contains a complete synthetic evidence state, expected outcome, expected relation, and non-authoritative boundary. The first 30 cover every scenario required by #248: exact match, explained base advancement, all specified identity/path/digest/mode/receipt failures, authority-promotion failures, omitted blocker, unverified linkage, missing future identifier, and forbidden Decision Proof or Learning Proof sealing.
 
-The additional scenarios prove fail-closed `unverified` handling; preserved modification, rename, and deletion semantics; and the absent or inconsistent external E2 receipt gates. The files contain synthetic data only and no credentials, personal data, private prompts, production identifiers, or executable content.
+The additional scenarios prove fail-closed `unverified` handling; preserved modification, rename, and deletion semantics; absent or inconsistent external E2 receipt gates; a missing or wrong-PR external observation; observation-to-receipt candidate mismatch; and below-minimum verification coverage. The files contain synthetic data only and no credentials, personal data, private prompts, production identifiers, or executable content.
+
+## External Pull-Request Candidate Observation
+
+The final PR #249 candidate requires a strict external pull-request observation that exists outside the candidate commit. This commit-external location allows the observation to bind the final PR head and tree without creating a repository self-reference that would change the head being identified.
+
+The runtime evaluator does not query GitHub, fetch PR metadata, or create the observation. It consumes the observation as inert caller-supplied evidence and requires its repository, issue #248, PR #249, source main/base SHA, candidate head, candidate tree, timestamp, evidence reference, commit-external state, non-fetch state, and exact non-authoritative boundary to be valid. The observation and external verification receipt must name the same PR #249 candidate head, including every command receipt.
+
+A human reviewer must independently compare the external observation with the live GitHub state of PR #249. Evaluator acceptance only proves that the supplied observation and receipt are mutually consistent; it does not claim that the evaluator independently verified live GitHub state.
+
+The observation is not human review approval, merge approval, M15 completion approval, tracker #231 closure, README completion authorization, tag authorization, GitHub Release authorization, Decision Proof sealing, Learning Proof sealing, or any other release authority.
+
+## Minimum Verification Coverage
+
+Command presence does not prove test coverage, and exit code zero does not prove that the intended suite ran. Each verification group therefore declares a maintained minimum test-count baseline. Every external command receipt must satisfy `tests_observed >= minimum_tests_observed`, reconcile its count arithmetic, report zero failures and errors, report no skips, and exit zero.
+
+Counts above the maintained minimum may pass. A count below the minimum fails closed even when every reported test passes and exit code is zero. These minima are evidence-coverage gates only; meeting them is not completion approval, tracker closure, README authorization, tag authorization, GitHub Release authorization, Decision Proof sealing, Learning Proof sealing, or release approval.
+
+| Verification group | Minimum tests observed |
+| --- | ---: |
+| E2 targeted | 116 |
+| E1 targeted | 126 |
+| Track A | 68 |
+| Track B | 73 |
+| Track C | 180 |
+| Track D | 79 |
+| M14 public-output | 23 |
+| M14 provenance | 47 |
+| M14 skill-admission | 135 |
+| External-evidence-admission | 31 |
+| M14 cross-control authority | 107 |
+| Decision Proof ownership | 30 |
+| Release-state and M15-status | 17 |
+| Full maintained repository suite | 1,894 |
 
 ## External E2 verification-receipt contract
 
@@ -191,7 +224,7 @@ The final E2 pull-request candidate requires an external machine-readable receip
 The receipt binds:
 
 - repository `aa-os/aaos-public`;
-- issue #248 and the actual E2 pull-request number;
+- issue #248 and E2 pull request #249;
 - source main/base `27c92e290cf6ad60bada49b63fe1888511930980`;
 - the exact final E2 candidate head;
 - all 14 required command identifiers;
