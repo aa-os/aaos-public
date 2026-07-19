@@ -1,0 +1,111 @@
+{
+  "schema_version": "m15-release-proof-linkage-boundary-register/v1",
+  "document_type": "release-blocker-and-prerequisite-register",
+  "record_id": "urn:aaos:m15:release-proof-linkage:e2:release-boundaries",
+  "issue": "#248",
+  "parent_tracker": "#231",
+  "e2_linkage_blocker_count": 5,
+  "e2_linkage_blockers": [
+    {
+      "blocker_id": "missing-continuity-evidence",
+      "state": "resolved",
+      "evidence_reference": "record:m15-e2-e1-continuity",
+      "notes": "The observed candidate and merge Git object identities are present."
+    },
+    {
+      "blocker_id": "candidate-merge-mismatch",
+      "state": "resolved",
+      "evidence_reference": "record:m15-e2-e1-candidate-and-merge-paths",
+      "notes": "The candidate tree equals the merge tree and every changed path is preserved."
+    },
+    {
+      "blocker_id": "missing-receipt-binding",
+      "state": "resolved",
+      "evidence_reference": "record:m15-e2-e1-external-receipt",
+      "notes": "The canonical E1 external receipt is bound to its exact baseline and candidate."
+    },
+    {
+      "blocker_id": "incomplete-path-coverage",
+      "state": "resolved",
+      "evidence_reference": "record:m15-e2-complete-39-path-coverage",
+      "notes": "All 39 Git-derived candidate paths have candidate and merge entries."
+    },
+    {
+      "blocker_id": "unexplained-digest-or-mode-drift",
+      "state": "resolved",
+      "evidence_reference": "record:m15-e2-zero-unexplained-drift",
+      "notes": "No blob, canonical digest, file-mode, or substitution drift was observed."
+    }
+  ],
+  "future_release_prerequisite_count": 7,
+  "future_release_prerequisites": [
+    {
+      "prerequisite_id": "track-e3-not-completed",
+      "state": "open",
+      "evidence_reference": "issue:#231:track-e3",
+      "notes": "Track E3 is outside E2 and remains not completed."
+    },
+    {
+      "prerequisite_id": "track-e4-not-completed",
+      "state": "open",
+      "evidence_reference": "issue:#231:track-e4",
+      "notes": "Track E4 is outside E2 and remains not completed."
+    },
+    {
+      "prerequisite_id": "final-m15-completion-not-approved",
+      "state": "open",
+      "evidence_reference": "issue:#231:m15-active",
+      "notes": "E2 continuity evidence does not approve final M15 completion."
+    },
+    {
+      "prerequisite_id": "tracker-231-open",
+      "state": "open",
+      "evidence_reference": "issue:#231:open",
+      "notes": "The active M15 tracker remains Open."
+    },
+    {
+      "prerequisite_id": "readme-completion-not-authorized",
+      "state": "open",
+      "evidence_reference": "governance-boundary:readme-not-authorized",
+      "notes": "No README completion declaration is authorized."
+    },
+    {
+      "prerequisite_id": "v0.14.0-tag-not-authorized",
+      "state": "open",
+      "evidence_reference": "governance-boundary:tag-not-authorized",
+      "notes": "No v0.14.0 tag is authorized or created."
+    },
+    {
+      "prerequisite_id": "github-release-not-authorized",
+      "state": "open",
+      "evidence_reference": "governance-boundary:github-release-not-authorized",
+      "notes": "No GitHub Release is authorized, created, published, or Latest."
+    }
+  ],
+  "future_release_candidate": {
+    "identifier": "urn:aaos:m15:release-candidate:v0.14.0:unapproved",
+    "state": "identified-not-authorized"
+  },
+  "governance_boundary": {
+    "tracker_231_state": "open",
+    "m15_state": "active-and-incomplete",
+    "track_e3_implemented": false,
+    "track_e4_implemented": false,
+    "readme_completion_authorized": false,
+    "v0_14_0_tag_state": "not-authorized",
+    "github_release_state": "not-created",
+    "github_release_latest": false,
+    "completion_approved": false,
+    "release_candidate_approved": false,
+    "tag_authorized": false,
+    "github_release_authorized": false,
+    "decision_proof_sealed": false,
+    "learning_proof_sealed": false,
+    "deployment_authorized": false,
+    "risk_accepted": false,
+    "audit_closed": false,
+    "waiver_granted": false,
+    "authority_transferred": false
+  },
+  "non_authoritative_boundary_statement": "release_proof_linked means only that the exact E1 candidate-to-merge evidence chain is complete and verified; it is not M15 completion approval, tracker #231 closure, README completion authorization, release-candidate approval, tag authorization, GitHub Release authorization, Decision Proof sealing, or Learning Proof sealing."
+}

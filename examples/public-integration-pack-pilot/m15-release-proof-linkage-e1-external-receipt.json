@@ -1,0 +1,20 @@
+{
+  "schema_version": "m15-release-proof-linkage-e1-receipt-linkage/v1",
+  "document_type": "e1-external-receipt-linkage-record",
+  "record_id": "urn:aaos:m15:release-proof-linkage:e2:e1-receipt",
+  "issue": "#248",
+  "source_pull_request_number": 243,
+  "source_comment_id": 5015070053,
+  "receipt_schema_version": "m15-operational-readiness-verification-receipt/v1",
+  "source_baseline_commit_sha": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f",
+  "candidate_commit_sha": "55629976db7f7b8dc9e2153eaf67f054bd9ee708",
+  "command_count": 13,
+  "canonical_receipt_json_sha256": "86e33a67a532b11502b376f196a755b62a72a487e5f754cc2ac3752082acbb5b",
+  "receipt_present": true,
+  "linkage_state": "bound",
+  "external_to_e1_candidate": true,
+  "caller_supplied_inert_evidence": true,
+  "fetched_by_evaluator": false,
+  "treated_as_merge_approval": false,
+  "non_authoritative_boundary_statement": "The E1 external receipt linkage is inert caller-supplied evidence only; it is not merge approval, M15 completion approval, tracker #231 closure, README authorization, tag authorization, release authorization, or GitHub Release publication authorization."
+}

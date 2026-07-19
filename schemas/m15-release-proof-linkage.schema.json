@@ -1,0 +1,939 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/m15-release-proof-linkage.schema.json",
+  "title": "AAOS M15 Track E2 Release-Proof Linkage Package",
+  "oneOf": [
+    {"$ref": "#/$defs/releaseProofManifest"},
+    {"$ref": "#/$defs/candidatePathManifest"},
+    {"$ref": "#/$defs/mergePathManifest"},
+    {"$ref": "#/$defs/continuityRecord"},
+    {"$ref": "#/$defs/e1ReceiptLinkage"},
+    {"$ref": "#/$defs/releaseBoundaryRegister"},
+    {"$ref": "#/$defs/externalVerificationReceipt"},
+    {"$ref": "#/$defs/syntheticScenario"}
+  ],
+  "$defs": {
+    "gitObjectSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "rfc3339Utc": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"
+    },
+    "continuityRelation": {
+      "enum": [
+        "exact_tree_match",
+        "candidate_change_set_preserved",
+        "drift_detected",
+        "unverified"
+      ]
+    },
+    "outcome": {
+      "enum": ["release_proof_linked", "not_ready", "blocked"]
+    },
+    "futureReleaseCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identifier", "state"],
+      "properties": {
+        "identifier": {
+          "const": "urn:aaos:m15:release-candidate:v0.14.0:unapproved"
+        },
+        "state": {"const": "identified-not-authorized"}
+      }
+    },
+    "historicalBindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_baseline_commit_sha",
+        "source_baseline_tree_sha",
+        "e1_candidate_commit_sha",
+        "e1_candidate_tree_sha",
+        "e1_merge_commit_sha",
+        "e1_merge_tree_sha",
+        "e1_merge_parent_shas",
+        "e1_pull_request_number",
+        "e1_receipt_comment_id",
+        "e1_receipt_canonical_sha256"
+      ],
+      "properties": {
+        "source_baseline_commit_sha": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+        "source_baseline_tree_sha": {"const": "a0277b8cb697c9e311118f7de67f7f6bf3534fcb"},
+        "e1_candidate_commit_sha": {"const": "55629976db7f7b8dc9e2153eaf67f054bd9ee708"},
+        "e1_candidate_tree_sha": {"const": "f4552f630e2dab5b9d34240efa8825f187b4abf1"},
+        "e1_merge_commit_sha": {"const": "27c92e290cf6ad60bada49b63fe1888511930980"},
+        "e1_merge_tree_sha": {"const": "f4552f630e2dab5b9d34240efa8825f187b4abf1"},
+        "e1_merge_parent_shas": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+            {"const": "55629976db7f7b8dc9e2153eaf67f054bd9ee708"}
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "e1_pull_request_number": {"const": 243},
+        "e1_receipt_comment_id": {"const": 5015070053},
+        "e1_receipt_canonical_sha256": {"const": "86e33a67a532b11502b376f196a755b62a72a487e5f754cc2ac3752082acbb5b"}
+      }
+    },
+    "declaredVerificationCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_id",
+        "argv",
+        "test_scope",
+        "execution_scope",
+        "required",
+        "expected_exit_code",
+        "executed_by_evaluator"
+      ],
+      "properties": {
+        "command_id": {"type": "string", "pattern": "^run_[a-z0-9_]+$"},
+        "argv": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "test_scope": {"$ref": "#/$defs/reference"},
+        "execution_scope": {
+          "enum": [
+            "e2-candidate-validation",
+            "inherited-regression",
+            "candidate-full-suite-integration"
+          ]
+        },
+        "required": {"const": true},
+        "expected_exit_code": {"const": 0},
+        "executed_by_evaluator": {"const": false}
+      }
+    },
+    "candidatePath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path_id",
+        "path",
+        "previous_path",
+        "change_type",
+        "baseline_blob_sha",
+        "candidate_blob_sha",
+        "candidate_canonical_sha256",
+        "candidate_file_mode",
+        "artifact_role",
+        "required_status",
+        "evidence_reference"
+      ],
+      "properties": {
+        "path_id": {"type": "string", "pattern": "^m15-e2-e1-path-[0-9]{2}$"},
+        "path": {"type": "string", "pattern": "^[^\\\\:]+(?:/[^/\\\\:]+)*$"},
+        "previous_path": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[^\\\\:]+(?:/[^/\\\\:]+)*$"}
+          ]
+        },
+        "change_type": {"enum": ["addition", "modification", "rename", "deletion"]},
+        "baseline_blob_sha": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/gitObjectSha"}]
+        },
+        "candidate_blob_sha": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/gitObjectSha"}]
+        },
+        "candidate_canonical_sha256": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]
+        },
+        "candidate_file_mode": {
+          "oneOf": [
+            {"type": "null"},
+            {"enum": ["100644", "100755", "120000", "160000"]}
+          ]
+        },
+        "artifact_role": {
+          "enum": [
+            "governance-contract",
+            "standalone-synthetic-fixture",
+            "operational-readiness-manifest",
+            "offline-evaluator",
+            "strict-schema",
+            "focused-tests"
+          ]
+        },
+        "required_status": {"const": "required"},
+        "evidence_reference": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "mergePath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path_id",
+        "path",
+        "source_change_type",
+        "merge_blob_sha",
+        "merge_canonical_sha256",
+        "merge_file_mode",
+        "presence_state",
+        "continuity_status",
+        "continuity_evidence_reference"
+      ],
+      "properties": {
+        "path_id": {"type": "string", "pattern": "^m15-e2-e1-path-[0-9]{2}$"},
+        "path": {"type": "string", "pattern": "^[^\\\\:]+(?:/[^/\\\\:]+)*$"},
+        "source_change_type": {"enum": ["addition", "modification", "rename", "deletion"]},
+        "merge_blob_sha": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/gitObjectSha"}]
+        },
+        "merge_canonical_sha256": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]
+        },
+        "merge_file_mode": {
+          "oneOf": [
+            {"type": "null"},
+            {"enum": ["100644", "100755", "120000", "160000"]}
+          ]
+        },
+        "presence_state": {"enum": ["present", "absent"]},
+        "continuity_status": {"enum": ["preserved", "drifted", "unverified"]},
+        "continuity_evidence_reference": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "baseAdvancement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "present",
+        "advanced_base_sha",
+        "source_baseline_is_ancestor",
+        "explanation",
+        "evidence_reference"
+      ],
+      "properties": {
+        "present": {"type": "boolean"},
+        "advanced_base_sha": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/gitObjectSha"}]
+        },
+        "source_baseline_is_ancestor": {"type": "boolean"},
+        "explanation": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/reference"}]
+        },
+        "evidence_reference": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/reference"}]
+        }
+      }
+    },
+    "governanceBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tracker_231_state",
+        "m15_state",
+        "track_e3_implemented",
+        "track_e4_implemented",
+        "readme_completion_authorized",
+        "v0_14_0_tag_state",
+        "github_release_state",
+        "github_release_latest",
+        "completion_approved",
+        "release_candidate_approved",
+        "tag_authorized",
+        "github_release_authorized",
+        "decision_proof_sealed",
+        "learning_proof_sealed",
+        "deployment_authorized",
+        "risk_accepted",
+        "audit_closed",
+        "waiver_granted",
+        "authority_transferred"
+      ],
+      "properties": {
+        "tracker_231_state": {"const": "open"},
+        "m15_state": {"const": "active-and-incomplete"},
+        "track_e3_implemented": {"const": false},
+        "track_e4_implemented": {"const": false},
+        "readme_completion_authorized": {"const": false},
+        "v0_14_0_tag_state": {"const": "not-authorized"},
+        "github_release_state": {"const": "not-created"},
+        "github_release_latest": {"const": false},
+        "completion_approved": {"const": false},
+        "release_candidate_approved": {"const": false},
+        "tag_authorized": {"const": false},
+        "github_release_authorized": {"const": false},
+        "decision_proof_sealed": {"const": false},
+        "learning_proof_sealed": {"const": false},
+        "deployment_authorized": {"const": false},
+        "risk_accepted": {"const": false},
+        "audit_closed": {"const": false},
+        "waiver_granted": {"const": false},
+        "authority_transferred": {"const": false}
+      }
+    },
+    "releaseProofManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "record_id",
+        "issue",
+        "track",
+        "repository",
+        "branch",
+        "source_main_base_sha",
+        "source_main_base_tree_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "parent_tracker",
+        "historical_bindings",
+        "record_references",
+        "expected_candidate_changed_path_count",
+        "verification_command_manifest",
+        "external_verification_receipt_required",
+        "external_verification_receipt_schema_version",
+        "allowed_continuity_relations",
+        "declared_continuity_relation",
+        "allowed_outcomes",
+        "declared_outcome",
+        "future_release_candidate",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-release-proof-linkage/v1"},
+        "document_type": {"const": "release-proof-linkage-manifest"},
+        "record_id": {"const": "urn:aaos:m15:release-proof-linkage:e2"},
+        "issue": {"const": "#248"},
+        "track": {"const": "E2"},
+        "repository": {"const": "aa-os/aaos-public"},
+        "branch": {"const": "feature/m15-release-proof-linkage"},
+        "source_main_base_sha": {"const": "27c92e290cf6ad60bada49b63fe1888511930980"},
+        "source_main_base_tree_sha": {"const": "f4552f630e2dab5b9d34240efa8825f187b4abf1"},
+        "execution_subject_type": {"const": "pull-request-candidate-checkout"},
+        "execution_candidate_reference": {"const": "branch:feature/m15-release-proof-linkage"},
+        "execution_candidate_head_sha": {"type": "null"},
+        "parent_tracker": {"const": "#231"},
+        "historical_bindings": {"$ref": "#/$defs/historicalBindings"},
+        "record_references": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "candidate_changed_path_manifest",
+            "merge_result_path_manifest",
+            "candidate_to_merge_continuity_record",
+            "e1_external_receipt_linkage_record",
+            "release_boundary_register"
+          ],
+          "properties": {
+            "candidate_changed_path_manifest": {"$ref": "#/$defs/reference"},
+            "merge_result_path_manifest": {"$ref": "#/$defs/reference"},
+            "candidate_to_merge_continuity_record": {"$ref": "#/$defs/reference"},
+            "e1_external_receipt_linkage_record": {"$ref": "#/$defs/reference"},
+            "release_boundary_register": {"$ref": "#/$defs/reference"}
+          }
+        },
+        "expected_candidate_changed_path_count": {"const": 39},
+        "verification_command_manifest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "command_count",
+            "environment",
+            "execution_policy",
+            "commands_executed_by_evaluator",
+            "commands"
+          ],
+          "properties": {
+            "command_count": {"const": 14},
+            "environment": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["PYTHONDONTWRITEBYTECODE"],
+              "properties": {"PYTHONDONTWRITEBYTECODE": {"const": "1"}}
+            },
+            "execution_policy": {"const": "declarative-external-execution-only"},
+            "commands_executed_by_evaluator": {"const": false},
+            "commands": {
+              "type": "array",
+              "minItems": 14,
+              "maxItems": 14,
+              "items": {"$ref": "#/$defs/declaredVerificationCommand"}
+            }
+          }
+        },
+        "external_verification_receipt_required": {"const": true},
+        "external_verification_receipt_schema_version": {"const": "m15-release-proof-linkage-verification-receipt/v1"},
+        "allowed_continuity_relations": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "exact_tree_match"},
+            {"const": "candidate_change_set_preserved"},
+            {"const": "drift_detected"},
+            {"const": "unverified"}
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "declared_continuity_relation": {"const": "exact_tree_match"},
+        "allowed_outcomes": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "release_proof_linked"},
+            {"const": "not_ready"},
+            {"const": "blocked"}
+          ],
+          "items": false,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "declared_outcome": {"const": "release_proof_linked"},
+        "future_release_candidate": {"$ref": "#/$defs/futureReleaseCandidate"},
+        "non_authoritative_boundary_statement": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "candidatePathManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "record_id",
+        "issue",
+        "source_baseline_commit_sha",
+        "candidate_commit_sha",
+        "candidate_tree_sha",
+        "derivation",
+        "changed_path_count",
+        "change_type_counts",
+        "paths",
+        "generated_by_evaluator",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-release-proof-linkage-candidate-path-manifest/v1"},
+        "document_type": {"const": "candidate-changed-path-manifest"},
+        "record_id": {"const": "urn:aaos:m15:release-proof-linkage:e2:e1-candidate-paths"},
+        "issue": {"const": "#248"},
+        "source_baseline_commit_sha": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+        "candidate_commit_sha": {"const": "55629976db7f7b8dc9e2153eaf67f054bd9ee708"},
+        "candidate_tree_sha": {"const": "f4552f630e2dab5b9d34240efa8825f187b4abf1"},
+        "derivation": {"const": "git-diff-tree:source-baseline..candidate:rename-and-copy-detection"},
+        "changed_path_count": {"const": 39},
+        "change_type_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["addition", "modification", "rename", "deletion"],
+          "properties": {
+            "addition": {"const": 39},
+            "modification": {"const": 0},
+            "rename": {"const": 0},
+            "deletion": {"const": 0}
+          }
+        },
+        "paths": {
+          "type": "array",
+          "minItems": 39,
+          "maxItems": 39,
+          "items": {"$ref": "#/$defs/candidatePath"}
+        },
+        "generated_by_evaluator": {"const": false},
+        "non_authoritative_boundary_statement": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "mergePathManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "record_id",
+        "issue",
+        "candidate_commit_sha",
+        "merge_commit_sha",
+        "merge_tree_sha",
+        "candidate_changed_path_count",
+        "observed_path_count",
+        "paths",
+        "generated_by_evaluator",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-release-proof-linkage-merge-path-manifest/v1"},
+        "document_type": {"const": "merge-result-path-manifest"},
+        "record_id": {"const": "urn:aaos:m15:release-proof-linkage:e2:e1-merge-paths"},
+        "issue": {"const": "#248"},
+        "candidate_commit_sha": {"const": "55629976db7f7b8dc9e2153eaf67f054bd9ee708"},
+        "merge_commit_sha": {"const": "27c92e290cf6ad60bada49b63fe1888511930980"},
+        "merge_tree_sha": {"const": "f4552f630e2dab5b9d34240efa8825f187b4abf1"},
+        "candidate_changed_path_count": {"const": 39},
+        "observed_path_count": {"const": 39},
+        "paths": {
+          "type": "array",
+          "minItems": 39,
+          "maxItems": 39,
+          "items": {"$ref": "#/$defs/mergePath"}
+        },
+        "generated_by_evaluator": {"const": false},
+        "non_authoritative_boundary_statement": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "continuityRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "record_id",
+        "issue",
+        "source_baseline_commit_sha",
+        "source_baseline_tree_sha",
+        "candidate_commit_sha",
+        "candidate_tree_sha",
+        "merge_commit_sha",
+        "merge_tree_sha",
+        "merge_parent_shas",
+        "merge_parent_count",
+        "candidate_is_merge_parent",
+        "source_baseline_is_merge_parent",
+        "merge_parent_inclusion_verified",
+        "base_advancement",
+        "complete_path_coverage",
+        "preserved_path_count",
+        "missing_paths",
+        "blob_mismatches",
+        "digest_mismatches",
+        "file_mode_mismatches",
+        "unexpected_substitutions",
+        "additional_merge_difference_count",
+        "additional_merge_difference_explanations",
+        "allowed_relations",
+        "continuity_relation",
+        "evidence_reference",
+        "generated_by_evaluator",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-release-proof-linkage-continuity-record/v1"},
+        "document_type": {"const": "candidate-to-merge-continuity-record"},
+        "record_id": {"const": "urn:aaos:m15:release-proof-linkage:e2:e1-continuity"},
+        "issue": {"const": "#248"},
+        "source_baseline_commit_sha": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+        "source_baseline_tree_sha": {"const": "a0277b8cb697c9e311118f7de67f7f6bf3534fcb"},
+        "candidate_commit_sha": {"const": "55629976db7f7b8dc9e2153eaf67f054bd9ee708"},
+        "candidate_tree_sha": {"const": "f4552f630e2dab5b9d34240efa8825f187b4abf1"},
+        "merge_commit_sha": {"const": "27c92e290cf6ad60bada49b63fe1888511930980"},
+        "merge_tree_sha": {"const": "f4552f630e2dab5b9d34240efa8825f187b4abf1"},
+        "merge_parent_shas": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+            {"const": "55629976db7f7b8dc9e2153eaf67f054bd9ee708"}
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "merge_parent_count": {"const": 2},
+        "candidate_is_merge_parent": {"const": true},
+        "source_baseline_is_merge_parent": {"const": true},
+        "merge_parent_inclusion_verified": {"const": true},
+        "base_advancement": {"$ref": "#/$defs/baseAdvancement"},
+        "complete_path_coverage": {"const": true},
+        "preserved_path_count": {"const": 39},
+        "missing_paths": {"type": "array", "maxItems": 0},
+        "blob_mismatches": {"type": "array", "maxItems": 0},
+        "digest_mismatches": {"type": "array", "maxItems": 0},
+        "file_mode_mismatches": {"type": "array", "maxItems": 0},
+        "unexpected_substitutions": {"type": "array", "maxItems": 0},
+        "additional_merge_difference_count": {"const": 0},
+        "additional_merge_difference_explanations": {"type": "array", "maxItems": 0},
+        "allowed_relations": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "exact_tree_match"},
+            {"const": "candidate_change_set_preserved"},
+            {"const": "drift_detected"},
+            {"const": "unverified"}
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "continuity_relation": {"const": "exact_tree_match"},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "generated_by_evaluator": {"const": false},
+        "non_authoritative_boundary_statement": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "e1ReceiptLinkage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "record_id",
+        "issue",
+        "source_pull_request_number",
+        "source_comment_id",
+        "receipt_schema_version",
+        "source_baseline_commit_sha",
+        "candidate_commit_sha",
+        "command_count",
+        "canonical_receipt_json_sha256",
+        "receipt_present",
+        "linkage_state",
+        "external_to_e1_candidate",
+        "caller_supplied_inert_evidence",
+        "fetched_by_evaluator",
+        "treated_as_merge_approval",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-release-proof-linkage-e1-receipt-linkage/v1"},
+        "document_type": {"const": "e1-external-receipt-linkage-record"},
+        "record_id": {"const": "urn:aaos:m15:release-proof-linkage:e2:e1-receipt"},
+        "issue": {"const": "#248"},
+        "source_pull_request_number": {"const": 243},
+        "source_comment_id": {"const": 5015070053},
+        "receipt_schema_version": {"const": "m15-operational-readiness-verification-receipt/v1"},
+        "source_baseline_commit_sha": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+        "candidate_commit_sha": {"const": "55629976db7f7b8dc9e2153eaf67f054bd9ee708"},
+        "command_count": {"const": 13},
+        "canonical_receipt_json_sha256": {"const": "86e33a67a532b11502b376f196a755b62a72a487e5f754cc2ac3752082acbb5b"},
+        "receipt_present": {"const": true},
+        "linkage_state": {"const": "bound"},
+        "external_to_e1_candidate": {"const": true},
+        "caller_supplied_inert_evidence": {"const": true},
+        "fetched_by_evaluator": {"const": false},
+        "treated_as_merge_approval": {"const": false},
+        "non_authoritative_boundary_statement": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "registerEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["blocker_id", "state", "evidence_reference", "notes"],
+      "properties": {
+        "blocker_id": {
+          "enum": [
+            "missing-continuity-evidence",
+            "candidate-merge-mismatch",
+            "missing-receipt-binding",
+            "incomplete-path-coverage",
+            "unexplained-digest-or-mode-drift"
+          ]
+        },
+        "state": {"const": "resolved"},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "notes": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "prerequisiteEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prerequisite_id", "state", "evidence_reference", "notes"],
+      "properties": {
+        "prerequisite_id": {
+          "enum": [
+            "track-e3-not-completed",
+            "track-e4-not-completed",
+            "final-m15-completion-not-approved",
+            "tracker-231-open",
+            "readme-completion-not-authorized",
+            "v0.14.0-tag-not-authorized",
+            "github-release-not-authorized"
+          ]
+        },
+        "state": {"const": "open"},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "notes": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "releaseBoundaryRegister": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "record_id",
+        "issue",
+        "parent_tracker",
+        "e2_linkage_blocker_count",
+        "e2_linkage_blockers",
+        "future_release_prerequisite_count",
+        "future_release_prerequisites",
+        "future_release_candidate",
+        "governance_boundary",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-release-proof-linkage-boundary-register/v1"},
+        "document_type": {"const": "release-blocker-and-prerequisite-register"},
+        "record_id": {"const": "urn:aaos:m15:release-proof-linkage:e2:release-boundaries"},
+        "issue": {"const": "#248"},
+        "parent_tracker": {"const": "#231"},
+        "e2_linkage_blocker_count": {"const": 5},
+        "e2_linkage_blockers": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {"$ref": "#/$defs/registerEntry"}
+        },
+        "future_release_prerequisite_count": {"const": 7},
+        "future_release_prerequisites": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {"$ref": "#/$defs/prerequisiteEntry"}
+        },
+        "future_release_candidate": {"$ref": "#/$defs/futureReleaseCandidate"},
+        "governance_boundary": {"$ref": "#/$defs/governanceBoundary"},
+        "non_authoritative_boundary_statement": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "executableBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "declared_launcher",
+        "actual_launcher",
+        "launcher_substitution_detected",
+        "launcher_substitution_declared",
+        "python_implementation",
+        "python_version"
+      ],
+      "properties": {
+        "declared_launcher": {"const": "python"},
+        "actual_launcher": {"type": "string", "minLength": 1},
+        "launcher_substitution_detected": {"type": "boolean"},
+        "launcher_substitution_declared": {"type": "boolean"},
+        "python_implementation": {"const": "CPython"},
+        "python_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?$"}
+      }
+    },
+    "verificationCommandReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_id",
+        "declared_logical_argv",
+        "actual_argv",
+        "execution_scope",
+        "execution_candidate_head_sha",
+        "executable_binding",
+        "tests_observed",
+        "passes",
+        "failures",
+        "errors",
+        "skips",
+        "exit_code",
+        "execution_timestamp",
+        "transcript_sha256",
+        "evidence_reference",
+        "executed_by_evaluator",
+        "verification_results_are_release_authority"
+      ],
+      "properties": {
+        "command_id": {"type": "string", "pattern": "^run_[a-z0-9_]+$"},
+        "declared_logical_argv": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "actual_argv": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "execution_scope": {
+          "enum": [
+            "e2-candidate-validation",
+            "inherited-regression",
+            "candidate-full-suite-integration"
+          ]
+        },
+        "execution_candidate_head_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "executable_binding": {"$ref": "#/$defs/executableBinding"},
+        "tests_observed": {"type": "integer", "minimum": 0},
+        "passes": {"type": "integer", "minimum": 0},
+        "failures": {"type": "integer", "minimum": 0},
+        "errors": {"type": "integer", "minimum": 0},
+        "skips": {"type": "integer", "minimum": 0},
+        "exit_code": {"type": "integer"},
+        "execution_timestamp": {"$ref": "#/$defs/rfc3339Utc"},
+        "transcript_sha256": {"$ref": "#/$defs/sha256"},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "executed_by_evaluator": {"const": false},
+        "verification_results_are_release_authority": {"const": false}
+      }
+    },
+    "externalVerificationReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "repository",
+        "issue_number",
+        "pull_request_number",
+        "source_main_base_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "command_receipt_count",
+        "commands",
+        "external_to_candidate_commit",
+        "executed_by_evaluator",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-release-proof-linkage-verification-receipt/v1"},
+        "document_type": {"const": "external-verification-execution-receipt"},
+        "repository": {"const": "aa-os/aaos-public"},
+        "issue_number": {"const": 248},
+        "pull_request_number": {"type": "integer", "minimum": 1},
+        "source_main_base_sha": {"const": "27c92e290cf6ad60bada49b63fe1888511930980"},
+        "execution_subject_type": {"const": "pull-request-candidate-checkout"},
+        "execution_candidate_reference": {"type": "string", "pattern": "^pull-request:#[1-9][0-9]*$"},
+        "execution_candidate_head_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "command_receipt_count": {"const": 14},
+        "commands": {
+          "type": "array",
+          "minItems": 14,
+          "maxItems": 14,
+          "items": {"$ref": "#/$defs/verificationCommandReceipt"}
+        },
+        "external_to_candidate_commit": {"const": true},
+        "executed_by_evaluator": {"const": false},
+        "non_authoritative_boundary_statement": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "scenarioEvidenceState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "historical_bindings_present",
+        "candidate_head_binding_valid",
+        "candidate_tree_binding_valid",
+        "merge_commit_binding_valid",
+        "merge_tree_present",
+        "merge_parent_binding_valid",
+        "candidate_manifest_complete",
+        "merge_manifest_complete",
+        "required_candidate_paths_present_after_merge",
+        "blob_continuity_valid",
+        "canonical_digest_continuity_valid",
+        "file_mode_continuity_valid",
+        "unexpected_path_substitution_absent",
+        "e1_receipt_present",
+        "e1_receipt_digest_valid",
+        "e1_receipt_candidate_binding_valid",
+        "e1_receipt_baseline_binding_valid",
+        "e1_receipt_treated_as_merge_approval",
+        "provenance_treated_as_human_approval",
+        "operational_readiness_treated_as_completion_approval",
+        "merge_commit_treated_as_published_release",
+        "release_candidate_identifier_present",
+        "release_candidate_state",
+        "github_release_state",
+        "tracker_231_state",
+        "m15_state",
+        "readme_completion_authorized",
+        "linkage_blocker_register_complete",
+        "unresolved_linkage_blocker_count",
+        "continuity_verified",
+        "unverified_continuity_treated_as_linked",
+        "decision_proof_sealing_claimed",
+        "learning_proof_sealing_claimed",
+        "candidate_and_merge_trees_equal",
+        "candidate_change_set_preserved",
+        "additional_merge_differences_explained",
+        "future_release_prerequisites_visible",
+        "external_e2_verification_receipt_present",
+        "external_e2_verification_receipt_consistent",
+        "change_type"
+      ],
+      "properties": {
+        "historical_bindings_present": {"type": "boolean"},
+        "candidate_head_binding_valid": {"type": "boolean"},
+        "candidate_tree_binding_valid": {"type": "boolean"},
+        "merge_commit_binding_valid": {"type": "boolean"},
+        "merge_tree_present": {"type": "boolean"},
+        "merge_parent_binding_valid": {"type": "boolean"},
+        "candidate_manifest_complete": {"type": "boolean"},
+        "merge_manifest_complete": {"type": "boolean"},
+        "required_candidate_paths_present_after_merge": {"type": "boolean"},
+        "blob_continuity_valid": {"type": "boolean"},
+        "canonical_digest_continuity_valid": {"type": "boolean"},
+        "file_mode_continuity_valid": {"type": "boolean"},
+        "unexpected_path_substitution_absent": {"type": "boolean"},
+        "e1_receipt_present": {"type": "boolean"},
+        "e1_receipt_digest_valid": {"type": "boolean"},
+        "e1_receipt_candidate_binding_valid": {"type": "boolean"},
+        "e1_receipt_baseline_binding_valid": {"type": "boolean"},
+        "e1_receipt_treated_as_merge_approval": {"type": "boolean"},
+        "provenance_treated_as_human_approval": {"type": "boolean"},
+        "operational_readiness_treated_as_completion_approval": {"type": "boolean"},
+        "merge_commit_treated_as_published_release": {"type": "boolean"},
+        "release_candidate_identifier_present": {"type": "boolean"},
+        "release_candidate_state": {"type": "string"},
+        "github_release_state": {"type": "string"},
+        "tracker_231_state": {"type": "string"},
+        "m15_state": {"type": "string"},
+        "readme_completion_authorized": {"type": "boolean"},
+        "linkage_blocker_register_complete": {"type": "boolean"},
+        "unresolved_linkage_blocker_count": {"type": "integer", "minimum": 0},
+        "continuity_verified": {"type": "boolean"},
+        "unverified_continuity_treated_as_linked": {"type": "boolean"},
+        "decision_proof_sealing_claimed": {"type": "boolean"},
+        "learning_proof_sealing_claimed": {"type": "boolean"},
+        "candidate_and_merge_trees_equal": {"type": "boolean"},
+        "candidate_change_set_preserved": {"type": "boolean"},
+        "additional_merge_differences_explained": {"type": "boolean"},
+        "future_release_prerequisites_visible": {"type": "boolean"},
+        "external_e2_verification_receipt_present": {"type": "boolean"},
+        "external_e2_verification_receipt_consistent": {"type": "boolean"},
+        "change_type": {"enum": ["addition", "modification", "rename", "deletion", "mixed"]}
+      }
+    },
+    "syntheticScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "scenario_id",
+        "title",
+        "synthetic",
+        "expected_outcome",
+        "expected_relation",
+        "evidence_state",
+        "notes"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-release-proof-linkage-scenario/v1"},
+        "document_type": {"const": "synthetic-scenario"},
+        "scenario_id": {"type": "string", "pattern": "^m15-e2-[0-9]{2}$"},
+        "title": {"type": "string", "minLength": 1},
+        "synthetic": {"const": true},
+        "expected_outcome": {"$ref": "#/$defs/outcome"},
+        "expected_relation": {"$ref": "#/$defs/continuityRelation"},
+        "evidence_state": {"$ref": "#/$defs/scenarioEvidenceState"},
+        "notes": {"$ref": "#/$defs/reference"}
+      }
+    }
+  }
+}
