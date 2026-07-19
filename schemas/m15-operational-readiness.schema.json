@@ -5,6 +5,7 @@
   "oneOf": [
     {"$ref": "#/$defs/maintainedManifest"},
     {"$ref": "#/$defs/observationEvidence"},
+    {"$ref": "#/$defs/verificationExecutionReceipt"},
     {"$ref": "#/$defs/syntheticScenario"}
   ],
   "$defs": {
@@ -198,6 +199,7 @@
         "command_id",
         "argv",
         "test_scope",
+        "verification_scope",
         "required",
         "expected_exit_code",
         "executed_by_evaluator"
@@ -213,6 +215,13 @@
           "items": {"type": "string", "minLength": 1}
         },
         "test_scope": {"type": "string", "minLength": 1},
+        "verification_scope": {
+          "enum": [
+            "source-baseline-regression",
+            "e1-candidate-validation",
+            "candidate-full-suite-integration"
+          ]
+        },
         "required": {"const": true},
         "expected_exit_code": {"const": 0},
         "executed_by_evaluator": {"const": false}
@@ -226,6 +235,7 @@
         "environment",
         "execution_policy",
         "execution_results_recorded",
+        "external_execution_receipt_required",
         "commands_executed_by_evaluator",
         "results_supplied_as_external_verification_evidence",
         "verification_results_are_completion_approval",
@@ -243,6 +253,7 @@
         },
         "execution_policy": {"const": "declarative-commands-with-supplied-external-results"},
         "execution_results_recorded": {"const": true},
+        "external_execution_receipt_required": {"const": true},
         "commands_executed_by_evaluator": {"const": false},
         "results_supplied_as_external_verification_evidence": {"const": true},
         "verification_results_are_completion_approval": {"const": false},
@@ -262,7 +273,11 @@
         "verification_id",
         "command_id",
         "evidence_source",
-        "maintained_main_commit_sha",
+        "source_baseline_commit_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "verification_scope",
         "expected_test_count",
         "observed_test_count",
         "passes",
@@ -272,6 +287,7 @@
         "exit_code",
         "result",
         "evidence_reference",
+        "external_execution_receipt_required",
         "executed_by_evaluator",
         "verification_results_are_completion_approval"
       ],
@@ -285,10 +301,20 @@
           "pattern": "^run_[a-z0-9_]+$"
         },
         "evidence_source": {
-          "const": "externally-supplied-maintained-repository-test-execution"
+          "const": "external-verification-receipt-required"
         },
-        "maintained_main_commit_sha": {
+        "source_baseline_commit_sha": {
           "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+        },
+        "execution_subject_type": {"const": "pull-request-candidate-checkout"},
+        "execution_candidate_reference": {"const": "pull-request:#243"},
+        "execution_candidate_head_sha": {"type": "null"},
+        "verification_scope": {
+          "enum": [
+            "source-baseline-regression",
+            "e1-candidate-validation",
+            "candidate-full-suite-integration"
+          ]
         },
         "expected_test_count": {"type": "integer", "minimum": 0},
         "observed_test_count": {"type": "integer", "minimum": 0},
@@ -299,6 +325,7 @@
         "exit_code": {"type": "integer"},
         "result": {"enum": ["pass", "fail"]},
         "evidence_reference": {"$ref": "#/$defs/reference"},
+        "external_execution_receipt_required": {"const": true},
         "executed_by_evaluator": {"const": false},
         "verification_results_are_completion_approval": {"const": false}
       }
@@ -309,6 +336,8 @@
       "required": [
         "result_count",
         "results_supplied_as_external_verification_evidence",
+        "result_records_are_execution_receipts",
+        "external_execution_receipt_required",
         "executed_by_evaluator",
         "verification_results_are_completion_approval",
         "results"
@@ -316,6 +345,8 @@
       "properties": {
         "result_count": {"const": 13},
         "results_supplied_as_external_verification_evidence": {"const": true},
+        "result_records_are_execution_receipts": {"const": false},
+        "external_execution_receipt_required": {"const": true},
         "executed_by_evaluator": {"const": false},
         "verification_results_are_completion_approval": {"const": false},
         "results": {
@@ -324,6 +355,161 @@
           "maxItems": 13,
           "uniqueItems": true,
           "items": {"$ref": "#/$defs/verificationResult"}
+        }
+      }
+    },
+    "verificationExecutableBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "declared_launcher",
+        "actual_launcher",
+        "launcher_substitution_detected",
+        "launcher_substitution_declared",
+        "python_implementation",
+        "python_version"
+      ],
+      "properties": {
+        "declared_launcher": {"const": "python"},
+        "actual_launcher": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "launcher_substitution_detected": {"type": "boolean"},
+        "launcher_substitution_declared": {"type": "boolean"},
+        "python_implementation": {"type": "string", "minLength": 1, "maxLength": 128},
+        "python_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+        }
+      }
+    },
+    "verificationExecutionCommandReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verification_id",
+        "command_id",
+        "verification_scope",
+        "source_baseline_commit_sha",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "declared_logical_argv",
+        "actual_argv",
+        "executable_binding",
+        "observed_test_count",
+        "passes",
+        "failures",
+        "errors",
+        "skips",
+        "exit_code",
+        "result",
+        "execution_timestamp",
+        "output_transcript_sha256",
+        "evidence_reference",
+        "executed_by_evaluator",
+        "verification_results_are_completion_approval"
+      ],
+      "properties": {
+        "verification_id": {
+          "type": "string",
+          "pattern": "^m15-e1-verification-[0-9]{2}$"
+        },
+        "command_id": {
+          "type": "string",
+          "pattern": "^run_[a-z0-9_]+$"
+        },
+        "verification_scope": {
+          "enum": [
+            "source-baseline-regression",
+            "e1-candidate-validation",
+            "candidate-full-suite-integration"
+          ]
+        },
+        "source_baseline_commit_sha": {
+          "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+        },
+        "execution_candidate_reference": {"const": "pull-request:#243"},
+        "execution_candidate_head_sha": {
+          "allOf": [
+            {"$ref": "#/$defs/gitCommitSha"},
+            {"not": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"}}
+          ]
+        },
+        "declared_logical_argv": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "actual_argv": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "executable_binding": {"$ref": "#/$defs/verificationExecutableBinding"},
+        "observed_test_count": {"type": "integer", "minimum": 0},
+        "passes": {"type": "integer", "minimum": 0},
+        "failures": {"type": "integer", "minimum": 0},
+        "errors": {"type": "integer", "minimum": 0},
+        "skips": {"type": "integer", "minimum": 0},
+        "exit_code": {"type": "integer"},
+        "result": {"enum": ["pass", "fail"]},
+        "execution_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "output_transcript_sha256": {"$ref": "#/$defs/sha256"},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "executed_by_evaluator": {"const": false},
+        "verification_results_are_completion_approval": {"const": false}
+      }
+    },
+    "verificationExecutionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_type",
+        "repository",
+        "pull_request_number",
+        "source_baseline_commit_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "command_receipt_count",
+        "commands",
+        "external_to_candidate_commit",
+        "executed_by_evaluator",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-operational-readiness-verification-receipt/v1"
+        },
+        "document_type": {"const": "external-verification-execution-receipt"},
+        "repository": {"const": "aa-os/aaos-public"},
+        "pull_request_number": {"const": 243},
+        "source_baseline_commit_sha": {
+          "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+        },
+        "execution_subject_type": {"const": "pull-request-candidate-checkout"},
+        "execution_candidate_reference": {"const": "pull-request:#243"},
+        "execution_candidate_head_sha": {
+          "allOf": [
+            {"$ref": "#/$defs/gitCommitSha"},
+            {"not": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"}}
+          ]
+        },
+        "command_receipt_count": {"const": 13},
+        "commands": {
+          "type": "array",
+          "minItems": 13,
+          "maxItems": 13,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/verificationExecutionCommandReceipt"}
+        },
+        "external_to_candidate_commit": {"const": true},
+        "executed_by_evaluator": {"const": false},
+        "non_authoritative_boundary_statement": {
+          "const": "The external verification receipt is inert, caller-supplied execution evidence only; it is not M15 completion approval, tracker #231 closure, README completion or release authorization, tag authorization, release authorization, or GitHub Release publication authorization."
         }
       }
     },
@@ -497,6 +683,10 @@
         "maintained_repository",
         "maintained_branch",
         "maintained_main_commit_sha",
+        "source_baseline_commit_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
         "parent_tracker",
         "source_track_bindings",
         "artifact_integrity_inventory",
@@ -518,6 +708,10 @@
         "maintained_repository": {"const": "aa-os/aaos-public"},
         "maintained_branch": {"const": "main"},
         "maintained_main_commit_sha": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+        "source_baseline_commit_sha": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+        "execution_subject_type": {"const": "pull-request-candidate-checkout"},
+        "execution_candidate_reference": {"const": "pull-request:#243"},
+        "execution_candidate_head_sha": {"type": "null"},
         "parent_tracker": {"const": "#231"},
         "source_track_bindings": {
           "type": "array",
@@ -658,6 +852,7 @@
         "maintained_repository",
         "maintained_branch",
         "maintained_main_commit_sha",
+        "source_baseline_commit_sha",
         "artifact_observation_count",
         "dependency_observation_count",
         "artifact_observations",
@@ -676,6 +871,9 @@
         "maintained_repository": {"const": "aa-os/aaos-public"},
         "maintained_branch": {"const": "main"},
         "maintained_main_commit_sha": {
+          "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+        },
+        "source_baseline_commit_sha": {
           "const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
         },
         "artifact_observation_count": {"const": 67},
@@ -749,6 +947,13 @@
         "verification_errors": {"type": "integer", "minimum": 0},
         "verification_skips": {"type": "integer", "minimum": 0},
         "verification_execution_claimed": {"type": "boolean"},
+        "candidate_head_matches_receipt": {"type": "boolean"},
+        "baseline_candidate_sha_distinct": {"type": "boolean"},
+        "external_execution_receipt_present": {"type": "boolean"},
+        "launcher_substitution_declared": {"type": "boolean"},
+        "interpreter_identity_present": {"type": "boolean"},
+        "transcript_digest_present": {"type": "boolean"},
+        "command_result_binding_matches": {"type": "boolean"},
         "required_artifact_status": {"$ref": "#/$defs/artifactLifecycleStatus"},
         "artifact_deferred_reason": {
           "oneOf": [
@@ -815,7 +1020,14 @@
             "m15-e1-24",
             "m15-e1-25",
             "m15-e1-26",
-            "m15-e1-27"
+            "m15-e1-27",
+            "m15-e1-28",
+            "m15-e1-29",
+            "m15-e1-30",
+            "m15-e1-31",
+            "m15-e1-32",
+            "m15-e1-33",
+            "m15-e1-34"
           ]
         },
         "title": {
@@ -846,7 +1058,14 @@
             "Verification result omits the maintained-main binding",
             "Required material artifact remains unverified",
             "Deferred material artifact has no reason",
-            "Track D external-control dependency binding has drifted"
+            "Track D external-control dependency binding has drifted",
+            "Candidate-head receipt binding mismatch",
+            "Source-baseline and candidate SHA conflation",
+            "Missing external execution receipt",
+            "Undeclared Python launcher substitution",
+            "Missing Python interpreter version",
+            "Missing verification transcript digest",
+            "Verification command/result binding mismatch"
           ]
         },
         "synthetic": {"const": true},

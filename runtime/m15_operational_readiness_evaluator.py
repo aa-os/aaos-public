@@ -1,9 +1,9 @@
 """Deterministic, caller-data-only evaluator for M15 Track E1 readiness.
 
-The evaluator accepts inert manifest and repository-observation mappings.  It
-does not read files, inspect Git or GitHub, invoke source controls, execute the
-verification command manifest, mutate caller data, or grant completion or
-release authority.
+The evaluator accepts inert manifest, repository-observation, and external
+verification-receipt mappings.  It does not read files, inspect Git or GitHub,
+invoke source controls, execute the verification command manifest, mutate
+caller data, or grant completion or release authority.
 """
 
 from __future__ import annotations
@@ -18,7 +18,12 @@ MANIFEST_SCHEMA_VERSION = "m15-operational-readiness/v1"
 SCENARIO_SCHEMA_VERSION = "m15-operational-readiness-scenario/v1"
 RESULT_SCHEMA_VERSION = "m15-operational-readiness-result/v1"
 OBSERVATION_SCHEMA_VERSION = "m15-operational-readiness-observation/v1"
-MAINTAINED_MAIN_SHA = "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+VERIFICATION_RECEIPT_SCHEMA_VERSION = (
+    "m15-operational-readiness-verification-receipt/v1"
+)
+SOURCE_BASELINE_SHA = "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+# Kept as a compatibility alias for the maintained Track A-D snapshot.
+MAINTAINED_MAIN_SHA = SOURCE_BASELINE_SHA
 
 READY_FOR_COMPLETION_REVIEW = "ready_for_completion_review"
 NOT_READY = "not_ready"
@@ -35,12 +40,22 @@ NON_AUTHORITATIVE_BOUNDARY_STATEMENT = (
     "README completion or release authorization, tag authorization, release "
     "authorization, or GitHub Release publication authorization."
 )
+VERIFICATION_RECEIPT_NON_AUTHORITATIVE_BOUNDARY_STATEMENT = (
+    "The external verification receipt is inert, caller-supplied execution evidence only; "
+    "it is not M15 completion approval, tracker #231 closure, README completion or release "
+    "authorization, tag authorization, release authorization, or GitHub Release "
+    "publication authorization."
+)
 SYNTHETIC_SCENARIO_BOUNDARY_STATEMENT = (
     "This standalone scenario is synthetic, inert, offline, and "
     "non-authoritative. " + NON_AUTHORITATIVE_BOUNDARY_STATEMENT
 )
 
 _DIGEST_RE = re.compile(r"^[0-9a-f]{64}$")
+_COMMIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+_RFC3339_RE = re.compile(
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$"
+)
 
 EXPECTED_SCENARIO_TITLES = {
     "m15-e1-01": "Valid maintained-main operational-readiness evidence",
@@ -70,6 +85,13 @@ EXPECTED_SCENARIO_TITLES = {
     "m15-e1-25": "Required material artifact remains unverified",
     "m15-e1-26": "Deferred material artifact has no reason",
     "m15-e1-27": "Track D external-control dependency binding has drifted",
+    "m15-e1-28": "Candidate-head receipt binding mismatch",
+    "m15-e1-29": "Source-baseline and candidate SHA conflation",
+    "m15-e1-30": "Missing external execution receipt",
+    "m15-e1-31": "Undeclared Python launcher substitution",
+    "m15-e1-32": "Missing Python interpreter version",
+    "m15-e1-33": "Missing verification transcript digest",
+    "m15-e1-34": "Verification command/result binding mismatch",
 }
 
 
@@ -366,7 +388,7 @@ EXPECTED_VERIFICATION_COMMANDS: dict[str, dict[str, Any]] = {
 }
 
 EXPECTED_VERIFICATION_RESULT_COUNTS = {
-    "run_m15_e1_targeted_tests": 103,
+    "run_m15_e1_targeted_tests": 126,
     "run_m15_track_a_tests": 68,
     "run_m15_track_b_tests": 73,
     "run_m15_track_c_tests": 180,
@@ -378,11 +400,21 @@ EXPECTED_VERIFICATION_RESULT_COUNTS = {
     "run_m14_cross_control_authority_tests": 107,
     "run_decision_proof_ownership_tests": 30,
     "run_release_state_and_m15_status_tests": 17,
-    "run_full_maintained_repository_suite": 1755,
+    "run_full_maintained_repository_suite": 1778,
 }
 EXPECTED_VERIFICATION_IDS = {
     command_id: f"m15-e1-verification-{index:02d}"
     for index, command_id in enumerate(EXPECTED_VERIFICATION_COMMANDS, start=1)
+}
+EXPECTED_VERIFICATION_SCOPES = {
+    command_id: (
+        "e1-candidate-validation"
+        if command_id == "run_m15_e1_targeted_tests"
+        else "candidate-full-suite-integration"
+        if command_id == "run_full_maintained_repository_suite"
+        else "source-baseline-regression"
+    )
+    for command_id in EXPECTED_VERIFICATION_COMMANDS
 }
 
 EXPECTED_EXTERNAL_CONTROL_DEPENDENCIES = {
@@ -573,6 +605,10 @@ _MANIFEST_FIELDS = frozenset(
         "maintained_repository",
         "maintained_branch",
         "maintained_main_commit_sha",
+        "source_baseline_commit_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
         "parent_tracker",
         "source_track_bindings",
         "artifact_integrity_inventory",
@@ -639,6 +675,7 @@ _VERIFICATION_FIELDS = frozenset(
         "execution_results_recorded",
         "commands_executed_by_evaluator",
         "results_supplied_as_external_verification_evidence",
+        "external_execution_receipt_required",
         "verification_results_are_completion_approval",
         "commands",
     }
@@ -648,6 +685,7 @@ _COMMAND_FIELDS = frozenset(
         "command_id",
         "argv",
         "test_scope",
+        "verification_scope",
         "required",
         "expected_exit_code",
         "executed_by_evaluator",
@@ -674,6 +712,8 @@ _VERIFICATION_RESULT_MANIFEST_FIELDS = frozenset(
     {
         "result_count",
         "results_supplied_as_external_verification_evidence",
+        "result_records_are_execution_receipts",
+        "external_execution_receipt_required",
         "executed_by_evaluator",
         "verification_results_are_completion_approval",
         "results",
@@ -684,7 +724,11 @@ _VERIFICATION_RESULT_FIELDS = frozenset(
         "verification_id",
         "command_id",
         "evidence_source",
-        "maintained_main_commit_sha",
+        "source_baseline_commit_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "verification_scope",
         "expected_test_count",
         "observed_test_count",
         "passes",
@@ -694,6 +738,7 @@ _VERIFICATION_RESULT_FIELDS = frozenset(
         "exit_code",
         "result",
         "evidence_reference",
+        "external_execution_receipt_required",
         "executed_by_evaluator",
         "verification_results_are_completion_approval",
     }
@@ -742,6 +787,7 @@ _OBSERVATION_FIELDS = frozenset(
         "maintained_repository",
         "maintained_branch",
         "maintained_main_commit_sha",
+        "source_baseline_commit_sha",
         "artifact_observation_count",
         "dependency_observation_count",
         "artifact_observations",
@@ -772,6 +818,58 @@ _DEPENDENCY_OBSERVATION_FIELDS = frozenset(
         "evidence_reference",
         "authority_boundary",
         "notes",
+    }
+)
+_VERIFICATION_RECEIPT_FIELDS = frozenset(
+    {
+        "schema_version",
+        "document_type",
+        "repository",
+        "pull_request_number",
+        "source_baseline_commit_sha",
+        "execution_subject_type",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "command_receipt_count",
+        "commands",
+        "external_to_candidate_commit",
+        "executed_by_evaluator",
+        "non_authoritative_boundary_statement",
+    }
+)
+_VERIFICATION_RECEIPT_COMMAND_FIELDS = frozenset(
+    {
+        "verification_id",
+        "command_id",
+        "verification_scope",
+        "source_baseline_commit_sha",
+        "execution_candidate_reference",
+        "execution_candidate_head_sha",
+        "declared_logical_argv",
+        "actual_argv",
+        "executable_binding",
+        "observed_test_count",
+        "passes",
+        "failures",
+        "errors",
+        "skips",
+        "exit_code",
+        "result",
+        "execution_timestamp",
+        "output_transcript_sha256",
+        "evidence_reference",
+        "executed_by_evaluator",
+        "verification_results_are_completion_approval",
+    }
+)
+_EXECUTABLE_BINDING_FIELDS = frozenset(
+    {
+        "declared_launcher",
+        "actual_launcher",
+        "launcher_substitution_detected",
+        "launcher_substitution_declared",
+        "python_implementation",
+        "python_version",
     }
 )
 _SCENARIO_FIELDS = frozenset(
@@ -817,6 +915,17 @@ _SCENARIO_STATE_FIELDS = frozenset(
         "known_repository_local_completion_blockers",
     }
 )
+_SCENARIO_RECEIPT_STATE_FIELDS = frozenset(
+    {
+        "candidate_head_matches_receipt",
+        "baseline_candidate_sha_distinct",
+        "external_execution_receipt_present",
+        "launcher_substitution_declared",
+        "interpreter_identity_present",
+        "transcript_digest_present",
+        "command_result_binding_matches",
+    }
+)
 
 
 def _mapping_has_exact_fields(value: Any, fields: frozenset[str]) -> bool:
@@ -829,6 +938,14 @@ def _is_bool(value: Any) -> bool:
 
 def _is_sha256(value: Any) -> bool:
     return isinstance(value, str) and bool(_DIGEST_RE.fullmatch(value))
+
+
+def _is_commit_sha(value: Any) -> bool:
+    return isinstance(value, str) and bool(_COMMIT_SHA_RE.fullmatch(value))
+
+
+def _is_rfc3339(value: Any) -> bool:
+    return isinstance(value, str) and bool(_RFC3339_RE.fullmatch(value))
 
 
 def _is_nonempty_string(value: Any) -> bool:
@@ -877,6 +994,8 @@ def _result(
     evaluated_dependency_observation_count: int = 0,
     evaluated_verification_command_count: int = 0,
     evaluated_verification_result_count: int = 0,
+    evaluated_verification_receipt_command_count: int = 0,
+    external_verification_receipt_validated: bool = False,
 ) -> dict[str, Any]:
     blocking = sorted(blocking_findings)
     readiness = sorted(readiness_findings)
@@ -902,6 +1021,8 @@ def _result(
         "evaluated_dependency_observation_count": evaluated_dependency_observation_count,
         "evaluated_verification_command_count": evaluated_verification_command_count,
         "evaluated_verification_result_count": evaluated_verification_result_count,
+        "evaluated_verification_receipt_command_count": evaluated_verification_receipt_command_count,
+        "external_verification_receipt_validated": external_verification_receipt_validated,
         "caller_data_only": True,
         "file_io_performed": False,
         "external_controls_invoked": False,
@@ -1062,6 +1183,8 @@ def _validate_repository_observation(
         blocking.add("repository_observation_branch_mismatch")
     if value.get("maintained_main_commit_sha") != MAINTAINED_MAIN_SHA:
         blocking.add("repository_observation_main_sha_mismatch")
+    if value.get("source_baseline_commit_sha") != SOURCE_BASELINE_SHA:
+        blocking.add("repository_observation_source_baseline_sha_mismatch")
     if value.get("artifact_observation_count") != len(REQUIRED_ARTIFACTS):
         blocking.add("artifact_observation_count_invalid")
     dependency_path_count = sum(
@@ -1307,10 +1430,20 @@ def _validate_verification_results(
         result = results[command_id]
         if result.get("verification_id") != EXPECTED_VERIFICATION_IDS[command_id]:
             blocking.add(f"verification_result_id_mismatch:{command_id}")
-        if result.get("evidence_source") != "externally-supplied-maintained-repository-test-execution":
+        if result.get("evidence_source") != "external-verification-receipt-required":
             blocking.add(f"verification_result_evidence_source_invalid:{command_id}")
-        if result.get("maintained_main_commit_sha") != MAINTAINED_MAIN_SHA:
-            blocking.add(f"verification_result_main_sha_mismatch:{command_id}")
+        if result.get("source_baseline_commit_sha") != SOURCE_BASELINE_SHA:
+            blocking.add(f"verification_result_source_baseline_sha_mismatch:{command_id}")
+        if result.get("execution_subject_type") != "pull-request-candidate-checkout":
+            blocking.add(f"verification_result_execution_subject_invalid:{command_id}")
+        if result.get("execution_candidate_reference") != "pull-request:#243":
+            blocking.add(f"verification_result_candidate_reference_invalid:{command_id}")
+        if result.get("execution_candidate_head_sha") is not None:
+            blocking.add(f"verification_result_candidate_head_self_reference:{command_id}")
+        if result.get("verification_scope") != EXPECTED_VERIFICATION_SCOPES[command_id]:
+            blocking.add(f"verification_result_scope_mismatch:{command_id}")
+        if result.get("external_execution_receipt_required") is not True:
+            blocking.add(f"verification_result_external_receipt_boundary_invalid:{command_id}")
         if result.get("executed_by_evaluator") is not False:
             blocking.add(f"verification_result_execution_claim:{command_id}")
         if result.get("verification_results_are_completion_approval") is not False:
@@ -1327,7 +1460,9 @@ def _validate_verification_results(
         ):
             if not _is_nonnegative_integer(result.get(field)):
                 blocking.add(f"verification_result_count_invalid:{command_id}:{field}")
-        if not isinstance(result.get("exit_code"), int) or isinstance(result.get("exit_code"), bool):
+        if not isinstance(result.get("exit_code"), int) or isinstance(
+            result.get("exit_code"), bool
+        ):
             blocking.add(f"verification_result_exit_code_invalid:{command_id}")
         expected_count = EXPECTED_VERIFICATION_RESULT_COUNTS[command_id]
         if result.get("expected_test_count") != expected_count:
@@ -1374,6 +1509,10 @@ def _validate_verification_result_manifest(
         readiness.add("verification_result_count_incomplete")
     if value.get("results_supplied_as_external_verification_evidence") is not True:
         blocking.add("verification_result_external_evidence_boundary_invalid")
+    if value.get("result_records_are_execution_receipts") is not False:
+        blocking.add("verification_result_receipt_claim_invalid")
+    if value.get("external_execution_receipt_required") is not True:
+        blocking.add("verification_result_external_receipt_requirement_invalid")
     if value.get("executed_by_evaluator") is not False:
         blocking.add("verification_result_manifest_execution_claim")
     if value.get("verification_results_are_completion_approval") is not False:
@@ -1401,6 +1540,8 @@ def _validate_verification_manifest(
         blocking.add("verification_execution_claimed")
     if value.get("results_supplied_as_external_verification_evidence") is not True:
         blocking.add("verification_external_result_boundary_invalid")
+    if value.get("external_execution_receipt_required") is not True:
+        blocking.add("verification_external_receipt_requirement_invalid")
     if value.get("verification_results_are_completion_approval") is not False:
         blocking.add("verification_promoted_to_completion_approval")
 
@@ -1434,6 +1575,8 @@ def _validate_verification_manifest(
             readiness.add(f"verification_command_invalid:{command_id}")
         if command.get("test_scope") != expected["test_scope"]:
             readiness.add(f"verification_command_scope_invalid:{command_id}")
+        if command.get("verification_scope") != EXPECTED_VERIFICATION_SCOPES[command_id]:
+            blocking.add(f"verification_command_execution_scope_invalid:{command_id}")
         if command.get("required") is not True:
             readiness.add(f"verification_command_not_required:{command_id}")
         if command.get("expected_exit_code") != 0:
@@ -1441,6 +1584,275 @@ def _validate_verification_manifest(
         if command.get("executed_by_evaluator") is not False:
             blocking.add(f"verification_execution_claimed:{command_id}")
     return len(observed)
+
+
+def _manifest_verification_records(
+    manifest: Mapping[str, Any],
+) -> tuple[dict[str, Mapping[str, Any]], dict[str, Mapping[str, Any]]]:
+    command_records: dict[str, Mapping[str, Any]] = {}
+    result_records: dict[str, Mapping[str, Any]] = {}
+    command_manifest = manifest.get("verification_command_manifest")
+    if isinstance(command_manifest, Mapping):
+        commands = command_manifest.get("commands")
+        if isinstance(commands, list):
+            for command in commands:
+                if isinstance(command, Mapping) and isinstance(command.get("command_id"), str):
+                    command_records.setdefault(command["command_id"], command)
+    result_manifest = manifest.get("verification_result_manifest")
+    if isinstance(result_manifest, Mapping):
+        results = result_manifest.get("results")
+        if isinstance(results, list):
+            for result in results:
+                if isinstance(result, Mapping) and isinstance(result.get("command_id"), str):
+                    result_records.setdefault(result["command_id"], result)
+    return command_records, result_records
+
+
+def _validate_receipt_executable_binding(
+    value: Any,
+    declared_argv: Any,
+    actual_argv: Any,
+    command_id: str,
+    blocking: set[str],
+) -> None:
+    if not _mapping_has_exact_fields(value, _EXECUTABLE_BINDING_FIELDS):
+        blocking.add(f"verification_receipt_executable_binding_shape_invalid:{command_id}")
+        return
+    declared_launcher = value.get("declared_launcher")
+    actual_launcher = value.get("actual_launcher")
+    if (
+        not isinstance(declared_argv, list)
+        or not declared_argv
+        or declared_launcher != declared_argv[0]
+    ):
+        blocking.add(f"verification_receipt_declared_launcher_mismatch:{command_id}")
+    if (
+        not isinstance(actual_argv, list)
+        or not actual_argv
+        or actual_launcher != actual_argv[0]
+    ):
+        blocking.add(f"verification_receipt_actual_launcher_mismatch:{command_id}")
+    if not _is_nonempty_string(declared_launcher):
+        blocking.add(f"verification_receipt_declared_launcher_invalid:{command_id}")
+    if not _is_nonempty_string(actual_launcher):
+        blocking.add(f"verification_receipt_actual_launcher_invalid:{command_id}")
+
+    substitution_detected = value.get("launcher_substitution_detected")
+    substitution_declared = value.get("launcher_substitution_declared")
+    if not _is_bool(substitution_detected):
+        blocking.add(f"verification_receipt_substitution_detection_invalid:{command_id}")
+    if not _is_bool(substitution_declared):
+        blocking.add(f"verification_receipt_substitution_declaration_invalid:{command_id}")
+    launchers_differ = (
+        _is_nonempty_string(declared_launcher)
+        and _is_nonempty_string(actual_launcher)
+        and declared_launcher != actual_launcher
+    )
+    if _is_bool(substitution_detected) and substitution_detected != launchers_differ:
+        blocking.add(f"verification_receipt_substitution_detection_mismatch:{command_id}")
+    if launchers_differ and substitution_declared is not True:
+        blocking.add(f"verification_receipt_undeclared_launcher_substitution:{command_id}")
+    if not launchers_differ and substitution_declared is True:
+        blocking.add(f"verification_receipt_false_launcher_substitution_declaration:{command_id}")
+
+    if value.get("python_implementation") != "CPython":
+        blocking.add(f"verification_receipt_python_implementation_invalid:{command_id}")
+    python_version = value.get("python_version")
+    if not isinstance(python_version, str) or re.fullmatch(r"\d+\.\d+\.\d+", python_version) is None:
+        blocking.add(f"verification_receipt_python_version_invalid:{command_id}")
+
+
+def _validate_external_verification_receipt(
+    value: Any,
+    manifest: Mapping[str, Any],
+    blocking: set[str],
+    readiness: set[str],
+) -> tuple[int, bool]:
+    if value is None:
+        readiness.add("verification_receipt_missing")
+        return 0, False
+    receipt_blocking_before = set(blocking)
+    if not _mapping_has_exact_fields(value, _VERIFICATION_RECEIPT_FIELDS):
+        blocking.add("verification_receipt_shape_invalid")
+        return 0, False
+    if value.get("schema_version") != VERIFICATION_RECEIPT_SCHEMA_VERSION:
+        blocking.add("verification_receipt_schema_version_mismatch")
+    if value.get("document_type") != "external-verification-execution-receipt":
+        blocking.add("verification_receipt_document_type_invalid")
+    if value.get("repository") != "aa-os/aaos-public":
+        blocking.add("verification_receipt_repository_mismatch")
+    if value.get("pull_request_number") != 243:
+        blocking.add("verification_receipt_pull_request_mismatch")
+    if value.get("source_baseline_commit_sha") != SOURCE_BASELINE_SHA:
+        blocking.add("verification_receipt_source_baseline_sha_mismatch")
+    if value.get("source_baseline_commit_sha") != manifest.get("source_baseline_commit_sha"):
+        blocking.add("verification_receipt_manifest_baseline_sha_mismatch")
+    if value.get("execution_subject_type") != "pull-request-candidate-checkout":
+        blocking.add("verification_receipt_execution_subject_invalid")
+    if value.get("execution_candidate_reference") != "pull-request:#243":
+        blocking.add("verification_receipt_candidate_reference_invalid")
+    candidate_head_sha = value.get("execution_candidate_head_sha")
+    if not _is_commit_sha(candidate_head_sha):
+        blocking.add("verification_receipt_candidate_head_sha_invalid")
+    elif candidate_head_sha == value.get("source_baseline_commit_sha"):
+        blocking.add("verification_receipt_baseline_candidate_sha_conflated")
+    if value.get("external_to_candidate_commit") is not True:
+        blocking.add("verification_receipt_externality_invalid")
+    if value.get("executed_by_evaluator") is not False:
+        blocking.add("verification_receipt_execution_claim")
+    if (
+        value.get("non_authoritative_boundary_statement")
+        != VERIFICATION_RECEIPT_NON_AUTHORITATIVE_BOUNDARY_STATEMENT
+    ):
+        blocking.add("verification_receipt_boundary_invalid")
+
+    command_receipt_count = value.get("command_receipt_count")
+    if not _is_nonnegative_integer(command_receipt_count):
+        blocking.add("verification_receipt_command_count_invalid")
+    elif command_receipt_count != len(EXPECTED_VERIFICATION_COMMANDS):
+        blocking.add("verification_receipt_command_count_incomplete")
+    commands = value.get("commands")
+    if not isinstance(commands, list):
+        blocking.add("verification_receipt_commands_invalid")
+        return 0, False
+
+    manifest_commands, manifest_results = _manifest_verification_records(manifest)
+    observed: dict[str, Mapping[str, Any]] = {}
+    for index, command in enumerate(commands):
+        if not _mapping_has_exact_fields(command, _VERIFICATION_RECEIPT_COMMAND_FIELDS):
+            blocking.add(f"verification_receipt_command_shape_invalid:{index}")
+            continue
+        command_id = command.get("command_id")
+        if command_id not in EXPECTED_VERIFICATION_COMMANDS or command_id in observed:
+            blocking.add(f"verification_receipt_command_identity_invalid:{index}")
+            continue
+        observed[command_id] = command
+
+    for command_id in sorted(set(EXPECTED_VERIFICATION_COMMANDS) - set(observed)):
+        blocking.add(f"verification_receipt_command_missing:{command_id}")
+    if len(commands) != len(EXPECTED_VERIFICATION_COMMANDS):
+        blocking.add("verification_receipt_command_coverage_incomplete")
+
+    for command_id in sorted(observed):
+        command = observed[command_id]
+        expected_manifest_command = manifest_commands.get(command_id)
+        expected_manifest_result = manifest_results.get(command_id)
+        if command.get("verification_id") != EXPECTED_VERIFICATION_IDS[command_id]:
+            blocking.add(f"verification_receipt_verification_id_mismatch:{command_id}")
+        if command.get("verification_scope") != EXPECTED_VERIFICATION_SCOPES[command_id]:
+            blocking.add(f"verification_receipt_scope_mismatch:{command_id}")
+        if (
+            isinstance(expected_manifest_command, Mapping)
+            and command.get("verification_scope") != expected_manifest_command.get("verification_scope")
+        ):
+            blocking.add(f"verification_receipt_manifest_scope_mismatch:{command_id}")
+        if command.get("source_baseline_commit_sha") != SOURCE_BASELINE_SHA:
+            blocking.add(f"verification_receipt_command_baseline_sha_mismatch:{command_id}")
+        if command.get("source_baseline_commit_sha") != value.get("source_baseline_commit_sha"):
+            blocking.add(f"verification_receipt_command_receipt_baseline_mismatch:{command_id}")
+        if command.get("execution_candidate_reference") != value.get("execution_candidate_reference"):
+            blocking.add(f"verification_receipt_command_candidate_reference_mismatch:{command_id}")
+        if command.get("execution_candidate_head_sha") != candidate_head_sha:
+            blocking.add(f"verification_receipt_candidate_head_mismatch:{command_id}")
+        if command.get("execution_candidate_head_sha") == command.get("source_baseline_commit_sha"):
+            blocking.add(f"verification_receipt_command_baseline_candidate_sha_conflated:{command_id}")
+
+        declared_argv = command.get("declared_logical_argv")
+        expected_argv = (
+            expected_manifest_command.get("argv")
+            if isinstance(expected_manifest_command, Mapping)
+            else EXPECTED_VERIFICATION_COMMANDS[command_id]["argv"]
+        )
+        if declared_argv != expected_argv:
+            blocking.add(f"verification_receipt_declared_argv_mismatch:{command_id}")
+        if (
+            not isinstance(declared_argv, list)
+            or not declared_argv
+            or not all(_is_nonempty_string(argument) for argument in declared_argv)
+        ):
+            blocking.add(f"verification_receipt_declared_argv_invalid:{command_id}")
+        actual_argv = command.get("actual_argv")
+        if (
+            not isinstance(actual_argv, list)
+            or not actual_argv
+            or not all(_is_nonempty_string(argument) for argument in actual_argv)
+        ):
+            blocking.add(f"verification_receipt_actual_argv_invalid:{command_id}")
+        elif isinstance(declared_argv, list) and actual_argv[1:] != declared_argv[1:]:
+            blocking.add(f"verification_receipt_actual_argv_binding_mismatch:{command_id}")
+        _validate_receipt_executable_binding(
+            command.get("executable_binding"),
+            declared_argv,
+            actual_argv,
+            command_id,
+            blocking,
+        )
+
+        for field in ("observed_test_count", "passes", "failures", "errors", "skips"):
+            if not _is_nonnegative_integer(command.get(field)):
+                blocking.add(f"verification_receipt_count_invalid:{command_id}:{field}")
+        expected_count = EXPECTED_VERIFICATION_RESULT_COUNTS[command_id]
+        if isinstance(expected_manifest_result, Mapping):
+            manifest_expected_count = expected_manifest_result.get("expected_test_count")
+            if manifest_expected_count != expected_count:
+                blocking.add(f"verification_receipt_manifest_expected_count_mismatch:{command_id}")
+            expected_count = manifest_expected_count
+            for field in (
+                "observed_test_count",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "result",
+            ):
+                if command.get(field) != expected_manifest_result.get(field):
+                    blocking.add(
+                        "verification_receipt_manifest_result_binding_mismatch:"
+                        f"{command_id}:{field}"
+                    )
+        if command.get("observed_test_count") != expected_count:
+            blocking.add(f"verification_receipt_observed_count_mismatch:{command_id}")
+        counts = [command.get(field) for field in ("passes", "failures", "errors", "skips")]
+        if all(_is_nonnegative_integer(count) for count in counts):
+            if sum(counts) != command.get("observed_test_count"):
+                blocking.add(f"verification_receipt_count_arithmetic_mismatch:{command_id}")
+        failures = command.get("failures")
+        errors = command.get("errors")
+        skips = command.get("skips")
+        exit_code = command.get("exit_code")
+        if _is_nonnegative_integer(failures) and failures:
+            blocking.add(f"verification_receipt_failures_present:{command_id}")
+        if _is_nonnegative_integer(errors) and errors:
+            blocking.add(f"verification_receipt_errors_present:{command_id}")
+        if _is_nonnegative_integer(skips) and skips:
+            readiness.add(f"verification_receipt_skips_present:{command_id}")
+        if not isinstance(exit_code, int) or isinstance(exit_code, bool):
+            blocking.add(f"verification_receipt_exit_code_invalid:{command_id}")
+        elif exit_code != 0:
+            blocking.add(f"verification_receipt_nonzero_exit:{command_id}")
+        coherent_pass = exit_code == 0 and failures == 0 and errors == 0
+        expected_result = "pass" if coherent_pass else "fail"
+        if command.get("result") not in {"pass", "fail"}:
+            blocking.add(f"verification_receipt_result_invalid:{command_id}")
+        elif command.get("result") != expected_result:
+            blocking.add(f"verification_receipt_command_result_binding_mismatch:{command_id}")
+        if not _is_rfc3339(command.get("execution_timestamp")):
+            blocking.add(f"verification_receipt_execution_timestamp_invalid:{command_id}")
+        if not _is_sha256(command.get("output_transcript_sha256")):
+            blocking.add(f"verification_receipt_output_transcript_sha256_invalid:{command_id}")
+        if not _is_nonempty_string(command.get("evidence_reference")):
+            blocking.add(f"verification_receipt_evidence_reference_invalid:{command_id}")
+        if command.get("executed_by_evaluator") is not False:
+            blocking.add(f"verification_receipt_command_execution_claim:{command_id}")
+        if command.get("verification_results_are_completion_approval") is not False:
+            blocking.add(f"verification_receipt_completion_approval_claim:{command_id}")
+
+    validated = (
+        len(observed) == len(EXPECTED_VERIFICATION_COMMANDS)
+        and set(blocking) == receipt_blocking_before
+    )
+    return len(observed), validated
 
 
 def _validate_governance(value: Any, blocking: set[str]) -> None:
@@ -1463,8 +1875,9 @@ def _validate_governance(value: Any, blocking: set[str]) -> None:
 def evaluate_operational_readiness(
     manifest: Mapping[str, Any],
     observation: Mapping[str, Any],
+    verification_receipt: Mapping[str, Any] | None,
 ) -> dict[str, Any]:
-    """Evaluate caller-supplied maintained E1 manifest and observation evidence."""
+    """Evaluate caller-supplied manifest, observation, and receipt evidence."""
 
     blocking: set[str] = set()
     readiness: set[str] = set()
@@ -1486,6 +1899,14 @@ def evaluate_operational_readiness(
         blocking.add("maintained_branch_binding_mismatch")
     if manifest.get("maintained_main_commit_sha") != MAINTAINED_MAIN_SHA:
         blocking.add("maintained_main_sha_mismatch")
+    if manifest.get("source_baseline_commit_sha") != SOURCE_BASELINE_SHA:
+        blocking.add("source_baseline_sha_mismatch")
+    if manifest.get("execution_subject_type") != "pull-request-candidate-checkout":
+        blocking.add("execution_subject_type_invalid")
+    if manifest.get("execution_candidate_reference") != "pull-request:#243":
+        blocking.add("execution_candidate_reference_invalid")
+    if manifest.get("execution_candidate_head_sha") is not None:
+        blocking.add("execution_candidate_head_self_reference")
     if manifest.get("parent_tracker") != "#231":
         blocking.add("parent_tracker_binding_mismatch")
     if manifest.get("allowed_outcomes") != list(OUTCOMES):
@@ -1522,6 +1943,14 @@ def evaluate_operational_readiness(
         blocking,
         readiness,
     )
+    verification_receipt_command_count, verification_receipt_validated = (
+        _validate_external_verification_receipt(
+            verification_receipt,
+            manifest,
+            blocking,
+            readiness,
+        )
+    )
     dependency_count = _validate_maintained_control_dependency_inventory(
         manifest.get("maintained_control_dependency_inventory"),
         blocking,
@@ -1550,6 +1979,8 @@ def evaluate_operational_readiness(
         evaluated_dependency_observation_count=dependency_observation_count,
         evaluated_verification_command_count=command_count,
         evaluated_verification_result_count=verification_result_count,
+        evaluated_verification_receipt_command_count=verification_receipt_command_count,
+        external_verification_receipt_validated=verification_receipt_validated,
     )
     if (
         result["outcome"] == READY_FOR_COMPLETION_REVIEW
@@ -1566,6 +1997,8 @@ def evaluate_operational_readiness(
             evaluated_dependency_observation_count=dependency_observation_count,
             evaluated_verification_command_count=command_count,
             evaluated_verification_result_count=verification_result_count,
+            evaluated_verification_receipt_command_count=verification_receipt_command_count,
+            external_verification_receipt_validated=verification_receipt_validated,
         )
     return result
 
@@ -1597,7 +2030,21 @@ def evaluate_synthetic_scenario(document: Mapping[str, Any]) -> dict[str, Any]:
         blocking.add("scenario_notes_boundary_invalid")
 
     state = document.get("evidence_state")
-    if not _mapping_has_exact_fields(state, _SCENARIO_STATE_FIELDS):
+    receipt_scenario = scenario_id in {
+        "m15-e1-28",
+        "m15-e1-29",
+        "m15-e1-30",
+        "m15-e1-31",
+        "m15-e1-32",
+        "m15-e1-33",
+        "m15-e1-34",
+    }
+    expected_state_fields = (
+        _SCENARIO_STATE_FIELDS | _SCENARIO_RECEIPT_STATE_FIELDS
+        if receipt_scenario
+        else _SCENARIO_STATE_FIELDS
+    )
+    if not _mapping_has_exact_fields(state, expected_state_fields):
         blocking.add("scenario_evidence_state_shape_invalid")
         return _result(blocking, readiness)
     non_boolean_fields = {
@@ -1612,6 +2059,22 @@ def evaluate_synthetic_scenario(document: Mapping[str, Any]) -> dict[str, Any]:
     for field in sorted(boolean_fields):
         if not _is_bool(state.get(field)):
             blocking.add(f"scenario_boolean_invalid:{field}")
+    if receipt_scenario:
+        for field in sorted(_SCENARIO_RECEIPT_STATE_FIELDS):
+            if not _is_bool(state.get(field)):
+                blocking.add(f"scenario_boolean_invalid:{field}")
+        if state.get("external_execution_receipt_present") is False:
+            readiness.add("scenario_external_execution_receipt_missing")
+        for field in (
+            "candidate_head_matches_receipt",
+            "baseline_candidate_sha_distinct",
+            "launcher_substitution_declared",
+            "interpreter_identity_present",
+            "transcript_digest_present",
+            "command_result_binding_matches",
+        ):
+            if state.get(field) is False:
+                blocking.add(f"scenario_receipt_binding_check_failed:{field}")
 
     for field in (
         "manifest_shape_valid",
@@ -1688,6 +2151,7 @@ __all__ = [
     "EXPECTED_VERIFICATION_COMMANDS",
     "EXPECTED_VERIFICATION_IDS",
     "EXPECTED_VERIFICATION_RESULT_COUNTS",
+    "EXPECTED_VERIFICATION_SCOPES",
     "MAINTAINED_MAIN_SHA",
     "MANIFEST_SCHEMA_VERSION",
     "NON_AUTHORITATIVE_BOUNDARY_STATEMENT",
@@ -1698,7 +2162,10 @@ __all__ = [
     "REQUIRED_ARTIFACTS",
     "RESULT_SCHEMA_VERSION",
     "SCENARIO_SCHEMA_VERSION",
+    "SOURCE_BASELINE_SHA",
     "SYNTHETIC_SCENARIO_BOUNDARY_STATEMENT",
+    "VERIFICATION_RECEIPT_NON_AUTHORITATIVE_BOUNDARY_STATEMENT",
+    "VERIFICATION_RECEIPT_SCHEMA_VERSION",
     "evaluate_operational_readiness",
     "evaluate_synthetic_scenario",
 ]

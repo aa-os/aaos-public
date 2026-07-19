@@ -18,6 +18,7 @@ from runtime.m15_operational_readiness_evaluator import (
     OUTCOMES,
     READY_FOR_COMPLETION_REVIEW,
     SYNTHETIC_SCENARIO_BOUNDARY_STATEMENT,
+    VERIFICATION_RECEIPT_NON_AUTHORITATIVE_BOUNDARY_STATEMENT,
     evaluate_operational_readiness,
     evaluate_synthetic_scenario,
 )
@@ -52,6 +53,10 @@ OBSERVATION_AUTHORITY_BOUNDARY = (
     "approval, tracker #231 closure, README authorization, tag authorization, release "
     "authorization, execution authority, or governance authority."
 )
+
+SYNTHETIC_CANDIDATE_SHA = "c" * 40
+ACTUAL_PYTHON_LAUNCHER = ".verification-python/python.exe"
+_USE_DEFAULT_RECEIPT = object()
 
 
 def _digest_path_lines(text):
@@ -284,12 +289,83 @@ def build_repository_observation(manifest=None, repository_root=ROOT):
         "maintained_repository": "aa-os/aaos-public",
         "maintained_branch": "main",
         "maintained_main_commit_sha": MAINTAINED_MAIN_SHA,
+        "source_baseline_commit_sha": MAINTAINED_MAIN_SHA,
         "artifact_observation_count": len(artifact_observations),
         "dependency_observation_count": len(dependency_observations),
         "artifact_observations": artifact_observations,
         "dependency_observations": dependency_observations,
         "generated_by_evaluator": False,
         "non_authoritative_boundary_statement": OBSERVATION_AUTHORITY_BOUNDARY,
+    }
+
+
+def build_verification_receipt(manifest=None, candidate_sha=SYNTHETIC_CANDIDATE_SHA):
+    """Build inert test-only execution evidence external to candidate source."""
+
+    manifest = load_manifest() if manifest is None else manifest
+    results = {
+        item["command_id"]: item
+        for item in manifest["verification_result_manifest"]["results"]
+    }
+    execution_candidate_reference = next(iter(results.values()))[
+        "execution_candidate_reference"
+    ]
+    command_receipts = []
+    for command in manifest["verification_command_manifest"]["commands"]:
+        command_id = command["command_id"]
+        summary = results[command_id]
+        declared_argv = list(command["argv"])
+        actual_argv = [ACTUAL_PYTHON_LAUNCHER, *declared_argv[1:]]
+        command_receipts.append(
+            {
+                "verification_id": summary["verification_id"],
+                "command_id": command_id,
+                "verification_scope": command["verification_scope"],
+                "source_baseline_commit_sha": manifest["source_baseline_commit_sha"],
+                "execution_candidate_reference": execution_candidate_reference,
+                "execution_candidate_head_sha": candidate_sha,
+                "declared_logical_argv": declared_argv,
+                "actual_argv": actual_argv,
+                "executable_binding": {
+                    "declared_launcher": "python",
+                    "actual_launcher": ACTUAL_PYTHON_LAUNCHER,
+                    "launcher_substitution_detected": True,
+                    "launcher_substitution_declared": True,
+                    "python_implementation": "CPython",
+                    "python_version": "3.14.6",
+                },
+                "observed_test_count": summary["observed_test_count"],
+                "passes": summary["passes"],
+                "failures": summary["failures"],
+                "errors": summary["errors"],
+                "skips": summary["skips"],
+                "exit_code": summary["exit_code"],
+                "result": summary["result"],
+                "execution_timestamp": "2026-07-19T00:00:00Z",
+                "output_transcript_sha256": hashlib.sha256(
+                    f"synthetic-transcript:{command_id}".encode("utf-8")
+                ).hexdigest(),
+                "evidence_reference": f"urn:aaos:m15:e1:external-receipt:{command_id}",
+                "executed_by_evaluator": False,
+                "verification_results_are_completion_approval": False,
+            }
+        )
+    return {
+        "schema_version": "m15-operational-readiness-verification-receipt/v1",
+        "document_type": "external-verification-execution-receipt",
+        "repository": "aa-os/aaos-public",
+        "pull_request_number": 243,
+        "source_baseline_commit_sha": manifest["source_baseline_commit_sha"],
+        "execution_subject_type": "pull-request-candidate-checkout",
+        "execution_candidate_reference": execution_candidate_reference,
+        "execution_candidate_head_sha": candidate_sha,
+        "command_receipt_count": len(command_receipts),
+        "commands": command_receipts,
+        "external_to_candidate_commit": True,
+        "executed_by_evaluator": False,
+        "non_authoritative_boundary_statement": (
+            VERIFICATION_RECEIPT_NON_AUTHORITATIVE_BOUNDARY_STATEMENT
+        ),
     }
 
 
@@ -443,13 +519,19 @@ class M15OperationalReadinessContractTests(unittest.TestCase):
         cls.schema = load_json(SCHEMA_PATH)
         cls.manifest = load_manifest()
         cls.observation = build_repository_observation(cls.manifest)
+        cls.receipt = build_verification_receipt(cls.manifest)
 
-    def test_01_schema_has_three_strict_document_kinds(self):
+    def test_01_schema_has_four_strict_document_kinds(self):
         self.assertEqual(
             self.schema["$schema"], "https://json-schema.org/draft/2020-12/schema"
         )
-        self.assertEqual(len(self.schema["oneOf"]), 3)
-        for name in ("maintainedManifest", "observationEvidence", "syntheticScenario"):
+        self.assertEqual(len(self.schema["oneOf"]), 4)
+        for name in (
+            "maintainedManifest",
+            "observationEvidence",
+            "verificationExecutionReceipt",
+            "syntheticScenario",
+        ):
             self.assertFalse(self.schema["$defs"][name]["additionalProperties"])
 
     def test_02_schema_distinguishes_commit_and_digest_shapes(self):
@@ -462,6 +544,15 @@ class M15OperationalReadinessContractTests(unittest.TestCase):
         self.assertEqual(self.manifest["maintained_repository"], "aa-os/aaos-public")
         self.assertEqual(self.manifest["maintained_branch"], "main")
         self.assertEqual(self.manifest["maintained_main_commit_sha"], MAINTAINED_MAIN_SHA)
+        self.assertEqual(self.manifest["source_baseline_commit_sha"], MAINTAINED_MAIN_SHA)
+        self.assertEqual(
+            self.manifest["execution_subject_type"],
+            "pull-request-candidate-checkout",
+        )
+        self.assertEqual(
+            self.manifest["execution_candidate_reference"], "pull-request:#243"
+        )
+        self.assertIsNone(self.manifest["execution_candidate_head_sha"])
 
     def test_04_manifest_binds_exact_track_pr_heads_and_merges(self):
         expected = {
@@ -597,6 +688,7 @@ class M15OperationalReadinessContractTests(unittest.TestCase):
         self.assertTrue(value["execution_results_recorded"])
         self.assertFalse(value["commands_executed_by_evaluator"])
         self.assertTrue(value["results_supplied_as_external_verification_evidence"])
+        self.assertTrue(value["external_execution_receipt_required"])
         self.assertFalse(value["verification_results_are_completion_approval"])
         self.assertTrue(all(not item["executed_by_evaluator"] for item in value["commands"]))
         self.assertEqual(
@@ -613,13 +705,27 @@ class M15OperationalReadinessContractTests(unittest.TestCase):
             with self.subTest(command=command_id):
                 self.assertEqual(commands[command_id]["argv"], expected["argv"])
                 self.assertEqual(commands[command_id]["test_scope"], expected["test_scope"])
+                self.assertEqual(
+                    commands[command_id]["verification_scope"],
+                    evaluator_module.EXPECTED_VERIFICATION_SCOPES[command_id],
+                )
                 self.assertEqual(commands[command_id]["expected_exit_code"], 0)
+        self.assertEqual(
+            Counter(item["verification_scope"] for item in commands.values()),
+            {
+                "source-baseline-regression": 11,
+                "e1-candidate-validation": 1,
+                "candidate-full-suite-integration": 1,
+            },
+        )
 
     def test_16_verification_results_bind_all_13_commands_and_exact_counts(self):
         result_manifest = self.manifest["verification_result_manifest"]
         results = result_manifest["results"]
         self.assertEqual(result_manifest["result_count"], 13)
         self.assertTrue(result_manifest["results_supplied_as_external_verification_evidence"])
+        self.assertFalse(result_manifest["result_records_are_execution_receipts"])
+        self.assertTrue(result_manifest["external_execution_receipt_required"])
         self.assertFalse(result_manifest["executed_by_evaluator"])
         self.assertFalse(result_manifest["verification_results_are_completion_approval"])
         self.assertEqual(len({item["verification_id"] for item in results}), 13)
@@ -627,23 +733,90 @@ class M15OperationalReadinessContractTests(unittest.TestCase):
             {item["command_id"] for item in results},
             set(evaluator_module.EXPECTED_VERIFICATION_COMMANDS),
         )
+        receipts = {item["command_id"]: item for item in self.receipt["commands"]}
+        receipt_result_fields = (
+            "observed_test_count",
+            "passes",
+            "failures",
+            "errors",
+            "skips",
+            "exit_code",
+            "result",
+        )
         for item in results:
             with self.subTest(command=item["command_id"]):
                 expected = evaluator_module.EXPECTED_VERIFICATION_RESULT_COUNTS[item["command_id"]]
-                self.assertEqual(item["maintained_main_commit_sha"], MAINTAINED_MAIN_SHA)
+                self.assertEqual(item["source_baseline_commit_sha"], MAINTAINED_MAIN_SHA)
                 self.assertEqual(
                     item["evidence_source"],
-                    "externally-supplied-maintained-repository-test-execution",
+                    "external-verification-receipt-required",
+                )
+                self.assertEqual(
+                    item["execution_subject_type"],
+                    "pull-request-candidate-checkout",
+                )
+                self.assertEqual(
+                    item["execution_candidate_reference"], "pull-request:#243"
+                )
+                self.assertIsNone(item["execution_candidate_head_sha"])
+                self.assertEqual(
+                    item["verification_scope"],
+                    evaluator_module.EXPECTED_VERIFICATION_SCOPES[item["command_id"]],
                 )
                 self.assertEqual(item["expected_test_count"], expected)
                 self.assertEqual(item["observed_test_count"], expected)
                 self.assertEqual(item["passes"], expected)
-                self.assertEqual((item["failures"], item["errors"], item["skips"]), (0, 0, 0))
+                self.assertEqual(
+                    (item["failures"], item["errors"], item["skips"]),
+                    (0, 0, 0),
+                )
                 self.assertEqual(item["exit_code"], 0)
                 self.assertEqual(item["result"], "pass")
                 self.assertTrue(item["evidence_reference"])
+                self.assertTrue(item["external_execution_receipt_required"])
                 self.assertFalse(item["executed_by_evaluator"])
                 self.assertFalse(item["verification_results_are_completion_approval"])
+                receipt = receipts[item["command_id"]]
+                self.assertEqual(
+                    {field: receipt[field] for field in receipt_result_fields},
+                    {field: item[field] for field in receipt_result_fields},
+                )
+                self.assertTrue(
+                    {
+                        "execution_timestamp",
+                        "output_transcript_sha256",
+                    }.isdisjoint(item)
+                )
+        self.assertEqual(
+            receipts["run_m15_e1_targeted_tests"]["observed_test_count"], 126
+        )
+        self.assertEqual(
+            receipts["run_full_maintained_repository_suite"]["observed_test_count"],
+            1778,
+        )
+
+    def test_16b_candidate_head_binding_is_external_and_not_self_referential(self):
+        self.assertIsNone(self.manifest["execution_candidate_head_sha"])
+        self.assertTrue(
+            all(
+                item["execution_candidate_head_sha"] is None
+                for item in self.manifest["verification_result_manifest"]["results"]
+            )
+        )
+        self.assertTrue(self.receipt["external_to_candidate_commit"])
+        self.assertEqual(
+            self.receipt["execution_candidate_head_sha"], SYNTHETIC_CANDIDATE_SHA
+        )
+        self.assertNotEqual(
+            self.receipt["execution_candidate_head_sha"],
+            self.receipt["source_baseline_commit_sha"],
+        )
+        self.assertTrue(
+            all(
+                item["execution_candidate_head_sha"] == SYNTHETIC_CANDIDATE_SHA
+                for item in self.receipt["commands"]
+            )
+        )
 
     def test_17_governance_boundary_keeps_tracker_m15_and_release_open(self):
         boundary = self.manifest["governance_boundary"]
@@ -670,12 +843,12 @@ class M15OperationalReadinessContractTests(unittest.TestCase):
         self.assertIn("M15 remains active and incomplete", text)
         self.assertIn("`v0.14.0` remains unpublished", text)
 
-    def test_20_exactly_27_standalone_scenarios_are_present(self):
-        self.assertEqual(len(SCENARIO_PATHS), 27)
+    def test_20_exactly_34_standalone_scenarios_are_present(self):
+        self.assertEqual(len(SCENARIO_PATHS), 34)
         documents = [load_json(path) for path in SCENARIO_PATHS]
         self.assertEqual(
             [document["scenario_id"] for document in documents],
-            [f"m15-e1-{number:02d}" for number in range(1, 28)],
+            [f"m15-e1-{number:02d}" for number in range(1, 35)],
         )
         self.assertEqual(
             {document["scenario_id"]: document["title"] for document in documents},
@@ -686,10 +859,33 @@ class M15OperationalReadinessContractTests(unittest.TestCase):
             {SYNTHETIC_SCENARIO_BOUNDARY_STATEMENT},
         )
 
-    def test_21_manifest_observation_and_valid_scenarios_validate_against_schema(self):
+    def test_20b_existing_27_scenarios_remain_legacy_and_new_receipt_scenarios_are_standalone(self):
+        receipt_state_fields = {
+            "candidate_head_matches_receipt",
+            "baseline_candidate_sha_distinct",
+            "external_execution_receipt_present",
+            "launcher_substitution_declared",
+            "interpreter_identity_present",
+            "transcript_digest_present",
+            "command_result_binding_matches",
+        }
+        for number in range(1, 28):
+            self.assertTrue(
+                receipt_state_fields.isdisjoint(scenario(number)["evidence_state"]),
+                number,
+            )
+        for number in range(28, 35):
+            self.assertEqual(
+                set(scenario(number)["evidence_state"]) & receipt_state_fields,
+                receipt_state_fields,
+                number,
+            )
+
+    def test_21_manifest_observation_receipt_and_valid_scenarios_validate_against_schema(self):
         self.assertEqual(validate_draft_2020_12_subset(self.manifest, self.schema), [])
         self.assertEqual(validate_draft_2020_12_subset(self.observation, self.schema), [])
-        for number in (*range(1, 18), *range(19, 28)):
+        self.assertEqual(validate_draft_2020_12_subset(self.receipt, self.schema), [])
+        for number in (*range(1, 18), *range(19, 35)):
             with self.subTest(number=number):
                 self.assertEqual(
                     validate_draft_2020_12_subset(scenario(number), self.schema), []
@@ -720,11 +916,22 @@ class M15OperationalReadinessMaintainedEvaluatorTests(unittest.TestCase):
     def setUp(self):
         self.manifest = load_manifest()
         self.observation = build_repository_observation(self.manifest)
+        self.receipt = build_verification_receipt(self.manifest)
 
-    def evaluate(self, manifest=None, observation=None):
+    def evaluate(
+        self,
+        manifest=None,
+        observation=None,
+        verification_receipt=_USE_DEFAULT_RECEIPT,
+    ):
         return evaluate_operational_readiness(
             self.manifest if manifest is None else manifest,
             self.observation if observation is None else observation,
+            (
+                self.receipt
+                if verification_receipt is _USE_DEFAULT_RECEIPT
+                else verification_receipt
+            ),
         )
 
     def assert_blocked(self, result, prefix=None):
@@ -760,9 +967,14 @@ class M15OperationalReadinessMaintainedEvaluatorTests(unittest.TestCase):
     def test_02_evaluation_does_not_mutate_caller_data(self):
         manifest = copy.deepcopy(self.manifest)
         observation = copy.deepcopy(self.observation)
-        before = (copy.deepcopy(manifest), copy.deepcopy(observation))
-        self.evaluate(manifest, observation)
-        self.assertEqual((manifest, observation), before)
+        receipt = copy.deepcopy(self.receipt)
+        before = (
+            copy.deepcopy(manifest),
+            copy.deepcopy(observation),
+            copy.deepcopy(receipt),
+        )
+        self.evaluate(manifest, observation, receipt)
+        self.assertEqual((manifest, observation, receipt), before)
 
     def test_03_evaluation_is_deterministic_and_findings_are_sorted_unique(self):
         manifest = copy.deepcopy(self.manifest)
@@ -920,8 +1132,14 @@ class M15OperationalReadinessMaintainedEvaluatorTests(unittest.TestCase):
         missing["verification_command_manifest"]["commands"].pop()
         changed = copy.deepcopy(self.manifest)
         changed["verification_command_manifest"]["commands"][0]["argv"].append("unexpected")
-        self.assert_not_ready(self.evaluate(missing), "verification_command_missing:")
-        self.assert_not_ready(self.evaluate(changed), "verification_command_invalid:")
+        self.assert_not_ready(
+            self.evaluate(missing, verification_receipt=None),
+            "verification_command_missing:",
+        )
+        self.assert_not_ready(
+            self.evaluate(changed, verification_receipt=None),
+            "verification_command_invalid:",
+        )
 
     def test_18_verification_command_execution_claim_blocks(self):
         for mutate in (
@@ -936,47 +1154,69 @@ class M15OperationalReadinessMaintainedEvaluatorTests(unittest.TestCase):
     def test_19_missing_verification_result_is_not_ready(self):
         manifest = copy.deepcopy(self.manifest)
         manifest["verification_result_manifest"]["results"].pop()
-        self.assert_not_ready(self.evaluate(manifest), "verification_result_missing:")
+        self.assert_not_ready(
+            self.evaluate(manifest, verification_receipt=None),
+            "verification_result_missing:",
+        )
 
-    def test_20_verification_result_main_binding_missing_or_mismatch_blocks(self):
+    def test_20_verification_result_baseline_binding_missing_or_mismatch_blocks(self):
         for replacement in (None, "0" * 40):
             manifest = copy.deepcopy(self.manifest)
             result = manifest["verification_result_manifest"]["results"][0]
             if replacement is None:
-                result.pop("maintained_main_commit_sha")
+                result.pop("source_baseline_commit_sha")
             else:
-                result["maintained_main_commit_sha"] = replacement
+                result["source_baseline_commit_sha"] = replacement
             with self.subTest(replacement=replacement):
                 self.assert_blocked(self.evaluate(manifest))
 
     def test_21_verification_result_count_inconsistencies_block(self):
-        fields = ("expected_test_count", "observed_test_count", "passes")
-        for field in fields:
-            manifest = copy.deepcopy(self.manifest)
-            manifest["verification_result_manifest"]["results"][0][field] += 1
+        manifest = copy.deepcopy(self.manifest)
+        manifest["verification_result_manifest"]["results"][0][
+            "expected_test_count"
+        ] += 1
+        self.assert_blocked(self.evaluate(manifest))
+        cases = (
+            ("observed_test_count", 127),
+            ("passes", 125),
+            ("failures", 1),
+            ("errors", 1),
+            ("skips", 1),
+            ("exit_code", 1),
+            ("result", "fail"),
+        )
+        for field, value in cases:
+            receipt = copy.deepcopy(self.receipt)
+            receipt["commands"][0][field] = value
             with self.subTest(field=field):
-                self.assert_blocked(self.evaluate(manifest))
+                self.assert_blocked(
+                    self.evaluate(verification_receipt=receipt),
+                    f"verification_receipt_manifest_result_binding_mismatch:"
+                    f"run_m15_e1_targeted_tests:{field}",
+                )
 
     def test_22_verification_failure_blocks(self):
-        manifest = copy.deepcopy(self.manifest)
-        result = manifest["verification_result_manifest"]["results"][0]
+        receipt = copy.deepcopy(self.receipt)
+        result = receipt["commands"][0]
         result["passes"] -= 1
         result["failures"] = 1
         result["exit_code"] = 1
         result["result"] = "fail"
         self.assert_blocked(
-            self.evaluate(manifest), "verification_result_failures_present:"
+            self.evaluate(verification_receipt=receipt),
+            "verification_receipt_failures_present:",
         )
 
     def test_23_verification_error_blocks(self):
-        manifest = copy.deepcopy(self.manifest)
-        result = manifest["verification_result_manifest"]["results"][0]
+        receipt = copy.deepcopy(self.receipt)
+        result = receipt["commands"][0]
         result["passes"] -= 1
         result["errors"] = 1
         result["exit_code"] = 1
         result["result"] = "fail"
         self.assert_blocked(
-            self.evaluate(manifest), "verification_result_errors_present:"
+            self.evaluate(verification_receipt=receipt),
+            "verification_receipt_errors_present:",
         )
 
     def test_24_unexpected_verification_skip_is_not_ready(self):
@@ -984,15 +1224,19 @@ class M15OperationalReadinessMaintainedEvaluatorTests(unittest.TestCase):
         result = manifest["verification_result_manifest"]["results"][0]
         result["passes"] -= 1
         result["skips"] = 1
-        self.assert_not_ready(self.evaluate(manifest), "verification_result_skips_present:")
+        receipt = build_verification_receipt(manifest)
+        self.assert_not_ready(
+            self.evaluate(manifest, verification_receipt=receipt),
+            "verification_receipt_skips_present:",
+        )
 
     def test_25_verification_exit_result_or_arithmetic_inconsistency_blocks(self):
         cases = (("exit_code", 1), ("result", "fail"), ("failures", 1))
         for field, value in cases:
-            manifest = copy.deepcopy(self.manifest)
-            manifest["verification_result_manifest"]["results"][0][field] = value
+            receipt = copy.deepcopy(self.receipt)
+            receipt["commands"][0][field] = value
             with self.subTest(field=field):
-                self.assert_blocked(self.evaluate(manifest))
+                self.assert_blocked(self.evaluate(verification_receipt=receipt))
 
     def test_26_result_execution_or_completion_approval_claim_blocks(self):
         for field in ("executed_by_evaluator", "verification_results_are_completion_approval"):
@@ -1063,7 +1307,9 @@ class M15OperationalReadinessMaintainedEvaluatorTests(unittest.TestCase):
         self.assert_blocked(
             self.evaluate(observation=missing), "repository_observation_shape_invalid"
         )
-        self.assert_blocked(evaluate_operational_readiness(self.manifest, None))
+        self.assert_blocked(
+            evaluate_operational_readiness(self.manifest, None, self.receipt)
+        )
 
     def test_33_every_governance_escalation_blocks(self):
         state_fields = {
@@ -1092,6 +1338,150 @@ class M15OperationalReadinessMaintainedEvaluatorTests(unittest.TestCase):
         manifest["artifact_integrity_inventory"]["historical_digest_evidence_policy"] = "reinterpreted"
         self.assert_blocked(self.evaluate(manifest), "historical_digest_evidence_policy_invalid")
 
+    def test_37_missing_external_execution_receipt_is_not_ready(self):
+        self.assert_not_ready(
+            self.evaluate(verification_receipt=None),
+            "verification_receipt_missing",
+        )
+
+    def test_38_candidate_head_mismatch_blocks(self):
+        receipt = copy.deepcopy(self.receipt)
+        receipt["commands"][0]["execution_candidate_head_sha"] = "d" * 40
+        self.assert_blocked(
+            self.evaluate(verification_receipt=receipt),
+            "verification_receipt_candidate_head_mismatch:",
+        )
+
+    def test_39_baseline_candidate_sha_conflation_blocks(self):
+        receipt = copy.deepcopy(self.receipt)
+        receipt["execution_candidate_head_sha"] = MAINTAINED_MAIN_SHA
+        for command in receipt["commands"]:
+            command["execution_candidate_head_sha"] = MAINTAINED_MAIN_SHA
+        self.assert_blocked(
+            self.evaluate(verification_receipt=receipt),
+            "verification_receipt_baseline_candidate_sha_conflated",
+        )
+
+    def test_40_receipt_source_baseline_mismatch_blocks(self):
+        receipt = copy.deepcopy(self.receipt)
+        receipt["source_baseline_commit_sha"] = "0" * 40
+        self.assert_blocked(
+            self.evaluate(verification_receipt=receipt),
+            "verification_receipt_source_baseline_sha_mismatch",
+        )
+
+    def test_41_absent_actual_command_blocks(self):
+        receipt = copy.deepcopy(self.receipt)
+        receipt["commands"][0]["actual_argv"] = []
+        self.assert_blocked(
+            self.evaluate(verification_receipt=receipt),
+            "verification_receipt_actual_argv_invalid:",
+        )
+
+    def test_42_undeclared_python_launcher_substitution_blocks(self):
+        receipt = copy.deepcopy(self.receipt)
+        receipt["commands"][0]["executable_binding"][
+            "launcher_substitution_declared"
+        ] = False
+        self.assert_blocked(
+            self.evaluate(verification_receipt=receipt),
+            "verification_receipt_undeclared_launcher_substitution:",
+        )
+
+    def test_43_missing_interpreter_identity_blocks(self):
+        cases = (
+            ("python_implementation", "", "verification_receipt_python_implementation_invalid:"),
+            ("python_version", "", "verification_receipt_python_version_invalid:"),
+        )
+        for field, value, prefix in cases:
+            receipt = copy.deepcopy(self.receipt)
+            receipt["commands"][0]["executable_binding"][field] = value
+            with self.subTest(field=field):
+                self.assert_blocked(
+                    self.evaluate(verification_receipt=receipt),
+                    prefix,
+                )
+
+    def test_44_missing_or_malformed_transcript_digest_blocks(self):
+        for value in ("", "0" * 63):
+            receipt = copy.deepcopy(self.receipt)
+            receipt["commands"][0]["output_transcript_sha256"] = value
+            with self.subTest(value=value):
+                self.assert_blocked(
+                    self.evaluate(verification_receipt=receipt),
+                    "verification_receipt_output_transcript_sha256_invalid:",
+                )
+
+    def test_45_command_result_binding_mismatch_blocks(self):
+        receipt = copy.deepcopy(self.receipt)
+        receipt["commands"][0]["result"] = "fail"
+        self.assert_blocked(
+            self.evaluate(verification_receipt=receipt),
+            "verification_receipt_command_result_binding_mismatch:",
+        )
+
+    def test_46_declared_logical_argv_must_match_command_manifest(self):
+        receipt = copy.deepcopy(self.receipt)
+        receipt["commands"][0]["declared_logical_argv"].append("unexpected")
+        self.assert_blocked(
+            self.evaluate(verification_receipt=receipt),
+            "verification_receipt_declared_argv_mismatch:",
+        )
+
+    def test_47_self_declared_result_urn_is_not_execution_evidence(self):
+        self.assertTrue(
+            all(
+                item["evidence_reference"].startswith("urn:")
+                for item in self.manifest["verification_result_manifest"]["results"]
+            )
+        )
+        self.assert_not_ready(
+            self.evaluate(verification_receipt=None),
+            "verification_receipt_missing",
+        )
+
+    def test_48_receipt_command_coverage_is_required(self):
+        receipt = copy.deepcopy(self.receipt)
+        receipt["commands"].pop()
+        receipt["command_receipt_count"] -= 1
+        self.assert_blocked(
+            self.evaluate(verification_receipt=receipt),
+            "verification_receipt_command_missing:",
+        )
+
+    def test_49_receipt_records_declared_python_launcher_substitution(self):
+        for command in self.receipt["commands"]:
+            with self.subTest(command=command["command_id"]):
+                self.assertEqual(command["declared_logical_argv"][0], "python")
+                self.assertEqual(command["actual_argv"][0], ACTUAL_PYTHON_LAUNCHER)
+                self.assertEqual(
+                    command["executable_binding"],
+                    {
+                        "declared_launcher": "python",
+                        "actual_launcher": ACTUAL_PYTHON_LAUNCHER,
+                        "launcher_substitution_detected": True,
+                        "launcher_substitution_declared": True,
+                        "python_implementation": "CPython",
+                        "python_version": "3.14.6",
+                    },
+                )
+
+    def test_50_receipt_separates_baseline_candidate_and_verification_scopes(self):
+        self.assertEqual(self.receipt["source_baseline_commit_sha"], MAINTAINED_MAIN_SHA)
+        self.assertEqual(self.receipt["execution_candidate_head_sha"], SYNTHETIC_CANDIDATE_SHA)
+        self.assertNotEqual(
+            self.receipt["source_baseline_commit_sha"],
+            self.receipt["execution_candidate_head_sha"],
+        )
+        scopes = Counter(item["verification_scope"] for item in self.receipt["commands"])
+        self.assertEqual(
+            scopes,
+            {
+                "source-baseline-regression": 11,
+                "e1-candidate-validation": 1,
+                "candidate-full-suite-integration": 1,
+            },
+        )
 
 class M15OperationalReadinessScenarioTests(unittest.TestCase):
     EXPECTED = {
@@ -1122,6 +1512,13 @@ class M15OperationalReadinessScenarioTests(unittest.TestCase):
         25: NOT_READY,
         26: BLOCKED,
         27: BLOCKED,
+        28: BLOCKED,
+        29: BLOCKED,
+        30: NOT_READY,
+        31: BLOCKED,
+        32: BLOCKED,
+        33: BLOCKED,
+        34: BLOCKED,
     }
 
     def assert_scenario(self, number):
@@ -1163,8 +1560,15 @@ class M15OperationalReadinessScenarioTests(unittest.TestCase):
     def test_25_required_artifact_unverified(self): self.assert_scenario(25)
     def test_26_deferred_without_reason(self): self.assert_scenario(26)
     def test_27_track_d_dependency_drift(self): self.assert_scenario(27)
+    def test_28_candidate_head_receipt_binding_mismatch(self): self.assert_scenario(28)
+    def test_29_baseline_candidate_sha_conflation(self): self.assert_scenario(29)
+    def test_30_missing_external_execution_receipt(self): self.assert_scenario(30)
+    def test_31_undeclared_python_launcher_substitution(self): self.assert_scenario(31)
+    def test_32_missing_python_interpreter_version(self): self.assert_scenario(32)
+    def test_33_missing_verification_transcript_digest(self): self.assert_scenario(33)
+    def test_34_command_result_binding_mismatch(self): self.assert_scenario(34)
 
-    def test_28_expected_outcome_is_not_trusted_for_classification(self):
+    def test_35_expected_outcome_is_not_trusted_for_classification(self):
         document = scenario(1)
         document["expected_outcome"] = BLOCKED
         self.assertEqual(
@@ -1172,7 +1576,7 @@ class M15OperationalReadinessScenarioTests(unittest.TestCase):
             READY_FOR_COMPLETION_REVIEW,
         )
 
-    def test_29_blocked_takes_precedence_over_not_ready(self):
+    def test_36_blocked_takes_precedence_over_not_ready(self):
         document = scenario(1)
         document["evidence_state"]["test_coverage_complete"] = False
         document["evidence_state"]["completion_approval_claimed"] = True
@@ -1181,7 +1585,7 @@ class M15OperationalReadinessScenarioTests(unittest.TestCase):
         self.assertTrue(result["readiness_findings"])
         self.assertTrue(result["blocking_findings"])
 
-    def test_30_non_boolean_or_unknown_state_fails_closed_without_echoing_values(self):
+    def test_37_non_boolean_or_unknown_state_fails_closed_without_echoing_values(self):
         non_boolean = scenario(1)
         non_boolean["evidence_state"]["manifest_shape_valid"] = 1
         unknown = scenario(1)
@@ -1191,7 +1595,7 @@ class M15OperationalReadinessScenarioTests(unittest.TestCase):
         self.assertEqual(result["outcome"], BLOCKED)
         self.assertNotIn("do-not-echo", json.dumps(result))
 
-    def test_31_scenario_text_is_closed_and_non_authoritative(self):
+    def test_38_scenario_text_is_closed_and_non_authoritative(self):
         for field, value in (
             ("notes", "Synthetic inert evidence only."),
             ("title", "M15 complete and v0.14.0 published"),
@@ -1240,7 +1644,10 @@ class M15OperationalReadinessSafetyTests(unittest.TestCase):
 
     def test_05_evaluator_is_caller_data_only_by_signature_and_exports(self):
         signature = inspect.signature(evaluate_operational_readiness)
-        self.assertEqual(list(signature.parameters), ["manifest", "observation"])
+        self.assertEqual(
+            list(signature.parameters),
+            ["manifest", "observation", "verification_receipt"],
+        )
         self.assertNotIn("evaluate_repository_operational_readiness", evaluator_module.__dict__)
         self.assertNotIn("load_manifest", evaluator_module.__dict__)
         self.assertNotIn("REPOSITORY_ROOT", evaluator_module.__dict__)
@@ -1342,7 +1749,12 @@ class M15OperationalReadinessSafetyTests(unittest.TestCase):
             self.assertNotIn(f"import {module_name}", source)
 
     def test_09_result_has_one_closed_outcome_and_no_status_alias(self):
-        result = evaluate_operational_readiness(load_manifest(), build_repository_observation())
+        manifest = load_manifest()
+        result = evaluate_operational_readiness(
+            manifest,
+            build_repository_observation(manifest),
+            build_verification_receipt(manifest),
+        )
         self.assertEqual([key for key in result if key == "outcome"], ["outcome"])
         self.assertIn(result["outcome"], OUTCOMES)
         self.assertNotIn("status", result)
@@ -1354,7 +1766,12 @@ class M15OperationalReadinessSafetyTests(unittest.TestCase):
                 self.assertEqual(result["findings"], sorted(set(result["findings"])))
 
     def test_11_ready_for_review_never_grants_completion_or_release_authority(self):
-        result = evaluate_operational_readiness(load_manifest(), build_repository_observation())
+        manifest = load_manifest()
+        result = evaluate_operational_readiness(
+            manifest,
+            build_repository_observation(manifest),
+            build_verification_receipt(manifest),
+        )
         self.assertEqual(result["outcome"], READY_FOR_COMPLETION_REVIEW)
         self.assertEqual(
             result["non_authoritative_boundary_statement"],
