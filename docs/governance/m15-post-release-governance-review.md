@@ -292,7 +292,10 @@ Classification totals:
 
 ## Candidate verification
 
-The immutable tag baseline is recorded above. The Draft candidate passed:
+The immutable tag baseline is recorded above. The initial Draft candidate at
+head `316e8467ff6544896a4bb3fd7703420f7e945a5c` passed the following
+verification. PR #255 comment 5023289665 preserves this receipt as historical
+evidence:
 
 - Issue #254 schema/evaluator hostile-input module: Ran 14 tests in 0.043s — OK.
 - Full maintained candidate suite, including all historical phase-compatibility
@@ -308,6 +311,11 @@ python -X faulthandler -m unittest discover -s tests -t . -p test_*.py -q
 It ran with PYTHONDONTWRITEBYTECODE=1 and AAOS_TEST_GIT_EXE bound to the
 resolved Git executable. The 14-test increase over the immutable 2,275-test
 tag baseline is the new post-release governance review suite.
+
+A successor documentation-only repair makes that receipt historical. Its
+superseding verification is commit-external and bound to the successor head in
+a later PR #255 comment; this tracked report does not self-bind to a commit it
+changes.
 
 ## Maintained deliverables and exact changed paths
 

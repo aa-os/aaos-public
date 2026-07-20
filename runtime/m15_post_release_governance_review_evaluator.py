@@ -1,9 +1,12 @@
 """Caller-data-only evaluator for the v0.14.0 post-release review.
 
 The evaluator validates one inert mapping supplied by its caller. It does not
-read repository files, inspect Git or GitHub, calculate digests, run commands,
-or mutate external state. A complete result is evidence for human review only;
-it does not authorize M16 planning or implementation.
+read repository files, inspect Git or GitHub, calculate or verify external
+artifact digests, run commands, or mutate external state. It does calculate an
+in-memory canonical SHA-256 over the supplied mapping to pin the
+release-specific record. That digest calculation does not verify external
+bytes and does not create governance authority. A complete result is evidence
+for human review only; it does not authorize M16 planning or implementation.
 """
 
 import hashlib
