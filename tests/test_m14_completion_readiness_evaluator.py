@@ -38,10 +38,6 @@ from runtime.m14_completion_readiness_evaluator import (  # noqa: E402
     load_fixture,
     validate_m14_completion_readiness,
 )
-from runtime.m14_final_completion_evaluator import (  # noqa: E402
-    evaluate_m14_final_completion,
-    load_fixture as load_final_completion_fixture,
-)
 from runtime.repository_artifact_digest import (  # noqa: E402
     canonicalize_utf8_repository_text,
     sha256_repository_file,
@@ -68,6 +64,17 @@ FINAL_COMPLETION_FIXTURE_PATH = (
     / "examples"
     / "public-integration-pack-pilot"
     / "m14-final-completion-release-state.json"
+)
+
+M14_READINESS_TRACKER_ISSUE = "#201"
+M14_READINESS_PULL_REQUEST = "#214"
+M14_READINESS_BASE_SHA = "0cece68bba89caf379c88ab3abd76423a1e54abb"
+M14_READINESS_CANDIDATE_SHA = "caf61cf754b623b46f7af8dce47d656774e27fd2"
+M14_READINESS_MERGE_SHA = "a7b5cbc2026468dde3d937e9366a780894570548"
+M14_READINESS_MERGE_TREE_SHA = "b9600d7c6f44363bde868dab0caa66b43f2f8df2"
+M14_READINESS_MERGE_SUBJECT = (
+    "Merge pull request #214 from "
+    "aa-os/feature/m14-completion-readiness-future-readme-path"
 )
 
 SOURCE_MODULES = {
@@ -235,6 +242,47 @@ def load_json(path):
 def canonical_sha256(path):
     relative_path = Path(path).resolve().relative_to(ROOT.resolve()).as_posix()
     return sha256_repository_file(ROOT, relative_path, mode="text")
+
+
+def git_executable():
+    override = os.environ.get("AAOS_TEST_GIT_EXE")
+    if override:
+        candidate = Path(override)
+        if not candidate.is_file():
+            raise AssertionError(
+                f"AAOS_TEST_GIT_EXE does not name a Git executable: {override}"
+            )
+        return str(candidate)
+    discovered = shutil.which("git")
+    if discovered is None:
+        raise AssertionError(
+            "Git is required for immutable M14 readiness snapshot tests"
+        )
+    return discovered
+
+
+def git_bytes(*args):
+    completed = subprocess.run(
+        [git_executable(), *args],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    return completed.stdout
+
+
+def git_text(*args):
+    return git_bytes(*args).decode("utf-8", errors="strict").strip()
+
+
+def historical_readme_bytes():
+    raw = git_bytes(
+        "cat-file",
+        "blob",
+        f"{M14_READINESS_MERGE_SHA}:README.md",
+    )
+    return canonicalize_utf8_repository_text(raw)
 
 
 class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
@@ -800,7 +848,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
             },
         )
 
-    def test_61_readme_integrity_guard_matches_exact_main_prefix_bytes(self):
+    def test_61_readme_integrity_guard_matches_pr_214_merge_prefix_bytes(self):
         guard = self.fixture["readme_integrity_guard"]
         self.assertEqual(guard["readme_path"], "README.md")
         self.assertEqual(guard["mutable_section_heading"], "## Next Phase")
@@ -824,7 +872,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
                 "M13 Additions",
             ],
         )
-        readme = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
+        readme = historical_readme_bytes()
         heading = b"## Next Phase"
         self.assertEqual(readme.count(heading), 1)
         prefix = readme[: readme.index(heading)]
@@ -838,7 +886,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         expected = self.fixture["readme_expected_next_phase"]
         self.assertEqual(expected["heading"], "## Next Phase")
         self.assertEqual(expected["complete_expected_block"], EXPECTED_NEXT_PHASE_BLOCK)
-        readme = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
+        readme = historical_readme_bytes()
         offset = readme.index(b"## Next Phase")
         self.assertEqual(readme[offset:], EXPECTED_NEXT_PHASE_BLOCK.encode("utf-8"))
         self.assertTrue(readme.endswith(b"\n"))
@@ -884,13 +932,27 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
             historical["next_phase_section"]["target_release_state"], "future_only"
         )
 
-        final_fixture = load_final_completion_fixture(FINAL_COMPLETION_FIXTURE_PATH)
-        current = evaluate_m14_final_completion(final_fixture, repository_root=ROOT)
-        self.assertTrue(current["m14_final_completion_valid"], current["findings"])
-        self.assertTrue(current["completion_readiness_bundle_integrity_valid"])
-        self.assertTrue(current["completion_readiness_state_valid"])
-        self.assertTrue(current["readme_release_state_valid"])
-        self.assertTrue(current["authority_boundaries_preserved"])
+        historical_readme = historical_readme_bytes()
+        releases_start = historical_readme.index(b"## Releases")
+        current_status_start = historical_readme.index(b"## Current Status")
+        next_phase_start = historical_readme.index(b"## Next Phase")
+        releases = historical_readme[releases_start:current_status_start]
+        current_status = historical_readme[current_status_start:next_phase_start]
+        next_phase = historical_readme[next_phase_start:]
+
+        self.assertIn(b"- v0.12.0 ", releases)
+        self.assertNotIn(b"v0.13.0", releases)
+        self.assertIn(b"and M13 are complete.", current_status)
+        self.assertNotIn(b"M14 completed:", current_status)
+        self.assertEqual(next_phase, EXPECTED_NEXT_PHASE_BLOCK.encode("utf-8"))
+        self.assertEqual(
+            historical_readme,
+            canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes()),
+        )
+        self.assertNotEqual(
+            historical_readme,
+            canonicalize_utf8_repository_text(README_PATH.read_bytes()),
+        )
 
     def test_64_release_proof_bundle_has_exact_paths_and_main_digests(self):
         expected_overrides = {
@@ -1427,7 +1489,13 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         self.assertTrue(result["authority_boundaries_preserved"])
         self.assertTrue(set(result["outputs"]).isdisjoint(REQUIRED_FORBIDDEN_OUTPUTS))
 
-    def test_101_snapshot_identity_is_bound_to_commit_a7b5cbc(self):
+    def test_101_snapshot_identity_is_bound_to_pr_214_merge_commit(self):
+        final_fixture = load_json(FINAL_COMPLETION_FIXTURE_PATH)
+        self.assertEqual(self.fixture["tracker_issue"], M14_READINESS_TRACKER_ISSUE)
+        self.assertEqual(
+            final_fixture["completion_readiness_future_readme_path_pr"],
+            M14_READINESS_PULL_REQUEST,
+        )
         self.assertEqual(
             HISTORICAL_README_SNAPSHOT_PATH,
             (
@@ -1437,9 +1505,29 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         )
         self.assertEqual(
             HISTORICAL_README_SNAPSHOT_SOURCE_COMMIT,
-            "a7b5cbc2026468dde3d937e9366a780894570548",
+            M14_READINESS_MERGE_SHA,
         )
-        canonical = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
+        self.assertEqual(
+            git_text("cat-file", "-t", M14_READINESS_MERGE_SHA),
+            "commit",
+        )
+        self.assertEqual(
+            git_text("show", "-s", "--format=%s", M14_READINESS_MERGE_SHA),
+            M14_READINESS_MERGE_SUBJECT,
+        )
+        self.assertEqual(
+            git_text("show", "-s", "--format=%P", M14_READINESS_MERGE_SHA).split(),
+            [M14_READINESS_BASE_SHA, M14_READINESS_CANDIDATE_SHA],
+        )
+        self.assertEqual(
+            git_text("rev-parse", f"{M14_READINESS_MERGE_SHA}^{{tree}}"),
+            M14_READINESS_MERGE_TREE_SHA,
+        )
+        self.assertEqual(
+            git_text("rev-parse", f"{M14_READINESS_CANDIDATE_SHA}^{{tree}}"),
+            M14_READINESS_MERGE_TREE_SHA,
+        )
+        canonical = historical_readme_bytes()
         self.assertEqual(len(canonical), 42183)
         self.assertEqual(canonical.count(b"\n"), 1156)
         self.assertTrue(canonical.endswith(b"\n"))
@@ -1453,6 +1541,14 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         self.assertEqual(
             canonical_sha256(SNAPSHOT_PATH),
             EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256,
+        )
+        self.assertEqual(
+            hashlib.sha256(historical_readme_bytes()).hexdigest(),
+            EXPECTED_HISTORICAL_README_SNAPSHOT_SHA256,
+        )
+        self.assertEqual(
+            canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes()),
+            historical_readme_bytes(),
         )
 
     def test_103_lf_and_crlf_snapshots_are_canonically_equivalent(self):
@@ -1528,7 +1624,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
     def test_108_current_readme_is_independent_from_historical_readiness(self):
         self.assertNotEqual(
             canonicalize_utf8_repository_text(README_PATH.read_bytes()),
-            canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes()),
+            historical_readme_bytes(),
         )
         temporary, root = self.temporary_repository(include_current_readme=True)
         self.addCleanup(temporary.cleanup)
@@ -1552,7 +1648,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
             )
 
     def test_109_historical_releases_state_is_explicit(self):
-        snapshot = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
+        snapshot = historical_readme_bytes()
         releases_start = snapshot.index(b"## Releases")
         current_start = snapshot.index(b"## Current Status")
         releases = snapshot[releases_start:current_start]
@@ -1567,7 +1663,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         )
 
     def test_110_historical_current_status_state_is_explicit(self):
-        snapshot = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
+        snapshot = historical_readme_bytes()
         current_start = snapshot.index(b"## Current Status")
         next_heading = snapshot.index(b"\n## ", current_start + 1)
         current = snapshot[current_start:next_heading]
@@ -1583,7 +1679,7 @@ class M14CompletionReadinessEvaluatorTests(unittest.TestCase):
         )
 
     def test_111_historical_next_phase_state_and_owner_are_explicit(self):
-        snapshot = canonicalize_utf8_repository_text(SNAPSHOT_PATH.read_bytes())
+        snapshot = historical_readme_bytes()
         next_phase = snapshot[snapshot.index(b"## Next Phase") :]
         result = self.evaluate()
 

@@ -3,7 +3,9 @@ import copy
 import hashlib
 import inspect
 import json
+import os
 import re
+import shutil
 import subprocess
 import unittest
 from collections import Counter
@@ -65,6 +67,11 @@ E2_BASE_SHA = "27c92e290cf6ad60bada49b63fe1888511930980"
 E2_CANDIDATE_SHA = "efc31e7d24c26d2cea2cb536a4cae257aababb5f"
 E2_TREE_SHA = "f13913426545b77616128223cd195487a415ffde"
 E2_MERGE_SHA = "f6d074fca2fedecbf654697719179440bc0680d3"
+E3_CANDIDATE_SHA = "907d2361233c7b0405a41271d7b02fa6c1a0c62d"
+E3_MERGE_SHA = "52ec76c17cd21ec519dfec45ced4ad720b82d80e"
+E3_MERGE_TREE_SHA = "97b239cbd175aac01b05a1fba2394b72c47a5360"
+E3_MERGE_PARENTS = (SOURCE_MAIN_BASE_SHA, E3_CANDIDATE_SHA)
+GIT = os.environ.get("AAOS_TEST_GIT_EXE") or shutil.which("git")
 SYNTHETIC_CANDIDATE_SHA = "a" * 40
 SYNTHETIC_CANDIDATE_TREE_SHA = "b" * 40
 SYNTHETIC_TRANSCRIPT_SHA256 = "c" * 64
@@ -127,8 +134,10 @@ def canonical_json_sha256(value):
 
 
 def git_bytes(*args):
+    if GIT is None:
+        raise AssertionError("Git is required for immutable E3 snapshot tests")
     return subprocess.check_output(
-        ["git", *args],
+        [GIT, *args],
         cwd=ROOT,
         stderr=subprocess.PIPE,
     )
@@ -695,25 +704,51 @@ class M15CompletionReadinessGitEvidenceTests(unittest.TestCase):
         cls.inventory = load_json(RECORD_PATHS["inventory"])
         cls.continuity = load_json(RECORD_PATHS["continuity"])
 
-    def test_18_source_main_base_object_tree_and_ancestry_are_immutable(self):
+    def test_18_e3_source_and_merge_objects_are_immutable_and_in_head_history(self):
         self.assertEqual(git_text("cat-file", "-t", SOURCE_MAIN_BASE_SHA), "commit")
         self.assertEqual(
             git_text("rev-parse", f"{SOURCE_MAIN_BASE_SHA}^{{tree}}"),
             SOURCE_MAIN_BASE_TREE_SHA,
         )
+        self.assertEqual(git_text("cat-file", "-t", E3_MERGE_SHA), "commit")
         self.assertEqual(
-            git_text("merge-base", SOURCE_MAIN_BASE_SHA, "HEAD"),
-            SOURCE_MAIN_BASE_SHA,
+            git_text("rev-parse", f"{E3_MERGE_SHA}^{{tree}}"),
+            E3_MERGE_TREE_SHA,
+        )
+        self.assertEqual(
+            git_text("merge-base", E3_MERGE_SHA, "HEAD"),
+            E3_MERGE_SHA,
         )
 
-    def test_18a_source_base_validation_allows_head_to_advance(self):
+    def test_18a_e3_exact_tree_match_remains_valid_when_head_advances(self):
+        self.assertEqual(git_text("cat-file", "-t", E3_CANDIDATE_SHA), "commit")
+        self.assertEqual(
+            git_text("rev-parse", f"{E3_CANDIDATE_SHA}^{{tree}}"),
+            E3_MERGE_TREE_SHA,
+        )
+        self.assertEqual(
+            git_text("show", "-s", "--format=%P", E3_MERGE_SHA).split(),
+            list(E3_MERGE_PARENTS),
+        )
+        self.assertEqual(
+            git_text("diff", "--name-status", E3_CANDIDATE_SHA, E3_MERGE_SHA),
+            "",
+        )
+        completed = subprocess.run(
+            [GIT, "merge-base", "--is-ancestor", E3_CANDIDATE_SHA, E3_MERGE_SHA],
+            cwd=ROOT,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        self.assertEqual(completed.returncode, 0)
         self.assertGreater(
-            int(git_text("rev-list", "--count", f"{SOURCE_MAIN_BASE_SHA}..HEAD")),
+            int(git_text("rev-list", "--count", f"{E3_MERGE_SHA}..HEAD")),
             0,
         )
         self.assertEqual(
-            git_text("merge-base", SOURCE_MAIN_BASE_SHA, "HEAD"),
-            SOURCE_MAIN_BASE_SHA,
+            git_text("merge-base", E3_MERGE_SHA, "HEAD"),
+            E3_MERGE_SHA,
         )
         mutable_main_ref = "origin" + "/main"
         self.assertNotIn(
@@ -760,9 +795,11 @@ class M15CompletionReadinessGitEvidenceTests(unittest.TestCase):
 
     def test_25_e2_candidate_is_merge_ancestor(self):
         completed = subprocess.run(
-            ["git", "merge-base", "--is-ancestor", E2_CANDIDATE_SHA, E2_MERGE_SHA],
+            [GIT, "merge-base", "--is-ancestor", E2_CANDIDATE_SHA, E2_MERGE_SHA],
             cwd=ROOT,
             check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
         self.assertEqual(completed.returncode, 0)
 
@@ -858,16 +895,14 @@ class M15CompletionReadinessGitEvidenceTests(unittest.TestCase):
                 self.assertEqual(entry[2], artifact["git_blob_sha"])
                 blob = git_bytes("cat-file", "blob", artifact["git_blob_sha"])
                 self.assertEqual(canonical_sha256(blob), artifact["canonical_text_sha256"])
-                working_blob = git_text(
-                    "hash-object",
-                    "--path=" + artifact["repository_path"],
-                    "--",
-                    artifact["repository_path"],
+                e3_merged_blob = git_text(
+                    "rev-parse",
+                    f"{E3_MERGE_SHA}:{artifact['repository_path']}",
                 )
                 if artifact["repository_path"] in authorized_repair_paths:
-                    self.assertNotEqual(working_blob, artifact["git_blob_sha"])
+                    self.assertNotEqual(e3_merged_blob, artifact["git_blob_sha"])
                 else:
-                    self.assertEqual(working_blob, artifact["git_blob_sha"])
+                    self.assertEqual(e3_merged_blob, artifact["git_blob_sha"])
                 issue, pull_request, _ = TRACK_EXPECTATIONS[artifact["track_id"]]
                 self.assertEqual(artifact["source_issue"], issue)
                 self.assertEqual(artifact["implementation_pr"], pull_request)
@@ -897,13 +932,17 @@ class M15CompletionReadinessGitEvidenceTests(unittest.TestCase):
             "blob",
             f"{historical['source_baseline_commit_sha']}:{historical['path']}",
         )
-        current_bytes = (ROOT / repair["path"]).read_bytes()
+        e3_candidate_bytes = git_bytes(
+            "cat-file",
+            "blob",
+            f"{E3_MERGE_SHA}:{repair['path']}",
+        )
         self.assertEqual(
             canonical_sha256(historical_blob),
             historical["historical_canonical_sha256"],
         )
         self.assertEqual(
-            canonical_sha256(current_bytes),
+            canonical_sha256(e3_candidate_bytes),
             repair["current_candidate_canonical_sha256"],
         )
         self.assertNotEqual(
@@ -926,7 +965,7 @@ class M15CompletionReadinessReadmeTests(unittest.TestCase):
     def setUpClass(cls):
         cls.observation = load_json(RECORD_PATHS["readme"])
         cls.base = git_bytes("show", f"{SOURCE_MAIN_BASE_SHA}:README.md")
-        cls.candidate = README_PATH.read_bytes()
+        cls.candidate = git_bytes("show", f"{E3_MERGE_SHA}:README.md")
 
     def test_33_base_and_candidate_readme_digests_match_observation(self):
         self.assertEqual(
