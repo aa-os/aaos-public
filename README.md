@@ -1175,14 +1175,14 @@ Readiness checklist results must not become release approval, risk acceptance, D
 
 ## Next Phase
 
-M15 repository completion has occurred through the human-reviewed Track E4 merge.
+v0.14.0 is published as the Latest stable GitHub Release. Tag `v0.14.0`
+resolves exactly to the human-reviewed Track E4 merge commit
+`01870f4b844c1cda2f157e7be7bdb66317fdc738`.
 
-Manual tag and GitHub Release publication remain separate, human-controlled
-actions. The exact v0.14.0 tag target is the resulting E4 merge commit; this
-repository state does not claim that the tag or GitHub Release already exists.
-
-After publication, open `Post-release review: v0.14.0 / M15` and verify the
-published target, release state, and candidate-to-merge continuity.
+Issue #254 records the post-release governance review and M15 retrospective.
+That review and its generated records are evidence only; completion of #254
+does not automatically authorize M16 planning. Any M16 planning requires a
+separate human decision, and M16 implementation remains out of scope.
 
 Decision Proof sealing remains AAOS-owned.
 

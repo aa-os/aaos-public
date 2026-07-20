@@ -31,6 +31,7 @@ TRACK_B_SCHEMA_PATH = ROOT / "schemas" / "m15-capability-memory-pack.schema.json
 TRACK_B_FIXTURE_PATH = ROOT / "examples" / "public-integration-pack-pilot" / "m15-capability-pack-valid-verified.json"
 TRACK_C_MERGE_SHA = "2d8bab3a84675543c34231a9e04521379febdac1"
 TRACK_C_MERGE_TREE_SHA = "253d64dd203741a213e34afaa501218a362c88e7"
+E4_MERGE_SHA = "01870f4b844c1cda2f157e7be7bdb66317fdc738"
 GIT = os.environ.get("AAOS_TEST_GIT_EXE") or shutil.which("git")
 
 
@@ -1851,8 +1852,9 @@ class M15TrackCReleaseStateTests(TrackCFixtureMixin, unittest.TestCase):
             r"(?im)^\s*M15\s+is\s+complete[.!]?\s*$",
             r"(?im)^\s*Track\s+E4\s+is\s+complete[.!]?\s*$",
         )
-        for pattern in future_promotion_patterns:
-            self.assertIsNone(re.search(pattern, next_phase))
+        if phase != "m15-post-release":
+            for pattern in future_promotion_patterns:
+                self.assertIsNone(re.search(pattern, next_phase))
         for pattern in (
             r"(?i)Decision Proof sealing (?:is|has been) externally (?:owned|sealed)",
             r"(?i)Learning Proof sealing (?:is|has been) externally (?:owned|sealed)",
@@ -1904,6 +1906,36 @@ class M15TrackCReleaseStateTests(TrackCFixtureMixin, unittest.TestCase):
             self.assertIn("Decision Proof sealing remains AAOS-owned", normalized_next)
             self.assertIn("Learning Proof sealing remains AAOS-owned", normalized_next)
             self.assertIn("AAOS remains the decision sovereignty layer", normalized_next)
+        elif phase == "m15-post-release":
+            self.assertEqual(
+                v014_lines,
+                [
+                    "- v0.14.0 — M15 Learning Sovereignty and Evidence-Bound Capability Memory"
+                ],
+            )
+            self.assertIn(
+                "M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, and M15 are complete.",
+                current_status,
+            )
+            self.assertIn("M15 completed:", current_status)
+            self.assertIn("#252 / PR #253 Track E4", current_status)
+            self.assertIn(
+                "v0.14.0 is published as the Latest stable GitHub Release",
+                normalized_next,
+            )
+            self.assertIn(E4_MERGE_SHA, normalized_next)
+            self.assertIn(
+                "Issue #254 records the post-release governance review and M15 retrospective",
+                normalized_next,
+            )
+            self.assertIn(
+                "completion of #254 does not automatically authorize M16 planning",
+                normalized_next,
+            )
+            self.assertIn("M16 implementation remains out of scope", normalized_next)
+            self.assertIn("Decision Proof sealing remains AAOS-owned", normalized_next)
+            self.assertIn("Learning Proof sealing remains AAOS-owned", normalized_next)
+            self.assertIn("AAOS remains the decision sovereignty layer", normalized_next)
         else:
             raise AssertionError(f"unsupported README phase: {phase}")
 
@@ -1916,7 +1948,7 @@ class M15TrackCReleaseStateTests(TrackCFixtureMixin, unittest.TestCase):
     def test_03_v0140_remains_unpublished_statement_is_exact(self):
         self.assertIn("`v0.14.0` remains a future release path and is not published.", CONTRACT_PATH.read_text(encoding="utf-8"))
 
-    def test_04_historical_snapshot_and_current_e4_candidate_are_phase_aware(self):
+    def test_04_historical_e4_and_post_release_readmes_are_phase_aware(self):
         self.assertEqual(git_bytes("cat-file", "-t", TRACK_C_MERGE_SHA), b"commit\n")
         self.assertEqual(
             git_bytes("rev-parse", f"{TRACK_C_MERGE_SHA}^{{tree}}").strip(),
@@ -1930,8 +1962,12 @@ class M15TrackCReleaseStateTests(TrackCFixtureMixin, unittest.TestCase):
             phase="track-c-historical",
         )
         self.assert_phase_aware_readme_state(
-            README_PATH.read_text(encoding="utf-8"),
+            git_bytes("show", f"{E4_MERGE_SHA}:README.md").decode("utf-8"),
             phase="e4-final-candidate",
+        )
+        self.assert_phase_aware_readme_state(
+            README_PATH.read_text(encoding="utf-8"),
+            phase="m15-post-release",
         )
 
     def test_05_learning_and_decision_proof_sealing_remain_aaos_owned(self):
@@ -1981,7 +2017,7 @@ class M15TrackCReleaseStateTests(TrackCFixtureMixin, unittest.TestCase):
                 self.assertFalse(result["authority_boundary_valid"])
 
     def test_12_explicit_readme_completion_and_release_promotions_fail(self):
-        readme = README_PATH.read_text(encoding="utf-8")
+        readme = git_bytes("show", f"{E4_MERGE_SHA}:README.md").decode("utf-8")
         next_phase_claims = (
             "v0.14.0 is released.",
             "v0.14.0 tag exists.",

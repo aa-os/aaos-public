@@ -148,6 +148,7 @@ HISTORICAL_M14_NEXT_PHASE = (
 )
 M14_FINAL_MERGE_SHA = "06d1a3f64eaebf2ccb1667ebe4b3c85351bfd186"
 M14_FINAL_README_BLOB_SHA = "08329f139b0a801caf31e4cbf744d70df9fd017b"
+E4_MERGE_SHA = "01870f4b844c1cda2f157e7be7bdb66317fdc738"
 M14_COMPLETION_READINESS_MERGE_SHA = (
     "a7b5cbc2026468dde3d937e9366a780894570548"
 )
@@ -594,10 +595,22 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
         self.assertTrue(current["readme_release_state_valid"])
         self.assertTrue(current["m14_final_completion_valid"])
         next_phase = self.readme.split("## Next Phase", 1)[1]
-        self.assertIn("M15 repository completion has occurred", next_phase)
+        normalized_next_phase = " ".join(next_phase.split())
+        self.assertIn(
+            "v0.14.0 is published as the Latest stable GitHub Release",
+            normalized_next_phase,
+        )
+        self.assertIn(
+            "completion of #254 does not automatically authorize M16 planning",
+            normalized_next_phase,
+        )
+
+        e4_readme = git_bytes("show", f"{E4_MERGE_SHA}:README.md").decode("utf-8")
+        e4_next_phase = e4_readme.split("## Next Phase", 1)[1]
+        self.assertIn("M15 repository completion has occurred", e4_next_phase)
         self.assertIn(
             "Manual tag and GitHub Release publication remain separate",
-            next_phase,
+            e4_next_phase,
         )
 
         self.assertEqual(

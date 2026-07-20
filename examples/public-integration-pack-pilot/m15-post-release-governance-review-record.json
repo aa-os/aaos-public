@@ -1,0 +1,1141 @@
+{
+  "schema_version": "m15-post-release-governance-review/v1",
+  "document_kind": "m15-post-release-governance-review-record",
+  "record_id": "urn:aaos:m15:post-release-governance-review:v0.14.0:issue-254",
+  "repository": "aa-os/aaos-public",
+  "issue_number": 254,
+  "observed_at": "2026-07-20T12:21:22.682Z",
+  "release_under_review": {
+    "milestone": "M15",
+    "completion_pull_request": 253,
+    "completion_candidate_head_sha": "b18c77f7745842aa849b53487be96c4eb5e531ca",
+    "expected_merge_commit_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+    "expected_merge_tree_sha": "6bc77ea15c1b55b3b99a0705da40a4568849b47b",
+    "release_tag": "v0.14.0",
+    "release_title": "v0.14.0 — M15 Learning Sovereignty and Evidence-Bound Capability Memory"
+  },
+  "evidence_planes": {
+    "tagged_release": {
+      "evidence_role": "immutable-recorded-release-evidence",
+      "tag": "v0.14.0",
+      "commit_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+      "tree_sha": "6bc77ea15c1b55b3b99a0705da40a4568849b47b"
+    },
+    "maintained_main": {
+      "evidence_role": "mutable-maintained-repository-observation",
+      "ref": "refs/heads/main",
+      "commit_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+      "observed_at": "2026-07-20T12:21:22.682Z"
+    },
+    "live_github": {
+      "evidence_role": "mutable-live-github-observation",
+      "release_id": 356696715,
+      "observed_at": "2026-07-20T12:21:22.682Z",
+      "external_state_mutable": true
+    },
+    "clean_clone": {
+      "evidence_role": "independent-reproducibility-observation",
+      "clone_url": "https://github.com/aa-os/aaos-public.git",
+      "resolved_commit_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+      "working_tree_clean": true
+    }
+  },
+  "tag_release_binding": {
+    "tag_name": "v0.14.0",
+    "tag_ref": "refs/tags/v0.14.0",
+    "tag_object_type": "commit",
+    "annotated_tag_object_sha": null,
+    "tag_ref_target_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+    "peeled_commit_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+    "target_tree_sha": "6bc77ea15c1b55b3b99a0705da40a4568849b47b",
+    "expected_merge_commit_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+    "completion_pr_head_sha": "b18c77f7745842aa849b53487be96c4eb5e531ca",
+    "target_equals_expected_merge_commit": true,
+    "target_equals_completion_pr_head": false,
+    "release_tag_name": "v0.14.0",
+    "release_target_commitish": "main",
+    "release_resolved_commit_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+    "tag_and_release_binding_match": true,
+    "point_in_time_observation_only": true,
+    "historical_non_movement_proven": false
+  },
+  "publication_evidence_inventory": {
+    "release_id": 356696715,
+    "release_url": "https://github.com/aa-os/aaos-public/releases/tag/v0.14.0",
+    "release_title": "v0.14.0 — M15 Learning Sovereignty and Evidence-Bound Capability Memory",
+    "tag_name": "v0.14.0",
+    "target_commitish": "main",
+    "author_login": "aa-os",
+    "created_at": "2026-07-20T11:57:48Z",
+    "published_at": "2026-07-20T12:08:53Z",
+    "updated_at": "2026-07-20T12:08:53Z",
+    "draft": false,
+    "prerelease": false,
+    "latest": true,
+    "latest_observation": {
+      "method": "github-latest-release-endpoint",
+      "observed_release_id": 356696715,
+      "matches_reviewed_release": true
+    },
+    "raw_release_api_response": {
+      "captured_at": "2026-07-20T13:20:20.660Z",
+      "utf8_byte_count": 5357,
+      "sha256": "f139e8d7c15965d600c4ee39cf35cfb3d84df575e1841057618eeaf08020484c"
+    },
+    "github_api_immutable": false,
+    "release_notes": {
+      "digest_algorithm": "sha256",
+      "digest_mode": "utf8-api-body-without-normalization",
+      "utf8_byte_count": 3433,
+      "sha256": "665bceb884b3e4915d618efd585374b2105bd20dfda97374944162fb00b5dab5",
+      "identifies_m15_release": true,
+      "verification_baseline_identified": true,
+      "authority_review": {
+        "review_result": "no-authority-overreach-observed",
+        "claims_decision_proof_sealing": false,
+        "claims_learning_proof_sealing": false,
+        "claims_release_as_governance_approval": false,
+        "claims_risk_acceptance": false,
+        "claims_runtime_authority": false
+      }
+    },
+    "assets": {
+      "uploaded_asset_count": 0,
+      "uploaded_assets": [],
+      "asset_digests_required_when_assets_exist": true,
+      "generated_source_archives_excluded": true,
+      "inventory_result": "no-uploaded-release-assets"
+    },
+    "observation_source": {
+      "release_endpoint": "GET /repos/aa-os/aaos-public/releases/tags/v0.14.0",
+      "latest_endpoint": "GET /repos/aa-os/aaos-public/releases/latest",
+      "observed_at": "2026-07-20T12:21:22.682Z"
+    },
+    "evidence_only": true
+  },
+  "repository_consistency": {
+    "main_ref_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+    "main_contains_completion_merge": true,
+    "completion_pull_request": {
+      "number": 253,
+      "merged": true,
+      "merge_commit_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+      "merged_at": "2026-07-20T11:57:48Z"
+    },
+    "issues": [
+      {
+        "number": 252,
+        "role": "m15-track-e4-source-issue",
+        "state": "closed",
+        "state_reason": "completed",
+        "closed_at": "2026-07-20T11:57:49Z"
+      },
+      {
+        "number": 231,
+        "role": "m15-parent-tracker",
+        "state": "closed",
+        "state_reason": "completed",
+        "closed_at": "2026-07-20T11:57:50Z"
+      },
+      {
+        "number": 254,
+        "role": "post-release-review",
+        "state": "open",
+        "state_reason": null,
+        "closed_at": null
+      }
+    ],
+    "tagged_readme_observation": {
+      "observed_commit_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+      "m1_through_m15_complete": true,
+      "v0_14_0_release_entry_present": true,
+      "stale_prepublication_statement_present": true,
+      "stale_statement_summary": "The maintained README still says tag and GitHub Release publication remain future human-controlled actions and does not claim they exist.",
+      "finding_id": "m15-prg-001"
+    },
+    "review_candidate_readme_observation": {
+      "source_role": "draft-review-candidate-worktree",
+      "path": "README.md",
+      "git_blob_sha": "c72ed99f6de5415a0295b0832e8e22a9698b567e",
+      "canonical_text_sha256": "24e56be918627ff86f2383ec6473bc5d6789dcfeb903debf034c98576438add9",
+      "m1_through_m15_complete": true,
+      "v0_14_0_release_entry_present": true,
+      "published_latest_statement_present": true,
+      "m16_separate_human_authorization_boundary_present": true,
+      "stale_prepublication_statement_present": false,
+      "verification_command_ids": [
+        "candidate-readme-git-blob",
+        "candidate-readme-stale-scan"
+      ]
+    },
+    "release_reference_audit": {
+      "correct_release_identifier": "v0.14.0",
+      "current_state_paths_reviewed": [
+        "README.md"
+      ],
+      "tagged_tree_matching_line_count": 95,
+      "tagged_tree_matching_path_count": 33,
+      "tagged_tree_matching_transcript_sha256": "b1f86e01cd397544777df95ef34c84e51eed893099771595560b768b1bd265ef",
+      "mismatched_m15_version_association_count": 0,
+      "mismatch_transcript_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "verification_command_ids": [
+        "tagged-release-reference-inventory",
+        "tagged-m15-release-identity-mismatch-scan"
+      ],
+      "historical_prepublication_references_preserved": true,
+      "historical_reference_policy": "Pre-publication contracts, fixtures, schemas, evaluators, and negative tests remain historical evidence and are not reinterpreted as current release state.",
+      "unclassified_conflicting_release_identifiers": []
+    }
+  },
+  "completion_approval_evidence": {
+    "pull_request_number": 253,
+    "candidate_head_sha": "b18c77f7745842aa849b53487be96c4eb5e531ca",
+    "observation_comment": {
+      "comment_id": 5021546499,
+      "author_login": "aa-os",
+      "created_at": "2026-07-20T11:06:53Z",
+      "updated_at": "2026-07-20T11:06:53Z",
+      "html_url": "https://github.com/aa-os/aaos-public/pull/253#issuecomment-5021546499",
+      "body_utf8_byte_count": 1230,
+      "body_sha256": "a32abd57d3f3503bba5e17b81f385a0581c86581e81a83ccf891731120c5da6e",
+      "api_response_utf8_byte_count": 4554,
+      "api_response_sha256": "99a3f0e473b56a9a815facfc16e5357d072d589db284d28ba2c7d4321b8d1340",
+      "binds_candidate": true
+    },
+    "verification_receipt_comment": {
+      "comment_id": 5021686076,
+      "author_login": "aa-os",
+      "created_at": "2026-07-20T11:24:04Z",
+      "updated_at": "2026-07-20T11:24:04Z",
+      "html_url": "https://github.com/aa-os/aaos-public/pull/253#issuecomment-5021686076",
+      "body_utf8_byte_count": 30769,
+      "body_sha256": "c43fd9fcc214d56e2f30c205220f5e4e088d0aa1f029610c32e21fa77b12fd5a",
+      "api_response_utf8_byte_count": 36708,
+      "api_response_sha256": "c3de9247f168969c7a3282b84fc8536b7150cd9641337232192af492b81cfea3",
+      "canonical_payload_sha256": "ec2995e2abf9acfa567a67ba7506ece683036f7c5afad87b9a0fb1bcc1b80a3d",
+      "binds_candidate": true
+    },
+    "human_approval_comment": {
+      "comment_id": 5021955084,
+      "author_login": "aa-os",
+      "created_at": "2026-07-20T11:57:17Z",
+      "updated_at": "2026-07-20T11:57:17Z",
+      "html_url": "https://github.com/aa-os/aaos-public/pull/253#issuecomment-5021955084",
+      "body_utf8_byte_count": 2818,
+      "body_sha256": "9bbb49d001aa6e9c8bff5f54187a406d8b0489ece3d446eb44da313b6bafa650",
+      "api_response_utf8_byte_count": 4586,
+      "api_response_sha256": "148b7ca01f51648389b13baa76ac99d867896fca3f2fa1cf99714d90d936fd08",
+      "binds_candidate": true,
+      "binds_verification_receipt": true,
+      "binds_approved_action": true
+    },
+    "event_timestamps": {
+      "observation_at": "2026-07-20T11:06:53Z",
+      "verification_at": "2026-07-20T11:24:04Z",
+      "human_approval_at": "2026-07-20T11:57:17Z",
+      "merge_at": "2026-07-20T11:57:48Z",
+      "release_publication_at": "2026-07-20T12:08:53Z"
+    },
+    "github_envelope_ordering_valid": true,
+    "embedded_human_approval_json": {
+      "approval_timestamp": "<RFC3339_UTC_TIMESTAMP>",
+      "approver_identity": "<AUTHORIZED_HUMAN_GITHUB_LOGIN>",
+      "contains_placeholders": true,
+      "standardized_envelope_bound_record_present": false,
+      "finding_id": "m15-prg-004"
+    },
+    "not_release_blocking_reason": "The GitHub envelopes expose exact author, time, and ordering, and the approval body binds the candidate, verification receipt, and approved action; the gap is the absence of a standardized envelope-bound repository record.",
+    "evidence_only": true
+  },
+  "verification_runs": [
+    {
+      "command_id": "clean-clone-create",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "host-temporary-parent",
+      "logical_argv": [
+        "git",
+        "clone",
+        "--no-local",
+        "https://github.com/aa-os/aaos-public.git",
+        "C:/Users/TOM/AppData/Local/Temp/aaos-issue254-repro-final-019f7f71"
+      ],
+      "exit_code": 0,
+      "result_kind": "exact-command-outcome",
+      "result": "clone completed",
+      "passed": true
+    },
+    {
+      "command_id": "tag-checkout-detached",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "clean-clone",
+      "logical_argv": ["git", "checkout", "--detach", "v0.14.0"],
+      "exit_code": 0,
+      "result_kind": "exact-stderr-transcript",
+      "result": "HEAD is now at 01870f4 Merge pull request #253 from aa-os/agent/m15-track-e4-final-completion",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_stderr_utf8_byte_count": 94,
+      "raw_stderr_sha256": "d48caaab4fe3bcefa7bcf4b04ec33ed2ce38562ae707109f883a83b526da8938",
+      "passed": true
+    },
+    {
+      "command_id": "detached-head-symbolic-ref",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "clean-clone-detached-v0.14.0",
+      "logical_argv": ["git", "symbolic-ref", "--quiet", "HEAD"],
+      "exit_code": 1,
+      "result_kind": "expected-no-output-nonzero",
+      "result": "detached HEAD confirmed (no symbolic ref)",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_stderr_utf8_byte_count": 0,
+      "raw_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "command_id": "detached-head-commit",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "clean-clone-detached-v0.14.0",
+      "logical_argv": ["git", "rev-parse", "HEAD"],
+      "exit_code": 0,
+      "result_kind": "exact-stdout",
+      "result": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+      "raw_stdout_utf8_byte_count": 41,
+      "raw_stdout_sha256": "18a170ced9e2dbbe3f9fbfd2d8c578cc6a86025a9beb50c919198424b8e9c5e2",
+      "passed": true
+    },
+    {
+      "command_id": "github-release-by-tag",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/releases/tags/v0.14.0"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "id=356696715; tag_name=v0.14.0; draft=false; prerelease=false; author=aa-os; created_at=2026-07-20T11:57:48Z; published_at=2026-07-20T12:08:53Z; updated_at=2026-07-20T12:08:53Z",
+      "raw_stdout_utf8_byte_count": 5357,
+      "raw_stdout_sha256": "f139e8d7c15965d600c4ee39cf35cfb3d84df575e1841057618eeaf08020484c",
+      "passed": true
+    },
+    {
+      "command_id": "github-latest-release",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/releases/latest"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "id=356696715; tag_name=v0.14.0; matches reviewed release=true",
+      "raw_stdout_utf8_byte_count": 5357,
+      "raw_stdout_sha256": "f139e8d7c15965d600c4ee39cf35cfb3d84df575e1841057618eeaf08020484c",
+      "passed": true
+    },
+    {
+      "command_id": "github-tag-ref",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/git/ref/tags/v0.14.0"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "ref=refs/tags/v0.14.0; object.type=commit; object.sha=01870f4b844c1cda2f157e7be7bdb66317fdc738",
+      "raw_stdout_utf8_byte_count": 339,
+      "raw_stdout_sha256": "07d7e4a20c4110fa1d614c83e939ed94eea7e7358ab86945970598b369bebfe0",
+      "passed": true
+    },
+    {
+      "command_id": "github-release-assets",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/releases/356696715/assets"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "[]; uploaded_asset_count=0",
+      "raw_stdout_utf8_byte_count": 2,
+      "raw_stdout_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "passed": true
+    },
+    {
+      "command_id": "github-completion-pull-request",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/pulls/253"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "number=253; merged=true; head.sha=b18c77f7745842aa849b53487be96c4eb5e531ca; merge_commit_sha=01870f4b844c1cda2f157e7be7bdb66317fdc738; merged_at=2026-07-20T11:57:48Z",
+      "raw_stdout_utf8_byte_count": 26629,
+      "raw_stdout_sha256": "52461c814e1773509213cb75a030a56b9d60a1916fe1469b908b7f1740818dbd",
+      "passed": true
+    },
+    {
+      "command_id": "github-issue-252",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/issues/252"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "number=252; state=closed; state_reason=completed; closed_at=2026-07-20T11:57:49Z",
+      "raw_stdout_utf8_byte_count": 34618,
+      "raw_stdout_sha256": "40f7e3c28ee7cbd6884f2d290cc77cfa86d4cc4ee6cdfd2e32c27890b12884ba",
+      "passed": true
+    },
+    {
+      "command_id": "github-issue-231",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/issues/231"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "number=231; state=closed; state_reason=completed; closed_at=2026-07-20T11:57:50Z",
+      "raw_stdout_utf8_byte_count": 11897,
+      "raw_stdout_sha256": "9b4796a7ec29ffefb2b31e23e2f57976a7b513b88c3deb2df9983b7b135ea177",
+      "passed": true
+    },
+    {
+      "command_id": "github-issue-254",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/issues/254"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "number=254; state=open; state_reason=null; closed_at=null",
+      "raw_stdout_utf8_byte_count": 8860,
+      "raw_stdout_sha256": "ff184d300e111871cf85904d23a8764367aaae82e60345bd5cf8c531533cfd16",
+      "passed": true
+    },
+    {
+      "command_id": "github-observation-comment",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/issues/comments/5021546499"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "id=5021546499; author=aa-os; created_at=2026-07-20T11:06:53Z; updated_at=2026-07-20T11:06:53Z; body_utf8_byte_count=1230; body_sha256=a32abd57d3f3503bba5e17b81f385a0581c86581e81a83ccf891731120c5da6e",
+      "raw_stdout_utf8_byte_count": 4554,
+      "raw_stdout_sha256": "99a3f0e473b56a9a815facfc16e5357d072d589db284d28ba2c7d4321b8d1340",
+      "passed": true
+    },
+    {
+      "command_id": "github-verification-comment",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/issues/comments/5021686076"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "id=5021686076; author=aa-os; created_at=2026-07-20T11:24:04Z; updated_at=2026-07-20T11:24:04Z; body_utf8_byte_count=30769; body_sha256=c43fd9fcc214d56e2f30c205220f5e4e088d0aa1f029610c32e21fa77b12fd5a",
+      "raw_stdout_utf8_byte_count": 36708,
+      "raw_stdout_sha256": "c3de9247f168969c7a3282b84fc8536b7150cd9641337232192af492b81cfea3",
+      "passed": true
+    },
+    {
+      "command_id": "github-approval-comment",
+      "evidence_plane": "live-github-api",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["curl.exe", "--fail-with-body", "--silent", "--show-error", "--header", "Accept: application/vnd.github+json", "--header", "X-GitHub-Api-Version: 2022-11-28", "https://api.github.com/repos/aa-os/aaos-public/issues/comments/5021955084"],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "id=5021955084; author=aa-os; created_at=2026-07-20T11:57:17Z; updated_at=2026-07-20T11:57:17Z; body_utf8_byte_count=2818; body_sha256=9bbb49d001aa6e9c8bff5f54187a406d8b0489ece3d446eb44da313b6bafa650",
+      "raw_stdout_utf8_byte_count": 4586,
+      "raw_stdout_sha256": "148b7ca01f51648389b13baa76ac99d867896fca3f2fa1cf99714d90d936fd08",
+      "passed": true
+    },
+    {
+      "command_id": "release-notes-sha256",
+      "evidence_plane": "derived-release-body-digest",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": [
+        "powershell.exe",
+        "-NoProfile",
+        "-Command",
+        "$body=(Invoke-RestMethod -Headers @{Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28'} -Uri 'https://api.github.com/repos/aa-os/aaos-public/releases/tags/v0.14.0').body; $bytes=[Text.Encoding]::UTF8.GetBytes($body); $sha=[Security.Cryptography.SHA256]::Create(); $digest=($sha.ComputeHash($bytes) | ForEach-Object {$_.ToString('x2')}) -join ''; [pscustomobject]@{utf8_byte_count=$bytes.Length;sha256=$digest} | ConvertTo-Json -Compress"
+      ],
+      "exit_code": 0,
+      "result_kind": "exact-stdout",
+      "result": "{\"utf8_byte_count\":3433,\"sha256\":\"665bceb884b3e4915d618efd585374b2105bd20dfda97374944162fb00b5dab5\"}",
+      "passed": true
+    },
+    {
+      "command_id": "remote-main-and-tag-refs",
+      "evidence_plane": "remote-git-ref",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/main",
+        "refs/tags/v0.14.0"
+      ],
+      "exit_code": 0,
+      "result_kind": "derived-summary-bound-to-raw-stdout",
+      "result": "refs/heads/main and refs/tags/v0.14.0 both resolved to 01870f4b844c1cda2f157e7be7bdb66317fdc738",
+      "raw_stdout_utf8_byte_count": 116,
+      "raw_stdout_sha256": "a1cc1555a1915081f6cfacb9b721ab2ebc9b560489e0d3283f02daa318fe23f8",
+      "passed": true
+    },
+    {
+      "command_id": "candidate-readme-git-blob",
+      "evidence_plane": "draft-review-candidate",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["git", "hash-object", "--path=README.md", "README.md"],
+      "exit_code": 0,
+      "result_kind": "exact-stdout-trimmed",
+      "result": "c72ed99f6de5415a0295b0832e8e22a9698b567e",
+      "raw_stdout_utf8_byte_count": 41,
+      "raw_stdout_sha256": "4e90f348853b6449492c6fa8e08cacf55e2732ef6baf45b4d532cd649e04c6df",
+      "passed": true
+    },
+    {
+      "command_id": "candidate-readme-stale-scan",
+      "evidence_plane": "draft-review-candidate",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["rg", "-n", "-i", "v0\\.14\\.0.{0,120}(future|pending|unpublished|not published|not released)|(future|pending|unpublished|not published|not released).{0,120}v0\\.14\\.0", "README.md"],
+      "exit_code": 1,
+      "result_kind": "expected-no-match",
+      "result": "no stale v0.14.0 prepublication statement",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "command_id": "tagged-release-reference-inventory",
+      "evidence_plane": "tagged-release",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["git", "grep", "-n", "-i", "-E", "v0\\.14\\.0", "v0.14.0"],
+      "exit_code": 0,
+      "result_kind": "derived-count-bound-to-raw-stdout",
+      "result": "95 matching lines across 33 paths",
+      "raw_stdout_utf8_byte_count": 15126,
+      "raw_stdout_sha256": "b1f86e01cd397544777df95ef34c84e51eed893099771595560b768b1bd265ef",
+      "passed": true
+    },
+    {
+      "command_id": "tagged-m15-release-identity-mismatch-scan",
+      "evidence_plane": "tagged-release",
+      "working_directory_role": "release-review-checkout",
+      "logical_argv": ["git", "grep", "-n", "-i", "-P", "M15.{0,120}v0\\.(?!14\\.0)|v0\\.(?!14\\.0)[0-9]+\\.[0-9]+.{0,120}M15", "v0.14.0"],
+      "exit_code": 1,
+      "result_kind": "expected-no-match",
+      "result": "no_mismatched_M15_version_associations",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "command_id": "tag-object-type",
+      "evidence_plane": "tagged-release",
+      "working_directory_role": "clean-clone",
+      "logical_argv": [
+        "git",
+        "cat-file",
+        "-t",
+        "v0.14.0"
+      ],
+      "exit_code": 0,
+      "result_kind": "exact-stdout-trimmed",
+      "result": "commit",
+      "raw_stdout_utf8_byte_count": 7,
+      "raw_stdout_sha256": "50836eee574ecff79dea3b4fd40673d7d000f7a5f177d8a6a3000b59c78383b8",
+      "passed": true
+    },
+    {
+      "command_id": "tag-commit-resolution",
+      "evidence_plane": "tagged-release",
+      "working_directory_role": "clean-clone",
+      "logical_argv": [
+        "git",
+        "rev-parse",
+        "v0.14.0^{commit}"
+      ],
+      "exit_code": 0,
+      "result_kind": "exact-stdout-trimmed",
+      "result": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+      "raw_stdout_utf8_byte_count": 41,
+      "raw_stdout_sha256": "18a170ced9e2dbbe3f9fbfd2d8c578cc6a86025a9beb50c919198424b8e9c5e2",
+      "passed": true
+    },
+    {
+      "command_id": "tag-tree-resolution",
+      "evidence_plane": "tagged-release",
+      "working_directory_role": "clean-clone",
+      "logical_argv": [
+        "git",
+        "rev-parse",
+        "v0.14.0^{tree}"
+      ],
+      "exit_code": 0,
+      "result_kind": "exact-stdout-trimmed",
+      "result": "6bc77ea15c1b55b3b99a0705da40a4568849b47b",
+      "raw_stdout_utf8_byte_count": 41,
+      "raw_stdout_sha256": "0731112e0523470d8b694aa511ada1001919f86101121505da360f76666fbd72",
+      "passed": true
+    },
+    {
+      "command_id": "tagged-tree-inventory",
+      "evidence_plane": "tagged-release",
+      "working_directory_role": "clean-clone",
+      "logical_argv": [
+        "git",
+        "ls-tree",
+        "-r",
+        "--name-only",
+        "v0.14.0"
+      ],
+      "exit_code": 0,
+      "result_kind": "derived-count-bound-to-raw-stdout",
+      "result": "501 entries",
+      "raw_stdout_utf8_byte_count": 37161,
+      "raw_stdout_sha256": "f8e3d4bbb16062434a1daebd978e0d4f0b3b2956856ad055b03c99d46b3f0176",
+      "passed": true
+    },
+    {
+      "command_id": "tagged-tree-object-inventory",
+      "evidence_plane": "tagged-release",
+      "working_directory_role": "clean-clone",
+      "logical_argv": ["git", "ls-tree", "-r", "--full-tree", "v0.14.0"],
+      "exit_code": 0,
+      "result_kind": "derived-count-bound-to-raw-stdout",
+      "result": "501 entries; 501 blobs; 0 gitlinks; 0 symlinks",
+      "raw_stdout_utf8_byte_count": 63714,
+      "raw_stdout_sha256": "5fbef51b212a377123e2b6cd0cc393be08505bfd48cacc123900761205ba89e5",
+      "passed": true
+    },
+    {
+      "command_id": "tagged-gitmodules-absence",
+      "evidence_plane": "tagged-release",
+      "working_directory_role": "clean-clone",
+      "logical_argv": ["git", "ls-tree", "--name-only", "v0.14.0", "--", ".gitmodules"],
+      "exit_code": 0,
+      "result_kind": "exact-empty-stdout",
+      "result": ".gitmodules absent",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "command_id": "tagged-lfs-pointer-absence",
+      "evidence_plane": "tagged-release",
+      "working_directory_role": "clean-clone",
+      "logical_argv": ["git", "grep", "-n", "-I", "-F", "version https://git-lfs.github.com/spec/v1", "v0.14.0"],
+      "exit_code": 1,
+      "result_kind": "expected-no-match",
+      "result": "no Git LFS pointer header matches",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "command_id": "main-contains-completion-merge",
+      "evidence_plane": "maintained-main",
+      "working_directory_role": "clean-clone",
+      "logical_argv": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+        "main"
+      ],
+      "exit_code": 0,
+      "result_kind": "exact-exit-code-no-output",
+      "result": "ancestor check passed",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "command_id": "tagged-full-maintained-suite",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "clean-clone-detached-v0.14.0",
+      "logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-t",
+        ".",
+        "-p",
+        "test_*.py",
+        "-q"
+      ],
+      "actual_launcher_role": "external-cpython-outside-clean-clone",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "AAOS_TEST_GIT_EXE": "C:/Program Files/Git/cmd/git.exe"
+      },
+      "exit_code": 0,
+      "result_kind": "exact-stderr-transcript",
+      "result": "----------------------------------------------------------------------\r\nRan 2275 tests in 140.079s\r\n\r\nOK\r\n",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_stderr_utf8_byte_count": 106,
+      "raw_stderr_sha256": "2acc1d73a38d6362a8f84c490dcbb0cac240cf98e26037277f9d025b921175fd",
+      "passed": true
+    },
+    {
+      "command_id": "clean-clone-status-before",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "clean-clone-detached-v0.14.0",
+      "logical_argv": [
+        "git",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exit_code": 0,
+      "result_kind": "exact-empty-stdout",
+      "result": "0 paths",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "command_id": "clean-clone-status-after",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "clean-clone-detached-v0.14.0",
+      "logical_argv": [
+        "git",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exit_code": 0,
+      "result_kind": "exact-empty-stdout",
+      "result": "0 paths",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "command_id": "clean-clone-shallow-state",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "clean-clone",
+      "logical_argv": [
+        "git",
+        "rev-parse",
+        "--is-shallow-repository"
+      ],
+      "exit_code": 0,
+      "result_kind": "exact-stdout-trimmed",
+      "result": "false",
+      "raw_stdout_utf8_byte_count": 6,
+      "raw_stdout_sha256": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0",
+      "passed": true
+    },
+    {
+      "command_id": "clean-clone-promisor-state",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "clean-clone",
+      "logical_argv": ["git", "config", "--get", "remote.origin.promisor"],
+      "exit_code": 1,
+      "result_kind": "expected-no-match",
+      "result": "promisor remote not configured",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "command_id": "clean-clone-partial-clone-state",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "clean-clone",
+      "logical_argv": ["git", "config", "--get", "extensions.partialClone"],
+      "exit_code": 1,
+      "result_kind": "expected-no-match",
+      "result": "partial clone extension not configured",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "command_id": "clean-clone-sparse-state",
+      "evidence_plane": "clean-clone-tagged-tree",
+      "working_directory_role": "clean-clone",
+      "logical_argv": ["git", "config", "--bool", "core.sparseCheckout"],
+      "exit_code": 1,
+      "result_kind": "expected-no-match",
+      "result": "sparse checkout not configured",
+      "raw_stdout_utf8_byte_count": 0,
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    }
+  ],
+  "reproducibility": {
+    "clone_url": "https://github.com/aa-os/aaos-public.git",
+    "clone_mode": "fresh-remote-clone-without-local-object-reuse",
+    "tag_resolved_in_clean_clone": true,
+    "tag_checkout_command_id": "tag-checkout-detached",
+    "detached_head_confirmed": true,
+    "detached_head_symbolic_ref_command_id": "detached-head-symbolic-ref",
+    "detached_head_commit_command_id": "detached-head-commit",
+    "resolved_commit_sha": "01870f4b844c1cda2f157e7be7bdb66317fdc738",
+    "resolved_tree_sha": "6bc77ea15c1b55b3b99a0705da40a4568849b47b",
+    "tagged_tree_entry_count": 501,
+    "tagged_tree_blob_count": 501,
+    "tagged_tree_gitlink_count": 0,
+    "tagged_tree_symlink_count": 0,
+    "gitmodules_present": false,
+    "git_lfs_pointers_present": false,
+    "tagged_source_tree_independently_inspectable": true,
+    "shallow_repository": false,
+    "promisor_remote_configured": false,
+    "partial_clone_extension_configured": false,
+    "sparse_checkout_configured": false,
+    "source_inspection_command_ids": [
+      "tagged-tree-object-inventory",
+      "tagged-gitmodules-absence",
+      "tagged-lfs-pointer-absence",
+      "clean-clone-promisor-state",
+      "clean-clone-partial-clone-state",
+      "clean-clone-sparse-state"
+    ],
+    "toolchain": {
+      "git_version": "2.55.0.windows.3",
+      "python_implementation": "CPython",
+      "python_version": "3.14.6",
+      "python_launcher_role": "external-cpython-outside-clean-clone",
+      "repository_local_interpreter_required": false
+    },
+    "maintained_verification_procedure_executed": true,
+    "maintained_verification_passed": true,
+    "verification_command_id": "tagged-full-maintained-suite",
+    "working_tree_clean_before_and_after": true,
+    "clean_status_before_command_id": "clean-clone-status-before",
+    "clean_status_after_command_id": "clean-clone-status-after",
+    "repository_submodules_required": false,
+    "unrecorded_repository_state_required": false
+  },
+  "rollback_and_correction": {
+    "published_tag_immutable_by_policy": true,
+    "tag_move_allowed": false,
+    "tag_delete_allowed": false,
+    "tag_recreate_allowed": false,
+    "rollback_moves_published_tag": false,
+    "corrective_work_requires_successor_commit": true,
+    "patch_release_required_when_release_level_correction_is_appropriate": true,
+    "historical_release_evidence_remains_discoverable": true,
+    "supersession_and_withdrawal_semantics": "A correction preserves v0.14.0, records a successor commit, and uses an explicit patch release when release-level correction is appropriate; supersession or withdrawal must preserve discoverable historical evidence.",
+    "release_edit_or_republication_performed": false,
+    "rollback_execution_performed": false
+  },
+  "retrospective": [
+    {
+      "area": "decision-proof",
+      "assessment": "effective-with-follow-up",
+      "summary": "Decision Proof remained the governed decision record and evidence linkage stayed non-authoritative, but the runtime approval gate is not composed as one mandatory transition across learning and capability admission.",
+      "evidence_references": [
+        "runtime/m13_runtime_approval_gate_evaluator.py",
+        "runtime/m15_learning_proof_evaluator.py",
+        "runtime/m15_capability_memory_pack_evaluator.py"
+      ],
+      "finding_ids": [
+        "m15-prg-007"
+      ]
+    },
+    {
+      "area": "learning-proof-and-learning-sovereignty",
+      "assessment": "effective-with-follow-up",
+      "summary": "Learning readiness and authorization remain separated and non-authoritative; known-offset and expiry semantics need stricter temporal validation.",
+      "evidence_references": [
+        "docs/learning-governance/m15-core-learning-proof-contract.md",
+        "runtime/m15_learning_proof_evaluator.py",
+        "schemas/m15-learning-proof.schema.json"
+      ],
+      "finding_ids": [
+        "m15-prg-006"
+      ]
+    },
+    {
+      "area": "evidence-bound-capability-memory",
+      "assessment": "effective-with-follow-up",
+      "summary": "Capability memory remains evidence-bound and non-authorizing, while byte-level portability evidence and a canonical whole-pack digest remain future work.",
+      "evidence_references": [
+        "docs/learning-governance/m15-capability-memory-pack-contract.md",
+        "runtime/m15_capability_memory_pack_evaluator.py"
+      ],
+      "finding_ids": [
+        "m15-prg-013",
+        "m15-prg-016"
+      ]
+    },
+    {
+      "area": "human-approval-boundaries",
+      "assessment": "effective-with-follow-up",
+      "summary": "The GitHub envelopes provide exact external actor, time, and ordering evidence, while repository JSON retains placeholder approval fields rather than a standardized envelope-bound observation; E4 also lacks timestamp ordering checks.",
+      "evidence_references": [
+        "examples/public-integration-pack-pilot/m15-final-completion-release-preparation.json#/human_approval_template",
+        "tests/test_m15_final_completion_evaluator.py",
+        "runtime/m15_final_completion_evaluator.py",
+        "github:aa-os/aaos-public:pull/253:comment/5021546499",
+        "github:aa-os/aaos-public:pull/253:comment/5021686076",
+        "github:aa-os/aaos-public:pull/253:comment/5021955084"
+      ],
+      "finding_ids": [
+        "m15-prg-004",
+        "m15-prg-005"
+      ]
+    },
+    {
+      "area": "runtime-authority-boundaries",
+      "assessment": "effective",
+      "summary": "Maintained M15 evaluators remain deterministic, offline, caller-data-only, non-mutating, and non-authoritative, with fail-closed behavior for malformed evidence.",
+      "evidence_references": [
+        "runtime/m15_learning_proof_evaluator.py",
+        "runtime/m15_capability_memory_pack_evaluator.py",
+        "runtime/m15_lineage_rollback_portability_evaluator.py",
+        "runtime/m15_cross_control_regression_evaluator.py",
+        "runtime/m15_final_completion_evaluator.py"
+      ],
+      "finding_ids": [
+        "m15-prg-014"
+      ]
+    },
+    {
+      "area": "release-governance",
+      "assessment": "effective-with-follow-up",
+      "summary": "Repository completion and publication remained separate and the release is reproducible, while README state, technical immutability enforcement, historical non-movement proof, and the generic release-proof schema need follow-up.",
+      "evidence_references": [
+        "README.md",
+        "schemas/release-proof-automation.schema.json",
+        "examples/public-integration-pack-pilot/m15-final-completion-release-preparation.json"
+      ],
+      "finding_ids": [
+        "m15-prg-001",
+        "m15-prg-002",
+        "m15-prg-003",
+        "m15-prg-008",
+        "m15-prg-009",
+        "m15-prg-010",
+        "m15-prg-011",
+        "m15-prg-012",
+        "m15-prg-015"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "m15-prg-001",
+      "area": "release-governance",
+      "title": "README retains pre-publication wording after v0.14.0 publication",
+      "classification": "documentation drift",
+      "summary": "The release entry and M1-M15 completion state are present, but Next Phase still says the tag and GitHub Release are not claimed to exist.",
+      "evidence_references": [
+        "README.md#next-phase"
+      ],
+      "recommendation": "Update the maintained README to state that v0.14.0 is published while preserving the separate human-authorization boundary for M16."
+    },
+    {
+      "finding_id": "m15-prg-002",
+      "area": "release-governance",
+      "title": "Published release and lightweight tag lack recorded technical immutability enforcement",
+      "classification": "operational hardening",
+      "summary": "The tag resolves correctly, but it is lightweight and the GitHub Release API reports immutable=false; immutability is a governance policy rather than an evidenced technical control.",
+      "evidence_references": [
+        "refs/tags/v0.14.0",
+        "github-release:356696715"
+      ],
+      "recommendation": "Add protected-tag or ruleset enforcement and retain an audit-log receipt for future releases without moving or recreating v0.14.0."
+    },
+    {
+      "finding_id": "m15-prg-003",
+      "area": "release-governance",
+      "title": "Point-in-time ref evidence cannot prove the tag was never moved",
+      "classification": "accepted residual risk",
+      "summary": "Current remote and clean-clone observations agree, but no retained historical audit event stream proves that refs/tags/v0.14.0 was never moved or recreated before observation.",
+      "evidence_references": [
+        "verification-run:remote-main-and-tag-refs",
+        "verification-run:tag-commit-resolution"
+      ],
+      "recommendation": "Human review may accept this bounded historical limitation for v0.14.0 and require durable tag audit evidence prospectively."
+    },
+    {
+      "finding_id": "m15-prg-004",
+      "area": "human-approval-boundaries",
+      "title": "Published human-approval payload retains template placeholders",
+      "classification": "governance-contract gap",
+      "summary": "PR #253 comment 5021955084 retains placeholder JSON fields even though its GitHub envelope supplies exact actor aa-os and timestamp 2026-07-20T11:57:17Z; the approval body still binds the candidate, receipt, and approved action.",
+      "evidence_references": [
+        "examples/public-integration-pack-pilot/m15-final-completion-release-preparation.json#/human_approval_template",
+        "tests/test_m15_final_completion_evaluator.py#build_human_approval",
+        "github:aa-os/aaos-public:pull/253:comment/5021546499",
+        "github:aa-os/aaos-public:pull/253:comment/5021686076",
+        "github:aa-os/aaos-public:pull/253:comment/5021955084"
+      ],
+      "recommendation": "Standardize envelope-bound record validation for actor, timestamp, candidate, tree, receipt, and action without replacing the GitHub envelope."
+    },
+    {
+      "finding_id": "m15-prg-005",
+      "area": "human-approval-boundaries",
+      "title": "E4 evaluator validates timestamp shape but not event ordering",
+      "classification": "evaluator or test gap",
+      "summary": "The final-completion evaluator accepts a Z-suffixed approval timestamp but does not prove observation, verification, approval, merge, and publication ordering.",
+      "evidence_references": [
+        "runtime/m15_final_completion_evaluator.py#_timestamp",
+        "runtime/m15_final_completion_evaluator.py#_validate_human_approval"
+      ],
+      "recommendation": "Add strict RFC 3339 parsing and monotonic event-order tests in a successor change."
+    },
+    {
+      "finding_id": "m15-prg-006",
+      "area": "learning-proof-and-learning-sovereignty",
+      "title": "Learning Proof temporal validation admits unknown local offset and does not evaluate current expiry",
+      "classification": "evaluator or test gap",
+      "summary": "The parser accepts -00:00 and verifies expiration ordering, but evaluation has no supplied observation time against which an otherwise valid proof can be declared expired.",
+      "evidence_references": [
+        "runtime/m15_learning_proof_evaluator.py#_parse_timestamp",
+        "runtime/m15_learning_proof_evaluator.py#_lifecycle_findings",
+        "schemas/m15-learning-proof.schema.json#/properties/expiration_timestamp"
+      ],
+      "recommendation": "Reject -00:00 and add caller-supplied, explicitly bound evaluation time for expiry decisions without using ambient time."
+    },
+    {
+      "finding_id": "m15-prg-007",
+      "area": "decision-proof",
+      "title": "Decision Proof approval-gate composition is not mandatory across learning and capability admission",
+      "classification": "governance-contract gap",
+      "summary": "Individual Decision Proof, Learning Proof, and Capability Memory controls preserve authority, but no single contract requires runtime approval-gate evidence across the complete admission-to-use transition.",
+      "evidence_references": [
+        "runtime/m13_runtime_approval_gate_evaluator.py",
+        "runtime/m15_learning_proof_evaluator.py",
+        "runtime/m15_capability_memory_pack_evaluator.py"
+      ],
+      "recommendation": "Specify a future cross-control admission transition that binds Decision Proof approval evidence without allowing it to grant learning, invocation, or execution authority by itself."
+    },
+    {
+      "finding_id": "m15-prg-008",
+      "area": "release-governance",
+      "title": "Generic release-proof schema is too shallow for post-release evidence",
+      "classification": "future milestone candidate",
+      "summary": "The generic schema records tag presence and summary consistency but not exact commit/tree binding, Latest identity, notes and asset digests, clean-clone reproduction, or classified retrospective findings.",
+      "evidence_references": [
+        "schemas/release-governance-consistency.schema.json#/properties/release_tag",
+        "runtime/release_governance_evaluator.py",
+        "schemas/release-proof-automation.schema.json#/properties/release_tag"
+      ],
+      "recommendation": "Consider a future versioned, reusable post-release evidence-package contract based on this release-specific record."
+    },
+    {
+      "finding_id": "m15-prg-009",
+      "area": "release-governance",
+      "title": "Tag resolves to the exact reviewed merge commit",
+      "classification": "no action required",
+      "summary": "refs/tags/v0.14.0 and its peeled commit resolve to 01870f4b844c1cda2f157e7be7bdb66317fdc738, not the PR head.",
+      "evidence_references": [
+        "verification-run:tag-commit-resolution",
+        "verification-run:tag-tree-resolution"
+      ],
+      "recommendation": "Preserve the tag unchanged."
+    },
+    {
+      "finding_id": "m15-prg-010",
+      "area": "release-governance",
+      "title": "GitHub Release metadata and authority wording are consistent",
+      "classification": "no action required",
+      "summary": "Release 356696715 uses v0.14.0, is published, non-draft, non-prerelease, Latest, identifies M15, and contains no observed authority overreach.",
+      "evidence_references": [
+        "github-release:356696715",
+        "release-notes-sha256:665bceb884b3e4915d618efd585374b2105bd20dfda97374944162fb00b5dab5"
+      ],
+      "recommendation": "Do not edit or republish the existing release."
+    },
+    {
+      "finding_id": "m15-prg-011",
+      "area": "release-governance",
+      "title": "Completion PR and issue states are consistent",
+      "classification": "no action required",
+      "summary": "PR #253 is merged, #252 and #231 are closed as completed after merge, and #254 remains open for human review.",
+      "evidence_references": [
+        "github:aa-os/aaos-public:pull/253",
+        "github:aa-os/aaos-public:issue/252",
+        "github:aa-os/aaos-public:issue/231",
+        "github:aa-os/aaos-public:issue/254"
+      ],
+      "recommendation": "Keep Issue #254 open until the human exit decision is recorded."
+    },
+    {
+      "finding_id": "m15-prg-012",
+      "area": "release-governance",
+      "title": "Tagged release is independently reproducible",
+      "classification": "no action required",
+      "summary": "A fresh remote clone resolved the expected commit and tree, remained clean, and ran 2275 maintained tests successfully without repository-local hidden state.",
+      "evidence_references": [
+        "verification-run:tag-checkout-detached",
+        "verification-run:detached-head-commit",
+        "verification-run:tagged-tree-object-inventory",
+        "verification-run:tagged-gitmodules-absence",
+        "verification-run:tagged-lfs-pointer-absence",
+        "verification-run:tagged-full-maintained-suite",
+        "verification-run:clean-clone-status-before",
+        "verification-run:clean-clone-status-after"
+      ],
+      "recommendation": "Retain the exact command and result as the v0.14.0 verification baseline."
+    },
+    {
+      "finding_id": "m15-prg-013",
+      "area": "evidence-bound-capability-memory",
+      "title": "Learning and capability evidence remain non-authorizing",
+      "classification": "no action required",
+      "summary": "Learning Proof and Capability Memory maintain separate evidence, lifecycle, and authority semantics and do not grant invocation or execution authority.",
+      "evidence_references": [
+        "runtime/m15_learning_proof_evaluator.py",
+        "runtime/m15_capability_memory_pack_evaluator.py"
+      ],
+      "recommendation": "Preserve the existing non-authoritative boundary."
+    },
+    {
+      "finding_id": "m15-prg-014",
+      "area": "runtime-authority-boundaries",
+      "title": "M15 runtime evaluators preserve inert fail-closed boundaries",
+      "classification": "no action required",
+      "summary": "The maintained evaluators inspect caller-supplied evidence without network, provider, lifecycle, release, approval, or mutation authority.",
+      "evidence_references": [
+        "runtime/m15_cross_control_regression_evaluator.py",
+        "runtime/m15_final_completion_evaluator.py"
+      ],
+      "recommendation": "Keep future evaluators caller-data-only and deterministic."
+    },
+    {
+      "finding_id": "m15-prg-015",
+      "area": "release-governance",
+      "title": "Rollback and correction semantics preserve historical release evidence",
+      "classification": "no action required",
+      "summary": "The recorded policy forbids moving v0.14.0 and requires successor commits plus an explicit patch release where release-level correction is appropriate.",
+      "evidence_references": [
+        "record:rollback_and_correction"
+      ],
+      "recommendation": "Apply these semantics to any future correction; perform no rollback or release mutation in this review."
+    },
+    {
+      "finding_id": "m15-prg-016",
+      "area": "evidence-bound-capability-memory",
+      "title": "Capability Memory lacks commit-external byte verification and a canonical whole-pack digest",
+      "classification": "future milestone candidate",
+      "summary": "The pack evaluator compares declared internal digests but does not hash referenced bytes or expose a canonical digest over the complete Capability Memory record.",
+      "evidence_references": [
+        "docs/learning-governance/m15-capability-memory-pack-contract.md",
+        "docs/learning-governance/m15-lineage-rollback-portability-contract.md"
+      ],
+      "recommendation": "Add commit-external byte-verification receipts and a canonical whole-record digest before operational consumption; the evidence must remain non-sealing and non-executing."
+    }
+  ],
+  "classification_counts": {
+    "release-blocking defect": 0,
+    "corrective patch-release candidate": 0,
+    "documentation drift": 1,
+    "governance-contract gap": 2,
+    "evaluator or test gap": 2,
+    "operational hardening": 1,
+    "future milestone candidate": 2,
+    "accepted residual risk": 1,
+    "no action required": 7
+  },
+  "m16_planning_recommendation": {
+    "recommendation": "recommend-m16-planning-may-begin-after-separate-human-authorization",
+    "release_blocking_finding_ids": [],
+    "human_authorization_required": true,
+    "authorized_by_this_record": false,
+    "issue_254_completion_automatically_authorizes_m16": false,
+    "m16_implementation_authorized": false,
+    "rationale": "No release-blocking defect was observed. The classified non-blocking follow-ups do not prevent planning review, but only a separate explicit human decision may authorize M16 planning; implementation remains out of scope."
+  },
+  "authority_boundary": "This post-release record and its evaluator are evidence only. They do not move, delete, or recreate v0.14.0; edit or republish the GitHub Release; close Issue #254; authorize M16 planning or implementation; seal Decision Proof or Learning Proof; grant capability invocation or execution authority; accept risk; execute rollback; close an audit; grant a waiver; or transfer governance authority.",
+  "runtime_boundary": "The evaluator accepts one inert caller-supplied mapping and performs no file, Git, GitHub, network, subprocess, command, clone, test, tag, release, issue, or external-state operation. It calculates only an in-memory canonical SHA-256 over the supplied mapping to pin this release-specific record; it does not verify external artifact bytes."
+}
