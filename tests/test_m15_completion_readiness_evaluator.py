@@ -1259,6 +1259,113 @@ class M15CompletionReadinessRuntimeTests(unittest.TestCase):
                 ]
                 self.assertEqual(evaluate_package(package)["outcome"], BLOCKED)
 
+    def test_63h_acceptance_notes_authority_prose_blocks(self):
+        package = load_package()
+        package["acceptance"]["criteria"][0]["notes"] = (
+            "M15 completion is approved and Decision Proof is externally sealed."
+        )
+        result = evaluate_package(package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertTrue(
+            any(
+                finding.startswith("affirmative-authority-prose:acceptance.criteria")
+                for finding in result["findings"]
+            )
+        )
+
+    def test_63i_future_prerequisite_authority_prose_blocks(self):
+        package = load_package()
+        package["boundaries"]["future_prerequisites"][0]["explanation"] = (
+            "Track E4 is complete; M15 completion is approved; "
+            "v0.14.0 is released."
+        )
+        result = evaluate_package(package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertTrue(
+            any(
+                finding.startswith(
+                    "affirmative-authority-prose:boundary.future_prerequisites"
+                )
+                for finding in result["findings"]
+            )
+        )
+
+    def test_63j_pr_observer_authority_prose_blocks(self):
+        package = load_package()
+        package["observation"]["observer"] = (
+            "External authority approves M15 completion and release."
+        )
+        result = evaluate_package(package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertIn(
+            "affirmative-authority-prose:pull_request_observation.observer",
+            result["findings"],
+        )
+
+    def test_63k_receipt_evidence_reference_authority_prose_blocks(self):
+        package = load_package()
+        _receipt_command(package)["evidence_reference"] = (
+            "M15 completion approved; v0.14.0 released."
+        )
+        result = evaluate_package(package)
+        self.assertEqual(result["outcome"], BLOCKED)
+        self.assertTrue(
+            any(
+                finding.startswith(
+                    "affirmative-authority-prose:external_verification_receipt"
+                )
+                for finding in result["findings"]
+            )
+        )
+
+    def test_63l_explicit_negative_authority_prose_remains_usable(self):
+        package = load_package()
+        package["observation"]["observer"] = (
+            "M15 completion is not approved; Track E4 is not completed; "
+            "v0.14.0 is not released."
+        )
+        _receipt_command(package)["evidence_reference"] = (
+            "urn:aaos:m15:completion-not-approved:v0.14.0-not-released"
+        )
+        self.assertEqual(evaluate_package(package)["outcome"], READY)
+
+    def test_63m_boundary_evidence_references_require_nonempty_strings(self):
+        mutations = (
+            ("blocker", "blockers"),
+            ("future-prerequisite", "future_prerequisites"),
+        )
+        for label, collection in mutations:
+            with self.subTest(record=label):
+                package = load_package()
+                package["boundaries"][collection][0]["evidence_references"] = [None]
+                result = evaluate_package(package)
+                self.assertEqual(result["outcome"], BLOCKED)
+                self.assertTrue(
+                    any("evidence-missing" in finding for finding in result["findings"])
+                )
+
+    def test_63n_boundary_register_rows_are_exactly_bound(self):
+        mutations = (
+            ("blockers", "explanation", "Benign but unbound explanation."),
+            (
+                "future_prerequisites",
+                "evidence_references",
+                ["urn:aaos:m15:e3:future-prerequisite:unbound"],
+            ),
+        )
+        for collection, field, replacement in mutations:
+            with self.subTest(collection=collection, field=field):
+                package = load_package()
+                package["boundaries"][collection][0][field] = replacement
+                result = evaluate_package(package)
+                self.assertEqual(result["outcome"], BLOCKED)
+                self.assertTrue(
+                    any(
+                        "registry-binding-invalid" in finding
+                        for finding in result["findings"]
+                    )
+                )
+
     def test_64_invalid_rfc3339_utc_timestamp_blocks(self):
         package = load_package()
         package["observation"]["observed_at"] = "2026-02-30T25:00:00Z"

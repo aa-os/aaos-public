@@ -266,12 +266,39 @@ REQUIRED_FUTURE_PREREQUISITES = (
     "post-merge-final-review-not-completed",
 )
 
+BLOCKER_RESOLUTION_EXPLANATION = (
+    "Resolved by the maintained inert evidence package; this does not resolve "
+    "or authorize any future prerequisite."
+)
+FUTURE_PREREQUISITE_EXPLANATION = (
+    "Remains open after E3 and cannot be interpreted as completed or authorized "
+    "by a readiness outcome."
+)
+EXPECTED_BLOCKER_REGISTRY = tuple(
+    (
+        blocker_id,
+        "resolved",
+        (f"urn:aaos:m15:e3:blocker-evidence:{blocker_id}",),
+        BLOCKER_RESOLUTION_EXPLANATION,
+    )
+    for blocker_id in REQUIRED_BLOCKERS
+)
+EXPECTED_FUTURE_PREREQUISITE_REGISTRY = tuple(
+    (
+        prerequisite_id,
+        "open",
+        (f"urn:aaos:m15:e3:future-prerequisite:{prerequisite_id}",),
+        FUTURE_PREREQUISITE_EXPLANATION,
+    )
+    for prerequisite_id in REQUIRED_FUTURE_PREREQUISITES
+)
+
 # Bound to the discoverable focused E3 suite and prior maintained baseline.
-E3_TARGETED_MINIMUM = 160
-FULL_SUITE_MINIMUM = 2085
+E3_TARGETED_MINIMUM = 167
+FULL_SUITE_MINIMUM = 2092
 # Immutable registry for every maintained verification command.
 EXPECTED_VERIFICATION_COMMANDS = (
-    ("e3-targeted", ("python", "-X", "faulthandler", "-m", "unittest", "tests.test_m15_completion_readiness_evaluator", "-v"), "e3-candidate-validation", 160),
+    ("e3-targeted", ("python", "-X", "faulthandler", "-m", "unittest", "tests.test_m15_completion_readiness_evaluator", "-v"), "e3-candidate-validation", 167),
     ("e2-targeted", ("python", "-X", "faulthandler", "-m", "unittest", "tests.test_m15_release_proof_linkage_evaluator", "-v"), "inherited-regression", 140),
     ("e1-targeted", ("python", "-X", "faulthandler", "-m", "unittest", "tests.test_m15_operational_readiness_evaluator", "-v"), "inherited-regression", 132),
     ("track-a", ("python", "-X", "faulthandler", "-m", "unittest", "tests.test_m15_learning_proof_evaluator", "-v"), "inherited-regression", 68),
@@ -285,7 +312,7 @@ EXPECTED_VERIFICATION_COMMANDS = (
     ("m14-cross-control-authority", ("python", "-X", "faulthandler", "-m", "unittest", "tests.test_m14_cross_control_authority_boundary_evaluator", "-v"), "inherited-regression", 107),
     ("decision-proof-ownership", ("python", "-X", "faulthandler", "-m", "unittest", "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_22_decision_proof_cannot_automatically_become_memory", "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_23_decision_proof_reference_is_linkage_only_not_memory_authority", "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_38_learning_proof_linkage_cannot_be_used_as_authority", "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_39_decision_proof_linkage_cannot_grant_execution_authority", "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCCrossTrackLinkageTests", "tests.test_m15_cross_control_regression_evaluator.DecisionProofOwnershipTests", "-v"), "inherited-regression", 30),
     ("release-m15-status", ("python", "-X", "faulthandler", "-m", "unittest", "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCReleaseStateTests", "tests.test_m15_cross_control_regression_evaluator.TrackDContractTests.test_matrix_preserves_release_state", "tests.test_m15_cross_control_regression_evaluator.ReleaseM15StatusTests", "-v"), "inherited-regression", 18),
-    ("full-maintained-suite", ("python", "-X", "faulthandler", "-m", "unittest", "discover", "-s", "tests", "-v"), "candidate-full-suite-integration", 2085),
+    ("full-maintained-suite", ("python", "-X", "faulthandler", "-m", "unittest", "discover", "-s", "tests", "-v"), "candidate-full-suite-integration", 2092),
     ("m14-final-completion", ("python", "-X", "faulthandler", "-m", "unittest", "tests.test_m14_final_completion_evaluator", "-v"), "authorized-compatibility-regression", 110),
     ("m14-completion-readiness", ("python", "-X", "faulthandler", "-m", "unittest", "tests.test_m14_completion_readiness_evaluator", "-v"), "authorized-compatibility-regression", 112),
 )
@@ -510,6 +537,9 @@ ACCEPTANCE_BINDING_FIELDS = (
     "test_references",
     "authority_boundary",
 )
+EXPECTED_ACCEPTANCE_NOTE = (
+    "Maintained evidence is linked; evaluator success alone is not coverage."
+)
 EXPECTED_ACCEPTANCE_CRITERIA = (
     ("m15-ac-01", "Learning Proof schema is deterministic and machine-readable.", "track-a", ("https://github.com/aa-os/aaos-public/issues/231#criterion-01",), ("schemas/m15-learning-proof.schema.json",), ("tests/test_m15_learning_proof_evaluator.py",), AUTHORITY_BOUNDARY),
     ("m15-ac-02", "Learning Sovereignty Boundary classes are defined.", "track-a", ("https://github.com/aa-os/aaos-public/issues/231#criterion-02",), ("docs/learning-governance/m15-core-learning-proof-contract.md",), ("tests/test_m15_learning_proof_evaluator.py",), AUTHORITY_BOUNDARY),
@@ -699,6 +729,122 @@ def _authority_findings(value: Any, findings: list[str]) -> None:
     elif _sequence(value):
         for item in value:
             _authority_findings(item, findings)
+
+
+def _prose_clauses(value: str) -> tuple[tuple[str, ...], ...]:
+    """Tokenize prose without imports while preserving semantic clause edges."""
+
+    clauses: list[tuple[str, ...]] = []
+    tokens: list[str] = []
+    token: list[str] = []
+
+    def finish_token() -> None:
+        if token:
+            tokens.append("".join(token))
+            token.clear()
+
+    def finish_clause() -> None:
+        finish_token()
+        if tokens:
+            clauses.append(tuple(tokens))
+            tokens.clear()
+
+    lowered = value.casefold()
+    for index, character in enumerate(lowered):
+        if character.isalnum():
+            token.append(character)
+            continue
+        finish_token()
+        decimal_point = (
+            character == "."
+            and index > 0
+            and index + 1 < len(lowered)
+            and lowered[index - 1].isdigit()
+            and lowered[index + 1].isdigit()
+        )
+        if character in ".!?;\n\r" and not decimal_point:
+            finish_clause()
+    finish_clause()
+    return tuple(clauses)
+
+
+def _prose_action_is_negated(tokens: tuple[str, ...], index: int) -> bool:
+    start = 0
+    for boundary in ("but", "however", "yet"):
+        positions = [
+            position
+            for position, token in enumerate(tokens[:index])
+            if token == boundary
+        ]
+        if positions:
+            start = max(start, positions[-1] + 1)
+    prefix = tokens[start:index]
+    if not prefix:
+        return False
+    if prefix[0] in {"no", "never", "cannot", "neither"}:
+        return True
+    return any(
+        token in {"not", "never", "cannot", "without"}
+        for token in prefix[-6:]
+    )
+
+
+def _prose_has_affirmative_authority_claim(value: Any) -> bool:
+    """Detect narrow, explicit authority assertions in unrestricted prose."""
+
+    if not isinstance(value, str):
+        return False
+    for tokens in _prose_clauses(value):
+        token_set = frozenset(tokens)
+        has_m15 = "m15" in token_set
+        has_track_e4 = "track" in token_set and "e4" in token_set
+        has_v0_14_0 = {"v0", "14", "0"}.issubset(token_set)
+        has_github_release = "github" in token_set and "release" in token_set
+        has_tag = "tag" in token_set
+        has_decision_proof = "decision" in token_set and "proof" in token_set
+        has_learning_proof = "learning" in token_set and "proof" in token_set
+        has_tracker_231 = "tracker" in token_set and "231" in token_set
+        has_completion_or_release = bool(
+            {"completion", "release", "authority"}.intersection(token_set)
+        )
+        for index, action in enumerate(tokens):
+            affirmative = (
+                action in {"complete", "completed"}
+                and (has_m15 or has_track_e4)
+            ) or (
+                action in {"approve", "approved", "approves", "authorize", "authorized", "authorizes"}
+                and (
+                    has_m15
+                    or has_track_e4
+                    or has_v0_14_0
+                    or has_github_release
+                    or has_tag
+                    or has_completion_or_release
+                )
+            ) or (
+                action in {"released", "published"}
+                and (has_v0_14_0 or has_github_release)
+            ) or (
+                action in {"created", "exists"}
+                and (has_tag or has_github_release)
+            ) or (
+                action in {"sealed", "seals"}
+                and (has_decision_proof or has_learning_proof)
+            ) or (action == "closed" and has_tracker_231)
+            if affirmative and not _prose_action_is_negated(tokens, index):
+                return True
+    return False
+
+
+def _validate_unrestricted_prose(
+    value: Any,
+    path: str,
+    blocking: list[str],
+) -> None:
+    if not _nonempty_string(value):
+        blocking.append(f"unrestricted-prose-invalid:{path}")
+    elif _prose_has_affirmative_authority_claim(value):
+        blocking.append(f"affirmative-authority-prose:{path}")
 
 
 def _validate_manifest(value: Any, blocking: list[str]) -> None:
@@ -1190,6 +1336,15 @@ def _validate_acceptance_matrix(
             matrix_blocking.append(
                 f"acceptance-authority-boundary-invalid:{criterion_id}"
             )
+        if item.get("notes") != EXPECTED_ACCEPTANCE_NOTE:
+            matrix_blocking.append(
+                f"acceptance-criterion-notes-binding-invalid:{criterion_id}"
+            )
+        _validate_unrestricted_prose(
+            item.get("notes"),
+            f"acceptance.criteria.{criterion_id}.notes",
+            matrix_blocking,
+        )
         if not _nonempty_string(item.get("criterion_text")) or not _nonempty_string(
             item.get("notes")
         ):
@@ -1241,6 +1396,7 @@ def _validate_boundary_register(value: Any, blocking: list[str]) -> None:
     )
     blockers = _sequence(register.get("blockers"))
     blocker_ids: list[str] = []
+    observed_blockers: list[tuple[Any, ...]] = []
     for blocker in blockers:
         if not _exact_fields(blocker, blocker_fields):
             blocking.append("completion-blocker-shape-invalid")
@@ -1251,21 +1407,45 @@ def _validate_boundary_register(value: Any, blocking: list[str]) -> None:
             blocking.append("completion-blocker-id-invalid-or-duplicate")
             continue
         blocker_ids.append(blocker_id)
+        references = _sequence(item.get("evidence_references"))
+        observed_blockers.append(
+            (
+                blocker_id,
+                item.get("state"),
+                tuple(references),
+                item.get("explanation"),
+            )
+        )
         if item.get("state") not in {"resolved", "open", "blocked"}:
             blocking.append(f"completion-blocker-state-invalid:{blocker_id}")
         elif item.get("state") != "resolved":
             blocking.append(f"completion-blocker-unresolved:{blocker_id}")
-        if not _sequence(item.get("evidence_references")) or not _nonempty_string(
-            item.get("explanation")
-        ):
+        if not references or not all(
+            _nonempty_string(reference) for reference in references
+        ) or not _nonempty_string(item.get("explanation")):
             blocking.append(f"completion-blocker-resolution-evidence-missing:{blocker_id}")
+        else:
+            for reference_index, reference in enumerate(references):
+                _validate_unrestricted_prose(
+                    reference,
+                    f"boundary.blockers.{blocker_id}.evidence_references.{reference_index}",
+                    blocking,
+                )
+        _validate_unrestricted_prose(
+            item.get("explanation"),
+            f"boundary.blockers.{blocker_id}.explanation",
+            blocking,
+        )
     if tuple(blocker_ids) != REQUIRED_BLOCKERS:
         blocking.append("completion-blocker-register-incomplete")
+    if tuple(observed_blockers) != EXPECTED_BLOCKER_REGISTRY:
+        blocking.append("completion-blocker-registry-binding-invalid")
     future_fields = frozenset(
         {"prerequisite_id", "state", "evidence_references", "explanation"}
     )
     prerequisites = _sequence(register.get("future_prerequisites"))
     future_ids: list[str] = []
+    observed_prerequisites: list[tuple[Any, ...]] = []
     for prerequisite in prerequisites:
         if not _exact_fields(prerequisite, future_fields):
             blocking.append("future-prerequisite-shape-invalid")
@@ -1279,14 +1459,38 @@ def _validate_boundary_register(value: Any, blocking: list[str]) -> None:
             blocking.append("future-prerequisite-id-invalid-or-duplicate")
             continue
         future_ids.append(prerequisite_id)
+        references = _sequence(item.get("evidence_references"))
+        observed_prerequisites.append(
+            (
+                prerequisite_id,
+                item.get("state"),
+                tuple(references),
+                item.get("explanation"),
+            )
+        )
         if item.get("state") != "open":
             blocking.append(f"future-prerequisite-not-open:{prerequisite_id}")
-        if not _sequence(item.get("evidence_references")) or not _nonempty_string(
-            item.get("explanation")
-        ):
+        if not references or not all(
+            _nonempty_string(reference) for reference in references
+        ) or not _nonempty_string(item.get("explanation")):
             blocking.append(f"future-prerequisite-evidence-missing:{prerequisite_id}")
+        else:
+            for reference_index, reference in enumerate(references):
+                _validate_unrestricted_prose(
+                    reference,
+                    "boundary.future_prerequisites."
+                    f"{prerequisite_id}.evidence_references.{reference_index}",
+                    blocking,
+                )
+        _validate_unrestricted_prose(
+            item.get("explanation"),
+            f"boundary.future_prerequisites.{prerequisite_id}.explanation",
+            blocking,
+        )
     if tuple(future_ids) != REQUIRED_FUTURE_PREREQUISITES:
         blocking.append("future-prerequisite-register-incomplete")
+    if tuple(observed_prerequisites) != EXPECTED_FUTURE_PREREQUISITE_REGISTRY:
+        blocking.append("future-prerequisite-registry-binding-invalid")
     if register.get("caller_supplied_inert_record") is not True:
         blocking.append("boundary-register-not-inert")
     if register.get("authority_boundary") != AUTHORITY_BOUNDARY:
@@ -1415,6 +1619,11 @@ def _validate_pr_observation(
         observation.get("evidence_reference")
     ):
         blocking.append("pr-observation-evidence-reference-invalid")
+    _validate_unrestricted_prose(
+        observation.get("observer"),
+        "pull_request_observation.observer",
+        blocking,
+    )
     return observation
 
 
@@ -1605,6 +1814,11 @@ def _validate_receipt(
             item.get("evidence_reference")
         ):
             blocking.append(f"verification-transcript-binding-invalid:{command_id}")
+        _validate_unrestricted_prose(
+            item.get("evidence_reference"),
+            f"external_verification_receipt.commands.{command_id}.evidence_reference",
+            blocking,
+        )
         if (
             item.get("executed_by_evaluator") is not False
             or item.get("verification_results_are_completion_authority") is not False
@@ -1717,8 +1931,11 @@ __all__ = [
     "E2_CONTINUITY_SCHEMA_VERSION",
     "E2_EXTERNAL_EVIDENCE_SCHEMA_VERSION",
     "E3_AUTHORIZED_COMPATIBILITY_REPAIR",
+    "EXPECTED_ACCEPTANCE_NOTE",
     "EXPECTED_ACCEPTANCE_CRITERIA",
     "EXPECTED_ARTIFACT_BINDINGS",
+    "EXPECTED_BLOCKER_REGISTRY",
+    "EXPECTED_FUTURE_PREREQUISITE_REGISTRY",
     "EXPECTED_VERIFICATION_COMMANDS",
     "HISTORICAL_E1_ARTIFACT_BINDING",
     "MANIFEST_SCHEMA_VERSION",

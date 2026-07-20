@@ -103,7 +103,7 @@
         "-v"
       ],
       "execution_scope": "e3-candidate-validation",
-      "minimum_tests_observed": 160
+      "minimum_tests_observed": 167
     },
     {
       "command_id": "e2-targeted",
@@ -308,7 +308,7 @@
         "-v"
       ],
       "execution_scope": "candidate-full-suite-integration",
-      "minimum_tests_observed": 2085
+      "minimum_tests_observed": 2092
     },
     {
       "command_id": "m14-final-completion",
