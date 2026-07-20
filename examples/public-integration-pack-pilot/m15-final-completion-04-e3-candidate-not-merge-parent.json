@@ -1,0 +1,26 @@
+{
+  "schema_version": "m15-final-completion-scenario/v1",
+  "document_kind": "synthetic-scenario",
+  "scenario_id": "e4-scenario-04",
+  "title": "E3 candidate is not a merge parent",
+  "synthetic": true,
+  "inert": true,
+  "offline": true,
+  "deterministic": true,
+  "contains_secret": false,
+  "contains_credential": false,
+  "contains_personal_data": false,
+  "contains_private_prompt": false,
+  "contains_production_identifier": false,
+  "contains_executable_payload": false,
+  "contains_live_github_mutation": false,
+  "mutation": {
+    "target_document": "e3-continuity-record",
+    "operation": "set",
+    "field_path": "candidate_is_merge_parent",
+    "synthetic_value": false
+  },
+  "expected_outcome": "blocked",
+  "expected_finding": "e3-merge-parent-mismatch",
+  "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+}

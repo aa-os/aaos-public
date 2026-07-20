@@ -101,6 +101,75 @@ Historical evidence is bound to its immutable historical Git snapshot. E4
 must not rebaseline E1, E2, or E3 digests to current candidate content or
 pin a mutable branch ref to an earlier source base.
 
+### Exact phase-addressed inventory
+
+The immutable caller-supplied inventory contains exactly 209 rows. The first
+156 rows preserve the Track A-E2 bindings established by E3, with counts of
+7, 13, 18, 29, 39, and 50 respectively. The 53 E3 rows are derived from the
+actual PR #251 Git objects and remain separately classified as:
+
+- 4 core completion-readiness artifacts;
+- 37 standalone synthetic scenarios;
+- 7 maintained evidence records;
+- 1 README Next Phase transition;
+- 4 authorized historical compatibility repairs.
+
+Every row binds the track, source issue, implementation PR, candidate and
+merge commits, repository path, artifact type, Git blob SHA, file mode,
+canonical SHA-256, covering test, lifecycle state, evidence reference,
+historical authority boundary, and phase-aware evidence role. Aggregate
+counts or an inventory digest cannot substitute for exact row comparison.
+The four E3 compatibility-repair rows remain E3-authorized historical repair
+evidence; they are not reclassified as original Track A-E2 artifacts.
+
+### Authorized Phase-Aware Compatibility Repair
+
+Issue #252 authorizes exactly five current E4 compatibility-repair paths:
+
+1. `runtime/m14_final_completion_evaluator.py` —
+   `phase-aware-later-milestone-readme-validation`;
+2. `tests/test_m14_final_completion_evaluator.py` —
+   `explicit-historical-m14-final-mutation-validation`;
+3. `tests/test_m14_completion_readiness_evaluator.py` —
+   `immutable-m14-readiness-snapshot-validation`;
+4. `tests/test_m15_completion_readiness_evaluator.py` —
+   `immutable-e3-completion-readiness-snapshot-validation`;
+5. `tests/test_m15_lineage_rollback_portability_evaluator.py` —
+   `section-aware-e4-release-state-candidate-validation`.
+
+Every row is a human-authorized bounded exception and is excluded from the
+209-row Track A-E3 prior-material inventory. A sixth historical path is not
+authorized and must block evaluation. This exception does not authorize a
+release-state mutation outside the reviewed README transition, reopen M14,
+change authority doctrine, delete or skip tests, perform arbitrary historical
+cleanup, add external-adapter scope, approve the E4 merge, complete M15, close
+#231 or #252, create a tag, or create or publish a GitHub Release.
+
+The machine-readable register keeps three evidence roles separately
+addressable: the immutable historical milestone state, any applicable prior
+authorized compatibility state, and the current E4 compatibility candidate.
+Each state binds its own commit or candidate role, Git blob identity, and
+canonical-text SHA-256. A current E4 digest cannot overwrite or supersede a
+historical pin. In particular, the Track C historical artifact, its E3 repair,
+and its E4 repair are distinct evidence; the E3 completion-readiness artifact
+and its E4 repair are also distinct evidence.
+
+### Exact acceptance and verification registries
+
+The acceptance matrix preserves exact criterion text and bindings for all 16
+criteria in tracker #231. Non-empty arbitrary references are not coverage.
+Partial, missing, blocked, omitted, or substituted coverage cannot produce a
+ready outcome.
+
+The final verification receipt binds exactly 18 maintained commands. Their
+logical argv, execution scope, and minimum test counts must match the manifest
+registry exactly. The E4 focused minimum is 183 and the candidate full-suite
+minimum is 2275; inherited minima may only increase. Actual argv may differ
+from logical argv only at argv[0], where the declared checkout-local
+`.verification-python/python.exe` launcher is used. Every execution must have
+zero failures, errors, skips, and exit code, and its observed test count must
+meet the maintained minimum.
+
 ## README candidate boundary
 
 The reviewed E4 candidate may update only the M15 final repository state:

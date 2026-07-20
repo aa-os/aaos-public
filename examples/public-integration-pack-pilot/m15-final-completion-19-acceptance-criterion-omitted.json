@@ -1,0 +1,26 @@
+{
+  "schema_version": "m15-final-completion-scenario/v1",
+  "document_kind": "synthetic-scenario",
+  "scenario_id": "e4-scenario-19",
+  "title": "#231 acceptance criterion omitted",
+  "synthetic": true,
+  "inert": true,
+  "offline": true,
+  "deterministic": true,
+  "contains_secret": false,
+  "contains_credential": false,
+  "contains_personal_data": false,
+  "contains_private_prompt": false,
+  "contains_production_identifier": false,
+  "contains_executable_payload": false,
+  "contains_live_github_mutation": false,
+  "mutation": {
+    "target_document": "acceptance-coverage-matrix",
+    "operation": "remove",
+    "field_path": "criteria.m15-ac-16",
+    "synthetic_value": null
+  },
+  "expected_outcome": "blocked",
+  "expected_finding": "omitted-acceptance-criterion",
+  "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+}
