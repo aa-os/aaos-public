@@ -48,7 +48,6 @@ CONTRACT_PATH = (
     ROOT / "docs" / "learning-governance" / "m15-final-completion-contract.md"
 )
 EVALUATOR_PATH = ROOT / "runtime" / "m15_final_completion_evaluator.py"
-README_PATH = ROOT / "README.md"
 
 RECORD_PATHS = {
     "manifest": FIXTURE_ROOT / "m15-final-completion-manifest.json",
@@ -66,6 +65,7 @@ SCENARIO_PATHS = sorted(
 
 SOURCE_MAIN_BASE_SHA = "52ec76c17cd21ec519dfec45ced4ad720b82d80e"
 SOURCE_MAIN_BASE_TREE_SHA = "97b239cbd175aac01b05a1fba2394b72c47a5360"
+E4_MERGE_SHA = "01870f4b844c1cda2f157e7be7bdb66317fdc738"
 E3_BASE_SHA = "f6d074fca2fedecbf654697719179440bc0680d3"
 E3_CANDIDATE_SHA = "907d2361233c7b0405a41271d7b02fa6c1a0c62d"
 E3_TREE_SHA = "97b239cbd175aac01b05a1fba2394b72c47a5360"
@@ -1016,7 +1016,7 @@ class M15FinalCompletionReadmeTests(unittest.TestCase):
     def setUpClass(cls):
         cls.observation = load_json(RECORD_PATHS["readme"])
         cls.base = git_bytes("show", f"{SOURCE_MAIN_BASE_SHA}:README.md")
-        cls.candidate = README_PATH.read_bytes()
+        cls.candidate = git_bytes("show", f"{E4_MERGE_SHA}:README.md")
         cls.base_sections = level_two_sections(cls.base)
         cls.candidate_sections = level_two_sections(cls.candidate)
 
@@ -1599,12 +1599,13 @@ class M15FinalCompletionCoverageTests(unittest.TestCase):
                         canonical_sha256(git_bytes("cat-file", "blob", prior)),
                         row["prior_compatibility_canonical_sha256"],
                     )
+                e4_candidate = f"{E4_MERGE_SHA}:{row['path']}"
                 self.assertEqual(
-                    git_text("hash-object", "--path=" + row["path"], "--", row["path"]),
+                    git_text("rev-parse", e4_candidate),
                     row["e4_candidate_git_blob_sha"],
                 )
                 self.assertEqual(
-                    canonical_sha256((ROOT / row["path"]).read_bytes()),
+                    canonical_sha256(git_bytes("cat-file", "blob", e4_candidate)),
                     row["e4_candidate_canonical_sha256"],
                 )
                 self.assertNotEqual(

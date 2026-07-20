@@ -1,0 +1,1647 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/m15-post-release-governance-review.schema.json",
+  "title": "AAOS M15 v0.14.0 Post-Release Governance Review Record",
+  "description": "Strict evidence-only record for Issue #254. Validation does not grant release, risk, rollback, issue-closure, or M16 authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "document_kind",
+    "record_id",
+    "repository",
+    "issue_number",
+    "observed_at",
+    "release_under_review",
+    "evidence_planes",
+    "tag_release_binding",
+    "publication_evidence_inventory",
+    "repository_consistency",
+    "completion_approval_evidence",
+    "verification_runs",
+    "reproducibility",
+    "rollback_and_correction",
+    "retrospective",
+    "findings",
+    "classification_counts",
+    "m16_planning_recommendation",
+    "authority_boundary",
+    "runtime_boundary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "m15-post-release-governance-review/v1"
+    },
+    "document_kind": {
+      "const": "m15-post-release-governance-review-record"
+    },
+    "record_id": {
+      "const": "urn:aaos:m15:post-release-governance-review:v0.14.0:issue-254"
+    },
+    "repository": {
+      "$ref": "#/$defs/repository"
+    },
+    "issue_number": {
+      "const": 254
+    },
+    "observed_at": {
+      "$ref": "#/$defs/rfc3339Utc"
+    },
+    "release_under_review": {
+      "$ref": "#/$defs/releaseUnderReview"
+    },
+    "evidence_planes": {
+      "$ref": "#/$defs/evidencePlanes"
+    },
+    "tag_release_binding": {
+      "$ref": "#/$defs/tagReleaseBinding"
+    },
+    "publication_evidence_inventory": {
+      "$ref": "#/$defs/publicationEvidenceInventory"
+    },
+    "repository_consistency": {
+      "$ref": "#/$defs/repositoryConsistency"
+    },
+    "completion_approval_evidence": {
+      "$ref": "#/$defs/completionApprovalEvidence"
+    },
+    "verification_runs": {
+      "type": "array",
+      "minItems": 36,
+      "maxItems": 36,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/verificationRun"
+      }
+    },
+    "reproducibility": {
+      "$ref": "#/$defs/reproducibility"
+    },
+    "rollback_and_correction": {
+      "$ref": "#/$defs/rollbackAndCorrection"
+    },
+    "retrospective": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/retrospectiveEntry"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "classification_counts": {
+      "$ref": "#/$defs/classificationCounts"
+    },
+    "m16_planning_recommendation": {
+      "$ref": "#/$defs/m16PlanningRecommendation"
+    },
+    "authority_boundary": {
+      "$ref": "#/$defs/authorityBoundary"
+    },
+    "runtime_boundary": {
+      "$ref": "#/$defs/runtimeBoundary"
+    }
+  },
+  "$defs": {
+    "repository": {
+      "const": "aa-os/aaos-public"
+    },
+    "gitSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "rfc3339Utc": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"
+    },
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "referenceArray": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/reference"
+      }
+    },
+    "findingId": {
+      "type": "string",
+      "pattern": "^m15-prg-[0-9]{3}$"
+    },
+    "classification": {
+      "type": "string",
+      "enum": [
+        "release-blocking defect",
+        "corrective patch-release candidate",
+        "documentation drift",
+        "governance-contract gap",
+        "evaluator or test gap",
+        "operational hardening",
+        "future milestone candidate",
+        "accepted residual risk",
+        "no action required"
+      ]
+    },
+    "area": {
+      "type": "string",
+      "enum": [
+        "decision-proof",
+        "learning-proof-and-learning-sovereignty",
+        "evidence-bound-capability-memory",
+        "human-approval-boundaries",
+        "runtime-authority-boundaries",
+        "release-governance"
+      ]
+    },
+    "authorityBoundary": {
+      "const": "This post-release record and its evaluator are evidence only. They do not move, delete, or recreate v0.14.0; edit or republish the GitHub Release; close Issue #254; authorize M16 planning or implementation; seal Decision Proof or Learning Proof; grant capability invocation or execution authority; accept risk; execute rollback; close an audit; grant a waiver; or transfer governance authority."
+    },
+    "runtimeBoundary": {
+      "const": "The evaluator accepts one inert caller-supplied mapping and performs no file, Git, GitHub, network, subprocess, command, clone, test, tag, release, issue, or external-state operation. It calculates only an in-memory canonical SHA-256 over the supplied mapping to pin this release-specific record; it does not verify external artifact bytes."
+    },
+    "releaseUnderReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "milestone",
+        "completion_pull_request",
+        "completion_candidate_head_sha",
+        "expected_merge_commit_sha",
+        "expected_merge_tree_sha",
+        "release_tag",
+        "release_title"
+      ],
+      "properties": {
+        "milestone": {
+          "const": "M15"
+        },
+        "completion_pull_request": {
+          "const": 253
+        },
+        "completion_candidate_head_sha": {
+          "const": "b18c77f7745842aa849b53487be96c4eb5e531ca"
+        },
+        "expected_merge_commit_sha": {
+          "const": "01870f4b844c1cda2f157e7be7bdb66317fdc738"
+        },
+        "expected_merge_tree_sha": {
+          "const": "6bc77ea15c1b55b3b99a0705da40a4568849b47b"
+        },
+        "release_tag": {
+          "const": "v0.14.0"
+        },
+        "release_title": {
+          "const": "v0.14.0 — M15 Learning Sovereignty and Evidence-Bound Capability Memory"
+        }
+      }
+    },
+    "evidencePlanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tagged_release",
+        "maintained_main",
+        "live_github",
+        "clean_clone"
+      ],
+      "properties": {
+        "tagged_release": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "evidence_role",
+            "tag",
+            "commit_sha",
+            "tree_sha"
+          ],
+          "properties": {
+            "evidence_role": {
+              "const": "immutable-recorded-release-evidence"
+            },
+            "tag": {
+              "const": "v0.14.0"
+            },
+            "commit_sha": {
+              "$ref": "#/$defs/gitSha"
+            },
+            "tree_sha": {
+              "$ref": "#/$defs/gitSha"
+            }
+          }
+        },
+        "maintained_main": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "evidence_role",
+            "ref",
+            "commit_sha",
+            "observed_at"
+          ],
+          "properties": {
+            "evidence_role": {
+              "const": "mutable-maintained-repository-observation"
+            },
+            "ref": {
+              "const": "refs/heads/main"
+            },
+            "commit_sha": {
+              "$ref": "#/$defs/gitSha"
+            },
+            "observed_at": {
+              "$ref": "#/$defs/rfc3339Utc"
+            }
+          }
+        },
+        "live_github": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "evidence_role",
+            "release_id",
+            "observed_at",
+            "external_state_mutable"
+          ],
+          "properties": {
+            "evidence_role": {
+              "const": "mutable-live-github-observation"
+            },
+            "release_id": {
+              "const": 356696715
+            },
+            "observed_at": {
+              "$ref": "#/$defs/rfc3339Utc"
+            },
+            "external_state_mutable": {
+              "const": true
+            }
+          }
+        },
+        "clean_clone": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "evidence_role",
+            "clone_url",
+            "resolved_commit_sha",
+            "working_tree_clean"
+          ],
+          "properties": {
+            "evidence_role": {
+              "const": "independent-reproducibility-observation"
+            },
+            "clone_url": {
+              "const": "https://github.com/aa-os/aaos-public.git"
+            },
+            "resolved_commit_sha": {
+              "$ref": "#/$defs/gitSha"
+            },
+            "working_tree_clean": {
+              "const": true
+            }
+          }
+        }
+      }
+    },
+    "tagReleaseBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tag_name",
+        "tag_ref",
+        "tag_object_type",
+        "annotated_tag_object_sha",
+        "tag_ref_target_sha",
+        "peeled_commit_sha",
+        "target_tree_sha",
+        "expected_merge_commit_sha",
+        "completion_pr_head_sha",
+        "target_equals_expected_merge_commit",
+        "target_equals_completion_pr_head",
+        "release_tag_name",
+        "release_target_commitish",
+        "release_resolved_commit_sha",
+        "tag_and_release_binding_match",
+        "point_in_time_observation_only",
+        "historical_non_movement_proven"
+      ],
+      "properties": {
+        "tag_name": {
+          "const": "v0.14.0"
+        },
+        "tag_ref": {
+          "const": "refs/tags/v0.14.0"
+        },
+        "tag_object_type": {
+          "const": "commit"
+        },
+        "annotated_tag_object_sha": {
+          "type": "null"
+        },
+        "tag_ref_target_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "peeled_commit_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "target_tree_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "expected_merge_commit_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "completion_pr_head_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "target_equals_expected_merge_commit": {
+          "const": true
+        },
+        "target_equals_completion_pr_head": {
+          "const": false
+        },
+        "release_tag_name": {
+          "const": "v0.14.0"
+        },
+        "release_target_commitish": {
+          "const": "main"
+        },
+        "release_resolved_commit_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "tag_and_release_binding_match": {
+          "const": true
+        },
+        "point_in_time_observation_only": {
+          "const": true
+        },
+        "historical_non_movement_proven": {
+          "const": false
+        }
+      }
+    },
+    "latestObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "observed_release_id",
+        "matches_reviewed_release"
+      ],
+      "properties": {
+        "method": {
+          "const": "github-latest-release-endpoint"
+        },
+        "observed_release_id": {
+          "const": 356696715
+        },
+        "matches_reviewed_release": {
+          "const": true
+        }
+      }
+    },
+    "releaseNotes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "digest_algorithm",
+        "digest_mode",
+        "utf8_byte_count",
+        "sha256",
+        "identifies_m15_release",
+        "verification_baseline_identified",
+        "authority_review"
+      ],
+      "properties": {
+        "digest_algorithm": {
+          "const": "sha256"
+        },
+        "digest_mode": {
+          "const": "utf8-api-body-without-normalization"
+        },
+        "utf8_byte_count": {
+          "const": 3433
+        },
+        "sha256": {
+          "const": "665bceb884b3e4915d618efd585374b2105bd20dfda97374944162fb00b5dab5"
+        },
+        "identifies_m15_release": {
+          "const": true
+        },
+        "verification_baseline_identified": {
+          "const": true
+        },
+        "authority_review": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "review_result",
+            "claims_decision_proof_sealing",
+            "claims_learning_proof_sealing",
+            "claims_release_as_governance_approval",
+            "claims_risk_acceptance",
+            "claims_runtime_authority"
+          ],
+          "properties": {
+            "review_result": {
+              "const": "no-authority-overreach-observed"
+            },
+            "claims_decision_proof_sealing": {
+              "const": false
+            },
+            "claims_learning_proof_sealing": {
+              "const": false
+            },
+            "claims_release_as_governance_approval": {
+              "const": false
+            },
+            "claims_risk_acceptance": {
+              "const": false
+            },
+            "claims_runtime_authority": {
+              "const": false
+            }
+          }
+        }
+      }
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "uploaded_asset_count",
+        "uploaded_assets",
+        "asset_digests_required_when_assets_exist",
+        "generated_source_archives_excluded",
+        "inventory_result"
+      ],
+      "properties": {
+        "uploaded_asset_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uploaded_assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "asset_id",
+              "name",
+              "size_bytes",
+              "content_type",
+              "download_url",
+              "sha256"
+            ],
+            "properties": {
+              "asset_id": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "name": {
+                "$ref": "#/$defs/reference"
+              },
+              "size_bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "content_type": {
+                "$ref": "#/$defs/reference"
+              },
+              "download_url": {
+                "$ref": "#/$defs/reference"
+              },
+              "sha256": {
+                "$ref": "#/$defs/sha256"
+              }
+            }
+          }
+        },
+        "asset_digests_required_when_assets_exist": {
+          "const": true
+        },
+        "generated_source_archives_excluded": {
+          "const": true
+        },
+        "inventory_result": {
+          "enum": [
+            "no-uploaded-release-assets",
+            "uploaded-release-assets-digested"
+          ]
+        }
+      }
+    },
+    "publicationEvidenceInventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_id",
+        "release_url",
+        "release_title",
+        "tag_name",
+        "target_commitish",
+        "author_login",
+        "created_at",
+        "published_at",
+        "updated_at",
+        "draft",
+        "prerelease",
+        "latest",
+        "latest_observation",
+        "raw_release_api_response",
+        "github_api_immutable",
+        "release_notes",
+        "assets",
+        "observation_source",
+        "evidence_only"
+      ],
+      "properties": {
+        "release_id": {
+          "const": 356696715
+        },
+        "release_url": {
+          "const": "https://github.com/aa-os/aaos-public/releases/tag/v0.14.0"
+        },
+        "release_title": {
+          "const": "v0.14.0 — M15 Learning Sovereignty and Evidence-Bound Capability Memory"
+        },
+        "tag_name": {
+          "const": "v0.14.0"
+        },
+        "target_commitish": {
+          "const": "main"
+        },
+        "author_login": {
+          "const": "aa-os"
+        },
+        "created_at": {
+          "const": "2026-07-20T11:57:48Z"
+        },
+        "published_at": {
+          "const": "2026-07-20T12:08:53Z"
+        },
+        "updated_at": {
+          "const": "2026-07-20T12:08:53Z"
+        },
+        "draft": {
+          "const": false
+        },
+        "prerelease": {
+          "const": false
+        },
+        "latest": {
+          "const": true
+        },
+        "latest_observation": {
+          "$ref": "#/$defs/latestObservation"
+        },
+        "raw_release_api_response": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["captured_at", "utf8_byte_count", "sha256"],
+          "properties": {
+            "captured_at": {
+              "$ref": "#/$defs/rfc3339Utc"
+            },
+            "utf8_byte_count": {
+              "const": 5357
+            },
+            "sha256": {
+              "const": "f139e8d7c15965d600c4ee39cf35cfb3d84df575e1841057618eeaf08020484c"
+            }
+          }
+        },
+        "github_api_immutable": {
+          "const": false
+        },
+        "release_notes": {
+          "$ref": "#/$defs/releaseNotes"
+        },
+        "assets": {
+          "$ref": "#/$defs/assets"
+        },
+        "observation_source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "release_endpoint",
+            "latest_endpoint",
+            "observed_at"
+          ],
+          "properties": {
+            "release_endpoint": {
+              "const": "GET /repos/aa-os/aaos-public/releases/tags/v0.14.0"
+            },
+            "latest_endpoint": {
+              "const": "GET /repos/aa-os/aaos-public/releases/latest"
+            },
+            "observed_at": {
+              "$ref": "#/$defs/rfc3339Utc"
+            }
+          }
+        },
+        "evidence_only": {
+          "const": true
+        }
+      }
+    },
+    "issueObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "number",
+        "role",
+        "state",
+        "state_reason",
+        "closed_at"
+      ],
+      "properties": {
+        "number": {
+          "enum": [
+            231,
+            252,
+            254
+          ]
+        },
+        "role": {
+          "enum": [
+            "m15-parent-tracker",
+            "m15-track-e4-source-issue",
+            "post-release-review"
+          ]
+        },
+        "state": {
+          "enum": [
+            "open",
+            "closed"
+          ]
+        },
+        "state_reason": {
+          "oneOf": [
+            {
+              "const": "completed"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "closed_at": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/rfc3339Utc"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "repositoryConsistency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "main_ref_sha",
+        "main_contains_completion_merge",
+        "completion_pull_request",
+        "issues",
+        "tagged_readme_observation",
+        "review_candidate_readme_observation",
+        "release_reference_audit"
+      ],
+      "properties": {
+        "main_ref_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "main_contains_completion_merge": {
+          "const": true
+        },
+        "completion_pull_request": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "number",
+            "merged",
+            "merge_commit_sha",
+            "merged_at"
+          ],
+          "properties": {
+            "number": {
+              "const": 253
+            },
+            "merged": {
+              "const": true
+            },
+            "merge_commit_sha": {
+              "$ref": "#/$defs/gitSha"
+            },
+            "merged_at": {
+              "$ref": "#/$defs/rfc3339Utc"
+            }
+          }
+        },
+        "issues": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/issueObservation"
+          }
+        },
+        "tagged_readme_observation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "observed_commit_sha",
+            "m1_through_m15_complete",
+            "v0_14_0_release_entry_present",
+            "stale_prepublication_statement_present",
+            "stale_statement_summary",
+            "finding_id"
+          ],
+          "properties": {
+            "observed_commit_sha": {
+              "$ref": "#/$defs/gitSha"
+            },
+            "m1_through_m15_complete": {
+              "const": true
+            },
+            "v0_14_0_release_entry_present": {
+              "const": true
+            },
+            "stale_prepublication_statement_present": {
+              "const": true
+            },
+            "stale_statement_summary": {
+              "$ref": "#/$defs/reference"
+            },
+            "finding_id": {
+              "const": "m15-prg-001"
+            }
+          }
+        },
+        "review_candidate_readme_observation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source_role",
+            "path",
+            "git_blob_sha",
+            "canonical_text_sha256",
+            "m1_through_m15_complete",
+            "v0_14_0_release_entry_present",
+            "published_latest_statement_present",
+            "m16_separate_human_authorization_boundary_present",
+            "stale_prepublication_statement_present",
+            "verification_command_ids"
+          ],
+          "properties": {
+            "source_role": {
+              "const": "draft-review-candidate-worktree"
+            },
+            "path": {
+              "const": "README.md"
+            },
+            "git_blob_sha": {
+              "const": "c72ed99f6de5415a0295b0832e8e22a9698b567e"
+            },
+            "canonical_text_sha256": {
+              "const": "24e56be918627ff86f2383ec6473bc5d6789dcfeb903debf034c98576438add9"
+            },
+            "m1_through_m15_complete": {
+              "const": true
+            },
+            "v0_14_0_release_entry_present": {
+              "const": true
+            },
+            "published_latest_statement_present": {
+              "const": true
+            },
+            "m16_separate_human_authorization_boundary_present": {
+              "const": true
+            },
+            "stale_prepublication_statement_present": {
+              "const": false
+            },
+            "verification_command_ids": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "items": {
+                "enum": ["candidate-readme-git-blob", "candidate-readme-stale-scan"]
+              }
+            }
+          }
+        },
+        "release_reference_audit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "correct_release_identifier",
+            "current_state_paths_reviewed",
+            "tagged_tree_matching_line_count",
+            "tagged_tree_matching_path_count",
+            "tagged_tree_matching_transcript_sha256",
+            "mismatched_m15_version_association_count",
+            "mismatch_transcript_sha256",
+            "verification_command_ids",
+            "historical_prepublication_references_preserved",
+            "historical_reference_policy",
+            "unclassified_conflicting_release_identifiers"
+          ],
+          "properties": {
+            "correct_release_identifier": {
+              "const": "v0.14.0"
+            },
+            "current_state_paths_reviewed": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/reference"
+              }
+            },
+            "tagged_tree_matching_line_count": {
+              "const": 95
+            },
+            "tagged_tree_matching_path_count": {
+              "const": 33
+            },
+            "tagged_tree_matching_transcript_sha256": {
+              "const": "b1f86e01cd397544777df95ef34c84e51eed893099771595560b768b1bd265ef"
+            },
+            "mismatched_m15_version_association_count": {
+              "const": 0
+            },
+            "mismatch_transcript_sha256": {
+              "const": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "verification_command_ids": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "items": {
+                "enum": ["tagged-release-reference-inventory", "tagged-m15-release-identity-mismatch-scan"]
+              }
+            },
+            "historical_prepublication_references_preserved": {
+              "const": true
+            },
+            "historical_reference_policy": {
+              "$ref": "#/$defs/reference"
+            },
+            "unclassified_conflicting_release_identifiers": {
+              "type": "array",
+              "maxItems": 0
+            }
+          }
+        }
+      }
+    },
+    "completionApprovalEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pull_request_number",
+        "candidate_head_sha",
+        "observation_comment",
+        "verification_receipt_comment",
+        "human_approval_comment",
+        "event_timestamps",
+        "github_envelope_ordering_valid",
+        "embedded_human_approval_json",
+        "not_release_blocking_reason",
+        "evidence_only"
+      ],
+      "properties": {
+        "pull_request_number": {
+          "const": 253
+        },
+        "candidate_head_sha": {
+          "const": "b18c77f7745842aa849b53487be96c4eb5e531ca"
+        },
+        "observation_comment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "comment_id",
+            "author_login",
+            "created_at",
+            "updated_at",
+            "html_url",
+            "body_utf8_byte_count",
+            "body_sha256",
+            "api_response_utf8_byte_count",
+            "api_response_sha256",
+            "binds_candidate"
+          ],
+          "properties": {
+            "comment_id": {
+              "const": 5021546499
+            },
+            "author_login": {
+              "const": "aa-os"
+            },
+            "created_at": {
+              "const": "2026-07-20T11:06:53Z"
+            },
+            "updated_at": {
+              "const": "2026-07-20T11:06:53Z"
+            },
+            "html_url": {
+              "const": "https://github.com/aa-os/aaos-public/pull/253#issuecomment-5021546499"
+            },
+            "body_utf8_byte_count": {
+              "const": 1230
+            },
+            "body_sha256": {
+              "const": "a32abd57d3f3503bba5e17b81f385a0581c86581e81a83ccf891731120c5da6e"
+            },
+            "api_response_utf8_byte_count": {
+              "const": 4554
+            },
+            "api_response_sha256": {
+              "const": "99a3f0e473b56a9a815facfc16e5357d072d589db284d28ba2c7d4321b8d1340"
+            },
+            "binds_candidate": {
+              "const": true
+            }
+          }
+        },
+        "verification_receipt_comment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "comment_id",
+            "author_login",
+            "created_at",
+            "updated_at",
+            "html_url",
+            "body_utf8_byte_count",
+            "body_sha256",
+            "api_response_utf8_byte_count",
+            "api_response_sha256",
+            "canonical_payload_sha256",
+            "binds_candidate"
+          ],
+          "properties": {
+            "comment_id": {
+              "const": 5021686076
+            },
+            "author_login": {
+              "const": "aa-os"
+            },
+            "created_at": {
+              "const": "2026-07-20T11:24:04Z"
+            },
+            "updated_at": {
+              "const": "2026-07-20T11:24:04Z"
+            },
+            "html_url": {
+              "const": "https://github.com/aa-os/aaos-public/pull/253#issuecomment-5021686076"
+            },
+            "body_utf8_byte_count": {
+              "const": 30769
+            },
+            "body_sha256": {
+              "const": "c43fd9fcc214d56e2f30c205220f5e4e088d0aa1f029610c32e21fa77b12fd5a"
+            },
+            "api_response_utf8_byte_count": {
+              "const": 36708
+            },
+            "api_response_sha256": {
+              "const": "c3de9247f168969c7a3282b84fc8536b7150cd9641337232192af492b81cfea3"
+            },
+            "canonical_payload_sha256": {
+              "const": "ec2995e2abf9acfa567a67ba7506ece683036f7c5afad87b9a0fb1bcc1b80a3d"
+            },
+            "binds_candidate": {
+              "const": true
+            }
+          }
+        },
+        "human_approval_comment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "comment_id",
+            "author_login",
+            "created_at",
+            "updated_at",
+            "html_url",
+            "body_utf8_byte_count",
+            "body_sha256",
+            "api_response_utf8_byte_count",
+            "api_response_sha256",
+            "binds_candidate",
+            "binds_verification_receipt",
+            "binds_approved_action"
+          ],
+          "properties": {
+            "comment_id": {
+              "const": 5021955084
+            },
+            "author_login": {
+              "const": "aa-os"
+            },
+            "created_at": {
+              "const": "2026-07-20T11:57:17Z"
+            },
+            "updated_at": {
+              "const": "2026-07-20T11:57:17Z"
+            },
+            "html_url": {
+              "const": "https://github.com/aa-os/aaos-public/pull/253#issuecomment-5021955084"
+            },
+            "body_utf8_byte_count": {
+              "const": 2818
+            },
+            "body_sha256": {
+              "const": "9bbb49d001aa6e9c8bff5f54187a406d8b0489ece3d446eb44da313b6bafa650"
+            },
+            "api_response_utf8_byte_count": {
+              "const": 4586
+            },
+            "api_response_sha256": {
+              "const": "148b7ca01f51648389b13baa76ac99d867896fca3f2fa1cf99714d90d936fd08"
+            },
+            "binds_candidate": {
+              "const": true
+            },
+            "binds_verification_receipt": {
+              "const": true
+            },
+            "binds_approved_action": {
+              "const": true
+            }
+          }
+        },
+        "event_timestamps": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "observation_at",
+            "verification_at",
+            "human_approval_at",
+            "merge_at",
+            "release_publication_at"
+          ],
+          "properties": {
+            "observation_at": {
+              "const": "2026-07-20T11:06:53Z"
+            },
+            "verification_at": {
+              "const": "2026-07-20T11:24:04Z"
+            },
+            "human_approval_at": {
+              "const": "2026-07-20T11:57:17Z"
+            },
+            "merge_at": {
+              "const": "2026-07-20T11:57:48Z"
+            },
+            "release_publication_at": {
+              "const": "2026-07-20T12:08:53Z"
+            }
+          }
+        },
+        "github_envelope_ordering_valid": {
+          "const": true
+        },
+        "embedded_human_approval_json": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "approval_timestamp",
+            "approver_identity",
+            "contains_placeholders",
+            "standardized_envelope_bound_record_present",
+            "finding_id"
+          ],
+          "properties": {
+            "approval_timestamp": {
+              "const": "<RFC3339_UTC_TIMESTAMP>"
+            },
+            "approver_identity": {
+              "const": "<AUTHORIZED_HUMAN_GITHUB_LOGIN>"
+            },
+            "contains_placeholders": {
+              "const": true
+            },
+            "standardized_envelope_bound_record_present": {
+              "const": false
+            },
+            "finding_id": {
+              "const": "m15-prg-004"
+            }
+          }
+        },
+        "not_release_blocking_reason": {
+          "$ref": "#/$defs/reference"
+        },
+        "evidence_only": {
+          "const": true
+        }
+      }
+    },
+    "verificationRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_id",
+        "evidence_plane",
+        "working_directory_role",
+        "logical_argv",
+        "exit_code",
+        "result_kind",
+        "result",
+        "passed"
+      ],
+      "properties": {
+        "command_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "evidence_plane": {
+          "enum": [
+            "remote-git-ref",
+            "tagged-release",
+            "maintained-main",
+            "draft-review-candidate",
+            "clean-clone-tagged-tree",
+            "live-github-api",
+            "derived-release-body-digest"
+          ]
+        },
+        "working_directory_role": {
+          "$ref": "#/$defs/reference"
+        },
+        "logical_argv": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "actual_launcher_role": {
+          "$ref": "#/$defs/reference"
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "PYTHONDONTWRITEBYTECODE": {
+              "const": "1"
+            },
+            "AAOS_TEST_GIT_EXE": {
+              "const": "C:/Program Files/Git/cmd/git.exe"
+            }
+          }
+        },
+        "exit_code": {
+          "enum": [0, 1]
+        },
+        "result_kind": {
+          "enum": [
+            "exact-command-outcome",
+            "exact-stderr-transcript",
+            "expected-no-output-nonzero",
+            "exact-stdout",
+            "exact-stdout-trimmed",
+            "derived-summary-bound-to-raw-stdout",
+            "derived-count-bound-to-raw-stdout",
+            "exact-exit-code-no-output",
+            "derived-unittest-summary",
+            "exact-empty-stdout",
+            "expected-no-match"
+          ]
+        },
+        "result": {
+          "$ref": "#/$defs/reference"
+        },
+        "raw_stdout_utf8_byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "raw_stdout_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "raw_stderr_utf8_byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "raw_stderr_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "reproducibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clone_url",
+        "clone_mode",
+        "tag_resolved_in_clean_clone",
+        "tag_checkout_command_id",
+        "detached_head_confirmed",
+        "detached_head_symbolic_ref_command_id",
+        "detached_head_commit_command_id",
+        "resolved_commit_sha",
+        "resolved_tree_sha",
+        "tagged_tree_entry_count",
+        "tagged_tree_blob_count",
+        "tagged_tree_gitlink_count",
+        "tagged_tree_symlink_count",
+        "gitmodules_present",
+        "git_lfs_pointers_present",
+        "tagged_source_tree_independently_inspectable",
+        "shallow_repository",
+        "promisor_remote_configured",
+        "partial_clone_extension_configured",
+        "sparse_checkout_configured",
+        "source_inspection_command_ids",
+        "toolchain",
+        "maintained_verification_procedure_executed",
+        "maintained_verification_passed",
+        "verification_command_id",
+        "working_tree_clean_before_and_after",
+        "clean_status_before_command_id",
+        "clean_status_after_command_id",
+        "repository_submodules_required",
+        "unrecorded_repository_state_required"
+      ],
+      "properties": {
+        "clone_url": {
+          "const": "https://github.com/aa-os/aaos-public.git"
+        },
+        "clone_mode": {
+          "const": "fresh-remote-clone-without-local-object-reuse"
+        },
+        "tag_resolved_in_clean_clone": {
+          "const": true
+        },
+        "tag_checkout_command_id": {
+          "const": "tag-checkout-detached"
+        },
+        "detached_head_confirmed": {
+          "const": true
+        },
+        "detached_head_symbolic_ref_command_id": {
+          "const": "detached-head-symbolic-ref"
+        },
+        "detached_head_commit_command_id": {
+          "const": "detached-head-commit"
+        },
+        "resolved_commit_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "resolved_tree_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "tagged_tree_entry_count": {
+          "const": 501
+        },
+        "tagged_tree_blob_count": {
+          "const": 501
+        },
+        "tagged_tree_gitlink_count": {
+          "const": 0
+        },
+        "tagged_tree_symlink_count": {
+          "const": 0
+        },
+        "gitmodules_present": {
+          "const": false
+        },
+        "git_lfs_pointers_present": {
+          "const": false
+        },
+        "tagged_source_tree_independently_inspectable": {
+          "const": true
+        },
+        "shallow_repository": {
+          "const": false
+        },
+        "promisor_remote_configured": {
+          "const": false
+        },
+        "partial_clone_extension_configured": {
+          "const": false
+        },
+        "sparse_checkout_configured": {
+          "const": false
+        },
+        "source_inspection_command_ids": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "tagged-tree-object-inventory",
+              "tagged-gitmodules-absence",
+              "tagged-lfs-pointer-absence",
+              "clean-clone-promisor-state",
+              "clean-clone-partial-clone-state",
+              "clean-clone-sparse-state"
+            ]
+          }
+        },
+        "toolchain": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "git_version",
+            "python_implementation",
+            "python_version",
+            "python_launcher_role",
+            "repository_local_interpreter_required"
+          ],
+          "properties": {
+            "git_version": {
+              "const": "2.55.0.windows.3"
+            },
+            "python_implementation": {
+              "const": "CPython"
+            },
+            "python_version": {
+              "const": "3.14.6"
+            },
+            "python_launcher_role": {
+              "const": "external-cpython-outside-clean-clone"
+            },
+            "repository_local_interpreter_required": {
+              "const": false
+            }
+          }
+        },
+        "maintained_verification_procedure_executed": {
+          "const": true
+        },
+        "maintained_verification_passed": {
+          "const": true
+        },
+        "verification_command_id": {
+          "const": "tagged-full-maintained-suite"
+        },
+        "working_tree_clean_before_and_after": {
+          "const": true
+        },
+        "clean_status_before_command_id": {
+          "const": "clean-clone-status-before"
+        },
+        "clean_status_after_command_id": {
+          "const": "clean-clone-status-after"
+        },
+        "repository_submodules_required": {
+          "const": false
+        },
+        "unrecorded_repository_state_required": {
+          "const": false
+        }
+      }
+    },
+    "rollbackAndCorrection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "published_tag_immutable_by_policy",
+        "tag_move_allowed",
+        "tag_delete_allowed",
+        "tag_recreate_allowed",
+        "rollback_moves_published_tag",
+        "corrective_work_requires_successor_commit",
+        "patch_release_required_when_release_level_correction_is_appropriate",
+        "historical_release_evidence_remains_discoverable",
+        "supersession_and_withdrawal_semantics",
+        "release_edit_or_republication_performed",
+        "rollback_execution_performed"
+      ],
+      "properties": {
+        "published_tag_immutable_by_policy": {
+          "const": true
+        },
+        "tag_move_allowed": {
+          "const": false
+        },
+        "tag_delete_allowed": {
+          "const": false
+        },
+        "tag_recreate_allowed": {
+          "const": false
+        },
+        "rollback_moves_published_tag": {
+          "const": false
+        },
+        "corrective_work_requires_successor_commit": {
+          "const": true
+        },
+        "patch_release_required_when_release_level_correction_is_appropriate": {
+          "const": true
+        },
+        "historical_release_evidence_remains_discoverable": {
+          "const": true
+        },
+        "supersession_and_withdrawal_semantics": {
+          "$ref": "#/$defs/reference"
+        },
+        "release_edit_or_republication_performed": {
+          "const": false
+        },
+        "rollback_execution_performed": {
+          "const": false
+        }
+      }
+    },
+    "retrospectiveEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "area",
+        "assessment",
+        "summary",
+        "evidence_references",
+        "finding_ids"
+      ],
+      "properties": {
+        "area": {
+          "$ref": "#/$defs/area"
+        },
+        "assessment": {
+          "enum": [
+            "effective",
+            "effective-with-follow-up",
+            "release-blocking"
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/reference"
+        },
+        "evidence_references": {
+          "$ref": "#/$defs/referenceArray"
+        },
+        "finding_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/findingId"
+          }
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finding_id",
+        "area",
+        "title",
+        "classification",
+        "summary",
+        "evidence_references",
+        "recommendation"
+      ],
+      "properties": {
+        "finding_id": {
+          "$ref": "#/$defs/findingId"
+        },
+        "area": {
+          "$ref": "#/$defs/area"
+        },
+        "title": {
+          "$ref": "#/$defs/reference"
+        },
+        "classification": {
+          "$ref": "#/$defs/classification"
+        },
+        "summary": {
+          "$ref": "#/$defs/reference"
+        },
+        "evidence_references": {
+          "$ref": "#/$defs/referenceArray"
+        },
+        "recommendation": {
+          "$ref": "#/$defs/reference"
+        }
+      }
+    },
+    "classificationCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release-blocking defect",
+        "corrective patch-release candidate",
+        "documentation drift",
+        "governance-contract gap",
+        "evaluator or test gap",
+        "operational hardening",
+        "future milestone candidate",
+        "accepted residual risk",
+        "no action required"
+      ],
+      "properties": {
+        "release-blocking defect": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "corrective patch-release candidate": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "documentation drift": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "governance-contract gap": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evaluator or test gap": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "operational hardening": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "future milestone candidate": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted residual risk": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "no action required": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "m16PlanningRecommendation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recommendation",
+        "release_blocking_finding_ids",
+        "human_authorization_required",
+        "authorized_by_this_record",
+        "issue_254_completion_automatically_authorizes_m16",
+        "m16_implementation_authorized",
+        "rationale"
+      ],
+      "properties": {
+        "recommendation": {
+          "enum": [
+            "recommend-m16-planning-may-begin-after-separate-human-authorization",
+            "recommend-m16-planning-remain-blocked"
+          ]
+        },
+        "release_blocking_finding_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/findingId"
+          }
+        },
+        "human_authorization_required": {
+          "const": true
+        },
+        "authorized_by_this_record": {
+          "const": false
+        },
+        "issue_254_completion_automatically_authorizes_m16": {
+          "const": false
+        },
+        "m16_implementation_authorized": {
+          "const": false
+        },
+        "rationale": {
+          "$ref": "#/$defs/reference"
+        }
+      }
+    }
+  }
+}
