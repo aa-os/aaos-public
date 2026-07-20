@@ -1,0 +1,618 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/m15-completion-readiness.schema.json",
+  "title": "AAOS M15 Track E3 Completion-Readiness Package",
+  "oneOf": [
+    {"$ref": "#/$defs/manifest"},
+    {"$ref": "#/$defs/trackEvidence"},
+    {"$ref": "#/$defs/e2Continuity"},
+    {"$ref": "#/$defs/e2ExternalEvidence"},
+    {"$ref": "#/$defs/acceptanceMatrix"},
+    {"$ref": "#/$defs/boundaryRegister"},
+    {"$ref": "#/$defs/readmeObservation"},
+    {"$ref": "#/$defs/pullRequestObservation"},
+    {"$ref": "#/$defs/verificationReceipt"},
+    {"$ref": "#/$defs/syntheticScenario"}
+  ],
+  "$defs": {
+    "gitObjectSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "referenceArray": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/reference"}
+    },
+    "rfc3339Utc": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"
+    },
+    "repository": {
+      "const": "aa-os/aaos-public"
+    },
+    "authorityBoundary": {
+      "const": "Completion readiness is evidence for final human review only; it is not M15 completion, tracker #231 closure, README final-state authorization, release approval, tag authorization, GitHub Release authorization, Decision Proof sealing, Learning Proof sealing, deployment authorization, risk acceptance, rollback execution, deletion execution, fail-closed execution, audit closure, waiver, authority transfer, or final governance judgment."
+    },
+    "runtimeBoundary": {
+      "const": "The Track E3 runtime evaluator accepts caller-supplied inert mappings only and performs no file, Git, GitHub, network, subprocess, command, digest, or external-state operation."
+    },
+    "trackId": {
+      "enum": ["track-a", "track-b", "track-c", "track-d", "track-e1", "track-e2"]
+    },
+    "sourceTrack": {
+      "enum": ["track-a", "track-b", "track-c", "track-d", "track-e1", "track-e2", "track-e3", "cross-track"]
+    },
+    "outcome": {
+      "enum": ["ready_for_final_m15_completion_review", "not_ready", "blocked"]
+    },
+    "blockerId": {
+      "enum": [
+        "missing-track-a-evidence",
+        "missing-track-b-evidence",
+        "missing-track-c-evidence",
+        "missing-track-d-evidence",
+        "missing-track-e1-evidence",
+        "missing-track-e2-evidence",
+        "e2-candidate-merge-mismatch",
+        "missing-e2-pr-observation",
+        "missing-active-e2-receipt",
+        "superseded-e2-receipt-used",
+        "e2-receipt-digest-mismatch",
+        "incomplete-acceptance-criteria-coverage",
+        "hidden-completion-blocker",
+        "invalid-future-readme-path",
+        "incomplete-verification-coverage",
+        "authority-boundary-violation"
+      ]
+    },
+    "futurePrerequisiteId": {
+      "enum": [
+        "track-e4-not-completed",
+        "final-m15-completion-not-approved",
+        "tracker-231-open",
+        "readme-final-completion-not-authorized",
+        "v0.14.0-tag-not-authorized",
+        "github-release-not-authorized",
+        "post-merge-final-review-not-completed"
+      ]
+    },
+    "verificationCommandId": {
+      "enum": [
+        "e3-targeted",
+        "e2-targeted",
+        "e1-targeted",
+        "track-a",
+        "track-b",
+        "track-c",
+        "track-d",
+        "m14-public-output",
+        "m14-provenance",
+        "m14-skill-admission",
+        "external-evidence-admission",
+        "m14-cross-control-authority",
+        "decision-proof-ownership",
+        "release-m15-status",
+        "full-maintained-suite",
+        "m14-final-completion",
+        "m14-completion-readiness"
+      ]
+    },
+    "declaredVerificationCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command_id", "declared_logical_argv", "execution_scope", "minimum_tests_observed"],
+      "properties": {
+        "command_id": {"$ref": "#/$defs/verificationCommandId"},
+        "declared_logical_argv": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "execution_scope": {
+          "enum": ["e3-candidate-validation", "inherited-regression", "candidate-full-suite-integration", "authorized-compatibility-regression"]
+        },
+        "minimum_tests_observed": {"type": "integer", "minimum": 1}
+      }
+    },
+    "authorizedHistoricalCompatibilityRepair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "purpose", "counted_in_prior_material_artifact_inventory"],
+      "properties": {
+        "path": {
+          "enum": [
+            "runtime/m14_final_completion_evaluator.py",
+            "tests/test_m14_final_completion_evaluator.py",
+            "tests/test_m15_lineage_rollback_portability_evaluator.py",
+            "tests/test_m15_operational_readiness_evaluator.py"
+          ]
+        },
+        "purpose": {
+          "enum": [
+            "phase-aware-next-phase-validation",
+            "explicit-historical-mutation-fixtures",
+            "section-aware-future-version-assertions",
+            "historical-source-baseline-artifact-observation"
+          ]
+        },
+        "counted_in_prior_material_artifact_inventory": {"const": false}
+      }
+    },
+    "authorizedPhaseAwareCompatibilityRepair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["purpose", "authorization_basis", "not_authorized"],
+      "properties": {
+        "purpose": {"const": "phase-aware historical README regression repair"},
+        "authorization_basis": {"const": "human-approved bounded scope exception for Issue #250"},
+        "not_authorized": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "release-state modification"},
+            {"const": "M14 reopening"},
+            {"const": "authority-doctrine change"},
+            {"const": "test deletion"},
+            {"const": "unconditional skip"},
+            {"const": "arbitrary historical evaluator cleanup"},
+            {"const": "external adapter scope"}
+          ],
+          "items": false,
+          "minItems": 7,
+          "maxItems": 7
+        }
+      }
+    },
+    "historicalE1ArtifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "source_baseline_commit_sha", "historical_canonical_sha256", "evidence_role"],
+      "properties": {
+        "path": {"const": "tests/test_m15_lineage_rollback_portability_evaluator.py"},
+        "source_baseline_commit_sha": {"const": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"},
+        "historical_canonical_sha256": {"const": "5268f73a441898467e9b8f9471cfc4b9bd4fa27b7b67444fbf852d697d90f4c9"},
+        "evidence_role": {"const": "immutable-e1-source-baseline-evidence"}
+      }
+    },
+    "e3AuthorizedCompatibilityRepair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "current_candidate_canonical_sha256", "purpose", "authority"],
+      "properties": {
+        "path": {"const": "tests/test_m15_lineage_rollback_portability_evaluator.py"},
+        "current_candidate_canonical_sha256": {"const": "0dee39fe81189fd558f136732579995245828bc6b14c9791b67c9bb6e8a39f5c"},
+        "purpose": {"const": "section-aware-future-version-assertions"},
+        "authority": {"const": "human-approved-bounded-e3-compatibility-repair"}
+      }
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "document_kind", "repository", "source_issue", "parent_tracker",
+        "source_main_base_sha", "source_main_base_tree_sha", "prior_material_artifact_count",
+        "required_track_ids", "required_acceptance_criteria_count", "required_blockers",
+        "required_future_prerequisites", "authorized_phase_aware_compatibility_repair",
+        "authorized_historical_compatibility_repairs", "historical_e1_artifact_binding",
+        "e3_authorized_compatibility_repair", "verification_commands", "completion_readiness_only",
+        "runtime_caller_data_only", "final_candidate_commit_external", "final_receipt_commit_external",
+        "m15_state", "tracker_231_state", "track_e4_implemented", "v0_14_0_state", "tag_state",
+        "github_release_state", "decision_proof_sealed", "learning_proof_sealed", "authority_boundary",
+        "runtime_boundary"
+      ],
+      "properties": {
+        "schema_version": {"const": "m15-completion-readiness/v1"},
+        "document_kind": {"const": "completion-readiness-manifest"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "source_issue": {"const": 250},
+        "parent_tracker": {"const": 231},
+        "source_main_base_sha": {"const": "f6d074fca2fedecbf654697719179440bc0680d3"},
+        "source_main_base_tree_sha": {"const": "f13913426545b77616128223cd195487a415ffde"},
+        "prior_material_artifact_count": {"const": 156},
+        "required_track_ids": {
+          "type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/trackId"}
+        },
+        "required_acceptance_criteria_count": {"const": 16},
+        "required_blockers": {
+          "type": "array", "minItems": 16, "maxItems": 16, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/blockerId"}
+        },
+        "required_future_prerequisites": {
+          "type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/futurePrerequisiteId"}
+        },
+        "authorized_phase_aware_compatibility_repair": {
+          "$ref": "#/$defs/authorizedPhaseAwareCompatibilityRepair"
+        },
+        "authorized_historical_compatibility_repairs": {
+          "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/authorizedHistoricalCompatibilityRepair"}
+        },
+        "historical_e1_artifact_binding": {
+          "$ref": "#/$defs/historicalE1ArtifactBinding"
+        },
+        "e3_authorized_compatibility_repair": {
+          "$ref": "#/$defs/e3AuthorizedCompatibilityRepair"
+        },
+        "verification_commands": {
+          "type": "array", "minItems": 17, "maxItems": 17,
+          "items": {"$ref": "#/$defs/declaredVerificationCommand"}
+        },
+        "completion_readiness_only": {"const": true},
+        "runtime_caller_data_only": {"const": true},
+        "final_candidate_commit_external": {"const": true},
+        "final_receipt_commit_external": {"const": true},
+        "m15_state": {"const": "active-and-incomplete"},
+        "tracker_231_state": {"const": "open"},
+        "track_e4_implemented": {"const": false},
+        "v0_14_0_state": {"const": "unpublished"},
+        "tag_state": {"const": "not-authorized"},
+        "github_release_state": {"const": "not-created"},
+        "decision_proof_sealed": {"const": false},
+        "learning_proof_sealed": {"const": false},
+        "authority_boundary": {"$ref": "#/$defs/authorityBoundary"},
+        "runtime_boundary": {"$ref": "#/$defs/runtimeBoundary"}
+      }
+    },
+    "trackSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["track_id", "source_issue", "implementation_pr", "base_sha", "candidate_sha", "candidate_tree_sha", "merge_sha", "merge_tree_sha", "material_path_count"],
+      "properties": {
+        "track_id": {"$ref": "#/$defs/trackId"},
+        "source_issue": {"type": "integer", "minimum": 1},
+        "implementation_pr": {"type": "integer", "minimum": 1},
+        "base_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "candidate_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "candidate_tree_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "merge_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "merge_tree_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "material_path_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "track_id", "source_issue", "implementation_pr", "candidate_sha", "merge_sha",
+        "repository_path", "artifact_type", "git_blob_sha", "git_file_mode",
+        "canonical_text_sha256", "covering_test", "lifecycle_state", "evidence_reference",
+        "authority_boundary"
+      ],
+      "properties": {
+        "track_id": {"$ref": "#/$defs/trackId"},
+        "source_issue": {"type": "integer", "minimum": 1},
+        "implementation_pr": {"type": "integer", "minimum": 1},
+        "candidate_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "merge_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "repository_path": {"type": "string", "pattern": "^[^\\\\:]+(?:/[^/\\\\:]+)*$"},
+        "artifact_type": {
+          "enum": ["governance-contract", "json-schema", "runtime-evaluator", "evaluator-tests", "machine-readable-manifest", "boundary-record", "continuity-record", "external-evidence-linkage", "synthetic-fixture"]
+        },
+        "git_blob_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "git_file_mode": {"enum": ["100644", "100755"]},
+        "canonical_text_sha256": {"$ref": "#/$defs/sha256"},
+        "covering_test": {"$ref": "#/$defs/reference"},
+        "lifecycle_state": {"const": "maintained"},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "authority_boundary": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    },
+    "trackEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "document_kind", "repository", "source_main_base_sha", "source_main_base_tree_sha", "prior_material_artifact_count", "track_summaries", "artifacts", "inventory_binding_sha256", "caller_supplied_inert_record", "authority_boundary"],
+      "properties": {
+        "schema_version": {"const": "m15-completion-readiness-track-evidence/v1"},
+        "document_kind": {"const": "track-evidence-inventory"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "source_main_base_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "source_main_base_tree_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "prior_material_artifact_count": {"const": 156},
+        "track_summaries": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/trackSummary"}},
+        "artifacts": {"type": "array", "minItems": 156, "maxItems": 156, "items": {"$ref": "#/$defs/artifact"}},
+        "inventory_binding_sha256": {"$ref": "#/$defs/sha256"},
+        "caller_supplied_inert_record": {"const": true},
+        "authority_boundary": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    },
+    "e2Continuity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "document_kind", "repository", "e2_source_issue", "e2_implementation_pr", "source_main_base_sha", "candidate_sha", "candidate_tree_sha", "merge_sha", "merge_tree_sha", "merge_parents", "candidate_is_merge_parent", "base_is_merge_parent", "candidate_to_merge_changed_path_count", "additional_merge_difference_count", "active_observation_comment_id", "active_receipt_comment_id", "active_receipt_canonical_sha256", "superseded_receipt_comment_id", "superseded_receipt_classification", "relation", "caller_supplied_inert_record", "authority_boundary"],
+      "properties": {
+        "schema_version": {"const": "m15-completion-readiness-e2-continuity/v1"},
+        "document_kind": {"const": "e2-continuity-record"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "e2_source_issue": {"const": 248},
+        "e2_implementation_pr": {"const": 249},
+        "source_main_base_sha": {"const": "27c92e290cf6ad60bada49b63fe1888511930980"},
+        "candidate_sha": {"const": "efc31e7d24c26d2cea2cb536a4cae257aababb5f"},
+        "candidate_tree_sha": {"const": "f13913426545b77616128223cd195487a415ffde"},
+        "merge_sha": {"const": "f6d074fca2fedecbf654697719179440bc0680d3"},
+        "merge_tree_sha": {"const": "f13913426545b77616128223cd195487a415ffde"},
+        "merge_parents": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "27c92e290cf6ad60bada49b63fe1888511930980"},
+            {"const": "efc31e7d24c26d2cea2cb536a4cae257aababb5f"}
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "candidate_is_merge_parent": {"const": true},
+        "base_is_merge_parent": {"const": true},
+        "candidate_to_merge_changed_path_count": {"const": 0},
+        "additional_merge_difference_count": {"const": 0},
+        "active_observation_comment_id": {"const": 5015690597},
+        "active_receipt_comment_id": {"const": 5015694989},
+        "active_receipt_canonical_sha256": {"const": "511226a39144791ec47043203878bd22d14ec546e71702c267b66cc47da6af2f"},
+        "superseded_receipt_comment_id": {"const": 5015466792},
+        "superseded_receipt_classification": {"const": "superseded-historical-evidence"},
+        "relation": {"const": "exact_tree_match"},
+        "caller_supplied_inert_record": {"const": true},
+        "authority_boundary": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    },
+    "e2ExternalEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "document_kind", "repository", "source_main_base_sha", "candidate_sha", "active_observation_comment_id", "active_observation_reference", "active_receipt_comment_id", "active_receipt_reference", "active_receipt_canonical_sha256", "active_receipt_accepted", "superseded_receipt_comment_id", "superseded_receipt_reference", "superseded_receipt_classification", "superseded_receipt_accepted_as_active", "external_evidence_is_completion_authority", "external_evidence_is_release_authority", "caller_supplied_inert_record", "authority_boundary"],
+      "properties": {
+        "schema_version": {"const": "m15-completion-readiness-e2-external-evidence/v1"},
+        "document_kind": {"const": "e2-external-evidence-record"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "source_main_base_sha": {"const": "27c92e290cf6ad60bada49b63fe1888511930980"},
+        "candidate_sha": {"const": "efc31e7d24c26d2cea2cb536a4cae257aababb5f"},
+        "active_observation_comment_id": {"const": 5015690597},
+        "active_observation_reference": {"const": "https://github.com/aa-os/aaos-public/pull/249#issuecomment-5015690597"},
+        "active_receipt_comment_id": {"const": 5015694989},
+        "active_receipt_reference": {"const": "https://github.com/aa-os/aaos-public/pull/249#issuecomment-5015694989"},
+        "active_receipt_canonical_sha256": {"const": "511226a39144791ec47043203878bd22d14ec546e71702c267b66cc47da6af2f"},
+        "active_receipt_accepted": {"const": true},
+        "superseded_receipt_comment_id": {"const": 5015466792},
+        "superseded_receipt_reference": {"const": "https://github.com/aa-os/aaos-public/pull/249#issuecomment-5015466792"},
+        "superseded_receipt_classification": {"const": "superseded-historical-evidence"},
+        "superseded_receipt_accepted_as_active": {"const": false},
+        "external_evidence_is_completion_authority": {"const": false},
+        "external_evidence_is_release_authority": {"const": false},
+        "caller_supplied_inert_record": {"const": true},
+        "authority_boundary": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    },
+    "acceptanceCriterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterion_id", "criterion_text", "source_track", "evidence_references", "artifact_references", "test_references", "coverage_state", "notes", "authority_boundary"],
+      "properties": {
+        "criterion_id": {"type": "string", "pattern": "^m15-ac-(?:0[1-9]|1[0-6])$"},
+        "criterion_text": {"$ref": "#/$defs/reference"},
+        "source_track": {"$ref": "#/$defs/sourceTrack"},
+        "evidence_references": {"$ref": "#/$defs/referenceArray"},
+        "artifact_references": {"$ref": "#/$defs/referenceArray"},
+        "test_references": {"$ref": "#/$defs/referenceArray"},
+        "coverage_state": {"enum": ["covered", "partial", "missing", "blocked"]},
+        "notes": {"$ref": "#/$defs/reference"},
+        "authority_boundary": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    },
+    "acceptanceMatrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "document_kind", "repository", "parent_tracker", "criterion_count", "criteria", "all_criteria_covered", "caller_supplied_inert_record", "authority_boundary"],
+      "properties": {
+        "schema_version": {"const": "m15-completion-readiness-acceptance-matrix/v1"},
+        "document_kind": {"const": "m15-acceptance-coverage-matrix"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "parent_tracker": {"const": 231},
+        "criterion_count": {"const": 16},
+        "criteria": {"type": "array", "minItems": 16, "maxItems": 16, "items": {"$ref": "#/$defs/acceptanceCriterion"}},
+        "all_criteria_covered": {"type": "boolean"},
+        "caller_supplied_inert_record": {"const": true},
+        "authority_boundary": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    },
+    "completionBlocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["blocker_id", "state", "evidence_references", "explanation"],
+      "properties": {
+        "blocker_id": {"$ref": "#/$defs/blockerId"},
+        "state": {"enum": ["resolved", "open", "blocked"]},
+        "evidence_references": {"$ref": "#/$defs/referenceArray"},
+        "explanation": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "futurePrerequisite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prerequisite_id", "state", "evidence_references", "explanation"],
+      "properties": {
+        "prerequisite_id": {"$ref": "#/$defs/futurePrerequisiteId"},
+        "state": {"const": "open"},
+        "evidence_references": {"$ref": "#/$defs/referenceArray"},
+        "explanation": {"$ref": "#/$defs/reference"}
+      }
+    },
+    "boundaryRegister": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "document_kind", "repository", "blockers", "future_prerequisites", "caller_supplied_inert_record", "authority_boundary"],
+      "properties": {
+        "schema_version": {"const": "m15-completion-readiness-boundary-register/v1"},
+        "document_kind": {"const": "completion-boundary-register"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "blockers": {"type": "array", "minItems": 16, "maxItems": 16, "items": {"$ref": "#/$defs/completionBlocker"}},
+        "future_prerequisites": {"type": "array", "minItems": 7, "maxItems": 7, "items": {"$ref": "#/$defs/futurePrerequisite"}},
+        "caller_supplied_inert_record": {"const": true},
+        "authority_boundary": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    },
+    "readmeObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "document_kind", "repository", "source_main_base_sha", "base_readme_canonical_sha256", "candidate_readme_canonical_sha256", "base_releases_section_sha256", "candidate_releases_section_sha256", "base_current_status_section_sha256", "candidate_current_status_section_sha256", "base_next_phase_section_sha256", "candidate_next_phase_section_sha256", "releases_unchanged", "current_status_unchanged", "next_phase_changed", "future_only_wording_valid", "m15_complete_claim", "v0_14_0_released_claim", "tag_claim", "github_release_claim", "track_e4_completion_claim", "caller_supplied_inert_record", "authority_boundary"],
+      "properties": {
+        "schema_version": {"const": "m15-completion-readiness-readme-observation/v1"},
+        "document_kind": {"const": "readme-future-path-observation"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "source_main_base_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "base_readme_canonical_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_readme_canonical_sha256": {"$ref": "#/$defs/sha256"},
+        "base_releases_section_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_releases_section_sha256": {"$ref": "#/$defs/sha256"},
+        "base_current_status_section_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_current_status_section_sha256": {"$ref": "#/$defs/sha256"},
+        "base_next_phase_section_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_next_phase_section_sha256": {"$ref": "#/$defs/sha256"},
+        "releases_unchanged": {"const": true},
+        "current_status_unchanged": {"const": true},
+        "next_phase_changed": {"const": true},
+        "future_only_wording_valid": {"const": true},
+        "m15_complete_claim": {"const": false},
+        "v0_14_0_released_claim": {"const": false},
+        "tag_claim": {"const": false},
+        "github_release_claim": {"const": false},
+        "track_e4_completion_claim": {"const": false},
+        "caller_supplied_inert_record": {"const": true},
+        "authority_boundary": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    },
+    "pullRequestObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "document_kind", "repository", "issue_number", "pull_request_number", "source_main_base_sha", "source_main_base_tree_sha", "candidate_head_sha", "candidate_tree_sha", "execution_subject_type", "observed_at", "observer", "evidence_reference", "external_to_candidate_commit", "fetched_by_evaluator", "non_authoritative_boundary_statement"],
+      "properties": {
+        "schema_version": {"const": "m15-completion-readiness-pr-observation/v1"},
+        "document_kind": {"const": "pull-request-candidate-observation"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "issue_number": {"const": 250},
+        "pull_request_number": {"const": 251},
+        "source_main_base_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "source_main_base_tree_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "candidate_head_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "candidate_tree_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "execution_subject_type": {"const": "pull-request-candidate-checkout"},
+        "observed_at": {"$ref": "#/$defs/rfc3339Utc"},
+        "observer": {"$ref": "#/$defs/reference"},
+        "evidence_reference": {"const": "github:aa-os/aaos-public:pull/251:commit-external-observation"},
+        "external_to_candidate_commit": {"const": true},
+        "fetched_by_evaluator": {"const": false},
+        "non_authoritative_boundary_statement": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    },
+    "executableBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["declared_launcher", "actual_launcher", "launcher_substitution_detected", "launcher_substitution_declared", "python_implementation", "python_version"],
+      "properties": {
+        "declared_launcher": {"const": "python"},
+        "actual_launcher": {"const": ".verification-python/python.exe"},
+        "launcher_substitution_detected": {"const": true},
+        "launcher_substitution_declared": {"const": true},
+        "python_implementation": {"const": "CPython"},
+        "python_version": {"type": "string", "pattern": "^3\\.14\\.6$"}
+      }
+    },
+    "commandReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command_id", "declared_logical_argv", "actual_argv", "execution_scope", "execution_candidate_head_sha", "executable_binding", "tests_observed", "minimum_tests_observed", "passes", "failures", "errors", "skips", "exit_code", "execution_timestamp", "transcript_sha256", "evidence_reference", "executed_by_evaluator", "verification_results_are_completion_authority", "verification_results_are_release_authority"],
+      "properties": {
+        "command_id": {"$ref": "#/$defs/verificationCommandId"},
+        "declared_logical_argv": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}},
+        "actual_argv": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}},
+        "execution_scope": {"enum": ["e3-candidate-validation", "inherited-regression", "candidate-full-suite-integration", "authorized-compatibility-regression"]},
+        "execution_candidate_head_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "executable_binding": {"$ref": "#/$defs/executableBinding"},
+        "tests_observed": {"type": "integer", "minimum": 0},
+        "minimum_tests_observed": {"type": "integer", "minimum": 1},
+        "passes": {"type": "integer", "minimum": 0},
+        "failures": {"type": "integer", "minimum": 0},
+        "errors": {"type": "integer", "minimum": 0},
+        "skips": {"type": "integer", "minimum": 0},
+        "exit_code": {"type": "integer", "minimum": 0},
+        "execution_timestamp": {"$ref": "#/$defs/rfc3339Utc"},
+        "transcript_sha256": {"$ref": "#/$defs/sha256"},
+        "evidence_reference": {"$ref": "#/$defs/reference"},
+        "executed_by_evaluator": {"const": false},
+        "verification_results_are_completion_authority": {"const": false},
+        "verification_results_are_release_authority": {"const": false}
+      }
+    },
+    "verificationReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "document_kind", "repository", "issue_number", "pull_request_number", "source_main_base_sha", "execution_candidate_head_sha", "observation_evidence_reference", "command_receipt_count", "commands", "external_to_candidate_commit", "executed_by_evaluator", "verification_results_are_completion_authority", "verification_results_are_release_authority", "non_authoritative_boundary_statement"],
+      "properties": {
+        "schema_version": {"const": "m15-completion-readiness-verification-receipt/v1"},
+        "document_kind": {"const": "external-verification-execution-receipt"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "issue_number": {"const": 250},
+        "pull_request_number": {"const": 251},
+        "source_main_base_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "execution_candidate_head_sha": {"$ref": "#/$defs/gitObjectSha"},
+        "observation_evidence_reference": {"const": "github:aa-os/aaos-public:pull/251:commit-external-observation"},
+        "command_receipt_count": {"const": 17},
+        "commands": {"type": "array", "minItems": 17, "maxItems": 17, "items": {"$ref": "#/$defs/commandReceipt"}},
+        "external_to_candidate_commit": {"const": true},
+        "executed_by_evaluator": {"const": false},
+        "verification_results_are_completion_authority": {"const": false},
+        "verification_results_are_release_authority": {"const": false},
+        "non_authoritative_boundary_statement": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    },
+    "scenarioMutation": {
+      "enum": [
+        "none", "e2-merge-commit-mismatch", "e2-merge-tree-mismatch", "e2-candidate-not-merge-parent",
+        "e2-path-drift", "e2-observation-missing", "active-receipt-missing", "superseded-receipt-used",
+        "active-receipt-digest-mismatch", "track-a-evidence-missing", "track-b-evidence-missing",
+        "track-c-evidence-missing", "track-d-evidence-missing", "track-e1-evidence-missing",
+        "track-e2-evidence-missing", "acceptance-criterion-omitted", "criterion-has-no-evidence",
+        "hidden-blocker", "tracker-represented-closed", "m15-represented-complete",
+        "readme-says-v0-14-0-released", "readme-changes-releases", "readme-changes-current-status",
+        "tag-represented-authorized", "github-release-represented-published", "track-e4-represented-complete",
+        "readiness-treated-as-approval", "decision-proof-sealing-claim", "learning-proof-sealing-claim",
+        "verification-below-minimum", "verification-failure", "verification-error", "unexpected-skip",
+        "nonzero-exit", "pr-observation-receipt-candidate-mismatch", "runtime-execution-claim",
+        "external-evidence-authority-claim"
+      ]
+    },
+    "syntheticScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "document_kind", "scenario_id", "title", "synthetic", "inert", "offline", "deterministic", "contains_secret", "contains_credential", "contains_personal_data", "contains_private_prompt", "contains_production_identifier", "contains_executable_payload", "contains_argv_or_command_payload", "mutation", "expected_outcome", "authority_boundary"],
+      "properties": {
+        "schema_version": {"const": "m15-completion-readiness-scenario/v1"},
+        "document_kind": {"const": "synthetic-scenario"},
+        "scenario_id": {"type": "string", "pattern": "^m15-e3-scenario-(?:0[1-9]|[12][0-9]|3[0-7])$"},
+        "title": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "synthetic": {"const": true},
+        "inert": {"const": true},
+        "offline": {"const": true},
+        "deterministic": {"const": true},
+        "contains_secret": {"const": false},
+        "contains_credential": {"const": false},
+        "contains_personal_data": {"const": false},
+        "contains_private_prompt": {"const": false},
+        "contains_production_identifier": {"const": false},
+        "contains_executable_payload": {"const": false},
+        "contains_argv_or_command_payload": {"const": false},
+        "mutation": {"$ref": "#/$defs/scenarioMutation"},
+        "expected_outcome": {"$ref": "#/$defs/outcome"},
+        "authority_boundary": {"$ref": "#/$defs/authorityBoundary"}
+      }
+    }
+  }
+}

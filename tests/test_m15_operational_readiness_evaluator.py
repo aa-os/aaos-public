@@ -3,7 +3,10 @@ import copy
 import hashlib
 import inspect
 import json
+import os
 import re
+import shutil
+import subprocess
 import tempfile
 import unittest
 from collections import Counter
@@ -17,6 +20,7 @@ from runtime.m15_operational_readiness_evaluator import (
     NOT_READY,
     OUTCOMES,
     READY_FOR_COMPLETION_REVIEW,
+    SOURCE_BASELINE_SHA,
     SYNTHETIC_SCENARIO_BOUNDARY_STATEMENT,
     VERIFICATION_RECEIPT_NON_AUTHORITATIVE_BOUNDARY_STATEMENT,
     evaluate_operational_readiness,
@@ -57,6 +61,54 @@ OBSERVATION_AUTHORITY_BOUNDARY = (
 SYNTHETIC_CANDIDATE_SHA = "c" * 40
 ACTUAL_PYTHON_LAUNCHER = ".verification-python/python.exe"
 _USE_DEFAULT_RECEIPT = object()
+READ_ONLY_GIT_COMMANDS = frozenset({"cat-file", "ls-tree"})
+E1_SOURCE_BASELINE_SHA = "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f"
+TRACK_C_HISTORICAL_TEST_PATH = (
+    "tests/test_m15_lineage_rollback_portability_evaluator.py"
+)
+TRACK_C_HISTORICAL_CANONICAL_SHA256 = (
+    "5268f73a441898467e9b8f9471cfc4b9bd4fa27b7b67444fbf852d697d90f4c9"
+)
+TRACK_C_E3_COMPATIBILITY_CANONICAL_SHA256 = (
+    "0dee39fe81189fd558f136732579995245828bc6b14c9791b67c9bb6e8a39f5c"
+)
+_HISTORICAL_TEXT_DIGEST_CACHE = {}
+
+
+def git_bytes(*args):
+    """Read bytes from an immutable Git object without mutating repository state."""
+
+    if not args or args[0] not in READ_ONLY_GIT_COMMANDS:
+        raise AssertionError("Only read-only Git object inspection is allowed")
+    git = os.environ.get("AAOS_TEST_GIT_EXE") or shutil.which("git")
+    if git is None:
+        raise AssertionError("Git is required for historical snapshot tests")
+    completed = subprocess.run(
+        [git, *args],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=False,
+    )
+    return completed.stdout
+
+
+def historical_repository_text_digest(relative_path):
+    """Hash canonical text from the immutable E1 source-baseline Git snapshot."""
+
+    cache_key = (E1_SOURCE_BASELINE_SHA, relative_path)
+    if cache_key in _HISTORICAL_TEXT_DIGEST_CACHE:
+        return _HISTORICAL_TEXT_DIGEST_CACHE[cache_key]
+    raw = git_bytes(
+        "cat-file",
+        "blob",
+        f"{E1_SOURCE_BASELINE_SHA}:{relative_path}",
+    )
+    canonical = canonicalize_utf8_repository_text(raw)
+    digest = hashlib.sha256(canonical).hexdigest()
+    _HISTORICAL_TEXT_DIGEST_CACHE[cache_key] = digest
+    return digest
 
 
 def _digest_path_lines(text):
@@ -229,13 +281,15 @@ def scenario(number):
 
 
 def build_repository_observation(manifest=None, repository_root=ROOT):
-    """Test-only adapter: inspect maintained files and supply inert caller data."""
+    """Supply inert caller data observed from the immutable E1 Git snapshot."""
 
     manifest = load_manifest() if manifest is None else manifest
+    if Path(repository_root).resolve() != ROOT:
+        raise AssertionError("Historical observation must use the bound repository")
     artifact_observations = []
     for entry in manifest["artifact_integrity_inventory"]["artifacts"]:
         relative_path = entry["relative_path"]
-        observed = sha256_repository_file(repository_root, relative_path, mode="text")
+        observed = historical_repository_text_digest(relative_path)
         status = (
             "present"
             if observed == entry["maintained_canonical_sha256"]
@@ -249,7 +303,10 @@ def build_repository_observation(manifest=None, repository_root=ROOT):
                 "observed_canonical_sha256": observed,
                 "evidence_reference": f"test-observation:{entry['artifact_id']}",
                 "authority_boundary": ARTIFACT_AUTHORITY_BOUNDARY,
-                "notes": "Test-only canonical-text repository observation.",
+                "notes": (
+                    "Test-only canonical-text observation from the immutable E1 "
+                    "source-baseline Git snapshot."
+                ),
                 "deferred_reason": None,
             }
         )
@@ -259,7 +316,7 @@ def build_repository_observation(manifest=None, repository_root=ROOT):
     for dependency in dependencies:
         for path_digest in dependency["path_digests"]:
             relative_path = path_digest["relative_path"]
-            observed = sha256_repository_file(repository_root, relative_path, mode="text")
+            observed = historical_repository_text_digest(relative_path)
             status = (
                 "present"
                 if observed == path_digest["maintained_canonical_sha256"]
@@ -276,7 +333,10 @@ def build_repository_observation(manifest=None, repository_root=ROOT):
                         f"test-observation:{dependency['dependency_id']}:{relative_path}"
                     ),
                     "authority_boundary": DEPENDENCY_AUTHORITY_BOUNDARY,
-                    "notes": "Test-only maintained-control dependency observation.",
+                    "notes": (
+                        "Test-only canonical-text observation from the immutable E1 "
+                        "source-baseline Git snapshot."
+                    ),
                 }
             )
 
@@ -590,12 +650,63 @@ class M15OperationalReadinessContractTests(unittest.TestCase):
         self.assertEqual(declared, PINNED_MATERIAL_DIGESTS)
         self.assertEqual(evaluator_module.EXPECTED_MAINTAINED_ARTIFACT_DIGESTS, PINNED_MATERIAL_DIGESTS)
 
-    def test_07_all_67_material_pins_match_actual_canonical_text(self):
+    def test_07_all_67_material_pins_match_source_baseline_git_objects(self):
         for relative_path, expected in PINNED_MATERIAL_DIGESTS.items():
             with self.subTest(path=relative_path):
                 self.assertEqual(
-                    sha256_repository_file(ROOT, relative_path, mode="text"), expected
+                    historical_repository_text_digest(relative_path), expected
                 )
+
+    def test_07a_source_baseline_commit_object_exists(self):
+        self.assertEqual(SOURCE_BASELINE_SHA, E1_SOURCE_BASELINE_SHA)
+        self.assertEqual(MAINTAINED_MAIN_SHA, E1_SOURCE_BASELINE_SHA)
+        self.assertEqual(
+            git_bytes("cat-file", "-t", E1_SOURCE_BASELINE_SHA), b"commit\n"
+        )
+
+    def test_07b_track_c_historical_test_blob_exists(self):
+        entry = git_bytes(
+            "ls-tree",
+            E1_SOURCE_BASELINE_SHA,
+            "--",
+            TRACK_C_HISTORICAL_TEST_PATH,
+        )
+        metadata, observed_path = entry.rstrip(b"\n").split(b"\t", 1)
+        mode, object_type, object_sha = metadata.split()
+        self.assertEqual(mode, b"100644")
+        self.assertEqual(object_type, b"blob")
+        self.assertRegex(object_sha.decode("ascii"), r"^[0-9a-f]{40}$")
+        self.assertEqual(observed_path.decode("utf-8"), TRACK_C_HISTORICAL_TEST_PATH)
+        self.assertTrue(
+            git_bytes(
+                "cat-file",
+                "blob",
+                f"{E1_SOURCE_BASELINE_SHA}:{TRACK_C_HISTORICAL_TEST_PATH}",
+            )
+        )
+
+    def test_07c_track_c_historical_digest_remains_exact(self):
+        self.assertEqual(
+            historical_repository_text_digest(TRACK_C_HISTORICAL_TEST_PATH),
+            TRACK_C_HISTORICAL_CANONICAL_SHA256,
+        )
+
+    def test_07d_repository_observation_uses_historical_snapshot(self):
+        observation = next(
+            item
+            for item in self.observation["artifact_observations"]
+            if item["relative_path"] == TRACK_C_HISTORICAL_TEST_PATH
+        )
+        self.assertEqual(observation["status"], "present")
+        self.assertEqual(
+            observation["observed_canonical_sha256"],
+            TRACK_C_HISTORICAL_CANONICAL_SHA256,
+        )
+        self.assertEqual(
+            observation["notes"],
+            "Test-only canonical-text observation from the immutable E1 "
+            "source-baseline Git snapshot.",
+        )
 
     def test_08_material_lifecycle_contract_is_complete_and_non_authoritative(self):
         for entry in self.manifest["artifact_integrity_inventory"]["artifacts"]:
@@ -675,11 +786,11 @@ class M15OperationalReadinessContractTests(unittest.TestCase):
             self.assertEqual(paths, matrix_paths[dependency["source_control_id"]])
         self.assertEqual(declared, PINNED_DEPENDENCY_DIGESTS)
 
-    def test_13_all_17_dependency_pins_match_actual_canonical_text(self):
+    def test_13_all_17_dependency_pins_match_source_baseline_git_objects(self):
         for relative_path, expected in PINNED_DEPENDENCY_DIGESTS.items():
             with self.subTest(path=relative_path):
                 self.assertEqual(
-                    sha256_repository_file(ROOT, relative_path, mode="text"), expected
+                    historical_repository_text_digest(relative_path), expected
                 )
 
     def test_14_verification_command_manifest_separates_commands_from_results(self):
@@ -963,6 +1074,23 @@ class M15OperationalReadinessMaintainedEvaluatorTests(unittest.TestCase):
         self.assertEqual(result["evaluated_dependency_observation_count"], 17)
         self.assertEqual(result["evaluated_verification_command_count"], 13)
         self.assertEqual(result["evaluated_verification_result_count"], 13)
+
+    def test_01b_current_worktree_digest_cannot_replace_historical_observation(self):
+        observation = copy.deepcopy(self.observation)
+        target = next(
+            item
+            for item in observation["artifact_observations"]
+            if item["relative_path"] == TRACK_C_HISTORICAL_TEST_PATH
+        )
+        target["status"] = "present"
+        target["observed_canonical_sha256"] = (
+            TRACK_C_E3_COMPATIBILITY_CANONICAL_SHA256
+        )
+        result = self.evaluate(observation=observation)
+        self.assert_blocked(
+            result,
+            f"artifact_observed_digest_mismatch:{TRACK_C_HISTORICAL_TEST_PATH}",
+        )
 
     def test_02_evaluation_does_not_mutate_caller_data(self):
         manifest = copy.deepcopy(self.manifest)
@@ -1641,6 +1769,43 @@ class M15OperationalReadinessSafetyTests(unittest.TestCase):
                 sha256_repository_file(root, "crlf.txt", mode="text"),
                 sha256_repository_file(root, "lf.txt", mode="text"),
             )
+
+    def test_04b_test_only_git_helper_is_read_only(self):
+        self.assertEqual(READ_ONLY_GIT_COMMANDS, {"cat-file", "ls-tree"})
+        for command in (
+            "checkout",
+            "reset",
+            "clean",
+            "commit",
+            "push",
+            "tag",
+            "branch",
+            "merge",
+            "rebase",
+        ):
+            with self.subTest(command=command):
+                with self.assertRaisesRegex(
+                    AssertionError,
+                    "Only read-only Git object inspection is allowed",
+                ):
+                    git_bytes(command)
+
+        tree = ast.parse(inspect.getsource(git_bytes))
+        run_calls = [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and isinstance(node.func.value, ast.Name)
+            and node.func.value.id == "subprocess"
+            and node.func.attr == "run"
+        ]
+        self.assertEqual(len(run_calls), 1)
+        shell_keywords = [
+            keyword for keyword in run_calls[0].keywords if keyword.arg == "shell"
+        ]
+        self.assertEqual(len(shell_keywords), 1)
+        self.assertIs(shell_keywords[0].value.value, False)
 
     def test_05_evaluator_is_caller_data_only_by_signature_and_exports(self):
         signature = inspect.signature(evaluate_operational_readiness)

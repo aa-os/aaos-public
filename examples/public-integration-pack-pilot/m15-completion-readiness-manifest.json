@@ -1,0 +1,356 @@
+{
+  "schema_version": "m15-completion-readiness/v1",
+  "document_kind": "completion-readiness-manifest",
+  "repository": "aa-os/aaos-public",
+  "source_issue": 250,
+  "parent_tracker": 231,
+  "source_main_base_sha": "f6d074fca2fedecbf654697719179440bc0680d3",
+  "source_main_base_tree_sha": "f13913426545b77616128223cd195487a415ffde",
+  "prior_material_artifact_count": 156,
+  "required_track_ids": [
+    "track-a",
+    "track-b",
+    "track-c",
+    "track-d",
+    "track-e1",
+    "track-e2"
+  ],
+  "required_acceptance_criteria_count": 16,
+  "required_blockers": [
+    "missing-track-a-evidence",
+    "missing-track-b-evidence",
+    "missing-track-c-evidence",
+    "missing-track-d-evidence",
+    "missing-track-e1-evidence",
+    "missing-track-e2-evidence",
+    "e2-candidate-merge-mismatch",
+    "missing-e2-pr-observation",
+    "missing-active-e2-receipt",
+    "superseded-e2-receipt-used",
+    "e2-receipt-digest-mismatch",
+    "incomplete-acceptance-criteria-coverage",
+    "hidden-completion-blocker",
+    "invalid-future-readme-path",
+    "incomplete-verification-coverage",
+    "authority-boundary-violation"
+  ],
+  "required_future_prerequisites": [
+    "track-e4-not-completed",
+    "final-m15-completion-not-approved",
+    "tracker-231-open",
+    "readme-final-completion-not-authorized",
+    "v0.14.0-tag-not-authorized",
+    "github-release-not-authorized",
+    "post-merge-final-review-not-completed"
+  ],
+  "authorized_phase_aware_compatibility_repair": {
+    "purpose": "phase-aware historical README regression repair",
+    "authorization_basis": "human-approved bounded scope exception for Issue #250",
+    "not_authorized": [
+      "release-state modification",
+      "M14 reopening",
+      "authority-doctrine change",
+      "test deletion",
+      "unconditional skip",
+      "arbitrary historical evaluator cleanup",
+      "external adapter scope"
+    ]
+  },
+  "authorized_historical_compatibility_repairs": [
+    {
+      "path": "runtime/m14_final_completion_evaluator.py",
+      "purpose": "phase-aware-next-phase-validation",
+      "counted_in_prior_material_artifact_inventory": false
+    },
+    {
+      "path": "tests/test_m14_final_completion_evaluator.py",
+      "purpose": "explicit-historical-mutation-fixtures",
+      "counted_in_prior_material_artifact_inventory": false
+    },
+    {
+      "path": "tests/test_m15_lineage_rollback_portability_evaluator.py",
+      "purpose": "section-aware-future-version-assertions",
+      "counted_in_prior_material_artifact_inventory": false
+    },
+    {
+      "path": "tests/test_m15_operational_readiness_evaluator.py",
+      "purpose": "historical-source-baseline-artifact-observation",
+      "counted_in_prior_material_artifact_inventory": false
+    }
+  ],
+  "historical_e1_artifact_binding": {
+    "path": "tests/test_m15_lineage_rollback_portability_evaluator.py",
+    "source_baseline_commit_sha": "e4681dfbc9c7cc69372b0e44bc6d2f2da034d88f",
+    "historical_canonical_sha256": "5268f73a441898467e9b8f9471cfc4b9bd4fa27b7b67444fbf852d697d90f4c9",
+    "evidence_role": "immutable-e1-source-baseline-evidence"
+  },
+  "e3_authorized_compatibility_repair": {
+    "path": "tests/test_m15_lineage_rollback_portability_evaluator.py",
+    "current_candidate_canonical_sha256": "0dee39fe81189fd558f136732579995245828bc6b14c9791b67c9bb6e8a39f5c",
+    "purpose": "section-aware-future-version-assertions",
+    "authority": "human-approved-bounded-e3-compatibility-repair"
+  },
+  "verification_commands": [
+    {
+      "command_id": "e3-targeted",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_completion_readiness_evaluator",
+        "-v"
+      ],
+      "execution_scope": "e3-candidate-validation",
+      "minimum_tests_observed": 167
+    },
+    {
+      "command_id": "e2-targeted",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_release_proof_linkage_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 140
+    },
+    {
+      "command_id": "e1-targeted",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_operational_readiness_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 132
+    },
+    {
+      "command_id": "track-a",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_learning_proof_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 68
+    },
+    {
+      "command_id": "track-b",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_capability_memory_pack_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 73
+    },
+    {
+      "command_id": "track-c",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_lineage_rollback_portability_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 181
+    },
+    {
+      "command_id": "track-d",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_cross_control_regression_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 79
+    },
+    {
+      "command_id": "m14-public-output",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_public_issue_exfiltration_gate_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 23
+    },
+    {
+      "command_id": "m14-provenance",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_ai_authored_pr_provenance_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 47
+    },
+    {
+      "command_id": "m14-skill-admission",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_skill_admission_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 135
+    },
+    {
+      "command_id": "external-evidence-admission",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_external_evidence_admission_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 31
+    },
+    {
+      "command_id": "m14-cross-control-authority",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m14_cross_control_authority_boundary_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 107
+    },
+    {
+      "command_id": "decision-proof-ownership",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_22_decision_proof_cannot_automatically_become_memory",
+        "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_23_decision_proof_reference_is_linkage_only_not_memory_authority",
+        "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_38_learning_proof_linkage_cannot_be_used_as_authority",
+        "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_39_decision_proof_linkage_cannot_grant_execution_authority",
+        "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCCrossTrackLinkageTests",
+        "tests.test_m15_cross_control_regression_evaluator.DecisionProofOwnershipTests",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 30
+    },
+    {
+      "command_id": "release-m15-status",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCReleaseStateTests",
+        "tests.test_m15_cross_control_regression_evaluator.TrackDContractTests.test_matrix_preserves_release_state",
+        "tests.test_m15_cross_control_regression_evaluator.ReleaseM15StatusTests",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 18
+    },
+    {
+      "command_id": "full-maintained-suite",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "execution_scope": "candidate-full-suite-integration",
+      "minimum_tests_observed": 2092
+    },
+    {
+      "command_id": "m14-final-completion",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m14_final_completion_evaluator",
+        "-v"
+      ],
+      "execution_scope": "authorized-compatibility-regression",
+      "minimum_tests_observed": 110
+    },
+    {
+      "command_id": "m14-completion-readiness",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m14_completion_readiness_evaluator",
+        "-v"
+      ],
+      "execution_scope": "authorized-compatibility-regression",
+      "minimum_tests_observed": 112
+    }
+  ],
+  "completion_readiness_only": true,
+  "runtime_caller_data_only": true,
+  "final_candidate_commit_external": true,
+  "final_receipt_commit_external": true,
+  "m15_state": "active-and-incomplete",
+  "tracker_231_state": "open",
+  "track_e4_implemented": false,
+  "v0_14_0_state": "unpublished",
+  "tag_state": "not-authorized",
+  "github_release_state": "not-created",
+  "decision_proof_sealed": false,
+  "learning_proof_sealed": false,
+  "authority_boundary": "Completion readiness is evidence for final human review only; it is not M15 completion, tracker #231 closure, README final-state authorization, release approval, tag authorization, GitHub Release authorization, Decision Proof sealing, Learning Proof sealing, deployment authorization, risk acceptance, rollback execution, deletion execution, fail-closed execution, audit closure, waiver, authority transfer, or final governance judgment.",
+  "runtime_boundary": "The Track E3 runtime evaluator accepts caller-supplied inert mappings only and performs no file, Git, GitHub, network, subprocess, command, digest, or external-state operation."
+}

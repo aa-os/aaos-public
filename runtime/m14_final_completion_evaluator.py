@@ -327,14 +327,38 @@ README_COMPLETED_REFS = {
     "#214 Completion Readiness and Future README Path",
     "this final completion PR",
 }
-README_OBSOLETE_NEXT_PHASE_TEXT = (
-    "M14 remains active work",
-    "final completion has not been declared",
-    "v0.13.0 remains future-only",
-    "Tracker: #201 remains Open",
+README_NEXT_PHASE_FORBIDDEN_PATTERNS = (
     (
-        "ready_for_final_m14_completion_review is not final completion review "
-        "completed"
+        r"\bM14\s+(?:remains|is)\s+(?:active(?:\s+work)?|incomplete)\b",
+        "readme_next_phase_reopens_m14",
+    ),
+    (
+        r"\bM14\s+is\s+not\s+complete\b|"
+        r"\bfinal\s+completion\s+has\s+not\s+been\s+declared\b",
+        "readme_next_phase_reopens_m14",
+    ),
+    (
+        r"\bTracker\s*:?\s*#201\s+remains\s+Open\b|"
+        r"\bready_for_final_m14_completion_review\b",
+        "readme_next_phase_reopens_m14_tracker",
+    ),
+    (
+        r"\bv0\.13\.0\s+(?:remains|is)\s+(?:a\s+)?"
+        r"(?:future(?:-only|\s+release)?|unpublished|unreleased|not\s+published|"
+        r"not\s+released)\b",
+        "readme_next_phase_reverts_v0_13_0_release_state",
+    ),
+    (
+        r"\bDecision\s+Proof(?:\s+sealing)?\s+(?:is\s+)?"
+        r"(?:externally\s+sealed|sealed\s+by\s+an?\s+external|externally\s+owned)\b",
+        "readme_next_phase_claims_external_decision_proof_sealing",
+    ),
+    (
+        r"\b(?:release|governance)\s+authority\s+(?:is\s+)?"
+        r"(?:granted|transferred|delegated)\b|"
+        r"\brelease\s+(?:is\s+)?approved\b|"
+        r"\brelease\s+approval\s+(?:is\s+)?granted\b",
+        "readme_next_phase_transfers_release_or_governance_authority",
     ),
 )
 
@@ -1252,14 +1276,14 @@ def _validate_readme(root: Path, findings: list[str], missing: list[str]) -> boo
             valid = False
 
     next_phase_count = len(re.findall(r"(?m)^## Next Phase\s*$", normalized))
-    expected_next = "## Next Phase\n\n" + README_NEXT_PHASE_STATEMENT
     next_phase = _section(normalized, "## Next Phase", None).strip()
-    if next_phase_count != 1 or next_phase != expected_next:
-        _add(findings, "readme_next_phase_not_exact_post_release_statement")
+    next_phase_body = next_phase[len("## Next Phase") :].strip()
+    if next_phase_count != 1 or not next_phase_body:
+        _add(findings, "readme_next_phase_missing_or_empty")
         valid = False
-    for obsolete in README_OBSOLETE_NEXT_PHASE_TEXT:
-        if obsolete in next_phase:
-            _add(findings, "readme_next_phase_obsolete_m14_wording_present")
+    for pattern, finding in README_NEXT_PHASE_FORBIDDEN_PATTERNS:
+        if re.search(pattern, next_phase_body, flags=re.IGNORECASE):
+            _add(findings, finding)
             valid = False
 
     for boundary in (

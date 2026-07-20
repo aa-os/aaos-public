@@ -1158,4 +1158,17 @@ Readiness checklist results must not become release approval, risk acceptance, D
 
 ## Next Phase
 
-Future milestone planning will be tracked separately after v0.13.0 release publication.
+M15 Tracks A–E3 provide completion-readiness evidence for final human
+review.
+
+M15 remains active and incomplete. Completion readiness is not M15
+completion. Track E4 and final human completion review remain required.
+
+v0.14.0 remains unpublished. No v0.14.0 tag or GitHub Release is
+authorized or created.
+
+Decision Proof sealing remains AAOS-owned.
+
+Learning Proof sealing remains AAOS-owned.
+
+AAOS remains the decision sovereignty layer.

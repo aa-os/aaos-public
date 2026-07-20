@@ -1796,6 +1796,58 @@ class M15TrackCAuthorityBoundaryTests(TrackCFixtureMixin, unittest.TestCase):
 
 
 class M15TrackCReleaseStateTests(TrackCFixtureMixin, unittest.TestCase):
+    def assert_phase_aware_readme_state(self, readme):
+        def section(heading, next_heading=None):
+            start = readme.index(heading)
+            if next_heading is None:
+                return readme[start:]
+            end = readme.index(next_heading, start + len(heading))
+            return readme[start:end]
+
+        releases = section("## Releases", "## Current Status")
+        current_status = section("## Current Status", "## M5 Additions")
+        next_phase = section("## Next Phase")
+        normalized_next = re.sub(r"\s+", " ", next_phase).strip()
+
+        release_lines = [
+            line.strip() for line in releases.splitlines() if line.startswith("- v")
+        ]
+        self.assertTrue(any(line.startswith("- v0.13.0 ") for line in release_lines))
+        self.assertFalse(any(line.startswith("- v0.14.0 ") for line in release_lines))
+        self.assertIsNone(re.search(r"(?i)v0\.14\.0.*\b(?:released|latest)\b", releases))
+
+        self.assertIn(
+            "M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, and M14 are complete.",
+            current_status,
+        )
+        forbidden_status_patterns = (
+            r"(?im)^\s*M15\s+is\s+complete[.!]?\s*$",
+            r"(?im)^\s*M1\s*(?:[–-]|through)\s*M15\s+(?:are\s+)?complete[.!]?\s*$",
+            r"(?im)^\s*v0\.14\.0\s+(?:is\s+)?published[.!]?\s*$",
+            r"(?im)^\s*Track\s+E4\s+is\s+complete[.!]?\s*$",
+            r"(?im)^\s*(?:tracker\s+)?#231\s+(?:is\s+)?closed[.!]?\s*$",
+        )
+        for pattern in forbidden_status_patterns:
+            self.assertIsNone(re.search(pattern, current_status))
+
+        future_promotion_patterns = (
+            r"(?im)^\s*v0\.14\.0\s+is\s+released[.!]?\s*$",
+            r"(?im)^\s*v0\.14\.0\s+tag\s+exists[.!]?\s*$",
+            r"(?im)^\s*GitHub\s+Release\s+v0\.14\.0\s+is\s+published[.!]?\s*$",
+            r"(?im)^\s*M15\s+is\s+complete[.!]?\s*$",
+            r"(?im)^\s*Track\s+E4\s+is\s+complete[.!]?\s*$",
+        )
+        for pattern in future_promotion_patterns:
+            self.assertIsNone(re.search(pattern, next_phase))
+
+        self.assertIn("M15 remains active and incomplete", normalized_next)
+        self.assertIn("Track E4 and final human completion review remain required", normalized_next)
+        self.assertIn("v0.14.0 remains unpublished", normalized_next)
+        self.assertIn(
+            "No v0.14.0 tag or GitHub Release is authorized or created",
+            normalized_next,
+        )
+
     def test_01_tracker_231_remains_open_statement_is_exact(self):
         self.assertIn("Tracker #231 remains Open.", CONTRACT_PATH.read_text(encoding="utf-8"))
 
@@ -1807,8 +1859,7 @@ class M15TrackCReleaseStateTests(TrackCFixtureMixin, unittest.TestCase):
 
     def test_04_readme_latest_release_remains_v0130(self):
         readme = README_PATH.read_text(encoding="utf-8")
-        self.assertIn("v0.13.0", readme)
-        self.assertNotIn("v0.14.0", readme)
+        self.assert_phase_aware_readme_state(readme)
 
     def test_05_learning_and_decision_proof_sealing_remain_aaos_owned(self):
         contract = CONTRACT_PATH.read_text(encoding="utf-8")
@@ -1855,6 +1906,42 @@ class M15TrackCReleaseStateTests(TrackCFixtureMixin, unittest.TestCase):
                 result = self.evaluate(artifact)
                 self.assert_invalid(result)
                 self.assertFalse(result["authority_boundary_valid"])
+
+    def test_12_explicit_readme_completion_and_release_promotions_fail(self):
+        readme = README_PATH.read_text(encoding="utf-8")
+        next_phase_claims = (
+            "v0.14.0 is released.",
+            "v0.14.0 tag exists.",
+            "GitHub Release v0.14.0 is published.",
+            "M15 is complete.",
+            "Track E4 is complete.",
+        )
+        for claim in next_phase_claims:
+            with self.subTest(claim=claim):
+                with self.assertRaises(AssertionError):
+                    self.assert_phase_aware_readme_state(readme + "\n" + claim + "\n")
+
+        release_entry = readme.replace(
+            "## Current Status",
+            "- v0.14.0 — unauthorized future release\n\n## Current Status",
+            1,
+        )
+        with self.assertRaises(AssertionError):
+            self.assert_phase_aware_readme_state(release_entry)
+
+        for claim in (
+            "M1–M15 are complete.",
+            "v0.14.0 is published.",
+            "tracker #231 is closed.",
+        ):
+            with self.subTest(current_status_claim=claim):
+                mutated = readme.replace(
+                    "## M5 Additions",
+                    claim + "\n\n## M5 Additions",
+                    1,
+                )
+                with self.assertRaises(AssertionError):
+                    self.assert_phase_aware_readme_state(mutated)
 
     def test_12_negative_release_tracker_and_m15_statuses_remain_valid(self):
         cases = (
