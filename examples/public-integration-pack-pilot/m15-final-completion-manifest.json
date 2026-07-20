@@ -1,0 +1,438 @@
+{
+  "schema_version": "m15-final-completion/v1",
+  "document_kind": "final-completion-manifest",
+  "repository": "aa-os/aaos-public",
+  "source_issue": 252,
+  "parent_tracker": 231,
+  "implementation_pr": 253,
+  "source_main_base_sha": "52ec76c17cd21ec519dfec45ced4ad720b82d80e",
+  "source_main_base_tree_sha": "97b239cbd175aac01b05a1fba2394b72c47a5360",
+  "prior_material_artifact_count": 209,
+  "required_track_ids": [
+    "track-a",
+    "track-b",
+    "track-c",
+    "track-d",
+    "track-e1",
+    "track-e2",
+    "track-e3"
+  ],
+  "required_acceptance_criteria_count": 16,
+  "required_blockers": [
+    "malformed-e3-continuity-evidence",
+    "e3-candidate-merge-identity-mismatch",
+    "e3-merge-tree-mismatch",
+    "e3-merge-parent-mismatch",
+    "e3-artifact-drift",
+    "superseded-e3-observation-used",
+    "superseded-e3-receipt-used",
+    "active-e3-receipt-digest-mismatch",
+    "track-a-e3-evidence-substitution",
+    "omitted-acceptance-criterion",
+    "substituted-acceptance-evidence",
+    "hidden-completion-blocker",
+    "readme-final-transition-drift",
+    "premature-tracker-closure-claim",
+    "premature-issue-closure-claim",
+    "premature-m15-complete-claim",
+    "premature-tag-created-claim",
+    "premature-github-release-published-claim",
+    "candidate-head-as-final-tag-target",
+    "verification-observation-candidate-mismatch",
+    "human-approval-candidate-mismatch",
+    "human-approval-receipt-mismatch",
+    "evaluator-output-as-human-approval",
+    "historical-evidence-rebaseline",
+    "mutable-main-source-base-pinning",
+    "unapproved-compatibility-repair",
+    "insufficient-verification-coverage",
+    "completion-publication-conflation",
+    "proof-sealing-claim",
+    "authority-transfer-claim",
+    "runtime-boundary-violation"
+  ],
+  "required_readiness_findings": [
+    "missing-final-pr-observation",
+    "missing-final-verification-receipt",
+    "incomplete-test-execution",
+    "missing-readme-transition-observation",
+    "missing-release-target-preparation",
+    "missing-release-notes",
+    "missing-publication-checklist",
+    "missing-human-approval",
+    "missing-approval-timestamp",
+    "missing-approval-receipt-binding",
+    "missing-approval-candidate-binding"
+  ],
+  "authorized_historical_compatibility_repairs": [
+    {
+      "path": "runtime/m14_final_completion_evaluator.py",
+      "purpose": "phase-aware-later-milestone-readme-validation",
+      "counted_in_prior_track_artifact_inventory": false,
+      "human_authorized_bounded_exception": true,
+      "historical_source_commit_sha": "06d1a3f64eaebf2ccb1667ebe4b3c85351bfd186",
+      "historical_git_blob_sha": "d7a166c00bec4c5ca250c5ea9bf61a1576cc4fe6",
+      "historical_canonical_sha256": "0fac7efcaed7a747520e2cc32072223ee5630e90fb11b256b5980a644ace35f6",
+      "historical_evidence_role": "m14-final-historical-artifact",
+      "prior_compatibility_commit_sha": "b1e51b0f750e3a2c8d64c5bf8a89bbca4d460fba",
+      "prior_compatibility_git_blob_sha": "341807d4a2d433c51701e5b5094e03f4eb12b25b",
+      "prior_compatibility_canonical_sha256": "e5a9925c35196d13dd32444786a86fcd975192bc4f379aa0333ec3d8e30acc99",
+      "prior_compatibility_evidence_role": "e3-authorized-phase-aware-compatibility-repair",
+      "e4_candidate_git_blob_sha": "d4b63b53606d9e179135a5ad94abbe9826e1b532",
+      "e4_candidate_canonical_sha256": "0e4d9398971778256b746e2cca97d1e83ee203c33cb6f2faca8bbbe1200b7f27",
+      "e4_evidence_role": "e4-authorized-phase-aware-compatibility-repair",
+      "authority_basis": "human-approved-bounded-scope-exception-for-issue-252"
+    },
+    {
+      "path": "tests/test_m14_final_completion_evaluator.py",
+      "purpose": "explicit-historical-m14-final-mutation-validation",
+      "counted_in_prior_track_artifact_inventory": false,
+      "human_authorized_bounded_exception": true,
+      "historical_source_commit_sha": "06d1a3f64eaebf2ccb1667ebe4b3c85351bfd186",
+      "historical_git_blob_sha": "c6459aac3f04a0633618035d3a53bf0b18b65e3a",
+      "historical_canonical_sha256": "70ea270bdd4c742439f8e916f435fd1a6e9526c8b9c75507c099d6171f980175",
+      "historical_evidence_role": "m14-final-historical-test-artifact",
+      "prior_compatibility_commit_sha": "b1e51b0f750e3a2c8d64c5bf8a89bbca4d460fba",
+      "prior_compatibility_git_blob_sha": "d2c48597d3ac76aee6ee910ea530faea0010af9d",
+      "prior_compatibility_canonical_sha256": "b002cdc5d0bd40baa74fc977293a9c1706ea21f6de7df02f46099dea4d708551",
+      "prior_compatibility_evidence_role": "e3-authorized-phase-aware-compatibility-repair",
+      "e4_candidate_git_blob_sha": "7b3eee18a0e05f6a1ee2312668c9ab4d6f0e73dc",
+      "e4_candidate_canonical_sha256": "d70883730d37812705cf1dcd1d2c4dcc20a9080d25c3ae2413858b8afdd79756",
+      "e4_evidence_role": "e4-authorized-phase-aware-compatibility-repair",
+      "authority_basis": "human-approved-bounded-scope-exception-for-issue-252"
+    },
+    {
+      "path": "tests/test_m14_completion_readiness_evaluator.py",
+      "purpose": "immutable-m14-readiness-snapshot-validation",
+      "counted_in_prior_track_artifact_inventory": false,
+      "human_authorized_bounded_exception": true,
+      "historical_source_commit_sha": "a7b5cbc2026468dde3d937e9366a780894570548",
+      "historical_git_blob_sha": "367361f28659e7d304b20fdcfa0922a3ac5b1d52",
+      "historical_canonical_sha256": "7aec68924201a6facb5d9248c065346e774b49cf6377161d8c2c0931df30c7ed",
+      "historical_evidence_role": "m14-readiness-historical-test-artifact",
+      "prior_compatibility_commit_sha": "c97dfe7ddf3e04ac7a46726414a3523ed14e966b",
+      "prior_compatibility_git_blob_sha": "f806df39fb82649978a0674c09cc92f83d0983f5",
+      "prior_compatibility_canonical_sha256": "6faf721f987379bc5220e022017f9a3a3c91555a58264de6c0a36ff8a8241b1b",
+      "prior_compatibility_evidence_role": "m14-post-release-authorized-compatibility-repair",
+      "e4_candidate_git_blob_sha": "c95b44408e0b8b5a5e69d468ae402e7262fad52e",
+      "e4_candidate_canonical_sha256": "19211655db6a9f8853a81b93d4b45211aeeb9c1b4a41eba82e33e26bbe86c050",
+      "e4_evidence_role": "e4-authorized-phase-aware-compatibility-repair",
+      "authority_basis": "human-approved-bounded-scope-exception-for-issue-252"
+    },
+    {
+      "path": "tests/test_m15_completion_readiness_evaluator.py",
+      "purpose": "immutable-e3-completion-readiness-snapshot-validation",
+      "counted_in_prior_track_artifact_inventory": false,
+      "human_authorized_bounded_exception": true,
+      "historical_source_commit_sha": "52ec76c17cd21ec519dfec45ced4ad720b82d80e",
+      "historical_git_blob_sha": "0f36dd1e5378466ce051df38f1cb463e860175fe",
+      "historical_canonical_sha256": "f0ff78e0fabe8bcaa856e2c3258e30e6dc372964eed19063e71491e4444d4363",
+      "historical_evidence_role": "e3-completion-readiness-historical-test-artifact",
+      "prior_compatibility_commit_sha": null,
+      "prior_compatibility_git_blob_sha": null,
+      "prior_compatibility_canonical_sha256": null,
+      "prior_compatibility_evidence_role": null,
+      "e4_candidate_git_blob_sha": "2a8402f47ab8dd233f71a1e47ae494acdd7912d1",
+      "e4_candidate_canonical_sha256": "6eda49b40e60e4b5ca6eb35ceb6d245377c32de6e4a07b08f843c66a6edcb14a",
+      "e4_evidence_role": "e4-authorized-phase-aware-compatibility-repair",
+      "authority_basis": "human-approved-bounded-scope-exception-for-issue-252"
+    },
+    {
+      "path": "tests/test_m15_lineage_rollback_portability_evaluator.py",
+      "purpose": "section-aware-e4-release-state-candidate-validation",
+      "counted_in_prior_track_artifact_inventory": false,
+      "human_authorized_bounded_exception": true,
+      "historical_source_commit_sha": "2d8bab3a84675543c34231a9e04521379febdac1",
+      "historical_git_blob_sha": "ef2e87f272e176579a23eb7d5448ed13627cebb4",
+      "historical_canonical_sha256": "5268f73a441898467e9b8f9471cfc4b9bd4fa27b7b67444fbf852d697d90f4c9",
+      "historical_evidence_role": "track-c-historical-test-artifact",
+      "prior_compatibility_commit_sha": "b1e51b0f750e3a2c8d64c5bf8a89bbca4d460fba",
+      "prior_compatibility_git_blob_sha": "0309453f29e093ea942a6965b32bd8dad7f69d55",
+      "prior_compatibility_canonical_sha256": "0dee39fe81189fd558f136732579995245828bc6b14c9791b67c9bb6e8a39f5c",
+      "prior_compatibility_evidence_role": "e3-authorized-phase-aware-compatibility-repair",
+      "e4_candidate_git_blob_sha": "437348e8a9bfd8340aa95b14601b1d021a1af94c",
+      "e4_candidate_canonical_sha256": "9e3b455cc91c1b3fc114abd3b0de4682c7bbeaa93cae3511dc21e3bafd291e68",
+      "e4_evidence_role": "e4-authorized-phase-aware-compatibility-repair",
+      "authority_basis": "human-approved-bounded-scope-exception-for-issue-252"
+    }
+  ],
+  "verification_commands": [
+    {
+      "command_id": "e4-targeted",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_final_completion_evaluator",
+        "-v"
+      ],
+      "execution_scope": "e4-candidate-validation",
+      "minimum_tests_observed": 183
+    },
+    {
+      "command_id": "e3-targeted",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_completion_readiness_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 167
+    },
+    {
+      "command_id": "e2-targeted",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_release_proof_linkage_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 140
+    },
+    {
+      "command_id": "e1-targeted",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_operational_readiness_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 132
+    },
+    {
+      "command_id": "track-a",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_learning_proof_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 68
+    },
+    {
+      "command_id": "track-b",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_capability_memory_pack_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 73
+    },
+    {
+      "command_id": "track-c",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_lineage_rollback_portability_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 181
+    },
+    {
+      "command_id": "track-d",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_cross_control_regression_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 79
+    },
+    {
+      "command_id": "m14-public-output",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_public_issue_exfiltration_gate_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 23
+    },
+    {
+      "command_id": "m14-provenance",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_ai_authored_pr_provenance_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 47
+    },
+    {
+      "command_id": "m14-skill-admission",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_skill_admission_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 135
+    },
+    {
+      "command_id": "external-evidence-admission",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_external_evidence_admission_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 31
+    },
+    {
+      "command_id": "m14-cross-control-authority",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m14_cross_control_authority_boundary_evaluator",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 107
+    },
+    {
+      "command_id": "decision-proof-ownership",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_22_decision_proof_cannot_automatically_become_memory",
+        "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_23_decision_proof_reference_is_linkage_only_not_memory_authority",
+        "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_38_learning_proof_linkage_cannot_be_used_as_authority",
+        "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_39_decision_proof_linkage_cannot_grant_execution_authority",
+        "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCCrossTrackLinkageTests",
+        "tests.test_m15_cross_control_regression_evaluator.DecisionProofOwnershipTests",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 30
+    },
+    {
+      "command_id": "release-m15-status",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCReleaseStateTests",
+        "tests.test_m15_cross_control_regression_evaluator.TrackDContractTests.test_matrix_preserves_release_state",
+        "tests.test_m15_cross_control_regression_evaluator.ReleaseM15StatusTests",
+        "-v"
+      ],
+      "execution_scope": "inherited-regression",
+      "minimum_tests_observed": 18
+    },
+    {
+      "command_id": "m14-final-completion",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m14_final_completion_evaluator",
+        "-v"
+      ],
+      "execution_scope": "authorized-compatibility-regression",
+      "minimum_tests_observed": 110
+    },
+    {
+      "command_id": "m14-completion-readiness",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "tests.test_m14_completion_readiness_evaluator",
+        "-v"
+      ],
+      "execution_scope": "authorized-compatibility-regression",
+      "minimum_tests_observed": 112
+    },
+    {
+      "command_id": "full-maintained-suite",
+      "declared_logical_argv": [
+        "python",
+        "-X",
+        "faulthandler",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "execution_scope": "candidate-full-suite-integration",
+      "minimum_tests_observed": 2275
+    }
+  ],
+  "m15_state_before_merge": "active-and-incomplete",
+  "tracker_231_state_before_merge": "open",
+  "issue_252_state_before_merge": "open",
+  "tag_state_before_merge": "absent-not-created",
+  "github_release_state_before_merge": "absent-not-published",
+  "expected_merge_method": "merge-commit",
+  "repository_completion_transition": "human-reviewed-e4-merge-only",
+  "evaluator_readiness_is_human_approval": false,
+  "runtime_caller_data_only": true,
+  "final_candidate_commit_external": true,
+  "final_receipt_commit_external": true,
+  "human_approval_commit_external": true,
+  "decision_proof_sealed": false,
+  "learning_proof_sealed": false,
+  "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority.",
+  "runtime_boundary": "The Track E4 runtime evaluator accepts caller-supplied inert mappings only and performs no file, Git, GitHub, network, subprocess, command, digest, merge, issue-closure, tag, release, or external-state operation."
+}

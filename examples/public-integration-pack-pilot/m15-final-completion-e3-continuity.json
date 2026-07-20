@@ -1,0 +1,31 @@
+{
+  "schema_version": "m15-final-completion-e3-continuity/v1",
+  "document_kind": "e3-continuity-record",
+  "repository": "aa-os/aaos-public",
+  "source_issue": 250,
+  "implementation_pr": 251,
+  "source_main_base_sha": "f6d074fca2fedecbf654697719179440bc0680d3",
+  "source_main_base_tree_sha": "f13913426545b77616128223cd195487a415ffde",
+  "candidate_sha": "907d2361233c7b0405a41271d7b02fa6c1a0c62d",
+  "candidate_tree_sha": "97b239cbd175aac01b05a1fba2394b72c47a5360",
+  "merge_sha": "52ec76c17cd21ec519dfec45ced4ad720b82d80e",
+  "merge_tree_sha": "97b239cbd175aac01b05a1fba2394b72c47a5360",
+  "merge_parents": [
+    "f6d074fca2fedecbf654697719179440bc0680d3",
+    "907d2361233c7b0405a41271d7b02fa6c1a0c62d"
+  ],
+  "candidate_is_merge_parent": true,
+  "source_main_base_is_merge_parent": true,
+  "candidate_is_merge_ancestor": true,
+  "merge_is_current_main_ancestor": true,
+  "candidate_to_merge_changed_path_count": 0,
+  "additional_merge_result_difference_count": 0,
+  "active_observation_comment_id": 5017872695,
+  "active_receipt_comment_id": 5017894934,
+  "active_receipt_canonical_sha256": "660ffddc0644bbb6e11689ceaf77b5c47b4061241a04cba233f2607287e30cb4",
+  "superseded_observation_comment_id": 5016298363,
+  "superseded_receipt_comment_id": 5016356607,
+  "relation": "exact_tree_match",
+  "caller_supplied_inert_record": true,
+  "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+}

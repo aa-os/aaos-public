@@ -1,0 +1,5957 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aaos.dev/schemas/m15-final-completion.schema.json",
+  "title": "AAOS M15 Track E4 Final-Completion Package",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/manifest"
+    },
+    {
+      "$ref": "#/$defs/trackEvidence"
+    },
+    {
+      "$ref": "#/$defs/e3Continuity"
+    },
+    {
+      "$ref": "#/$defs/e3ExternalEvidence"
+    },
+    {
+      "$ref": "#/$defs/acceptanceMatrix"
+    },
+    {
+      "$ref": "#/$defs/transitionRegister"
+    },
+    {
+      "$ref": "#/$defs/readmeTransition"
+    },
+    {
+      "$ref": "#/$defs/releasePreparation"
+    },
+    {
+      "$ref": "#/$defs/pullRequestObservation"
+    },
+    {
+      "$ref": "#/$defs/verificationReceipt"
+    },
+    {
+      "$ref": "#/$defs/humanApproval"
+    },
+    {
+      "$ref": "#/$defs/syntheticScenario"
+    }
+  ],
+  "$defs": {
+    "gitSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "rfc3339Utc": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"
+    },
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "referenceArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reference"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "repository": {
+      "const": "aa-os/aaos-public"
+    },
+    "authorityBoundary": {
+      "const": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    "runtimeBoundary": {
+      "const": "The Track E4 runtime evaluator accepts caller-supplied inert mappings only and performs no file, Git, GitHub, network, subprocess, command, digest, merge, issue-closure, tag, release, or external-state operation."
+    },
+    "releaseBoundary": {
+      "const": "Human approval of the E4 repository transition does not authorize or perform v0.14.0 tag creation or GitHub Release publication."
+    },
+    "approvalBoundary": {
+      "const": "Human approval of the E4 repository transition does not authorize or perform v0.14.0 tag creation or GitHub Release publication."
+    },
+    "outcome": {
+      "enum": [
+        "ready_for_human_m15_completion_transition",
+        "not_ready",
+        "blocked"
+      ]
+    },
+    "trackId": {
+      "enum": [
+        "track-a",
+        "track-b",
+        "track-c",
+        "track-d",
+        "track-e1",
+        "track-e2",
+        "track-e3"
+      ]
+    },
+    "sourceTrack": {
+      "enum": [
+        "track-a",
+        "track-b",
+        "track-c",
+        "track-d",
+        "track-e1",
+        "track-e2",
+        "track-e3",
+        "track-e4",
+        "cross-track"
+      ]
+    },
+    "evidenceRole": {
+      "enum": [
+        "historical-track-artifact",
+        "e3-core-completion-readiness-artifact",
+        "e3-synthetic-scenario",
+        "e3-maintained-evidence-record",
+        "e3-readme-next-phase-transition",
+        "e3-authorized-historical-compatibility-repair"
+      ]
+    },
+    "artifactType": {
+      "enum": [
+        "governance-contract",
+        "json-schema",
+        "runtime-evaluator",
+        "evaluator-tests",
+        "machine-readable-manifest",
+        "boundary-record",
+        "continuity-record",
+        "external-evidence-linkage",
+        "synthetic-fixture",
+        "track-evidence-inventory",
+        "acceptance-matrix",
+        "readme-observation",
+        "readme-future-transition",
+        "authorized-compatibility-repair"
+      ]
+    },
+    "verificationCommandId": {
+      "enum": [
+        "e4-targeted",
+        "e3-targeted",
+        "e2-targeted",
+        "e1-targeted",
+        "track-a",
+        "track-b",
+        "track-c",
+        "track-d",
+        "m14-public-output",
+        "m14-provenance",
+        "m14-skill-admission",
+        "external-evidence-admission",
+        "m14-cross-control-authority",
+        "decision-proof-ownership",
+        "release-m15-status",
+        "m14-final-completion",
+        "m14-completion-readiness",
+        "full-maintained-suite"
+      ]
+    },
+    "declaredVerificationCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_id",
+        "declared_logical_argv",
+        "execution_scope",
+        "minimum_tests_observed"
+      ],
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/verificationCommandId"
+        },
+        "declared_logical_argv": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 2
+        },
+        "execution_scope": {
+          "enum": [
+            "e4-candidate-validation",
+            "e3-candidate-validation",
+            "inherited-regression",
+            "authorized-compatibility-regression",
+            "candidate-full-suite-integration"
+          ]
+        },
+        "minimum_tests_observed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "compatibilityRepairBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "purpose",
+        "counted_in_prior_track_artifact_inventory",
+        "human_authorized_bounded_exception",
+        "historical_source_commit_sha",
+        "historical_git_blob_sha",
+        "historical_canonical_sha256",
+        "historical_evidence_role",
+        "prior_compatibility_commit_sha",
+        "prior_compatibility_git_blob_sha",
+        "prior_compatibility_canonical_sha256",
+        "prior_compatibility_evidence_role",
+        "e4_candidate_git_blob_sha",
+        "e4_candidate_canonical_sha256",
+        "e4_evidence_role",
+        "authority_basis"
+      ],
+      "properties": {
+        "path": {
+          "enum": [
+            "runtime/m14_final_completion_evaluator.py",
+            "tests/test_m14_final_completion_evaluator.py",
+            "tests/test_m14_completion_readiness_evaluator.py",
+            "tests/test_m15_completion_readiness_evaluator.py",
+            "tests/test_m15_lineage_rollback_portability_evaluator.py"
+          ]
+        },
+        "purpose": {
+          "enum": [
+            "phase-aware-later-milestone-readme-validation",
+            "explicit-historical-m14-final-mutation-validation",
+            "immutable-m14-readiness-snapshot-validation",
+            "immutable-e3-completion-readiness-snapshot-validation",
+            "section-aware-e4-release-state-candidate-validation"
+          ]
+        },
+        "counted_in_prior_track_artifact_inventory": {
+          "const": false
+        },
+        "human_authorized_bounded_exception": {
+          "const": true
+        },
+        "historical_source_commit_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "historical_git_blob_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "historical_canonical_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "historical_evidence_role": {
+          "enum": [
+            "m14-final-historical-artifact",
+            "m14-final-historical-test-artifact",
+            "m14-readiness-historical-test-artifact",
+            "e3-completion-readiness-historical-test-artifact",
+            "track-c-historical-test-artifact"
+          ]
+        },
+        "prior_compatibility_commit_sha": {
+          "oneOf": [
+            {"$ref": "#/$defs/gitSha"},
+            {"type": "null"}
+          ]
+        },
+        "prior_compatibility_git_blob_sha": {
+          "oneOf": [
+            {"$ref": "#/$defs/gitSha"},
+            {"type": "null"}
+          ]
+        },
+        "prior_compatibility_canonical_sha256": {
+          "oneOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        },
+        "prior_compatibility_evidence_role": {
+          "oneOf": [
+            {
+              "enum": [
+                "e3-authorized-phase-aware-compatibility-repair",
+                "m14-post-release-authorized-compatibility-repair"
+              ]
+            },
+            {"type": "null"}
+          ]
+        },
+        "e4_candidate_git_blob_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "e4_candidate_canonical_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "e4_evidence_role": {
+          "const": "e4-authorized-phase-aware-compatibility-repair"
+        },
+        "authority_basis": {
+          "const": "human-approved-bounded-scope-exception-for-issue-252"
+        }
+      }
+    },
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "track_id",
+        "source_issue",
+        "implementation_pr",
+        "candidate_sha",
+        "merge_sha",
+        "repository_path",
+        "artifact_type",
+        "git_blob_sha",
+        "git_file_mode",
+        "canonical_text_sha256",
+        "covering_test",
+        "lifecycle_state",
+        "evidence_reference",
+        "authority_boundary",
+        "evidence_role"
+      ],
+      "properties": {
+        "track_id": {
+          "$ref": "#/$defs/trackId"
+        },
+        "source_issue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "implementation_pr": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "candidate_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "merge_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "repository_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "artifact_type": {
+          "$ref": "#/$defs/artifactType"
+        },
+        "git_blob_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "git_file_mode": {
+          "enum": [
+            "100644",
+            "100755",
+            "120000"
+          ]
+        },
+        "canonical_text_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "covering_test": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lifecycle_state": {
+          "enum": [
+            "maintained",
+            "e3-completion-readiness-transition",
+            "e3-authorized-compatibility-repair"
+          ]
+        },
+        "evidence_reference": {
+          "$ref": "#/$defs/reference"
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/historicalArtifactAuthorityBoundary"
+        },
+        "evidence_role": {
+          "$ref": "#/$defs/evidenceRole"
+        }
+      }
+    },
+    "evidenceRoleCount": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_role",
+        "count"
+      ],
+      "properties": {
+        "evidence_role": {
+          "$ref": "#/$defs/evidenceRole"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "trackSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "track_id",
+        "source_issue",
+        "implementation_pr",
+        "base_sha",
+        "base_tree_sha",
+        "candidate_sha",
+        "candidate_tree_sha",
+        "merge_sha",
+        "merge_tree_sha",
+        "merge_parents",
+        "material_path_count",
+        "evidence_role_counts"
+      ],
+      "properties": {
+        "track_id": {
+          "$ref": "#/$defs/trackId"
+        },
+        "source_issue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "implementation_pr": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "base_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "base_tree_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "candidate_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "candidate_tree_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "merge_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "merge_tree_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "merge_parents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/gitSha"
+          },
+          "minItems": 1,
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "material_path_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "evidence_role_counts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRoleCount"
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        }
+      }
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "criterion_id",
+        "criterion_text",
+        "source_track",
+        "evidence_references",
+        "artifact_references",
+        "test_references",
+        "coverage_state",
+        "notes",
+        "authority_boundary"
+      ],
+      "properties": {
+        "criterion_id": {
+          "type": "string",
+          "pattern": "^m15-ac-(?:0[1-9]|1[0-6])$"
+        },
+        "criterion_text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_track": {
+          "$ref": "#/$defs/sourceTrack"
+        },
+        "evidence_references": {
+          "$ref": "#/$defs/referenceArray"
+        },
+        "artifact_references": {
+          "$ref": "#/$defs/referenceArray"
+        },
+        "test_references": {
+          "$ref": "#/$defs/referenceArray"
+        },
+        "coverage_state": {
+          "enum": [
+            "covered",
+            "partial",
+            "missing",
+            "blocked"
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/authorityBoundary"
+        }
+      }
+    },
+    "registerFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finding_id",
+        "state",
+        "evidence_references",
+        "explanation"
+      ],
+      "properties": {
+        "finding_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "enum": [
+            "resolved",
+            "open",
+            "missing",
+            "blocked"
+          ]
+        },
+        "evidence_references": {
+          "$ref": "#/$defs/referenceArray"
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "releaseNote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section_id",
+        "heading",
+        "content_summary",
+        "evidence_references"
+      ],
+      "properties": {
+        "section_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "heading": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_references": {
+          "$ref": "#/$defs/referenceArray"
+        }
+      }
+    },
+    "publicationStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_order",
+        "step_id",
+        "instruction",
+        "performed_after_merge",
+        "performed_by_evaluator",
+        "completed_before_merge"
+      ],
+      "properties": {
+        "step_order": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "step_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "instruction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "performed_after_merge": {
+          "const": true
+        },
+        "performed_by_evaluator": {
+          "const": false
+        },
+        "completed_before_merge": {
+          "const": false
+        }
+      }
+    },
+    "approvalTemplate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "template_only",
+        "synthetic",
+        "non_authoritative",
+        "human_approval_present",
+        "approver_identity",
+        "approval_timestamp",
+        "candidate_head_sha",
+        "candidate_tree_sha",
+        "verification_receipt_reference",
+        "verification_receipt_canonical_sha256",
+        "instructions",
+        "authority_boundary"
+      ],
+      "properties": {
+        "template_only": {
+          "const": true
+        },
+        "synthetic": {
+          "const": true
+        },
+        "non_authoritative": {
+          "const": true
+        },
+        "human_approval_present": {
+          "const": false
+        },
+        "approver_identity": {
+          "type": "null"
+        },
+        "approval_timestamp": {
+          "type": "null"
+        },
+        "candidate_head_sha": {
+          "type": "null"
+        },
+        "candidate_tree_sha": {
+          "type": "null"
+        },
+        "verification_receipt_reference": {
+          "type": "null"
+        },
+        "verification_receipt_canonical_sha256": {
+          "type": "null"
+        },
+        "instructions": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/approvalBoundary"
+        }
+      }
+    },
+    "executableBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "declared_launcher",
+        "actual_launcher",
+        "launcher_substitution_detected",
+        "launcher_substitution_declared",
+        "python_implementation",
+        "python_version"
+      ],
+      "properties": {
+        "declared_launcher": {
+          "const": "python"
+        },
+        "actual_launcher": {
+          "type": "string",
+          "minLength": 1
+        },
+        "launcher_substitution_detected": {
+          "type": "boolean"
+        },
+        "launcher_substitution_declared": {
+          "type": "boolean"
+        },
+        "python_implementation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "python_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        }
+      }
+    },
+    "commandReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_id",
+        "declared_logical_argv",
+        "actual_argv",
+        "execution_scope",
+        "execution_candidate_head_sha",
+        "executable_binding",
+        "tests_observed",
+        "minimum_tests_observed",
+        "passes",
+        "failures",
+        "errors",
+        "skips",
+        "exit_code",
+        "execution_timestamp",
+        "transcript_sha256",
+        "evidence_reference",
+        "executed_by_evaluator",
+        "verification_results_are_completion_authority",
+        "verification_results_are_release_authority"
+      ],
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/verificationCommandId"
+        },
+        "declared_logical_argv": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 2
+        },
+        "actual_argv": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 2
+        },
+        "execution_scope": {
+          "enum": [
+            "e4-candidate-validation",
+            "e3-candidate-validation",
+            "inherited-regression",
+            "authorized-compatibility-regression",
+            "candidate-full-suite-integration"
+          ]
+        },
+        "execution_candidate_head_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "executable_binding": {
+          "$ref": "#/$defs/executableBinding"
+        },
+        "tests_observed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minimum_tests_observed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skips": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exit_code": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "execution_timestamp": {
+          "$ref": "#/$defs/rfc3339Utc"
+        },
+        "transcript_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "evidence_reference": {
+          "$ref": "#/$defs/reference"
+        },
+        "executed_by_evaluator": {
+          "const": false
+        },
+        "verification_results_are_completion_authority": {
+          "const": false
+        },
+        "verification_results_are_release_authority": {
+          "const": false
+        }
+      }
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "source_issue",
+        "parent_tracker",
+        "implementation_pr",
+        "source_main_base_sha",
+        "source_main_base_tree_sha",
+        "prior_material_artifact_count",
+        "required_track_ids",
+        "required_acceptance_criteria_count",
+        "required_blockers",
+        "required_readiness_findings",
+        "authorized_historical_compatibility_repairs",
+        "verification_commands",
+        "m15_state_before_merge",
+        "tracker_231_state_before_merge",
+        "issue_252_state_before_merge",
+        "tag_state_before_merge",
+        "github_release_state_before_merge",
+        "expected_merge_method",
+        "repository_completion_transition",
+        "evaluator_readiness_is_human_approval",
+        "runtime_caller_data_only",
+        "final_candidate_commit_external",
+        "final_receipt_commit_external",
+        "human_approval_commit_external",
+        "decision_proof_sealed",
+        "learning_proof_sealed",
+        "authority_boundary",
+        "runtime_boundary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion/v1"
+        },
+        "document_kind": {
+          "const": "final-completion-manifest"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "source_issue": {
+          "const": 252
+        },
+        "parent_tracker": {
+          "const": 231
+        },
+        "implementation_pr": {
+          "const": 253
+        },
+        "source_main_base_sha": {
+          "const": "52ec76c17cd21ec519dfec45ced4ad720b82d80e"
+        },
+        "source_main_base_tree_sha": {
+          "const": "97b239cbd175aac01b05a1fba2394b72c47a5360"
+        },
+        "prior_material_artifact_count": {
+          "const": 209
+        },
+        "required_track_ids": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "track-a"
+            },
+            {
+              "const": "track-b"
+            },
+            {
+              "const": "track-c"
+            },
+            {
+              "const": "track-d"
+            },
+            {
+              "const": "track-e1"
+            },
+            {
+              "const": "track-e2"
+            },
+            {
+              "const": "track-e3"
+            }
+          ],
+          "items": false,
+          "minItems": 7,
+          "maxItems": 7
+        },
+        "required_acceptance_criteria_count": {
+          "const": 16
+        },
+        "required_blockers": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "malformed-e3-continuity-evidence"
+            },
+            {
+              "const": "e3-candidate-merge-identity-mismatch"
+            },
+            {
+              "const": "e3-merge-tree-mismatch"
+            },
+            {
+              "const": "e3-merge-parent-mismatch"
+            },
+            {
+              "const": "e3-artifact-drift"
+            },
+            {
+              "const": "superseded-e3-observation-used"
+            },
+            {
+              "const": "superseded-e3-receipt-used"
+            },
+            {
+              "const": "active-e3-receipt-digest-mismatch"
+            },
+            {
+              "const": "track-a-e3-evidence-substitution"
+            },
+            {
+              "const": "omitted-acceptance-criterion"
+            },
+            {
+              "const": "substituted-acceptance-evidence"
+            },
+            {
+              "const": "hidden-completion-blocker"
+            },
+            {
+              "const": "readme-final-transition-drift"
+            },
+            {
+              "const": "premature-tracker-closure-claim"
+            },
+            {
+              "const": "premature-issue-closure-claim"
+            },
+            {
+              "const": "premature-m15-complete-claim"
+            },
+            {
+              "const": "premature-tag-created-claim"
+            },
+            {
+              "const": "premature-github-release-published-claim"
+            },
+            {
+              "const": "candidate-head-as-final-tag-target"
+            },
+            {
+              "const": "verification-observation-candidate-mismatch"
+            },
+            {
+              "const": "human-approval-candidate-mismatch"
+            },
+            {
+              "const": "human-approval-receipt-mismatch"
+            },
+            {
+              "const": "evaluator-output-as-human-approval"
+            },
+            {
+              "const": "historical-evidence-rebaseline"
+            },
+            {
+              "const": "mutable-main-source-base-pinning"
+            },
+            {
+              "const": "unapproved-compatibility-repair"
+            },
+            {
+              "const": "insufficient-verification-coverage"
+            },
+            {
+              "const": "completion-publication-conflation"
+            },
+            {
+              "const": "proof-sealing-claim"
+            },
+            {
+              "const": "authority-transfer-claim"
+            },
+            {
+              "const": "runtime-boundary-violation"
+            }
+          ],
+          "items": false,
+          "minItems": 31,
+          "maxItems": 31
+        },
+        "required_readiness_findings": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "missing-final-pr-observation"
+            },
+            {
+              "const": "missing-final-verification-receipt"
+            },
+            {
+              "const": "incomplete-test-execution"
+            },
+            {
+              "const": "missing-readme-transition-observation"
+            },
+            {
+              "const": "missing-release-target-preparation"
+            },
+            {
+              "const": "missing-release-notes"
+            },
+            {
+              "const": "missing-publication-checklist"
+            },
+            {
+              "const": "missing-human-approval"
+            },
+            {
+              "const": "missing-approval-timestamp"
+            },
+            {
+              "const": "missing-approval-receipt-binding"
+            },
+            {
+              "const": "missing-approval-candidate-binding"
+            }
+          ],
+          "items": false,
+          "minItems": 11,
+          "maxItems": 11
+        },
+        "authorized_historical_compatibility_repairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/compatibilityRepairBinding"
+          },
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "verification_commands": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "e4-targeted"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_final_completion_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "e4-candidate-validation"
+                },
+                "minimum_tests_observed": {
+                  "const": 183
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "e3-targeted"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_completion_readiness_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 167
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "e2-targeted"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_release_proof_linkage_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 140
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "e1-targeted"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_operational_readiness_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 132
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "track-a"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_learning_proof_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 68
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "track-b"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_capability_memory_pack_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 73
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "track-c"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_lineage_rollback_portability_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 181
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "track-d"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 79
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-public-output"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_public_issue_exfiltration_gate_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 23
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-provenance"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_ai_authored_pr_provenance_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 47
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-skill-admission"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_skill_admission_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 135
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "external-evidence-admission"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_external_evidence_admission_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 31
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-cross-control-authority"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m14_cross_control_authority_boundary_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 107
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "decision-proof-ownership"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_22_decision_proof_cannot_automatically_become_memory"
+                    },
+                    {
+                      "const": "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_23_decision_proof_reference_is_linkage_only_not_memory_authority"
+                    },
+                    {
+                      "const": "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_38_learning_proof_linkage_cannot_be_used_as_authority"
+                    },
+                    {
+                      "const": "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_39_decision_proof_linkage_cannot_grant_execution_authority"
+                    },
+                    {
+                      "const": "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCCrossTrackLinkageTests"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator.DecisionProofOwnershipTests"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 12,
+                  "maxItems": 12
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 30
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "release-m15-status"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCReleaseStateTests"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator.TrackDContractTests.test_matrix_preserves_release_state"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator.ReleaseM15StatusTests"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 9,
+                  "maxItems": 9
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 18
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-final-completion"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m14_final_completion_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "authorized-compatibility-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 110
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-completion-readiness"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m14_completion_readiness_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "authorized-compatibility-regression"
+                },
+                "minimum_tests_observed": {
+                  "const": 112
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "execution_scope",
+                "minimum_tests_observed"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "full-maintained-suite"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "discover"
+                    },
+                    {
+                      "const": "-s"
+                    },
+                    {
+                      "const": "tests"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 9,
+                  "maxItems": 9
+                },
+                "execution_scope": {
+                  "const": "candidate-full-suite-integration"
+                },
+                "minimum_tests_observed": {
+                  "const": 2275
+                }
+              }
+            }
+          ],
+          "items": false,
+          "minItems": 18,
+          "maxItems": 18
+        },
+        "m15_state_before_merge": {
+          "const": "active-and-incomplete"
+        },
+        "tracker_231_state_before_merge": {
+          "const": "open"
+        },
+        "issue_252_state_before_merge": {
+          "const": "open"
+        },
+        "tag_state_before_merge": {
+          "const": "absent-not-created"
+        },
+        "github_release_state_before_merge": {
+          "const": "absent-not-published"
+        },
+        "expected_merge_method": {
+          "const": "merge-commit"
+        },
+        "repository_completion_transition": {
+          "const": "human-reviewed-e4-merge-only"
+        },
+        "evaluator_readiness_is_human_approval": {
+          "const": false
+        },
+        "runtime_caller_data_only": {
+          "const": true
+        },
+        "final_candidate_commit_external": {
+          "const": true
+        },
+        "final_receipt_commit_external": {
+          "const": true
+        },
+        "human_approval_commit_external": {
+          "const": true
+        },
+        "decision_proof_sealed": {
+          "const": false
+        },
+        "learning_proof_sealed": {
+          "const": false
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/authorityBoundary"
+        },
+        "runtime_boundary": {
+          "$ref": "#/$defs/runtimeBoundary"
+        }
+      }
+    },
+    "trackEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "source_main_base_sha",
+        "source_main_base_tree_sha",
+        "artifact_count",
+        "track_counts",
+        "inventory_binding_sha256",
+        "track_summaries",
+        "artifacts",
+        "historical_evidence_rebaselined",
+        "mutable_main_ref_pinned",
+        "caller_supplied_inert_record",
+        "authority_boundary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-track-evidence/v1"
+        },
+        "document_kind": {
+          "const": "track-evidence-inventory"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "source_main_base_sha": {
+          "const": "52ec76c17cd21ec519dfec45ced4ad720b82d80e"
+        },
+        "source_main_base_tree_sha": {
+          "const": "97b239cbd175aac01b05a1fba2394b72c47a5360"
+        },
+        "artifact_count": {
+          "const": 209
+        },
+        "track_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "track-a",
+            "track-b",
+            "track-c",
+            "track-d",
+            "track-e1",
+            "track-e2",
+            "track-e3"
+          ],
+          "properties": {
+            "track-a": {
+              "const": 7
+            },
+            "track-b": {
+              "const": 13
+            },
+            "track-c": {
+              "const": 18
+            },
+            "track-d": {
+              "const": 29
+            },
+            "track-e1": {
+              "const": 39
+            },
+            "track-e2": {
+              "const": 50
+            },
+            "track-e3": {
+              "const": 53
+            }
+          }
+        },
+        "inventory_binding_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "track_summaries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/trackSummary"
+          },
+          "minItems": 7,
+          "maxItems": 7,
+          "uniqueItems": true
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifactBinding"
+          },
+          "minItems": 209,
+          "maxItems": 209,
+          "uniqueItems": true
+        },
+        "historical_evidence_rebaselined": {
+          "const": false
+        },
+        "mutable_main_ref_pinned": {
+          "const": false
+        },
+        "caller_supplied_inert_record": {
+          "const": true
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/authorityBoundary"
+        }
+      }
+    },
+    "e3Continuity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "source_issue",
+        "implementation_pr",
+        "source_main_base_sha",
+        "source_main_base_tree_sha",
+        "candidate_sha",
+        "candidate_tree_sha",
+        "merge_sha",
+        "merge_tree_sha",
+        "merge_parents",
+        "candidate_is_merge_parent",
+        "source_main_base_is_merge_parent",
+        "candidate_is_merge_ancestor",
+        "merge_is_current_main_ancestor",
+        "candidate_to_merge_changed_path_count",
+        "additional_merge_result_difference_count",
+        "active_observation_comment_id",
+        "active_receipt_comment_id",
+        "active_receipt_canonical_sha256",
+        "superseded_observation_comment_id",
+        "superseded_receipt_comment_id",
+        "relation",
+        "caller_supplied_inert_record",
+        "authority_boundary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-e3-continuity/v1"
+        },
+        "document_kind": {
+          "const": "e3-continuity-record"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "source_issue": {
+          "const": 250
+        },
+        "implementation_pr": {
+          "const": 251
+        },
+        "source_main_base_sha": {
+          "const": "f6d074fca2fedecbf654697719179440bc0680d3"
+        },
+        "source_main_base_tree_sha": {
+          "const": "f13913426545b77616128223cd195487a415ffde"
+        },
+        "candidate_sha": {
+          "const": "907d2361233c7b0405a41271d7b02fa6c1a0c62d"
+        },
+        "candidate_tree_sha": {
+          "const": "97b239cbd175aac01b05a1fba2394b72c47a5360"
+        },
+        "merge_sha": {
+          "const": "52ec76c17cd21ec519dfec45ced4ad720b82d80e"
+        },
+        "merge_tree_sha": {
+          "const": "97b239cbd175aac01b05a1fba2394b72c47a5360"
+        },
+        "merge_parents": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "f6d074fca2fedecbf654697719179440bc0680d3"
+            },
+            {
+              "const": "907d2361233c7b0405a41271d7b02fa6c1a0c62d"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "candidate_is_merge_parent": {
+          "const": true
+        },
+        "source_main_base_is_merge_parent": {
+          "const": true
+        },
+        "candidate_is_merge_ancestor": {
+          "const": true
+        },
+        "merge_is_current_main_ancestor": {
+          "const": true
+        },
+        "candidate_to_merge_changed_path_count": {
+          "const": 0
+        },
+        "additional_merge_result_difference_count": {
+          "const": 0
+        },
+        "active_observation_comment_id": {
+          "const": 5017872695
+        },
+        "active_receipt_comment_id": {
+          "const": 5017894934
+        },
+        "active_receipt_canonical_sha256": {
+          "const": "660ffddc0644bbb6e11689ceaf77b5c47b4061241a04cba233f2607287e30cb4"
+        },
+        "superseded_observation_comment_id": {
+          "const": 5016298363
+        },
+        "superseded_receipt_comment_id": {
+          "const": 5016356607
+        },
+        "relation": {
+          "const": "exact_tree_match"
+        },
+        "caller_supplied_inert_record": {
+          "const": true
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/authorityBoundary"
+        }
+      }
+    },
+    "e3ExternalEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "source_issue",
+        "implementation_pr",
+        "candidate_sha",
+        "active_observation_comment_id",
+        "active_observation_reference",
+        "active_receipt_comment_id",
+        "active_receipt_reference",
+        "active_receipt_canonical_sha256",
+        "active_observation_is_superseded",
+        "active_receipt_is_superseded",
+        "superseded_observation_comment_id",
+        "superseded_observation_reference",
+        "superseded_observation_classification",
+        "superseded_observation_accepted_as_active",
+        "superseded_receipt_comment_id",
+        "superseded_receipt_reference",
+        "superseded_receipt_classification",
+        "superseded_receipt_accepted_as_active",
+        "external_evidence_is_completion_authority",
+        "external_evidence_is_release_authority",
+        "caller_supplied_inert_record",
+        "authority_boundary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-e3-external-evidence/v1"
+        },
+        "document_kind": {
+          "const": "e3-external-evidence"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "source_issue": {
+          "const": 250
+        },
+        "implementation_pr": {
+          "const": 251
+        },
+        "candidate_sha": {
+          "const": "907d2361233c7b0405a41271d7b02fa6c1a0c62d"
+        },
+        "active_observation_comment_id": {
+          "const": 5017872695
+        },
+        "active_observation_reference": {
+          "const": "https://github.com/aa-os/aaos-public/pull/251#issuecomment-5017872695"
+        },
+        "active_receipt_comment_id": {
+          "const": 5017894934
+        },
+        "active_receipt_reference": {
+          "const": "https://github.com/aa-os/aaos-public/pull/251#issuecomment-5017894934"
+        },
+        "active_receipt_canonical_sha256": {
+          "const": "660ffddc0644bbb6e11689ceaf77b5c47b4061241a04cba233f2607287e30cb4"
+        },
+        "active_observation_is_superseded": {
+          "const": false
+        },
+        "active_receipt_is_superseded": {
+          "const": false
+        },
+        "superseded_observation_comment_id": {
+          "const": 5016298363
+        },
+        "superseded_observation_reference": {
+          "const": "https://github.com/aa-os/aaos-public/pull/251#issuecomment-5016298363"
+        },
+        "superseded_observation_classification": {
+          "const": "superseded-historical-evidence"
+        },
+        "superseded_observation_accepted_as_active": {
+          "const": false
+        },
+        "superseded_receipt_comment_id": {
+          "const": 5016356607
+        },
+        "superseded_receipt_reference": {
+          "const": "https://github.com/aa-os/aaos-public/pull/251#issuecomment-5016356607"
+        },
+        "superseded_receipt_classification": {
+          "const": "superseded-historical-evidence"
+        },
+        "superseded_receipt_accepted_as_active": {
+          "const": false
+        },
+        "external_evidence_is_completion_authority": {
+          "const": false
+        },
+        "external_evidence_is_release_authority": {
+          "const": false
+        },
+        "caller_supplied_inert_record": {
+          "const": true
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/authorityBoundary"
+        }
+      }
+    },
+    "acceptanceMatrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "parent_tracker",
+        "criterion_count",
+        "criteria",
+        "all_criteria_covered",
+        "caller_supplied_inert_record",
+        "authority_boundary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-acceptance-matrix/v1"
+        },
+        "document_kind": {
+          "const": "acceptance-coverage-matrix"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "parent_tracker": {
+          "const": 231
+        },
+        "criterion_count": {
+          "const": 16
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/criterion"
+          },
+          "minItems": 16,
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "all_criteria_covered": {
+          "const": true
+        },
+        "caller_supplied_inert_record": {
+          "const": true
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/authorityBoundary"
+        }
+      }
+    },
+    "transitionRegister": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "blocking_conditions",
+        "readiness_requirements",
+        "tracker_231_state_before_merge",
+        "issue_252_state_before_merge",
+        "m15_state_before_merge",
+        "tag_state_before_merge",
+        "github_release_state_before_merge",
+        "caller_supplied_inert_record",
+        "authority_boundary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-transition-register/v1"
+        },
+        "document_kind": {
+          "const": "transition-register"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "blocking_conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/blockerFinding"
+          },
+          "minItems": 31,
+          "maxItems": 31,
+          "uniqueItems": true
+        },
+        "readiness_requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/readinessFinding"
+          },
+          "minItems": 11,
+          "maxItems": 11,
+          "uniqueItems": true
+        },
+        "tracker_231_state_before_merge": {
+          "const": "open"
+        },
+        "issue_252_state_before_merge": {
+          "const": "open"
+        },
+        "m15_state_before_merge": {
+          "const": "active-and-incomplete"
+        },
+        "tag_state_before_merge": {
+          "const": "absent-not-created"
+        },
+        "github_release_state_before_merge": {
+          "const": "absent-not-published"
+        },
+        "caller_supplied_inert_record": {
+          "const": true
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/authorityBoundary"
+        }
+      }
+    },
+    "readmeTransition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "source_main_base_sha",
+        "base_readme_sha256",
+        "candidate_readme_sha256",
+        "candidate_completion_state_sha256",
+        "base_releases_section_sha256",
+        "candidate_releases_section_sha256",
+        "base_current_baseline_section_sha256",
+        "candidate_current_baseline_section_sha256",
+        "base_current_status_section_sha256",
+        "candidate_current_status_section_sha256",
+        "base_next_phase_section_sha256",
+        "candidate_next_phase_section_sha256",
+        "releases_changed",
+        "current_baseline_changed",
+        "current_status_changed",
+        "next_phase_changed",
+        "unrelated_sections_unchanged",
+        "m15_repository_completion_claim",
+        "v0_14_0_release_state_entry_present",
+        "v0_14_0_tag_exists_claim",
+        "github_release_published_claim",
+        "tag_target_rule",
+        "decision_proof_sealed",
+        "learning_proof_sealed",
+        "caller_supplied_inert_record",
+        "authority_boundary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-readme-transition/v1"
+        },
+        "document_kind": {
+          "const": "readme-transition-observation"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "source_main_base_sha": {
+          "const": "52ec76c17cd21ec519dfec45ced4ad720b82d80e"
+        },
+        "base_readme_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_readme_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_completion_state_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "base_releases_section_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_releases_section_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "base_current_baseline_section_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_current_baseline_section_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "base_current_status_section_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_current_status_section_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "base_next_phase_section_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_next_phase_section_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "releases_changed": {
+          "const": true
+        },
+        "current_baseline_changed": {
+          "const": true
+        },
+        "current_status_changed": {
+          "const": true
+        },
+        "next_phase_changed": {
+          "const": true
+        },
+        "unrelated_sections_unchanged": {
+          "const": true
+        },
+        "m15_repository_completion_claim": {
+          "const": true
+        },
+        "v0_14_0_release_state_entry_present": {
+          "const": true
+        },
+        "v0_14_0_tag_exists_claim": {
+          "const": false
+        },
+        "github_release_published_claim": {
+          "const": false
+        },
+        "tag_target_rule": {
+          "const": "exact-e4-merge-commit-after-merge"
+        },
+        "decision_proof_sealed": {
+          "const": false
+        },
+        "learning_proof_sealed": {
+          "const": false
+        },
+        "caller_supplied_inert_record": {
+          "const": true
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/authorityBoundary"
+        }
+      }
+    },
+    "releasePreparation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "source_issue",
+        "parent_tracker",
+        "pull_request_number",
+        "release_version",
+        "release_title",
+        "source_main_base_sha",
+        "final_candidate_binding",
+        "future_merge_commit",
+        "expected_merge_method",
+        "tag_target_rule",
+        "release_notes_reference",
+        "publication_checklist_reference",
+        "tag_state_before_merge",
+        "github_release_state_before_merge",
+        "publication_authority",
+        "candidate_head_is_tag_target",
+        "release_notes",
+        "publication_checklist",
+        "human_approval_template",
+        "repository_completion_is_release_publication",
+        "publication_is_governance_approval",
+        "caller_supplied_inert_record",
+        "non_authoritative_boundary_statement",
+        "authority_boundary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-release-preparation/v1"
+        },
+        "document_kind": {
+          "const": "release-preparation-record"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "source_issue": {
+          "const": 252
+        },
+        "parent_tracker": {
+          "const": 231
+        },
+        "pull_request_number": {
+          "const": 253
+        },
+        "release_version": {
+          "const": "v0.14.0"
+        },
+        "release_title": {
+          "const": "M15 Learning Sovereignty and Evidence-Bound Capability Memory"
+        },
+        "source_main_base_sha": {
+          "const": "52ec76c17cd21ec519dfec45ced4ad720b82d80e"
+        },
+        "final_candidate_binding": {
+          "const": "commit-external-active-pr-observation"
+        },
+        "future_merge_commit": {
+          "const": "post-merge-placeholder"
+        },
+        "expected_merge_method": {
+          "const": "merge-commit"
+        },
+        "tag_target_rule": {
+          "const": "exact-e4-merge-commit"
+        },
+        "release_notes_reference": {
+          "$ref": "#/$defs/reference"
+        },
+        "publication_checklist_reference": {
+          "$ref": "#/$defs/reference"
+        },
+        "tag_state_before_merge": {
+          "const": "absent-not-created"
+        },
+        "github_release_state_before_merge": {
+          "const": "absent-not-published"
+        },
+        "publication_authority": {
+          "const": "human-controlled-post-merge-action"
+        },
+        "candidate_head_is_tag_target": {
+          "const": false
+        },
+        "release_notes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/releaseNote"
+          },
+          "minItems": 1
+        },
+        "publication_checklist": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/publicationStep"
+          },
+          "minItems": 15,
+          "maxItems": 15,
+          "uniqueItems": true
+        },
+        "human_approval_template": {
+          "$ref": "#/$defs/approvalTemplate"
+        },
+        "repository_completion_is_release_publication": {
+          "const": false
+        },
+        "publication_is_governance_approval": {
+          "const": false
+        },
+        "caller_supplied_inert_record": {
+          "const": true
+        },
+        "non_authoritative_boundary_statement": {
+          "$ref": "#/$defs/releaseBoundary"
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/authorityBoundary"
+        }
+      }
+    },
+    "pullRequestObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "issue_number",
+        "parent_tracker",
+        "pull_request_number",
+        "source_main_base_sha",
+        "source_main_base_tree_sha",
+        "candidate_head_sha",
+        "candidate_tree_sha",
+        "execution_subject_type",
+        "observed_at",
+        "observer",
+        "evidence_reference",
+        "external_to_candidate_commit",
+        "fetched_by_evaluator",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-pr-observation/v1"
+        },
+        "document_kind": {
+          "const": "pull-request-candidate-observation"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "issue_number": {
+          "const": 252
+        },
+        "parent_tracker": {
+          "const": 231
+        },
+        "pull_request_number": {
+          "const": 253
+        },
+        "source_main_base_sha": {
+          "const": "52ec76c17cd21ec519dfec45ced4ad720b82d80e"
+        },
+        "source_main_base_tree_sha": {
+          "const": "97b239cbd175aac01b05a1fba2394b72c47a5360"
+        },
+        "candidate_head_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "candidate_tree_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "execution_subject_type": {
+          "const": "pull-request-candidate-checkout"
+        },
+        "observed_at": {
+          "$ref": "#/$defs/rfc3339Utc"
+        },
+        "observer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_reference": {
+          "const": "github:aa-os/aaos-public:pull/253:commit-external-observation"
+        },
+        "external_to_candidate_commit": {
+          "const": true
+        },
+        "fetched_by_evaluator": {
+          "const": false
+        },
+        "non_authoritative_boundary_statement": {
+          "$ref": "#/$defs/prObservationBoundary"
+        }
+      }
+    },
+    "verificationReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "issue_number",
+        "parent_tracker",
+        "pull_request_number",
+        "source_main_base_sha",
+        "execution_candidate_head_sha",
+        "execution_candidate_tree_sha",
+        "observation_evidence_reference",
+        "command_receipt_count",
+        "commands",
+        "evidence_reference",
+        "canonical_payload_sha256",
+        "external_to_candidate_commit",
+        "executed_by_evaluator",
+        "verification_results_are_completion_authority",
+        "verification_results_are_release_authority",
+        "non_authoritative_boundary_statement"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-verification-receipt/v1"
+        },
+        "document_kind": {
+          "const": "external-verification-execution-receipt"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "issue_number": {
+          "const": 252
+        },
+        "parent_tracker": {
+          "const": 231
+        },
+        "pull_request_number": {
+          "const": 253
+        },
+        "source_main_base_sha": {
+          "const": "52ec76c17cd21ec519dfec45ced4ad720b82d80e"
+        },
+        "execution_candidate_head_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "execution_candidate_tree_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "observation_evidence_reference": {
+          "const": "github:aa-os/aaos-public:pull/253:commit-external-observation"
+        },
+        "command_receipt_count": {
+          "const": 18
+        },
+        "commands": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "e4-targeted"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_final_completion_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_final_completion_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "e4-candidate-validation"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 183
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "e3-targeted"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_completion_readiness_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_completion_readiness_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 167
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "e2-targeted"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_release_proof_linkage_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_release_proof_linkage_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 140
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "e1-targeted"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_operational_readiness_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_operational_readiness_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 132
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "track-a"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_learning_proof_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_learning_proof_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 68
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "track-b"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_capability_memory_pack_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_capability_memory_pack_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 73
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "track-c"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_lineage_rollback_portability_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_lineage_rollback_portability_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 181
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "track-d"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 79
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-public-output"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_public_issue_exfiltration_gate_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_public_issue_exfiltration_gate_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 23
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-provenance"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_ai_authored_pr_provenance_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_ai_authored_pr_provenance_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 47
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-skill-admission"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_skill_admission_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_skill_admission_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 135
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "external-evidence-admission"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_external_evidence_admission_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_external_evidence_admission_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 31
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-cross-control-authority"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m14_cross_control_authority_boundary_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m14_cross_control_authority_boundary_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 107
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "decision-proof-ownership"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_22_decision_proof_cannot_automatically_become_memory"
+                    },
+                    {
+                      "const": "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_23_decision_proof_reference_is_linkage_only_not_memory_authority"
+                    },
+                    {
+                      "const": "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_38_learning_proof_linkage_cannot_be_used_as_authority"
+                    },
+                    {
+                      "const": "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_39_decision_proof_linkage_cannot_grant_execution_authority"
+                    },
+                    {
+                      "const": "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCCrossTrackLinkageTests"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator.DecisionProofOwnershipTests"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 12,
+                  "maxItems": 12
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_22_decision_proof_cannot_automatically_become_memory"
+                    },
+                    {
+                      "const": "tests.test_m15_learning_proof_evaluator.M15LearningProofEvaluatorTests.test_23_decision_proof_reference_is_linkage_only_not_memory_authority"
+                    },
+                    {
+                      "const": "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_38_learning_proof_linkage_cannot_be_used_as_authority"
+                    },
+                    {
+                      "const": "tests.test_m15_capability_memory_pack_evaluator.M15CapabilityMemoryPackEvaluatorTests.test_39_decision_proof_linkage_cannot_grant_execution_authority"
+                    },
+                    {
+                      "const": "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCCrossTrackLinkageTests"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator.DecisionProofOwnershipTests"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 12,
+                  "maxItems": 12
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 30
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "release-m15-status"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCReleaseStateTests"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator.TrackDContractTests.test_matrix_preserves_release_state"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator.ReleaseM15StatusTests"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 9,
+                  "maxItems": 9
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m15_lineage_rollback_portability_evaluator.M15TrackCReleaseStateTests"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator.TrackDContractTests.test_matrix_preserves_release_state"
+                    },
+                    {
+                      "const": "tests.test_m15_cross_control_regression_evaluator.ReleaseM15StatusTests"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 9,
+                  "maxItems": 9
+                },
+                "execution_scope": {
+                  "const": "inherited-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 18
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-final-completion"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m14_final_completion_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m14_final_completion_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "authorized-compatibility-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 110
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "m14-completion-readiness"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m14_completion_readiness_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "tests.test_m14_completion_readiness_evaluator"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 7,
+                  "maxItems": 7
+                },
+                "execution_scope": {
+                  "const": "authorized-compatibility-regression"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 112
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "command_id",
+                "declared_logical_argv",
+                "actual_argv",
+                "execution_scope",
+                "execution_candidate_head_sha",
+                "executable_binding",
+                "tests_observed",
+                "minimum_tests_observed",
+                "passes",
+                "failures",
+                "errors",
+                "skips",
+                "exit_code",
+                "execution_timestamp",
+                "transcript_sha256",
+                "evidence_reference",
+                "executed_by_evaluator",
+                "verification_results_are_completion_authority",
+                "verification_results_are_release_authority"
+              ],
+              "properties": {
+                "command_id": {
+                  "const": "full-maintained-suite"
+                },
+                "declared_logical_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "const": "python"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "discover"
+                    },
+                    {
+                      "const": "-s"
+                    },
+                    {
+                      "const": "tests"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 9,
+                  "maxItems": 9
+                },
+                "actual_argv": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "pattern": "(?:^|[/\\\\])\\.verification-python[/\\\\]python\\.exe$"
+                    },
+                    {
+                      "const": "-X"
+                    },
+                    {
+                      "const": "faulthandler"
+                    },
+                    {
+                      "const": "-m"
+                    },
+                    {
+                      "const": "unittest"
+                    },
+                    {
+                      "const": "discover"
+                    },
+                    {
+                      "const": "-s"
+                    },
+                    {
+                      "const": "tests"
+                    },
+                    {
+                      "const": "-v"
+                    }
+                  ],
+                  "items": false,
+                  "minItems": 9,
+                  "maxItems": 9
+                },
+                "execution_scope": {
+                  "const": "candidate-full-suite-integration"
+                },
+                "execution_candidate_head_sha": {
+                  "$ref": "#/$defs/gitSha"
+                },
+                "executable_binding": {
+                  "$ref": "#/$defs/executableBinding"
+                },
+                "tests_observed": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "minimum_tests_observed": {
+                  "const": 2275
+                },
+                "passes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "failures": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "errors": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "skips": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "exit_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution_timestamp": {
+                  "$ref": "#/$defs/rfc3339Utc"
+                },
+                "transcript_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "evidence_reference": {
+                  "$ref": "#/$defs/reference"
+                },
+                "executed_by_evaluator": {
+                  "const": false
+                },
+                "verification_results_are_completion_authority": {
+                  "const": false
+                },
+                "verification_results_are_release_authority": {
+                  "const": false
+                }
+              }
+            }
+          ],
+          "items": false,
+          "minItems": 18,
+          "maxItems": 18
+        },
+        "evidence_reference": {
+          "const": "github:aa-os/aaos-public:pull/253:external-verification-receipt"
+        },
+        "canonical_payload_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "external_to_candidate_commit": {
+          "const": true
+        },
+        "executed_by_evaluator": {
+          "const": false
+        },
+        "verification_results_are_completion_authority": {
+          "const": false
+        },
+        "verification_results_are_release_authority": {
+          "const": false
+        },
+        "non_authoritative_boundary_statement": {
+          "$ref": "#/$defs/verificationBoundary"
+        }
+      }
+    },
+    "humanApproval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "repository",
+        "issue_number",
+        "parent_tracker",
+        "pull_request_number",
+        "source_main_base_sha",
+        "candidate_head_sha",
+        "candidate_tree_sha",
+        "pr_observation_reference",
+        "verification_receipt_reference",
+        "verification_receipt_canonical_sha256",
+        "reviewed_readme_transition_sha256",
+        "reviewed_completion_state_sha256",
+        "intended_merge_method",
+        "permitted_issue_closures",
+        "explicit_authority_scope",
+        "approval_timestamp",
+        "approver_identity",
+        "approver_type",
+        "authored_by_human",
+        "external_to_candidate_commit",
+        "candidate_head_frozen",
+        "approved",
+        "tag_creation_authorized",
+        "github_release_publication_authorized",
+        "risk_acceptance_authorized",
+        "audit_closure_authorized",
+        "waiver_authorized",
+        "authority_transfer_authorized",
+        "decision_proof_sealing_authorized",
+        "learning_proof_sealing_authorized",
+        "non_authoritative_release_publication_boundary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-human-approval/v1"
+        },
+        "document_kind": {
+          "const": "commit-external-human-approval-observation"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "issue_number": {
+          "const": 252
+        },
+        "parent_tracker": {
+          "const": 231
+        },
+        "pull_request_number": {
+          "const": 253
+        },
+        "source_main_base_sha": {
+          "const": "52ec76c17cd21ec519dfec45ced4ad720b82d80e"
+        },
+        "candidate_head_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "candidate_tree_sha": {
+          "$ref": "#/$defs/gitSha"
+        },
+        "pr_observation_reference": {
+          "const": "github:aa-os/aaos-public:pull/253:commit-external-observation"
+        },
+        "verification_receipt_reference": {
+          "const": "github:aa-os/aaos-public:pull/253:external-verification-receipt"
+        },
+        "verification_receipt_canonical_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "reviewed_readme_transition_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "reviewed_completion_state_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "intended_merge_method": {
+          "const": "merge-commit"
+        },
+        "permitted_issue_closures": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": 252
+            },
+            {
+              "const": 231
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "explicit_authority_scope": {
+          "const": "Approve merging only the exact reviewed E4 candidate and the linked repository M15 completion transition, including closure of #252 and #231; this does not authorize tag creation, GitHub Release publication, risk acceptance, audit closure, waiver, Decision Proof sealing, Learning Proof sealing, or authority transfer."
+        },
+        "approval_timestamp": {
+          "$ref": "#/$defs/rfc3339Utc"
+        },
+        "approver_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approver_type": {
+          "const": "human"
+        },
+        "authored_by_human": {
+          "const": true
+        },
+        "external_to_candidate_commit": {
+          "const": true
+        },
+        "candidate_head_frozen": {
+          "const": true
+        },
+        "approved": {
+          "const": true
+        },
+        "tag_creation_authorized": {
+          "const": false
+        },
+        "github_release_publication_authorized": {
+          "const": false
+        },
+        "risk_acceptance_authorized": {
+          "const": false
+        },
+        "audit_closure_authorized": {
+          "const": false
+        },
+        "waiver_authorized": {
+          "const": false
+        },
+        "authority_transfer_authorized": {
+          "const": false
+        },
+        "decision_proof_sealing_authorized": {
+          "const": false
+        },
+        "learning_proof_sealing_authorized": {
+          "const": false
+        },
+        "non_authoritative_release_publication_boundary": {
+          "$ref": "#/$defs/releaseBoundary"
+        }
+      }
+    },
+    "scenarioMutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_document",
+        "operation",
+        "field_path",
+        "synthetic_value"
+      ],
+      "properties": {
+        "target_document": {
+          "enum": [
+            "package",
+            "e3-continuity-record",
+            "e3-external-evidence",
+            "track-evidence-inventory",
+            "acceptance-coverage-matrix",
+            "transition-register",
+            "human-approval-observation",
+            "final-completion-manifest",
+            "readme-transition-observation",
+            "release-preparation-record",
+            "external-verification-receipt",
+            "pull-request-observation",
+            "runtime-result"
+          ]
+        },
+        "operation": {
+          "enum": [
+            "none",
+            "substitute",
+            "remove",
+            "set",
+            "rebaseline",
+            "require-mutable-ref",
+            "add-unapproved-path",
+            "omit"
+          ]
+        },
+        "field_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "synthetic_value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "syntheticScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "document_kind",
+        "scenario_id",
+        "title",
+        "synthetic",
+        "inert",
+        "offline",
+        "deterministic",
+        "contains_secret",
+        "contains_credential",
+        "contains_personal_data",
+        "contains_private_prompt",
+        "contains_production_identifier",
+        "contains_executable_payload",
+        "contains_live_github_mutation",
+        "mutation",
+        "expected_outcome",
+        "expected_finding",
+        "authority_boundary"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "m15-final-completion-scenario/v1"
+        },
+        "document_kind": {
+          "const": "synthetic-scenario"
+        },
+        "scenario_id": {
+          "type": "string",
+          "pattern": "^e4-scenario-(?:0[1-9]|[1-5][0-9]|60)$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "synthetic": {
+          "const": true
+        },
+        "inert": {
+          "const": true
+        },
+        "offline": {
+          "const": true
+        },
+        "deterministic": {
+          "const": true
+        },
+        "contains_secret": {
+          "const": false
+        },
+        "contains_credential": {
+          "const": false
+        },
+        "contains_personal_data": {
+          "const": false
+        },
+        "contains_private_prompt": {
+          "const": false
+        },
+        "contains_production_identifier": {
+          "const": false
+        },
+        "contains_executable_payload": {
+          "const": false
+        },
+        "contains_live_github_mutation": {
+          "const": false
+        },
+        "mutation": {
+          "$ref": "#/$defs/scenarioMutation"
+        },
+        "expected_outcome": {
+          "$ref": "#/$defs/outcome"
+        },
+        "expected_finding": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_boundary": {
+          "$ref": "#/$defs/authorityBoundary"
+        }
+      }
+    },
+    "historicalArtifactAuthorityBoundary": {
+      "const": "Completion readiness is evidence for final human review only; it is not M15 completion, tracker #231 closure, README final-state authorization, release approval, tag authorization, GitHub Release authorization, Decision Proof sealing, Learning Proof sealing, deployment authorization, risk acceptance, rollback execution, deletion execution, fail-closed execution, audit closure, waiver, authority transfer, or final governance judgment."
+    },
+    "prObservationBoundary": {
+      "const": "This commit-external observation records the frozen E4 candidate only; it is not human approval, merge authority, completion authority, tag authority, or GitHub Release authority."
+    },
+    "verificationBoundary": {
+      "const": "Verification results are non-authoritative evidence only and do not approve M15 completion, a merge, tag creation, or GitHub Release publication."
+    },
+    "blockerFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_id",
+        "state",
+        "evidence_references",
+        "explanation"
+      ],
+      "properties": {
+        "condition_id": {
+          "enum": [
+            "malformed-e3-continuity-evidence",
+            "e3-candidate-merge-identity-mismatch",
+            "e3-merge-tree-mismatch",
+            "e3-merge-parent-mismatch",
+            "e3-artifact-drift",
+            "superseded-e3-observation-used",
+            "superseded-e3-receipt-used",
+            "active-e3-receipt-digest-mismatch",
+            "track-a-e3-evidence-substitution",
+            "omitted-acceptance-criterion",
+            "substituted-acceptance-evidence",
+            "hidden-completion-blocker",
+            "readme-final-transition-drift",
+            "premature-tracker-closure-claim",
+            "premature-issue-closure-claim",
+            "premature-m15-complete-claim",
+            "premature-tag-created-claim",
+            "premature-github-release-published-claim",
+            "candidate-head-as-final-tag-target",
+            "verification-observation-candidate-mismatch",
+            "human-approval-candidate-mismatch",
+            "human-approval-receipt-mismatch",
+            "evaluator-output-as-human-approval",
+            "historical-evidence-rebaseline",
+            "mutable-main-source-base-pinning",
+            "unapproved-compatibility-repair",
+            "insufficient-verification-coverage",
+            "completion-publication-conflation",
+            "proof-sealing-claim",
+            "authority-transfer-claim",
+            "runtime-boundary-violation"
+          ]
+        },
+        "state": {
+          "const": "resolved"
+        },
+        "evidence_references": {
+          "$ref": "#/$defs/referenceArray"
+        },
+        "explanation": {
+          "const": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+        }
+      }
+    },
+    "readinessFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finding_id",
+        "state",
+        "evidence_references",
+        "explanation"
+      ],
+      "properties": {
+        "finding_id": {
+          "enum": [
+            "missing-final-pr-observation",
+            "missing-final-verification-receipt",
+            "incomplete-test-execution",
+            "missing-readme-transition-observation",
+            "missing-release-target-preparation",
+            "missing-release-notes",
+            "missing-publication-checklist",
+            "missing-human-approval",
+            "missing-approval-timestamp",
+            "missing-approval-receipt-binding",
+            "missing-approval-candidate-binding"
+          ]
+        },
+        "state": {
+          "const": "required"
+        },
+        "evidence_references": {
+          "$ref": "#/$defs/referenceArray"
+        },
+        "explanation": {
+          "const": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+        }
+      }
+    }
+  }
+}

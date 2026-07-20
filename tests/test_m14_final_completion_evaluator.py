@@ -1,6 +1,9 @@
 import ast
+import hashlib
 import json
+import os
 import shutil
+import subprocess
 import tempfile
 import unittest
 from contextlib import contextmanager
@@ -10,8 +13,6 @@ from unittest import mock
 
 from runtime.m14_final_completion_evaluator import (
     EXPECTED_BUNDLE as RUNTIME_EXPECTED_BUNDLE,
-    EXPECTED_MAINTAINED_BUNDLE_SHA256 as RUNTIME_EXPECTED_MAINTAINED_BUNDLE_SHA256,
-    EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
     EXPECTED_MAINTAINED_COMPLETION_READINESS_AUXILIARY_DEPENDENCIES,
     evaluate_file,
     evaluate_m14_final_completion,
@@ -96,18 +97,6 @@ EXPECTED_BUNDLE = [
         "executable_by_final_completion_evaluator": False,
     },
 ]
-EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
-    (
-        "examples/public-integration-pack-pilot/"
-        "m14-completion-readiness-future-readme-path.json"
-    ): "e65e4558bc25504ebea24dd8479ac5c40e1ecc588cd3262e729fe77b193d2673",
-    "runtime/m14_completion_readiness_evaluator.py": (
-        "c9dbf73ee66b2e6e002ed82f2c16913d23b13c0b22d70ee56dc7761b7b4069b3"
-    ),
-    "tests/test_m14_completion_readiness_evaluator.py": (
-        "6faf721f987379bc5220e022017f9a3a3c91555a58264de6c0a36ff8a8241b1b"
-    ),
-}
 EXPECTED_AUXILIARY_DEPENDENCY = {
     "relative_path": AUXILIARY_SNAPSHOT_PATH,
     "sha256": "a72061d2614b107e9780d31070ccae4ad683596c4873c6d1dac6a77fdf01d269",
@@ -157,6 +146,23 @@ HISTORICAL_M14_NEXT_PHASE = (
     "Future milestone planning will be tracked separately after v0.13.0 "
     "release publication."
 )
+M14_FINAL_MERGE_SHA = "06d1a3f64eaebf2ccb1667ebe4b3c85351bfd186"
+M14_FINAL_README_BLOB_SHA = "08329f139b0a801caf31e4cbf744d70df9fd017b"
+M14_COMPLETION_READINESS_MERGE_SHA = (
+    "a7b5cbc2026468dde3d937e9366a780894570548"
+)
+M14_COMPLETION_READINESS_BLOBS = {
+    (
+        "examples/public-integration-pack-pilot/"
+        "m14-completion-readiness-future-readme-path.json"
+    ): "b1ee17aa2584e44bf2927fbc23e7d577e823a5b3",
+    "runtime/m14_completion_readiness_evaluator.py": (
+        "5718981dd2cd7bfc9cd60ae394ae88f4e7e5a626"
+    ),
+    "tests/test_m14_completion_readiness_evaluator.py": (
+        "367361f28659e7d304b20fdcfa0922a3ac5b1d52"
+    ),
+}
 EXPECTED_ALLOWED_OUTPUTS = {
     "m14_final_completion_valid",
     "m14_final_completion_invalid",
@@ -207,6 +213,20 @@ EXPECTED_PRE_TRANSITION = {
 def load_json(path):
     with Path(path).open(encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def git_bytes(*args):
+    git = os.environ.get("AAOS_TEST_GIT_EXE") or shutil.which("git")
+    if git is None:
+        raise AssertionError("Git is required for immutable M14 snapshot tests")
+    completed = subprocess.run(
+        [git, *args],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    return completed.stdout
 
 
 class M14FinalCompletionEvaluatorTests(unittest.TestCase):
@@ -265,6 +285,11 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
             start = text.index("## Next Phase")
             updated = text[:start] + "## Next Phase\n\n" + body.strip() + "\n"
             path.write_text(updated, encoding="utf-8")
+            return self.evaluate(repository_root=root)
+
+    def evaluate_readme_text(self, text):
+        with self.temporary_repository() as root:
+            (root / "README.md").write_text(text, encoding="utf-8")
             return self.evaluate(repository_root=root)
 
     def evaluate_readiness_mutation(self, field, value):
@@ -330,15 +355,7 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
         for entry in EXPECTED_BUNDLE:
             self.assertTrue((ROOT / entry["relative_path"]).is_file())
 
-    def test_08_all_bundle_sha256_digests_match(self):
-        expected_overrides = {
-            "runtime/m14_completion_readiness_evaluator.py": (
-                "c9dbf73ee66b2e6e002ed82f2c16913d23b13c0b22d70ee56dc7761b7b4069b3"
-            ),
-            "tests/test_m14_completion_readiness_evaluator.py": (
-                "6faf721f987379bc5220e022017f9a3a3c91555a58264de6c0a36ff8a8241b1b"
-            ),
-        }
+    def test_08_all_bundle_sha256_digests_match_immutable_pr214_snapshot(self):
         historical = {
             entry["relative_path"]: entry["sha256"] for entry in EXPECTED_BUNDLE
         }
@@ -358,72 +375,35 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
             },
         )
         self.assertEqual(
-            EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
-            expected_overrides,
-        )
-        self.assertEqual(
-            RUNTIME_EXPECTED_MAINTAINED_BUNDLE_SHA256,
-            EXPECTED_MAINTAINED_BUNDLE_SHA256,
-        )
-        self.assertEqual(
-            set(RUNTIME_EXPECTED_MAINTAINED_BUNDLE_SHA256),
-            set(historical),
-        )
-        self.assertIsNot(RUNTIME_EXPECTED_MAINTAINED_BUNDLE_SHA256, historical)
-        self.assertNotIn(
-            "runtime/m14_final_completion_evaluator.py",
-            EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
-        )
-        self.assertNotIn(
-            "tests/test_m14_final_completion_evaluator.py",
-            EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES,
+            git_bytes("cat-file", "-t", M14_COMPLETION_READINESS_MERGE_SHA).strip(),
+            b"commit",
         )
         for entry in EXPECTED_BUNDLE:
+            relative_path = entry["relative_path"]
             self.assertEqual(
-                sha256_repository_file(
-                    ROOT, entry["relative_path"], mode="text"
-                ),
-                EXPECTED_MAINTAINED_BUNDLE_SHA256[entry["relative_path"]],
+                git_bytes(
+                    "rev-parse",
+                    f"{M14_COMPLETION_READINESS_MERGE_SHA}:{relative_path}",
+                ).strip(),
+                M14_COMPLETION_READINESS_BLOBS[relative_path].encode("ascii"),
             )
-            if entry["relative_path"] in expected_overrides:
-                self.assertNotEqual(
-                    EXPECTED_MAINTAINED_BUNDLE_SHA256[entry["relative_path"]],
-                    entry["sha256"],
-                )
-            else:
-                self.assertEqual(
-                    EXPECTED_MAINTAINED_BUNDLE_SHA256[entry["relative_path"]],
-                    entry["sha256"],
-                )
+            historical_bytes = git_bytes(
+                "cat-file",
+                "blob",
+                f"{M14_COMPLETION_READINESS_MERGE_SHA}:{relative_path}",
+            )
+            self.assertEqual(
+                hashlib.sha256(
+                    canonicalize_utf8_repository_text(historical_bytes)
+                ).hexdigest(),
+                entry["sha256"],
+            )
+            self.assertTrue((ROOT / relative_path).is_file())
         self.assertEqual(
             self.fixture["completion_readiness_bundle"],
             EXPECTED_BUNDLE,
         )
-        self.assertNotEqual(
-            EXPECTED_MAINTAINED_BUNDLE_SHA256[
-                "tests/test_m14_completion_readiness_evaluator.py"
-            ],
-            EXPECTED_BUNDLE[2]["sha256"],
-        )
         self.assertTrue(self.evaluate()["completion_readiness_bundle_integrity_valid"])
-
-        tree = ast.parse(self.evaluator_source)
-        digest_map_names = {
-            "EXPECTED_BUNDLE",
-            "EXPECTED_MAINTAINED_BUNDLE_SHA256",
-        }
-        for node in ast.walk(tree):
-            names = {
-                child.id
-                for child in ast.walk(node)
-                if isinstance(child, ast.Name)
-            }
-            if isinstance(node, ast.BoolOp) and isinstance(node.op, ast.Or):
-                self.assertFalse(digest_map_names <= names)
-            if isinstance(node, ast.Compare) and any(
-                isinstance(operator, (ast.In, ast.NotIn)) for operator in node.ops
-            ):
-                self.assertFalse(digest_map_names <= names)
 
     def test_09_missing_bundle_file_fails(self):
         with self.temporary_repository() as root:
@@ -437,17 +417,17 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
             result["findings"],
         )
 
-    def test_10_maintained_bundle_digest_mismatch_fails(self):
+    def test_10_later_phase_bundle_source_change_does_not_rebaseline_history(self):
         with self.temporary_repository() as root:
             relative_path = EXPECTED_BUNDLE[2]["relative_path"]
             path = root / relative_path
-            path.write_bytes(path.read_bytes() + b"# digest mutation\n")
+            path.write_bytes(path.read_bytes() + b"# later-phase compatibility repair\n")
             result = self.evaluate(repository_root=root)
-        self.assertFalse(result["m14_final_completion_valid"])
-        self.assertFalse(result["completion_readiness_bundle_integrity_valid"])
-        self.assertIn(
-            f"completion_readiness_bundle_maintained_digest_mismatch:{relative_path}",
-            result["findings"],
+        self.assertTrue(result["m14_final_completion_valid"])
+        self.assertTrue(result["completion_readiness_bundle_integrity_valid"])
+        self.assertEqual(
+            self.fixture["completion_readiness_bundle"][2]["sha256"],
+            EXPECTED_BUNDLE[2]["sha256"],
         )
 
     def test_11_bundle_path_substitution_fails(self):
@@ -554,14 +534,17 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
         result = self.evaluate_readme_mutation(entry + "\n", "")
         self.assertFalse(result["readme_release_state_valid"])
 
-    def test_27_readme_latest_release_is_v013(self):
+    def test_27_readme_preserves_v013_while_allowing_later_phase_entries(self):
         releases = self.readme.split("## Releases", 1)[1].split("Current baseline:", 1)[0]
         version_lines = [line for line in releases.splitlines() if line.startswith("- v")]
-        self.assertTrue(version_lines[-1].startswith("- v0.13.0 —"))
+        m14_release = (
+            "- v0.13.0 — M14 High-Risk Runtime Policy Gates and Public-Output Safety"
+        )
+        self.assertEqual(version_lines.count(m14_release), 1)
+        self.assertTrue(any(line.startswith("- v0.14.0 —") for line in version_lines))
         result = self.evaluate_readme_mutation(
-            "- v0.13.0 — M14 High-Risk Runtime Policy Gates and Public-Output Safety\n",
-            "- v0.13.0 — M14 High-Risk Runtime Policy Gates and Public-Output Safety\n"
-            "- v0.14.0 — unauthorized future release\n",
+            m14_release,
+            "- v0.13.0 — substituted historical release",
         )
         self.assertFalse(result["readme_release_state_valid"])
 
@@ -578,12 +561,14 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
         self.assertFalse(result["readme_release_state_valid"])
 
     def test_30_readme_declares_m1_through_m14_complete(self):
-        sentence = (
-            "M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, "
-            "and M14 are complete."
+        sentence = next(
+            line
+            for line in self.readme.splitlines()
+            if line.startswith("M1, ") and line.endswith(" are complete.")
         )
-        self.assertIn(sentence, self.readme)
-        result = self.evaluate_readme_mutation(sentence, sentence.replace(", and M14", ""))
+        self.assertIn("M14", sentence)
+        self.assertIn("M15", sentence)
+        result = self.evaluate_readme_mutation(sentence, sentence.replace("M14, ", ""))
         self.assertFalse(result["readme_release_state_valid"])
 
     def test_31_m14_completed_section_is_complete(self):
@@ -607,11 +592,27 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
     def test_33_next_phase_validation_is_phase_aware(self):
         current = self.evaluate()
         self.assertTrue(current["readme_release_state_valid"])
+        self.assertTrue(current["m14_final_completion_valid"])
         next_phase = self.readme.split("## Next Phase", 1)[1]
-        self.assertIn("M15 remains active and incomplete", next_phase)
-        self.assertIn("v0.14.0 remains unpublished", next_phase)
+        self.assertIn("M15 repository completion has occurred", next_phase)
+        self.assertIn(
+            "Manual tag and GitHub Release publication remain separate",
+            next_phase,
+        )
 
-        historical = self.evaluate_next_phase(HISTORICAL_M14_NEXT_PHASE)
+        self.assertEqual(
+            git_bytes("cat-file", "-t", M14_FINAL_MERGE_SHA).strip(),
+            b"commit",
+        )
+        self.assertEqual(
+            git_bytes("rev-parse", f"{M14_FINAL_MERGE_SHA}:README.md").strip(),
+            M14_FINAL_README_BLOB_SHA.encode("ascii"),
+        )
+        historical_readme = canonicalize_utf8_repository_text(
+            git_bytes("cat-file", "blob", f"{M14_FINAL_MERGE_SHA}:README.md")
+        ).decode("utf-8")
+        self.assertIn(HISTORICAL_M14_NEXT_PHASE, historical_readme)
+        historical = self.evaluate_readme_text(historical_readme)
         self.assertTrue(historical["readme_release_state_valid"])
         self.assertTrue(historical["m14_final_completion_valid"])
 
@@ -1285,11 +1286,11 @@ class M14FinalCompletionEvaluatorTests(unittest.TestCase):
             result["findings"],
         )
 
-    def test_98_historical_digest_cannot_be_replaced_by_maintained_digest(self):
+    def test_98_historical_digest_cannot_be_replaced_by_later_phase_digest(self):
         relative_path = EXPECTED_BUNDLE[2]["relative_path"]
-        maintained_digest = EXPECTED_MAINTAINED_BUNDLE_SHA256[relative_path]
-        self.assertNotEqual(maintained_digest, EXPECTED_BUNDLE[2]["sha256"])
-        self.fixture["completion_readiness_bundle"][2]["sha256"] = maintained_digest
+        later_phase_digest = "0" * 64
+        self.assertNotEqual(later_phase_digest, EXPECTED_BUNDLE[2]["sha256"])
+        self.fixture["completion_readiness_bundle"][2]["sha256"] = later_phase_digest
         result = self.evaluate()
         self.assertFalse(result["m14_final_completion_valid"])
         self.assertFalse(result["completion_readiness_bundle_integrity_valid"])

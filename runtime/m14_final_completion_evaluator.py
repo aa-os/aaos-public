@@ -2,11 +2,12 @@
 
 The evaluator treats repository files as inert evidence.  It reads JSON and
 README text, preserves the recorded PR #214 digests as historical evidence,
-recomputes canonical repository-text SHA-256 digests for maintained files and
-separately bound auxiliary dependencies, and reports whether the recorded
-transition is internally consistent.  It never imports or executes another
-evaluator or test, runs commands or workflows, queries GitHub, publishes a
-release, changes tracker state, or exercises governance authority.
+checks that later-phase maintained bundle paths remain readable canonical text,
+validates separately bound immutable auxiliary dependencies, and reports
+whether the recorded transition is internally consistent.  Historical Git
+object digest proof remains test-only.  The evaluator never imports or executes
+another evaluator or test, runs commands or workflows, queries GitHub,
+publishes a release, changes tracker state, or exercises governance authority.
 """
 
 from __future__ import annotations
@@ -84,21 +85,6 @@ EXPECTED_BUNDLE = (
         "executable_by_final_completion_evaluator": False,
     },
 )
-
-EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES = {
-    "runtime/m14_completion_readiness_evaluator.py": (
-        "c9dbf73ee66b2e6e002ed82f2c16913d23b13c0b22d70ee56dc7761b7b4069b3"
-    ),
-    "tests/test_m14_completion_readiness_evaluator.py": (
-        "6faf721f987379bc5220e022017f9a3a3c91555a58264de6c0a36ff8a8241b1b"
-    ),
-}
-EXPECTED_MAINTAINED_BUNDLE_SHA256 = {
-    entry["relative_path"]: EXPECTED_MAINTAINED_BUNDLE_SHA256_OVERRIDES.get(
-        entry["relative_path"], entry["sha256"]
-    )
-    for entry in EXPECTED_BUNDLE
-}
 
 EXPECTED_MAINTAINED_COMPLETION_READINESS_AUXILIARY_DEPENDENCIES = (
     {
@@ -360,6 +346,13 @@ README_NEXT_PHASE_FORBIDDEN_PATTERNS = (
         r"\brelease\s+approval\s+(?:is\s+)?granted\b",
         "readme_next_phase_transfers_release_or_governance_authority",
     ),
+)
+README_HISTORICAL_STATE_FORBIDDEN_PATTERNS = tuple(
+    (
+        pattern,
+        finding.replace("readme_next_phase_", "readme_historical_state_"),
+    )
+    for pattern, finding in README_NEXT_PHASE_FORBIDDEN_PATTERNS
 )
 
 EXPLICIT_NEGATIVE_VOCABULARY = (
@@ -668,6 +661,18 @@ def _section(text: str, heading: str, end_heading: str | None = None) -> str:
     return text[start:] if end < 0 else text[start:end]
 
 
+def _completed_milestone_sequence(current_status: str) -> tuple[int, ...]:
+    completion_lines = re.findall(
+        r"(?m)^M1[^\r\n]*\s+are complete\.\r?$",
+        current_status,
+    )
+    if len(completion_lines) != 1:
+        return ()
+    return tuple(
+        int(value) for value in re.findall(r"\bM(\d+)\b", completion_lines[0])
+    )
+
+
 def _has_container(payload: Mapping[str, Any], key: str) -> bool:
     value = payload.get(key)
     return isinstance(value, (Mapping, list, tuple)) and bool(value)
@@ -787,7 +792,7 @@ def _validate_bundle(
             integrity = False
             continue
         try:
-            observed = sha256_repository_file(root, relative_path, mode="text")
+            sha256_repository_file(root, relative_path, mode="text")
         except UnicodeDecodeError:
             _add(
                 findings,
@@ -825,12 +830,6 @@ def _validate_bundle(
             present = False
             integrity = False
             continue
-        if observed != EXPECTED_MAINTAINED_BUNDLE_SHA256[relative_path]:
-            _add(
-                findings,
-                f"completion_readiness_bundle_maintained_digest_mismatch:{relative_path}",
-            )
-            integrity = False
         if expected["artifact_type"] == "fixture":
             try:
                 loaded = load_fixture(path)
@@ -1225,19 +1224,6 @@ def _validate_readme(root: Path, findings: list[str], missing: list[str]) -> boo
     if not any(line.startswith("- v0.12.0 ") for line in release_lines):
         _add(findings, "readme_v0_12_0_prior_baseline_missing")
         valid = False
-    versions: list[tuple[int, int, int]] = []
-    for line in release_lines:
-        match = re.match(r"^- v(\d+)\.(\d+)\.(\d+)\s+", line)
-        if match:
-            versions.append(tuple(int(part) for part in match.groups()))
-    if (
-        not release_lines
-        or release_lines[-1] != README_RELEASE_ENTRY
-        or not versions
-        or max(versions) != (0, 13, 0)
-    ):
-        _add(findings, "readme_latest_release_not_v0_13_0")
-        valid = False
 
     baseline = _section(text, "Current baseline:", "## Current Status")
     baseline_body = baseline[len("Current baseline:") :].lstrip("\r\n")
@@ -1253,7 +1239,8 @@ def _validate_readme(root: Path, findings: list[str], missing: list[str]) -> boo
             valid = False
 
     current = _section(text, "## Current Status", "## M5 Additions")
-    if README_STATUS not in current:
+    completed_milestones = _completed_milestone_sequence(current)
+    if completed_milestones[:14] != tuple(range(1, 15)):
         _add(findings, "readme_m1_through_m14_completion_status_missing")
         valid = False
     completed = _section(current, "M14 completed:", "AAOS Public now has:")
@@ -1283,6 +1270,11 @@ def _validate_readme(root: Path, findings: list[str], missing: list[str]) -> boo
         valid = False
     for pattern, finding in README_NEXT_PHASE_FORBIDDEN_PATTERNS:
         if re.search(pattern, next_phase_body, flags=re.IGNORECASE):
+            _add(findings, finding)
+            valid = False
+
+    for pattern, finding in README_HISTORICAL_STATE_FORBIDDEN_PATTERNS:
+        if re.search(pattern, normalized, flags=re.IGNORECASE):
             _add(findings, finding)
             valid = False
 

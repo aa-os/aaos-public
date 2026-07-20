@@ -83,10 +83,11 @@ AAOS Public v0.1.0 is now released: Governance Radar Bootstrap is complete. Exte
 - v0.11.0 — M12 Public Integration Pack Consumer Registry and Integration CI
 - v0.12.0 — M13 External Consumer Registry Hardening and Operational Readiness
 - v0.13.0 — M14 High-Risk Runtime Policy Gates and Public-Output Safety
+- v0.14.0 — M15 Learning Sovereignty and Evidence-Bound Capability Memory
 
 Current baseline:
 
-AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, the M9 Decision Proof Runtime Replay pattern, the M10 Decision Proof Sealing Boundary and External Integration Readiness pattern, the M11 Public Integration Pack and External Evidence Consumer Pilot pattern, the M12 Public Integration Pack Consumer Registry and Integration CI pattern, the M13 External Consumer Registry Hardening and Operational Readiness pattern, and the M14 High-Risk Runtime Policy Gates and Public-Output Safety pattern.
+AAOS Public now includes the Governance Radar foundation, first adapter skeletons, contract/schema hardening, Cloudflare L6 security verification, deterministic evaluator tests, CI gate coverage, the M5 governed adapter/specimen/evaluator pattern, the M6 software Decision Proof reconstruction workflow, the M7 Human-Agent Control Surface pattern, the M8 release governance hardening pattern, the M9 Decision Proof Runtime Replay pattern, the M10 Decision Proof Sealing Boundary and External Integration Readiness pattern, the M11 Public Integration Pack and External Evidence Consumer Pilot pattern, the M12 Public Integration Pack Consumer Registry and Integration CI pattern, the M13 External Consumer Registry Hardening and Operational Readiness pattern, the M14 High-Risk Runtime Policy Gates and Public-Output Safety pattern, and the M15 Learning Sovereignty and Evidence-Bound Capability Memory pattern.
 
 v0.9.0 adds AAOS Decision Proof Sealing Boundary.
 
@@ -114,6 +115,10 @@ v0.13.0 adds the M14 High-Risk Runtime Policy Gates and Public-Output Safety pat
 
 v0.13.0 declares M14 complete and prepares the repository for the v0.13.0 release state.
 
+v0.14.0 adds the M15 Learning Sovereignty and Evidence-Bound Capability Memory pattern.
+
+v0.14.0 declares M15 complete and prepares the repository for the v0.14.0 release state.
+
 Decision Proof sealing remains AAOS-owned.
 
 AAOS remains the decision sovereignty layer.
@@ -124,7 +129,7 @@ They must not seal Decision Proof, re-seal AAOS-sealed artifacts, convert non-se
 
 ## Current Status
 
-M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, and M14 are complete.
+M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14, and M15 are complete.
 
 M5 completed:
 
@@ -201,6 +206,18 @@ M14 completed:
 - #213 Release Proof Linkage Specimen
 - #214 Completion Readiness and Future README Path
 - this final completion PR
+
+M15 completed:
+
+- #231 M15 Learning Sovereignty and Evidence-Bound Capability Memory tracker
+- #232 / PR #233 Track A Learning Proof core contract
+- #234 / PR #237 Track B Evidence-Bound Capability Memory Pack contract
+- #238 / PR #239 Track C Lineage, Rollback, Deletion, and Portability
+- #240 / PR #241 Track D Cross-Control Regression and Authority Boundaries
+- #242 / PR #243 Track E1 Operational Readiness
+- #248 / PR #249 Track E2 Release-Proof Linkage
+- #250 / PR #251 Track E3 Completion Readiness
+- #252 / PR #253 Track E4 Final Completion Review and v0.14.0 Release State
 
 AAOS Public now has:
 
@@ -1158,14 +1175,14 @@ Readiness checklist results must not become release approval, risk acceptance, D
 
 ## Next Phase
 
-M15 Tracks A–E3 provide completion-readiness evidence for final human
-review.
+M15 repository completion has occurred through the human-reviewed Track E4 merge.
 
-M15 remains active and incomplete. Completion readiness is not M15
-completion. Track E4 and final human completion review remain required.
+Manual tag and GitHub Release publication remain separate, human-controlled
+actions. The exact v0.14.0 tag target is the resulting E4 merge commit; this
+repository state does not claim that the tag or GitHub Release already exists.
 
-v0.14.0 remains unpublished. No v0.14.0 tag or GitHub Release is
-authorized or created.
+After publication, open `Post-release review: v0.14.0 / M15` and verify the
+published target, release state, and candidate-to-merge continuity.
 
 Decision Proof sealing remains AAOS-owned.
 

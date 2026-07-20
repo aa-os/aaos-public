@@ -1,0 +1,352 @@
+{
+  "schema_version": "m15-final-completion-transition-register/v1",
+  "document_kind": "transition-register",
+  "repository": "aa-os/aaos-public",
+  "blocking_conditions": [
+    {
+      "condition_id": "malformed-e3-continuity-evidence",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:malformed-e3-continuity-evidence"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "e3-candidate-merge-identity-mismatch",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:e3-candidate-merge-identity-mismatch"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "e3-merge-tree-mismatch",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:e3-merge-tree-mismatch"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "e3-merge-parent-mismatch",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:e3-merge-parent-mismatch"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "e3-artifact-drift",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:e3-artifact-drift"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "superseded-e3-observation-used",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:superseded-e3-observation-used"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "superseded-e3-receipt-used",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:superseded-e3-receipt-used"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "active-e3-receipt-digest-mismatch",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:active-e3-receipt-digest-mismatch"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "track-a-e3-evidence-substitution",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:track-a-e3-evidence-substitution"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "omitted-acceptance-criterion",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:omitted-acceptance-criterion"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "substituted-acceptance-evidence",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:substituted-acceptance-evidence"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "hidden-completion-blocker",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:hidden-completion-blocker"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "readme-final-transition-drift",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:readme-final-transition-drift"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "premature-tracker-closure-claim",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:premature-tracker-closure-claim"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "premature-issue-closure-claim",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:premature-issue-closure-claim"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "premature-m15-complete-claim",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:premature-m15-complete-claim"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "premature-tag-created-claim",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:premature-tag-created-claim"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "premature-github-release-published-claim",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:premature-github-release-published-claim"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "candidate-head-as-final-tag-target",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:candidate-head-as-final-tag-target"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "verification-observation-candidate-mismatch",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:verification-observation-candidate-mismatch"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "human-approval-candidate-mismatch",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:human-approval-candidate-mismatch"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "human-approval-receipt-mismatch",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:human-approval-receipt-mismatch"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "evaluator-output-as-human-approval",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:evaluator-output-as-human-approval"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "historical-evidence-rebaseline",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:historical-evidence-rebaseline"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "mutable-main-source-base-pinning",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:mutable-main-source-base-pinning"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "unapproved-compatibility-repair",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:unapproved-compatibility-repair"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "insufficient-verification-coverage",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:insufficient-verification-coverage"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "completion-publication-conflation",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:completion-publication-conflation"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "proof-sealing-claim",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:proof-sealing-claim"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "authority-transfer-claim",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:authority-transfer-claim"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    },
+    {
+      "condition_id": "runtime-boundary-violation",
+      "state": "resolved",
+      "evidence_references": [
+        "urn:aaos:m15:e4:blocker-evidence:runtime-boundary-violation"
+      ],
+      "explanation": "Resolved by specific inert evidence; resolution grants no transition or publication authority."
+    }
+  ],
+  "readiness_requirements": [
+    {
+      "finding_id": "missing-final-pr-observation",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:missing-final-pr-observation"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    },
+    {
+      "finding_id": "missing-final-verification-receipt",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:missing-final-verification-receipt"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    },
+    {
+      "finding_id": "incomplete-test-execution",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:incomplete-test-execution"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    },
+    {
+      "finding_id": "missing-readme-transition-observation",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:missing-readme-transition-observation"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    },
+    {
+      "finding_id": "missing-release-target-preparation",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:missing-release-target-preparation"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    },
+    {
+      "finding_id": "missing-release-notes",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:missing-release-notes"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    },
+    {
+      "finding_id": "missing-publication-checklist",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:missing-publication-checklist"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    },
+    {
+      "finding_id": "missing-human-approval",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:missing-human-approval"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    },
+    {
+      "finding_id": "missing-approval-timestamp",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:missing-approval-timestamp"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    },
+    {
+      "finding_id": "missing-approval-receipt-binding",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:missing-approval-receipt-binding"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    },
+    {
+      "finding_id": "missing-approval-candidate-binding",
+      "state": "required",
+      "evidence_references": [
+        "urn:aaos:m15:e4:readiness-requirement:missing-approval-candidate-binding"
+      ],
+      "explanation": "Must be supplied and cross-bound before readiness; the requirement grants no authority."
+    }
+  ],
+  "tracker_231_state_before_merge": "open",
+  "issue_252_state_before_merge": "open",
+  "m15_state_before_merge": "active-and-incomplete",
+  "tag_state_before_merge": "absent-not-created",
+  "github_release_state_before_merge": "absent-not-published",
+  "caller_supplied_inert_record": true,
+  "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+}

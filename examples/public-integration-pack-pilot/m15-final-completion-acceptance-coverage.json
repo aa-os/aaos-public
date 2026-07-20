@@ -1,0 +1,284 @@
+{
+  "schema_version": "m15-final-completion-acceptance-matrix/v1",
+  "document_kind": "acceptance-coverage-matrix",
+  "repository": "aa-os/aaos-public",
+  "parent_tracker": 231,
+  "criterion_count": 16,
+  "criteria": [
+    {
+      "criterion_id": "m15-ac-01",
+      "criterion_text": "Learning Proof schema is deterministic and machine-readable.",
+      "source_track": "track-a",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-01"
+      ],
+      "artifact_references": [
+        "schemas/m15-learning-proof.schema.json"
+      ],
+      "test_references": [
+        "tests/test_m15_learning_proof_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-02",
+      "criterion_text": "Learning Sovereignty Boundary classes are defined.",
+      "source_track": "track-a",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-02"
+      ],
+      "artifact_references": [
+        "docs/learning-governance/m15-core-learning-proof-contract.md"
+      ],
+      "test_references": [
+        "tests/test_m15_learning_proof_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-03",
+      "criterion_text": "Learning authorization remains separate from decision execution.",
+      "source_track": "track-a",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-03"
+      ],
+      "artifact_references": [
+        "runtime/m15_learning_proof_evaluator.py"
+      ],
+      "test_references": [
+        "tests/test_m15_learning_proof_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-04",
+      "criterion_text": "Retention purposes are explicitly constrained.",
+      "source_track": "track-a",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-04"
+      ],
+      "artifact_references": [
+        "schemas/m15-learning-proof.schema.json"
+      ],
+      "test_references": [
+        "tests/test_m15_learning_proof_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-05",
+      "criterion_text": "Capability packs bind exact source and derived content.",
+      "source_track": "track-b",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-05"
+      ],
+      "artifact_references": [
+        "schemas/m15-capability-memory-pack.schema.json"
+      ],
+      "test_references": [
+        "tests/test_m15_capability_memory_pack_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-06",
+      "criterion_text": "Stale, incompatible, altered, contaminated, and revoked states fail deterministically.",
+      "source_track": "cross-track",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-06"
+      ],
+      "artifact_references": [
+        "runtime/m15_capability_memory_pack_evaluator.py"
+      ],
+      "test_references": [
+        "tests/test_m15_capability_memory_pack_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-07",
+      "criterion_text": "Lineage covers derived memory, rules, skills, evaluations, and adapters.",
+      "source_track": "track-c",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-07"
+      ],
+      "artifact_references": [
+        "schemas/m15-lineage-rollback-portability.schema.json"
+      ],
+      "test_references": [
+        "tests/test_m15_lineage_rollback_portability_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-08",
+      "criterion_text": "Rollback evidence identifies downstream dependencies.",
+      "source_track": "track-c",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-08"
+      ],
+      "artifact_references": [
+        "runtime/m15_lineage_rollback_portability_evaluator.py"
+      ],
+      "test_references": [
+        "tests/test_m15_lineage_rollback_portability_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-09",
+      "criterion_text": "Deletion evidence does not falsely claim physical deletion.",
+      "source_track": "track-c",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-09"
+      ],
+      "artifact_references": [
+        "docs/learning-governance/m15-lineage-rollback-portability-contract.md"
+      ],
+      "test_references": [
+        "tests/test_m15_lineage_rollback_portability_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-10",
+      "criterion_text": "Model-removal portability drill is simulation-only and reproducible.",
+      "source_track": "track-c",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-10"
+      ],
+      "artifact_references": [
+        "examples/public-integration-pack-pilot/m15-lineage-rollback-portability-model-removal-drill-success.json"
+      ],
+      "test_references": [
+        "tests/test_m15_lineage_rollback_portability_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-11",
+      "criterion_text": "Public fixtures use synthetic data only.",
+      "source_track": "cross-track",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-11"
+      ],
+      "artifact_references": [
+        "examples/public-integration-pack-pilot/m15-cross-control-matrix.json"
+      ],
+      "test_references": [
+        "tests/test_m15_cross_control_regression_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-12",
+      "criterion_text": "Maintained evaluators perform no network access or external execution.",
+      "source_track": "cross-track",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-12"
+      ],
+      "artifact_references": [
+        "runtime/m15_cross_control_regression_evaluator.py"
+      ],
+      "test_references": [
+        "tests/test_m15_cross_control_regression_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-13",
+      "criterion_text": "Authority and Decision Proof boundaries are regression-tested.",
+      "source_track": "track-d",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-13"
+      ],
+      "artifact_references": [
+        "docs/learning-governance/m15-cross-control-regression-contract.md"
+      ],
+      "test_references": [
+        "tests/test_m15_cross_control_regression_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-14",
+      "criterion_text": "M15 targeted tests pass.",
+      "source_track": "track-e3",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-14"
+      ],
+      "artifact_references": [
+        "examples/public-integration-pack-pilot/m15-completion-readiness-manifest.json"
+      ],
+      "test_references": [
+        "tests/test_m15_completion_readiness_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-15",
+      "criterion_text": "Full maintained repository suite remains clean.",
+      "source_track": "track-e3",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-15"
+      ],
+      "artifact_references": [
+        "examples/public-integration-pack-pilot/m15-completion-readiness-manifest.json"
+      ],
+      "test_references": [
+        "tests/test_m15_completion_readiness_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    },
+    {
+      "criterion_id": "m15-ac-16",
+      "criterion_text": "Final completion and release publication remain separately authorized.",
+      "source_track": "track-e3",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#criterion-16"
+      ],
+      "artifact_references": [
+        "examples/public-integration-pack-pilot/m15-completion-readiness-boundaries.json"
+      ],
+      "test_references": [
+        "tests/test_m15_completion_readiness_evaluator.py"
+      ],
+      "coverage_state": "covered",
+      "notes": "Maintained evidence is linked; evaluator success alone is not coverage.",
+      "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+    }
+  ],
+  "all_criteria_covered": true,
+  "caller_supplied_inert_record": true,
+  "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+}

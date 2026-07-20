@@ -1,0 +1,189 @@
+{
+  "schema_version": "m15-final-completion-release-preparation/v1",
+  "document_kind": "release-preparation-record",
+  "repository": "aa-os/aaos-public",
+  "source_issue": 252,
+  "parent_tracker": 231,
+  "pull_request_number": 253,
+  "release_version": "v0.14.0",
+  "release_title": "M15 Learning Sovereignty and Evidence-Bound Capability Memory",
+  "source_main_base_sha": "52ec76c17cd21ec519dfec45ced4ad720b82d80e",
+  "final_candidate_binding": "commit-external-active-pr-observation",
+  "future_merge_commit": "post-merge-placeholder",
+  "expected_merge_method": "merge-commit",
+  "tag_target_rule": "exact-e4-merge-commit",
+  "release_notes_reference": "examples/public-integration-pack-pilot/m15-final-completion-release-preparation.json#/release_notes",
+  "publication_checklist_reference": "examples/public-integration-pack-pilot/m15-final-completion-release-preparation.json#/publication_checklist",
+  "tag_state_before_merge": "absent-not-created",
+  "github_release_state_before_merge": "absent-not-published",
+  "publication_authority": "human-controlled-post-merge-action",
+  "candidate_head_is_tag_target": false,
+  "release_notes": [
+    {
+      "section_id": "summary",
+      "heading": "M15 Learning Sovereignty and Evidence-Bound Capability Memory",
+      "content_summary": "Records the human-reviewed M15 repository completion transition while keeping publication separate.",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231",
+        "https://github.com/aa-os/aaos-public/issues/252"
+      ]
+    },
+    {
+      "section_id": "tracks",
+      "heading": "Completed Tracks A-E4",
+      "content_summary": "Binds Tracks A-D, E1, E2, E3, and the reviewed E4 transition.",
+      "evidence_references": [
+        "https://github.com/aa-os/aaos-public/issues/231#issuecomment-track-evidence"
+      ]
+    },
+    {
+      "section_id": "boundaries",
+      "heading": "Publication and authority boundaries",
+      "content_summary": "Tag and GitHub Release publication remain manual post-merge actions; proof sealing remains AAOS-owned.",
+      "evidence_references": [
+        "docs/learning-governance/m15-final-completion-contract.md"
+      ]
+    }
+  ],
+  "publication_checklist": [
+    {
+      "step_order": 1,
+      "step_id": "post-merge-publication-01",
+      "instruction": "Obtain the actual E4 merge commit and tree.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 2,
+      "step_id": "post-merge-publication-02",
+      "instruction": "Confirm the final E4 candidate is a merge parent.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 3,
+      "step_id": "post-merge-publication-03",
+      "instruction": "Confirm candidate-to-merge continuity.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 4,
+      "step_id": "post-merge-publication-04",
+      "instruction": "Confirm #252 is closed.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 5,
+      "step_id": "post-merge-publication-05",
+      "instruction": "Confirm #231 is closed.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 6,
+      "step_id": "post-merge-publication-06",
+      "instruction": "Confirm README represents M15 repository completion.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 7,
+      "step_id": "post-merge-publication-07",
+      "instruction": "Confirm tag v0.14.0 is still absent before publication.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 8,
+      "step_id": "post-merge-publication-08",
+      "instruction": "Create tag v0.14.0 at the exact E4 merge commit.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 9,
+      "step_id": "post-merge-publication-09",
+      "instruction": "Create GitHub Release v0.14.0.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 10,
+      "step_id": "post-merge-publication-10",
+      "instruction": "Confirm the Release target.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 11,
+      "step_id": "post-merge-publication-11",
+      "instruction": "Confirm the Release is not Draft.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 12,
+      "step_id": "post-merge-publication-12",
+      "instruction": "Confirm the Release is not a prerelease.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 13,
+      "step_id": "post-merge-publication-13",
+      "instruction": "Confirm Latest status where appropriate.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 14,
+      "step_id": "post-merge-publication-14",
+      "instruction": "Open Post-release review: v0.14.0 / M15.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    },
+    {
+      "step_order": 15,
+      "step_id": "post-merge-publication-15",
+      "instruction": "Do not delete branches until post-release continuity review is complete.",
+      "performed_after_merge": true,
+      "performed_by_evaluator": false,
+      "completed_before_merge": false
+    }
+  ],
+  "human_approval_template": {
+    "template_only": true,
+    "synthetic": true,
+    "non_authoritative": true,
+    "human_approval_present": false,
+    "approver_identity": null,
+    "approval_timestamp": null,
+    "candidate_head_sha": null,
+    "candidate_tree_sha": null,
+    "verification_receipt_reference": null,
+    "verification_receipt_canonical_sha256": null,
+    "instructions": "A human reviewer must publish a commit-external approval only after final candidate freeze, active observation, clean verification receipt, and live-state comparison.",
+    "authority_boundary": "Human approval of the E4 repository transition does not authorize or perform v0.14.0 tag creation or GitHub Release publication."
+  },
+  "repository_completion_is_release_publication": false,
+  "publication_is_governance_approval": false,
+  "caller_supplied_inert_record": true,
+  "non_authoritative_boundary_statement": "Human approval of the E4 repository transition does not authorize or perform v0.14.0 tag creation or GitHub Release publication.",
+  "authority_boundary": "Track E4 evidence is non-authoritative. Only an explicitly approved human-reviewed merge of the exact frozen candidate may perform the M15 repository completion transition. Tag and GitHub Release publication remain separate human-controlled post-merge actions. Decision Proof sealing and Learning Proof sealing remain AAOS-owned; no evaluator may accept risk, close an audit, grant a waiver, or transfer authority."
+}
