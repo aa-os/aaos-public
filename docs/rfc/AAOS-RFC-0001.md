@@ -4,6 +4,17 @@ Status: Draft. Review state: `under_review`. This package does not assign Candid
 
 ## Normative scope
 
+RFC-0001 owns the canonical conceptual architecture, governance vocabulary, authority boundaries, classification model, and cross-layer responsibility model for AAOS.
+
+Downstream RFC ownership is bounded as follows:
+
+- RFC-0002 owns canonical objects and relations.
+- RFC-0003 owns canonical states and transitions.
+- RFC-0004 owns Decision Proof and evidence semantics.
+- RFC-0005 owns interfaces and conformance profiles.
+
+RFC-0001 does not define a concrete implementation, deployment topology, provider-specific runtime contract, private-L0 doctrine, or undisclosed sovereign policy. Those remain outside this public canonical architecture unless separately governed by an applicable downstream RFC or authenticated private sovereign process.
+
 AAOS retains L0–L6 as conceptual responsibility domains. Layer number does not establish Authority rank.
 
 AAOS defines a non-numbered Governed Intent and Interaction Ingress Surface. Capture does not establish identity, mandate, Authority, approval, admission, or execution permission.
