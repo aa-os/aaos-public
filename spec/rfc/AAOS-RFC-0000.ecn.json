@@ -1,0 +1,147 @@
+{
+  "component_id": "AAOS-RFC-0000-C7",
+  "component_type": "emergency_constraint_notice_contract",
+  "component_version": "0.1.0-candidate.1",
+  "rfc_id": "AAOS-RFC-0000",
+  "candidate_version": "0.1.0-candidate.1",
+  "semantic_owner": "abstract_semantic_owner",
+  "source_issue_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277",
+    "https://github.com/aa-os/aaos-public/issues/279"
+  ],
+  "source_review_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047457643",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047507591",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054339690",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054380735",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054665217",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054777271",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054796507"
+  ],
+  "normative_or_informative": "normative",
+  "public_private_projection": "public_safe_abstract",
+  "status_within_package": "materialized_candidate_component",
+  "predecessor_refs": [],
+  "successor_refs": [],
+  "unresolved_input_refs": [
+    "R0-U01",
+    "R0-U05",
+    "R0-U08"
+  ],
+  "canonicalization_method": "RFC8785_JCS",
+  "digest_algorithm": "SHA-256",
+  "rfc_review_state": "under_review",
+  "rfc_status": "not_assigned",
+  "proposed_status": "candidate",
+  "maximum_initial_validity_days": 30,
+  "maximum_single_renewal_days": 30,
+  "absolute_process_validity_days": 60,
+  "maximum_renewal_count": 1,
+  "ecn_record_contract": {
+    "required_fields": [
+      "ecn_id",
+      "ecn_version",
+      "affected_rfc_ids",
+      "affected_rfc_versions",
+      "affected_requirement_ids",
+      "affected_profile_ids",
+      "threat_or_governance_defect",
+      "restrictive_rule",
+      "issuing_authority_ref",
+      "issued_at",
+      "effective_at",
+      "expires_at",
+      "renewal_count",
+      "maximum_initial_validity_days",
+      "maximum_single_renewal_days",
+      "absolute_process_validity_days",
+      "affected_conformance_claims",
+      "affected_deployment_admissions",
+      "required_runtime_restriction_class",
+      "required_evidence_refs",
+      "withdrawal_conditions",
+      "replacement_rfc_action_ref",
+      "supersedes_ecn_id",
+      "superseded_by_ecn_id",
+      "public_private_projection"
+    ],
+    "stable_identity_rule": "ecn_id and ecn_version must remain distinct from repository path, issue, pull request, commit, tree, and release identity",
+    "affected_identity_rule": "affected RFC versions, profiles, and requirement IDs must be exact",
+    "authority_reference_rule": "issuing_authority_ref is an abstract or opaque Authority reference and does not assign a private institutional role",
+    "runtime_field_boundary": "required_runtime_restriction_class declares the required restrictive class only; the ECN record does not implement, deploy, or authorize a runtime control",
+    "canonical_time_rule": "issued_at, effective_at, and expires_at must use an explicitly declared clock context"
+  },
+  "allowed_effects": [
+    "temporarily restrict affected use",
+    "temporarily suspend affected use"
+  ],
+  "prohibited_effects": [
+    "expand Authority",
+    "waive mandatory evidence",
+    "convert unknown into allow",
+    "convert not_evaluable into allow",
+    "silently mutate accepted RFC text",
+    "become permanent through repeated renewal",
+    "infer implementation authorization",
+    "infer deployment authorization",
+    "infer risk acceptance",
+    "infer waiver",
+    "infer restore, cutover, or sealing authority"
+  ],
+  "issuance_requirements": [
+    "stable ECN ID",
+    "exact affected RFC versions, profiles, and requirement IDs",
+    "identified threat or governance defect",
+    "temporary restrictive rule",
+    "issuing Authority reference",
+    "effective time and maximum validity",
+    "affected claims and admissions",
+    "evidence",
+    "withdrawal or replacement conditions",
+    "mandatory follow-up review"
+  ],
+  "renewal_policy": {
+    "renewal_count_must_equal": 1,
+    "maximum_additional_calendar_days": 30,
+    "required_renewal_evidence": [
+      "updated threat or governance evidence",
+      "confirmation that the affected defect remains unresolved",
+      "explicit issuing-Authority renewal",
+      "updated impact and claim-invalidation assessment",
+      "published progress toward normal RFC revision, withdrawal, or replacement"
+    ],
+    "renewal_must_not_reset_initial_clock": true,
+    "second_renewal_permitted": false
+  },
+  "expiry_policy": {
+    "invariant": "ECN expired != unsafe behavior automatically permitted",
+    "specification_instrument_effect": "expiry ends the ECN as a specification instrument",
+    "continued_restriction_requirement": "any continued restriction requires another valid governance basis",
+    "automatic_permission_after_expiry": false,
+    "automatic_status_transition_after_expiry": false
+  },
+  "absolute_limit_policy": {
+    "after_day_60": "the ECN cannot remain permanent RFC text or be renewed again",
+    "critical_live_control_boundary": "an affected critical live control may remain operationally restrictive only through a separately authorized emergency governance action",
+    "required_rfc_process_result": [
+      "blocked",
+      "deprecated",
+      "withdrawn"
+    ],
+    "normalization_requirement": "use a normal RFC revision, withdrawal, or replacement rather than silently treating the ECN as permanent text"
+  },
+  "review_and_history_requirements": [
+    "urgency does not erase later review",
+    "urgency does not erase historical traceability",
+    "issuance, renewal, expiry, withdrawal, replacement, and supersession remain historically resolvable",
+    "affected claim and admission consequences remain explicit"
+  ],
+  "authority_boundaries": [
+    "this contract does not issue an ECN",
+    "this contract does not assign an issuing Authority",
+    "this contract does not modify production controls",
+    "this contract does not implement or deploy a runtime restriction",
+    "this contract does not authorize implementation, release, deployment, certification, risk acceptance, restore, cutover, or sealing"
+  ]
+}

@@ -1,0 +1,830 @@
+{
+  "component_id": "AAOS-RFC-0000-C2",
+  "component_type": "canonical_semantic_manifest",
+  "component_version": "0.1.0-candidate.1",
+  "rfc_id": "AAOS-RFC-0000",
+  "candidate_version": "0.1.0-candidate.1",
+  "semantic_owner": "abstract_semantic_owner",
+  "source_issue_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277",
+    "https://github.com/aa-os/aaos-public/issues/279"
+  ],
+  "source_review_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047457643",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047507591",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054339690",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054380735",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054665217",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054777271",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054796507"
+  ],
+  "normative_or_informative": "normative",
+  "public_private_projection": "public_safe_abstract",
+  "status_within_package": "materialized_candidate_component",
+  "predecessor_refs": [],
+  "successor_refs": [],
+  "unresolved_input_refs": [
+    "R0-U01",
+    "R0-U02",
+    "R0-U06",
+    "R0-U08"
+  ],
+  "canonicalization_method": "RFC8785_JCS",
+  "digest_algorithm": "SHA-256",
+  "manifest_id": "AAOS-RFC-0000-C2",
+  "manifest_version": "0.1.0-candidate.1",
+  "primary_normative_disposition_subject": "semantic_manifest",
+  "manifest_metadata": {
+    "rfc_id": "AAOS-RFC-0000",
+    "candidate_version": "0.1.0-candidate.1",
+    "rfc_class": "process",
+    "rfc_review_state": "under_review",
+    "rfc_status": "not_assigned",
+    "proposed_status": "candidate",
+    "normative_content_only": true,
+    "requirement_count": 39,
+    "normative_clause_count": 57,
+    "phase_5_state": "canonicalize_and_bind",
+    "phase_6_state": "not_started"
+  },
+  "package_metadata": {
+    "package_id": "AAOS-RFC-0000-CANDIDATE-PACKAGE-001",
+    "package_version": "0.1.0-candidate.1",
+    "rfc_id": "AAOS-RFC-0000",
+    "candidate_version": "0.1.0-candidate.1",
+    "rfc_class": "process",
+    "rfc_review_state": "under_review",
+    "rfc_status": "not_assigned",
+    "proposed_rfc_status": "candidate",
+    "package_phase": "phase_5_canonicalize_and_bind",
+    "package_owner_role": "semantic_owner_abstract_ref",
+    "package_editor_role": "editor_abstract_ref",
+    "final_disposer_role_ref": null,
+    "source_issue_refs": [
+      "github:aa-os/aaos-public#277",
+      "github:aa-os/aaos-public#279"
+    ],
+    "source_review_refs": [
+      5047457643,
+      5047507591,
+      5054243927,
+      5054339690,
+      5054380735,
+      5054665217,
+      5054777271,
+      5054796507
+    ],
+    "component_manifest_refs": ["AAOS-RFC-0000-COMPONENT-MANIFEST"],
+    "normative_manifest_ref": "AAOS-RFC-0000-C2",
+    "requirement_registry_ref": "AAOS-RFC-0000-C3",
+    "traceability_manifest_ref": "AAOS-RFC-0000-C9",
+    "unresolved_input_refs": ["R0-U01", "R0-U02", "R0-U03", "R0-U04", "R0-U05", "R0-U06", "R0-U07", "R0-U08"],
+    "public_private_projection": "public_safe_abstract_contract_only",
+    "canonicalization_method": "RFC 8785 JSON Canonicalization Scheme",
+    "digest_algorithm": "SHA-256",
+    "created_at": null,
+    "effective_at": null,
+    "supersedes_package_id": null,
+    "superseded_by_package_id": null
+  },
+  "source_review_catalog": [
+    {
+      "repository": "aa-os/aaos-public",
+      "issue_number": 277,
+      "comment_id": 5047457643,
+      "review_stage": "rfc_0000_review_1"
+    },
+    {
+      "repository": "aa-os/aaos-public",
+      "issue_number": 277,
+      "comment_id": 5047507591,
+      "review_stage": "rfc_0000_review_2"
+    },
+    {
+      "repository": "aa-os/aaos-public",
+      "issue_number": 277,
+      "comment_id": 5054243927,
+      "review_stage": "rfc_0000_review_3"
+    },
+    {
+      "repository": "aa-os/aaos-public",
+      "issue_number": 277,
+      "comment_id": 5054339690,
+      "review_stage": "rfc_0000_review_4"
+    },
+    {
+      "repository": "aa-os/aaos-public",
+      "issue_number": 279,
+      "comment_id": 5054380735,
+      "review_stage": "phase_1_semantics_freeze"
+    },
+    {
+      "repository": "aa-os/aaos-public",
+      "issue_number": 279,
+      "comment_id": 5054665217,
+      "review_stage": "phase_2_package_model"
+    },
+    {
+      "repository": "aa-os/aaos-public",
+      "issue_number": 279,
+      "comment_id": 5054777271,
+      "review_stage": "phase_3_human_readable_draft"
+    },
+    {
+      "repository": "aa-os/aaos-public",
+      "issue_number": 279,
+      "comment_id": 5054796507,
+      "review_stage": "phase_4_consistency_review"
+    }
+  ],
+  "normative_dependencies": {
+    "dependency_direction": "AAOS-RFC-0001_through_AAOS-RFC-0005_depend_on_AAOS-RFC-0000",
+    "upstream_rfc_id": "AAOS-RFC-0000",
+    "ordered_downstream_rfc_ids": [
+      "AAOS-RFC-0001",
+      "AAOS-RFC-0002",
+      "AAOS-RFC-0003",
+      "AAOS-RFC-0004",
+      "AAOS-RFC-0005"
+    ],
+    "required_relation": "must_trace_to_AAOS-RFC-0000_and_primary_AAOS-REQ_identifiers",
+    "prohibited_relation": "must_not_invent_independent_requirement_status_or_change_control_processes",
+    "downstream_implementation_state": "not_implemented_by_this_candidate_package",
+    "downstream_lifecycle_authority": "none"
+  },
+  "rfc_class_registry": {
+    "ordering": "frozen_explicit_order",
+    "values": ["process", "standards_track", "profile", "informational", "experimental"],
+    "boundary": "rfc_class_does_not_imply_lifecycle_implementation_deployment_or_conformance"
+  },
+  "rfc_review_state_registry": {
+    "ordering": "frozen_explicit_order",
+    "values": [
+      "not_started",
+      "under_review",
+      "changes_requested",
+      "ready_for_disposition",
+      "blocked_pending_private_l0_input",
+      "blocked_by_contract_contradiction"
+    ],
+    "boundary": "review_state_does_not_create_normative_force_or_assign_rfc_status"
+  },
+  "rfc_status_registry": {
+    "ordering": "frozen_explicit_order",
+    "values": ["draft", "candidate", "provisional", "accepted", "stable", "deprecated", "superseded", "withdrawn", "rejected"],
+    "current_assignment": "not_assigned",
+    "proposed_target": "candidate",
+    "transition_registry_ref": "AAOS-RFC-0000-C4",
+    "required_transition_mechanism": "exact_candidate_bound_human_disposition"
+  },
+  "archival_projection_rules": {
+    "historical_kind": "derived_archival_designation_or_publication_projection",
+    "historical_is_rfc_class": false,
+    "historical_is_rfc_status": false,
+    "source_record_requirement": "exact_historically_preserved_inactive_record"
+  },
+  "verification_class_registry": {
+    "ordering": "frozen_explicit_order",
+    "values": ["machine_testable", "evidence_reviewable", "human_disposition_only", "private_l0_dependent"]
+  },
+  "semantic_change_class_registry": {
+    "ordering": "frozen_explicit_order",
+    "values": ["editorial", "clarifying", "additive_compatible", "restrictive", "breaking"],
+    "semantic_change_class_field": "semantic_change_class",
+    "resulting_version_field": "resulting_version_increment",
+    "separation_rule": "resulting_version_increment_must_not_define_semantic_change_class",
+    "restrictive_default_increment": "MAJOR",
+    "restrictive_minor_exception": "accepted_Compatibility_Preservation_Profile_with_all_bounded_compatibility_conditions"
+  },
+  "review_role_registry": {
+    "assignment_mode": "abstract_roles_only",
+    "base_transition_roles": ["semantic_owner", "governance_reviewer", "final_disposer"],
+    "standards_track_and_profile_additional_roles": ["conformance_reviewer"],
+    "security_or_authority_sensitive_additional_roles": ["security_authority_boundary_reviewer"],
+    "supporting_roles": ["proposer", "editor", "private_l0_reviewer_when_applicable"],
+    "logical_separation_required": true,
+    "role_combination_rule": "explicit_authorization_and_recorded_independence_limitation_required",
+    "institutional_role_assignments": null
+  },
+  "requirement_registry_ref": {
+    "component_id": "AAOS-RFC-0000-C3",
+    "ordered_primary_requirement_range": {
+      "first": "AAOS-REQ-0000-001",
+      "last": "AAOS-REQ-0000-039",
+      "count": 39
+    },
+    "primary_id_reuse": "prohibited",
+    "new_primary_ids_in_candidate": "prohibited",
+    "specialized_identifiers": "secondary_mappings_only"
+  },
+  "status_transition_registry_ref": {
+    "component_id": "AAOS-RFC-0000-C4",
+    "standards_track_and_profile_provisional_required": true,
+    "process_and_informational_direct_candidate_to_accepted": "bounded_conditions_only",
+    "experimental_direct_to_stable": "prohibited",
+    "stable_from_elapsed_time_only": "prohibited",
+    "rejection_exact_source_states": ["draft", "candidate", "provisional"],
+    "withdrawal_exact_source_states": ["draft", "candidate", "provisional", "accepted", "stable", "deprecated"]
+  },
+  "review_evidence_registry_ref": {
+    "component_id": "AAOS-RFC-0000-C5",
+    "class_specific_evidence_required": true,
+    "covered_transitions": ["candidate_to_provisional", "provisional_to_accepted", "accepted_to_stable"],
+    "review_evidence_complete_is_transition_complete": false
+  },
+  "change_versioning_registry_ref": {
+    "component_id": "AAOS-RFC-0000-C6",
+    "semantic_change_and_version_increment_separate": true
+  },
+  "ecn_contract_ref": {
+    "component_id": "AAOS-RFC-0000-C7",
+    "maximum_initial_validity_days": 30,
+    "maximum_single_renewal_days": 30,
+    "absolute_process_validity_days": 60,
+    "restrictive_only": true,
+    "authority_expansion": "prohibited",
+    "mandatory_evidence_waiver": "prohibited",
+    "not_evaluable_to_allow": "prohibited",
+    "silent_rfc_rewrite": "prohibited"
+  },
+  "public_private_boundary_ref": {
+    "component_id": "AAOS-RFC-0000-C8",
+    "public_semantic_precedence_is_private_institutional_applicability": false,
+    "private_l0_may": ["restrict_adoption", "decline_adoption", "determine_institutional_applicability"],
+    "private_l0_must_not": ["silently_rewrite_public_semantics", "be_fabricated", "be_disclosed_by_inference"],
+    "missing_or_conflicting_private_input": ["blocked_pending_private_l0_input", "blocked_by_contract_contradiction"],
+    "private_dependency_receipt_mandatory_claim_boundary": [
+      "receipt proves only the declared bounded review result",
+      "receipt does not prove full private implementation"
+    ]
+  },
+  "traceability_manifest_ref": {
+    "component_id": "AAOS-RFC-0000-C9",
+    "exact_comment_ids_required": true,
+    "stable_id_references_required": true,
+    "traceability_edge_is_semantic_correctness_proof": false
+  },
+  "digest_and_disposition_record_ref": {
+    "component_id": "AAOS-RFC-0000-C10",
+    "planning_package_disposition_is_lifecycle_transition": false,
+    "candidate_package_digest_ref_required_for_phase_6": true,
+    "semantic_manifest_digest_ref_required_for_phase_6": true,
+    "repository_identity_required_when_materialized": true
+  },
+  "unresolved_input_registry": [
+    {
+      "unresolved_input_id": "R0-U01",
+      "subject": "exact_institutional_role_assignments",
+      "resolution_state": "unresolved_private_l0_dependent",
+      "handling": "keep_abstract_and_do_not_infer"
+    },
+    {
+      "unresolved_input_id": "R0-U02",
+      "subject": "exact_candidate_editor_and_final_disposer_identities",
+      "resolution_state": "unresolved",
+      "handling": "null_or_opaque_until_authorized"
+    },
+    {
+      "unresolved_input_id": "R0-U03",
+      "subject": "exact_repository_paths",
+      "resolution_state": "external_phase_5_component_manifest_binding",
+      "handling": "C2_uses_stable_component_ids_not_repository_paths"
+    },
+    {
+      "unresolved_input_id": "R0-U04",
+      "subject": "exact_candidate_version",
+      "resolution_state": "proposed_metadata_value",
+      "handling": "0.1.0-candidate.1_does_not_assign_lifecycle_status"
+    },
+    {
+      "unresolved_input_id": "R0-U05",
+      "subject": "exact_timestamps_and_effective_time",
+      "resolution_state": "unresolved_for_lifecycle",
+      "handling": "materialization_receipt_may_record_calculation_time_but_effective_time_requires_phase_6"
+    },
+    {
+      "unresolved_input_id": "R0-U06",
+      "subject": "repository_commit_and_tree_identities",
+      "resolution_state": "external_binding_required_after_commit",
+      "handling": "bind_in_C10_without_self_reference"
+    },
+    {
+      "unresolved_input_id": "R0-U07",
+      "subject": "final_semantic_manifest_digest",
+      "resolution_state": "external_binding_required_after_canonicalization",
+      "handling": "bind_in_C10_and_phase_5_receipt_without_writing_digest_into_C2"
+    },
+    {
+      "unresolved_input_id": "R0-U08",
+      "subject": "final_human_disposition",
+      "resolution_state": "unresolved_phase_6_not_started",
+      "handling": "must_not_be_guessed_or_inferred_from_repository_or_validation_state"
+    }
+  ],
+  "canonicalization_contract": {
+    "target": "entire_semantic_manifest_JSON_value",
+    "method": "RFC 8785 JSON Canonicalization Scheme",
+    "digest_algorithm": "SHA-256",
+    "self_digest_field": "prohibited",
+    "canonical_bytes_encoding": "UTF-8",
+    "repeat_canonicalization_same_input_same_bytes": true,
+    "semantic_array_order_rule": "preserve_explicit_order",
+    "unordered_set_array_rule": "sort_by_stable_identifier_in_Unicode_code_point_order_before_canonicalization",
+    "reference_rule": "stable_identifiers_not_repository_paths",
+    "null_and_absent_are_distinct": true
+  },
+  "unknown_field_and_extension_contract": {
+    "unknown_mandatory_field_behavior": ["fail_closed", "not_evaluable", "explicit_human_disposition"],
+    "unknown_mandatory_fields_must_not": ["be_ignored", "be_guessed", "be_downgraded", "map_to_permissive_behavior"],
+    "extension_namespace_required": true,
+    "extension_core_field_collision": "prohibited",
+    "undeclared_extension_behavior": "not_evaluable"
+  },
+  "migration_and_history_boundaries": {
+    "specification_history": "append_only",
+    "inactive_records_remain_resolvable": true,
+    "superseded_requires_exact_successor": true,
+    "prior_claim_implies_successor_conformance": false,
+    "same_product_name_implies_same_evaluated_subject": false,
+    "migration_window_scope": ["original_rfc_version", "exact_evaluated_subject", "exact_environment", "restrictions", "validity_interval"],
+    "migration_window_implies_successor_conformance": false
+  },
+  "authority_boundaries": {
+    "candidate_package_effect": "documentation_and_specification_packaging_only",
+    "does_not_authorize": [
+      "implementation",
+      "runtime_behavior_change",
+      "production_control_change",
+      "release",
+      "tag",
+      "deployment",
+      "certification",
+      "conformance",
+      "risk_acceptance",
+      "waiver",
+      "audit_closure",
+      "rollback",
+      "restore",
+      "cutover",
+      "proof_sealing",
+      "institutional_adoption",
+      "merge"
+    ],
+    "github_state_is_lifecycle_disposition": false,
+    "validation_result_is_lifecycle_disposition": false,
+    "document_presence_is_lifecycle_disposition": false,
+    "phase_6_human_disposition_required": true
+  },
+  "ordered_primary_requirement_records": [
+    {
+      "requirement_id": "AAOS-REQ-0000-001",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Stable RFC identity",
+      "normative_statement": "Every AAOS RFC MUST have one stable RFC identifier that remains distinct from its version, repository path, issue, pull request, commit, tree, rendered document digest, and release identifier.",
+      "requirement_group": "document_identity_and_normative_scope",
+      "verification_classes": ["evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S04-C01", "AAOS-RFC-0000-S15-C02"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-002",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Exact candidate binding",
+      "normative_statement": "Every material review disposition and every RFC lifecycle transition MUST bind the exact candidate version and canonical serialized candidate digest.\n\nWhen materialized in a repository, the disposition MUST also bind repository, commit, and tree identity.",
+      "requirement_group": "document_identity_and_normative_scope",
+      "verification_classes": ["machine_testable", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S04-C02", "AAOS-RFC-0000-S04-C03", "AAOS-RFC-0000-S15-C01", "AAOS-RFC-0000-S15-C02", "AAOS-RFC-0000-S15-C03"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-003",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Explicit normative sections",
+      "normative_statement": "An AAOS RFC MUST identify which sections and requirement records are normative and which content is informative.\n\nExamples, rationale, diagrams, notes, and historical descriptions MUST NOT silently create normative obligations.",
+      "requirement_group": "document_identity_and_normative_scope",
+      "verification_classes": ["machine_testable", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S03-C02", "AAOS-RFC-0000-S15-C03"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-004",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Normative keyword profile",
+      "normative_statement": "AAOS RFCs MUST interpret uppercase normative keywords according to RFC 2119 as clarified by RFC 8174, subject to the AAOS requirement-record rules.\n\nAAOS-authored normative text SHOULD use:\n\nMUST\nMUST NOT\nSHOULD\nSHOULD NOT\nMAY\n\nNew AAOS normative text SHOULD NOT use `SHALL` or `SHALL NOT`.",
+      "requirement_group": "document_identity_and_normative_scope",
+      "verification_classes": ["machine_testable", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S03-C01", "AAOS-RFC-0000-S03-C02"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-005",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "SHOULD-exception record",
+      "normative_statement": "An implementation or profile that does not follow a `SHOULD` or `SHOULD NOT` requirement MUST record the justification, affected requirement IDs, risk, compensating behavior, evidence, scope, and validity interval.",
+      "requirement_group": "document_identity_and_normative_scope",
+      "verification_classes": ["evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S03-C03"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-006",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "One primary requirement identifier",
+      "normative_statement": "Every normative obligation MUST have exactly one primary `AAOS-REQ-<RFC>-<NUMBER>` identifier.",
+      "requirement_group": "requirement_identity_and_traceability",
+      "verification_classes": ["machine_testable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S05-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-007",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Specialized identifier mapping",
+      "normative_statement": "Specialized contract, interface, conformance, fixture, test, schema, evidence-class, and record identifiers MUST map to a primary AAOS requirement where they implement or evaluate a normative obligation.\n\nExamples include:\n\nTG-IFACE-*\nTG-CONF-*\nTG-CONTRACT-EV-*\nTG-FIX-*\nTG-AP-*\nTG-AR-*\nTG-TP-*\n\nThey MUST NOT become competing primary IDs for the same obligation.",
+      "requirement_group": "requirement_identity_and_traceability",
+      "verification_classes": ["machine_testable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S05-C02"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-008",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Requirement identifier immutability",
+      "normative_statement": "A requirement identifier MUST NOT be reused for unrelated or materially incompatible semantics.\n\nEditorial and non-semantic clarification MAY preserve the ID. A breaking semantic replacement MUST create an explicit successor requirement or major RFC revision.",
+      "requirement_group": "requirement_identity_and_traceability",
+      "verification_classes": ["machine_testable", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S05-C03", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-009",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Historical resolvability",
+      "normative_statement": "Deprecated, superseded, withdrawn, and rejected requirement identifiers MUST remain historically resolvable with their prior text, version, status, and successor references.",
+      "requirement_group": "requirement_identity_and_traceability",
+      "verification_classes": ["machine_testable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S05-C04"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-010",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Requirement verification classification",
+      "normative_statement": "Every normative requirement MUST declare one or more verification classes:\n\nmachine_testable\nevidence_reviewable\nhuman_disposition_only\nprivate_l0_dependent\n\nIt MUST also declare required evidence, negative behavior, unknown behavior, and public claim boundary.",
+      "requirement_group": "requirement_identity_and_traceability",
+      "verification_classes": ["machine_testable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S05-C05"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-011",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Namespace separation",
+      "normative_statement": "`rfc_class`, `rfc_review_state`, `rfc_status`, archival designation, delivery state, implementation state, conformance outcome, and deployment state MUST remain separate namespaces.",
+      "requirement_group": "rfc_class_review_state_lifecycle_status_and_archival_projection",
+      "verification_classes": ["machine_testable", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S06-C01", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-012",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "RFC class registry",
+      "normative_statement": "RFC-0000 MUST define the following initial RFC classes or explicitly disposition each alternative:\n\nprocess\nstandards_track\nprofile\ninformational\nexperimental\n\nRFC class MUST NOT imply lifecycle status, implementation maturity, deployment suitability, or conformance.",
+      "requirement_group": "rfc_class_review_state_lifecycle_status_and_archival_projection",
+      "verification_classes": ["machine_testable", "human_disposition_only"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S02-C01", "AAOS-RFC-0000-S06-C02"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-013",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "RFC review-state registry",
+      "normative_statement": "RFC-0000 MUST define an RFC review-state namespace that includes at least:\n\nnot_started\nunder_review\nchanges_requested\nready_for_disposition\nblocked_pending_private_l0_input\nblocked_by_contract_contradiction\n\nReview state MUST NOT create normative force.",
+      "requirement_group": "rfc_class_review_state_lifecycle_status_and_archival_projection",
+      "verification_classes": ["machine_testable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S06-C03"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-014",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "RFC lifecycle-status registry",
+      "normative_statement": "RFC-0000 MUST define an RFC lifecycle-status namespace that includes at least:\n\ndraft\ncandidate\nprovisional\naccepted\nstable\ndeprecated\nsuperseded\nwithdrawn\nrejected\n\nEach status MUST have a definition, permitted predecessor and successor states, transition authority, required evidence, and migration consequence.",
+      "requirement_group": "rfc_class_review_state_lifecycle_status_and_archival_projection",
+      "verification_classes": ["machine_testable", "human_disposition_only"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S06-C04", "AAOS-RFC-0000-S07-C02", "AAOS-RFC-0000-S07-C03", "AAOS-RFC-0000-S07-C04", "AAOS-RFC-0000-S07-C05", "AAOS-RFC-0000-S07-C06"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-015",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Explicit status transitions",
+      "normative_statement": "No RFC lifecycle transition MAY be inferred from GitHub state, publication, CI, evaluator output, runtime behavior, implementation availability, conformance test results, or elapsed time.\n\nEvery material transition MUST use an exact-candidate-bound human disposition record.",
+      "requirement_group": "rfc_class_review_state_lifecycle_status_and_archival_projection",
+      "verification_classes": ["evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S07-C01", "AAOS-RFC-0000-S07-C02", "AAOS-RFC-0000-S07-C03", "AAOS-RFC-0000-S07-C04", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-016",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Historical projection",
+      "normative_statement": "`historical` MUST be represented as a derived archival designation or publication projection, not as a competing RFC class and lifecycle status.",
+      "requirement_group": "rfc_class_review_state_lifecycle_status_and_archival_projection",
+      "verification_classes": ["machine_testable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S06-C05"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-017",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Review-role separation",
+      "normative_statement": "RFC-0000 MUST distinguish proposer, editor, semantic owner, required reviewers, private-L0 reviewer where applicable, and final disposer.",
+      "requirement_group": "review_roles_and_authority_separation",
+      "verification_classes": ["human_disposition_only"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S08-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-018",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "No self-acceptance by default",
+      "normative_statement": "A proposer or editor MUST NOT assign `accepted` or `stable` status solely by virtue of proposing or editing the RFC.\n\nAny permitted role combination MUST be explicitly authorized and its independence limitation MUST be recorded.",
+      "requirement_group": "review_roles_and_authority_separation",
+      "verification_classes": ["evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S08-C02", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-019",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Disposition record contract",
+      "normative_statement": "Every material RFC disposition MUST bind:\n\n- RFC ID and version;\n- candidate digest;\n- requirement-manifest digest;\n- review evidence;\n- disposition and constraints;\n- unresolved inputs;\n- final-disposer Authority reference;\n- effective time and clock context;\n- supersession, withdrawal, or rejection consequences.",
+      "requirement_group": "review_roles_and_authority_separation",
+      "verification_classes": ["machine_testable", "human_disposition_only"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S08-C03", "AAOS-RFC-0000-S15-C01", "AAOS-RFC-0000-S15-C02", "AAOS-RFC-0000-S15-C03"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-020",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Planning review versus RFC status",
+      "normative_statement": "A review of mutable issue text MAY assign only planning review state. It MUST NOT assign `candidate`, `provisional`, `accepted`, or `stable` RFC status until an immutable candidate identity exists.",
+      "requirement_group": "review_roles_and_authority_separation",
+      "verification_classes": ["evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S04-C03", "AAOS-RFC-0000-S08-C04", "AAOS-RFC-0000-S15-C01", "AAOS-RFC-0000-S15-C03"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-021",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Independent revision classification",
+      "normative_statement": "Every RFC revision MUST declare both a semantic `revision_class` and a resulting RFC version.\n\nInitial revision classes MUST include:\n\neditorial\nclarifying\nadditive_compatible\nrestrictive\nbreaking",
+      "requirement_group": "versioning_semantic_change_and_emergency_restriction",
+      "verification_classes": ["machine_testable", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S09-C01", "AAOS-RFC-0000-S09-C02"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-022",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Semantic versioning baseline",
+      "normative_statement": "AAOS RFC versions SHOULD use `MAJOR.MINOR.PATCH`.\n\nDefault mapping:\n\neditorial or non-conformance-impact clarification\n→ PATCH\n\nadditive compatible\n→ MINOR\n\nrestrictive change that invalidates prior conformant behavior\n→ MAJOR unless an accepted transition profile preserves bounded compatibility\n\nbreaking\n→ MAJOR or successor RFC",
+      "requirement_group": "versioning_semantic_change_and_emergency_restriction",
+      "verification_classes": ["machine_testable", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S09-C03", "AAOS-RFC-0000-S09-C05"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-023",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Clarification cannot hide semantic change",
+      "normative_statement": "A revision MUST NOT be classified as `clarifying` when it changes required evidence, permitted Authority, object or state meaning, failure behavior, interface obligations, conformance outcomes, or public claim boundaries.",
+      "requirement_group": "versioning_semantic_change_and_emergency_restriction",
+      "verification_classes": ["evidence_reviewable", "human_disposition_only"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S09-C04", "AAOS-RFC-0000-S09-C05", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-024",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Emergency Constraint Notice",
+      "normative_statement": "RFC-0000 MUST define an Emergency Constraint Notice mechanism that may temporarily restrict or suspend affected use without silently rewriting the RFC.\n\nAn ECN MUST bind:\n\n- stable ECN ID;\n- affected RFC versions, profiles, and requirement IDs;\n- identified threat or governance defect;\n- temporary restrictive rule;\n- issuing Authority reference;\n- effective time and maximum validity;\n- affected claims and admissions;\n- evidence;\n- withdrawal or replacement conditions;\n- mandatory follow-up review.",
+      "requirement_group": "versioning_semantic_change_and_emergency_restriction",
+      "verification_classes": ["machine_testable", "human_disposition_only"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S10-C01", "AAOS-RFC-0000-S10-C02", "AAOS-RFC-0000-S10-C03"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-025",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "ECN cannot widen authority",
+      "normative_statement": "An Emergency Constraint Notice MUST NOT expand Authority, waive mandatory evidence, convert `not_evaluable` into a permissive result, or become permanent without a normal RFC revision and disposition.",
+      "requirement_group": "versioning_semantic_change_and_emergency_restriction",
+      "verification_classes": ["machine_testable", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S10-C03", "AAOS-RFC-0000-S10-C04", "AAOS-RFC-0000-S10-C05", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-026",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Public semantic precedence",
+      "normative_statement": "RFC-0000 MUST define public semantic precedence so that lower-level artifacts cannot redefine an accepted public Semantic Core requirement.\n\nInitial precedence candidate:\n\naccepted RFC\n→ accepted RFC-owned requirement registry\n→ accepted ADR interpretation where delegated by the RFC\n→ implementation contract\n→ schema, API, or event representation\n→ tests, fixtures, and validators\n→ runtime behavior\n→ informational documentation\n→ historical milestone text",
+      "requirement_group": "semantic_precedence_and_institutional_applicability",
+      "verification_classes": ["evidence_reviewable", "human_disposition_only"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S11-C01", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-027",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Private institutional applicability",
+      "normative_statement": "Private L0 doctrine MAY determine whether, where, under whose Authority, and with which restrictions an institution adopts a public RFC or profile.\n\nIt MUST NOT silently rewrite the public RFC's canonical semantics.",
+      "requirement_group": "semantic_precedence_and_institutional_applicability",
+      "verification_classes": ["private_l0_dependent", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S12-C01", "AAOS-RFC-0000-S12-C04"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-028",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Public/private contradiction behavior",
+      "normative_statement": "A material contradiction between a public RFC and required private doctrine MUST result in bounded profile restriction, non-adoption, `blocked_pending_private_l0_input`, or `blocked_by_contract_contradiction`.\n\nIt MUST NOT use last-write-wins, newest-document-wins, or silent semantic override.",
+      "requirement_group": "semantic_precedence_and_institutional_applicability",
+      "verification_classes": ["human_disposition_only", "private_l0_dependent"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S12-C02", "AAOS-RFC-0000-S12-C04"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-029",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "No public overclaim",
+      "normative_statement": "Acceptance of a public RFC MUST NOT be represented as disclosure, implementation evidence, or independent verification of private sovereign controls.",
+      "requirement_group": "semantic_precedence_and_institutional_applicability",
+      "verification_classes": ["evidence_reviewable", "private_l0_dependent"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S12-C03", "AAOS-RFC-0000-S12-C04", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-030",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Artifact-type separation",
+      "normative_statement": "Issue, ADR, RFC, requirement registry, schema, interface contract, test, fixture, validator, runtime control, conformance claim, deployment admission, and institutional decision MUST remain distinct artifact types.",
+      "requirement_group": "artifact_boundaries_traceability_and_downstream_gating",
+      "verification_classes": ["machine_testable", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S02-C01", "AAOS-RFC-0000-S13-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-031",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Downstream traceability",
+      "normative_statement": "Every schema, interface contract, event contract, validator, test, fixture, runtime control, and conformance claim that implements or evaluates an RFC obligation MUST trace to stable RFC and primary requirement IDs.",
+      "requirement_group": "artifact_boundaries_traceability_and_downstream_gating",
+      "verification_classes": ["machine_testable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S02-C01", "AAOS-RFC-0000-S13-C02", "AAOS-RFC-0000-S13-C03", "AAOS-RFC-0000-S15-C03"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-032",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Test result boundary",
+      "normative_statement": "Passing a schema validator, evaluator, fixture, test suite, or CI workflow MUST NOT by itself establish live control enforcement, institutional adoption, deployment authorization, certification, or risk acceptance.",
+      "requirement_group": "artifact_boundaries_traceability_and_downstream_gating",
+      "verification_classes": ["evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S11-C02", "AAOS-RFC-0000-S13-C03", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-033",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "RFC status boundary",
+      "normative_statement": "`accepted` or `stable` RFC status MUST NOT authorize implementation, release, deployment, certification, risk acceptance, waiver, audit closure, rollback, restore, cutover, or proof sealing.",
+      "requirement_group": "artifact_boundaries_traceability_and_downstream_gating",
+      "verification_classes": ["evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S02-C02"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-034",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Unknown mandatory semantics",
+      "normative_statement": "An unsupported or unknown mandatory RFC semantic MUST result in `fail_closed`, `not_evaluable`, or explicit human disposition according to the applicable profile.\n\nIt MUST NOT be ignored, guessed, downgraded, or mapped to the nearest permissive behavior.",
+      "requirement_group": "artifact_boundaries_traceability_and_downstream_gating",
+      "verification_classes": ["machine_testable", "human_disposition_only"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S02-C03", "AAOS-RFC-0000-S10-C05", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-035",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Semantic Core intake restriction",
+      "normative_statement": "A new Semantic Core RFC or primary issue MUST be justified by an unowned irreducible concept, canonical contradiction, necessary breaking change, authority-boundary or fail-closed defect, or independently reviewable profile after base stabilization.\n\nExternal novelty alone MUST NOT create a normative RFC.",
+      "requirement_group": "artifact_boundaries_traceability_and_downstream_gating",
+      "verification_classes": ["human_disposition_only"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S13-C04"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-036",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Append-only specification history",
+      "normative_statement": "Accepted RFC versions, requirement records, dispositions, and conformance claims MUST remain historically preserved after deprecation, supersession, withdrawal, or rejection.",
+      "requirement_group": "migration_claim_invalidation_and_history",
+      "verification_classes": ["machine_testable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S07-C02", "AAOS-RFC-0000-S07-C05", "AAOS-RFC-0000-S14-C01", "AAOS-RFC-0000-S16-C01"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-037",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Migration-effect declaration",
+      "normative_statement": "Deprecation, supersession, restrictive revision, breaking revision, ECN issuance, and requirement withdrawal MUST declare effects on implementations, profiles, schemas, tests, deployment admissions, conformance claims, and public claim language.",
+      "requirement_group": "migration_claim_invalidation_and_history",
+      "verification_classes": ["machine_testable", "evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S07-C05", "AAOS-RFC-0000-S07-C06", "AAOS-RFC-0000-S14-C02"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-038",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "No successor-conformance inference",
+      "normative_statement": "A conformance claim against one RFC version MUST NOT be represented as conformance to a successor RFC unless the successor requirement set has been evaluated against the exact implementation and environment.",
+      "requirement_group": "migration_claim_invalidation_and_history",
+      "verification_classes": ["evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S14-C03"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    },
+    {
+      "requirement_id": "AAOS-REQ-0000-039",
+      "requirement_version": "0.1.0-candidate.1",
+      "title": "Bounded migration windows",
+      "normative_statement": "A migration window MAY preserve the validity of a historical claim only within its original RFC version, evaluated subject, environment, restrictions, and validity interval.\n\nIt MUST NOT imply conformance to the successor RFC.",
+      "requirement_group": "migration_claim_invalidation_and_history",
+      "verification_classes": ["evidence_reviewable"],
+      "normative_clause_refs": ["AAOS-RFC-0000-S14-C04"],
+      "status_within_candidate": "included_under_review_not_assigned"
+    }
+  ],
+  "normative_assertion_order": [
+    "AAOS-RFC-0000-S02-C01",
+    "AAOS-RFC-0000-S02-C02",
+    "AAOS-RFC-0000-S02-C03",
+    "AAOS-RFC-0000-S03-C01",
+    "AAOS-RFC-0000-S03-C02",
+    "AAOS-RFC-0000-S03-C03",
+    "AAOS-RFC-0000-S04-C01",
+    "AAOS-RFC-0000-S04-C02",
+    "AAOS-RFC-0000-S04-C03",
+    "AAOS-RFC-0000-S05-C01",
+    "AAOS-RFC-0000-S05-C02",
+    "AAOS-RFC-0000-S05-C03",
+    "AAOS-RFC-0000-S05-C04",
+    "AAOS-RFC-0000-S05-C05",
+    "AAOS-RFC-0000-S06-C01",
+    "AAOS-RFC-0000-S06-C02",
+    "AAOS-RFC-0000-S06-C03",
+    "AAOS-RFC-0000-S06-C04",
+    "AAOS-RFC-0000-S06-C05",
+    "AAOS-RFC-0000-S07-C01",
+    "AAOS-RFC-0000-S07-C02",
+    "AAOS-RFC-0000-S07-C03",
+    "AAOS-RFC-0000-S07-C04",
+    "AAOS-RFC-0000-S07-C05",
+    "AAOS-RFC-0000-S07-C06",
+    "AAOS-RFC-0000-S08-C01",
+    "AAOS-RFC-0000-S08-C02",
+    "AAOS-RFC-0000-S08-C03",
+    "AAOS-RFC-0000-S08-C04",
+    "AAOS-RFC-0000-S09-C01",
+    "AAOS-RFC-0000-S09-C02",
+    "AAOS-RFC-0000-S09-C03",
+    "AAOS-RFC-0000-S09-C04",
+    "AAOS-RFC-0000-S09-C05",
+    "AAOS-RFC-0000-S10-C01",
+    "AAOS-RFC-0000-S10-C02",
+    "AAOS-RFC-0000-S10-C03",
+    "AAOS-RFC-0000-S10-C04",
+    "AAOS-RFC-0000-S10-C05",
+    "AAOS-RFC-0000-S11-C01",
+    "AAOS-RFC-0000-S11-C02",
+    "AAOS-RFC-0000-S12-C01",
+    "AAOS-RFC-0000-S12-C02",
+    "AAOS-RFC-0000-S12-C03",
+    "AAOS-RFC-0000-S12-C04",
+    "AAOS-RFC-0000-S13-C01",
+    "AAOS-RFC-0000-S13-C02",
+    "AAOS-RFC-0000-S13-C03",
+    "AAOS-RFC-0000-S13-C04",
+    "AAOS-RFC-0000-S14-C01",
+    "AAOS-RFC-0000-S14-C02",
+    "AAOS-RFC-0000-S14-C03",
+    "AAOS-RFC-0000-S14-C04",
+    "AAOS-RFC-0000-S15-C01",
+    "AAOS-RFC-0000-S15-C02",
+    "AAOS-RFC-0000-S15-C03",
+    "AAOS-RFC-0000-S16-C01"
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "component_id": "AAOS-RFC-0000-C8",
+  "component_type": "public_private_boundary_registry",
+  "component_version": "0.1.0-candidate.1",
+  "rfc_id": "AAOS-RFC-0000",
+  "candidate_version": "0.1.0-candidate.1",
+  "semantic_owner": "abstract_role:semantic_owner",
+  "source_issue_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277",
+    "https://github.com/aa-os/aaos-public/issues/279"
+  ],
+  "source_review_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047507591",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054665217",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054796507"
+  ],
+  "normative_or_informative": "normative",
+  "public_private_projection": "sanitized_private_l0_constraint",
+  "status_within_package": "materialized_for_phase_5",
+  "predecessor_refs": [],
+  "successor_refs": [],
+  "unresolved_input_refs": [
+    "R0-U01",
+    "R0-U02",
+    "R0-U05",
+    "R0-U08"
+  ],
+  "canonicalization_method": "RFC 8785 JSON Canonicalization Scheme",
+  "digest_algorithm": "SHA-256",
+  "rfc_review_state": "under_review",
+  "rfc_status": "not_assigned",
+  "proposed_status": "candidate",
+  "boundary_invariants": [
+    "public semantic precedence != private institutional applicability",
+    "public RFC accepted != private sovereign implementation disclosed or verified",
+    "private dependency review receipt present != public verification of full private implementation",
+    "a private applicability decision may restrict or decline adoption but must not silently rewrite public Semantic Core semantics",
+    "missing private input is recorded or blocked and is never guessed"
+  ],
+  "public_semantic_precedence": {
+    "scope": "public Semantic Core meaning",
+    "precedence_order": [
+      "accepted_rfc",
+      "accepted_rfc_owned_requirement_registry",
+      "accepted_adr_interpretation_where_delegated_by_the_rfc",
+      "implementation_contract",
+      "schema_api_or_event_representation",
+      "tests_fixtures_and_validators",
+      "runtime_behavior",
+      "informational_documentation",
+      "historical_milestone_text"
+    ],
+    "rules": [
+      "a lower-precedence artifact cannot silently redefine a higher-precedence semantic owner",
+      "runtime behavior does not become normative through existence",
+      "a test may reveal contradiction but cannot resolve institutional Authority",
+      "no last-write-wins or newest-file-wins rule is permitted"
+    ]
+  },
+  "private_institutional_applicability": {
+    "permitted_scope": [
+      "whether an institution adopts a public RFC or profile",
+      "where an institution adopts a public RFC or profile",
+      "under whose private Authority an institution adopts a public RFC or profile",
+      "which private restrictions govern institutional adoption"
+    ],
+    "prohibited_scope": [
+      "silently rewrite public RFC canonical semantics",
+      "silently weaken a public sovereign invariant",
+      "represent institutional adoption as public semantic ownership",
+      "represent non-adoption as a change to public RFC meaning"
+    ],
+    "public_claim_boundary": "private doctrine may determine institutional applicability, but public semantic meaning remains owned by the accepted public RFC abstraction"
+  },
+  "conflict_resolution_behavior": {
+    "material_public_private_contradiction_outcomes": [
+      "bounded_profile_restriction",
+      "non_adoption",
+      "blocked_pending_private_l0_input",
+      "blocked_by_contract_contradiction"
+    ],
+    "prohibited_resolution_methods": [
+      "last_write_wins",
+      "newest_document_wins",
+      "silent_semantic_override",
+      "guess_private_doctrine",
+      "downgrade_unknown_to_allow"
+    ],
+    "missing_private_input_behavior": "retain an abstract reference or enter blocked_pending_private_l0_input",
+    "conflicting_canonical_owner_behavior": "blocked_by_contract_contradiction",
+    "authority_boundary": "a public test, schema, validator, runtime, repository actor, or model cannot resolve private institutional Authority"
+  },
+  "public_projection_rules": {
+    "public_rfc_may_define": [
+      "abstract authority roles",
+      "required bindings",
+      "invariants",
+      "interface obligations",
+      "evidence requirements",
+      "conformance claim limits"
+    ],
+    "private_dependency_projection": "only a bounded public-safe receipt or abstract unresolved reference",
+    "evidence_projection_rule": "reference the restricted evidence location without disclosing restricted evidence contents",
+    "authority_projection_rule": "use an abstract public role or opaque verifiable reference without assigning or exposing a private role identity",
+    "claim_rule": "a public projection must state its known limitations and must not claim full private implementation verification"
+  },
+  "restricted_private_fields": [
+    "exact_private_l0_authority_assignments",
+    "private_role_assignments",
+    "trusted_roots",
+    "restricted_signer_identity",
+    "risk_thresholds",
+    "approval_and_exception_doctrine",
+    "emergency_authority_or_procedures",
+    "production_topology",
+    "sensitive_escalation_procedures",
+    "sensitive_recovery_procedures",
+    "sealing_identities_or_doctrine",
+    "restore_identities_or_procedures",
+    "cutover_identities_or_procedures",
+    "restricted_evidence_contents"
+  ],
+  "private_dependency_review_receipt_contract": {
+    "receipt_type": "Private Dependency Review Receipt",
+    "required_fields": [
+      "receipt_id",
+      "receipt_version",
+      "rfc_id",
+      "rfc_version",
+      "candidate_digest_ref",
+      "reviewed_private_dependency_classes",
+      "review_result",
+      "public_safe_restrictions",
+      "reviewer_authority_abstract_ref",
+      "evidence_location_ref",
+      "effective_at",
+      "expires_at",
+      "revocation_ref",
+      "supersession_ref",
+      "known_limitations",
+      "public_projection_class",
+      "claim_boundary"
+    ],
+    "allowed_review_results": [
+      "satisfied",
+      "satisfied_with_restrictions",
+      "blocked_pending_private_input",
+      "contradiction_found",
+      "not_evaluable"
+    ],
+    "claim_boundary": [
+      "receipt proves only the declared bounded review result",
+      "receipt does not prove full private implementation"
+    ],
+    "claim_boundary_field_mandatory": true,
+    "claim_boundary_values_are_fixed": true,
+    "reviewed_private_dependency_classes_rule": "only abstract dependency classes may be listed",
+    "reviewer_authority_reference_rule": "must be an abstract public role or opaque verifiable reference and must not expose a restricted identity",
+    "evidence_location_reference_rule": "must identify the bounded evidence location without disclosing restricted evidence contents",
+    "public_safe_restrictions_rule": "must include only restrictions safe for public projection",
+    "known_limitations_rule": "must state every known public claim limitation",
+    "prohibited_receipt_fields": [
+      "private_role_assignments",
+      "trusted_roots",
+      "restricted_signer_identity",
+      "risk_thresholds",
+      "approval_doctrine",
+      "emergency_procedures",
+      "production_topology",
+      "sealing_identity",
+      "restore_identity",
+      "cutover_identity",
+      "restricted_evidence_contents"
+    ],
+    "receipt_presence_does_not_establish": [
+      "full_private_implementation",
+      "private_control_conformance",
+      "institutional_adoption",
+      "deployment_authorization",
+      "risk_acceptance",
+      "waiver",
+      "restore_authority",
+      "cutover_authority",
+      "sealing_authority"
+    ]
+  },
+  "not_evaluable_behavior": {
+    "permissive_result_allowed": false,
+    "allowed_bounded_results": [
+      "not_evaluable",
+      "blocked_pending_private_l0_input",
+      "blocked_by_contract_contradiction",
+      "bounded_profile_restriction",
+      "non_adoption",
+      "explicit_human_disposition"
+    ],
+    "unknown_private_semantics_rule": "do not ignore, infer, guess, or map to the nearest permissive behavior",
+    "public_claim_rule": "state that private implementation was not fully verified"
+  },
+  "revocation_and_supersession_behavior": {
+    "receipt_revocation_ref_required": true,
+    "receipt_supersession_ref_required": true,
+    "historical_receipt_preservation_required": true,
+    "revocation_effects_must_be_explicit": [
+      "affected RFC applicability",
+      "affected public-safe restrictions",
+      "affected conformance claims",
+      "affected deployment admissions",
+      "affected dependencies"
+    ],
+    "supersession_rule": "a newer receipt does not silently erase or rewrite the prior receipt",
+    "claim_rule": "a revoked or superseded receipt remains historically resolvable and cannot be used outside its original validity interval"
+  }
+}
