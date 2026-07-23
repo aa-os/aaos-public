@@ -1,0 +1,287 @@
+{
+  "component_id": "AAOS-RFC-0000-C6",
+  "component_type": "change_and_versioning_registry",
+  "component_version": "0.1.0-candidate.1",
+  "rfc_id": "AAOS-RFC-0000",
+  "candidate_version": "0.1.0-candidate.1",
+  "semantic_owner": "abstract_semantic_owner",
+  "source_issue_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277",
+    "https://github.com/aa-os/aaos-public/issues/279"
+  ],
+  "source_review_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047457643",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047507591",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054339690",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054380735",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054665217",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054777271",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054796507"
+  ],
+  "normative_or_informative": "normative",
+  "public_private_projection": "public_safe_abstract",
+  "status_within_package": "materialized_candidate_component",
+  "predecessor_refs": [],
+  "successor_refs": [],
+  "unresolved_input_refs": [
+    "R0-U01",
+    "R0-U02",
+    "R0-U08"
+  ],
+  "canonicalization_method": "RFC8785_JCS",
+  "digest_algorithm": "SHA-256",
+  "rfc_review_state": "under_review",
+  "rfc_status": "not_assigned",
+  "proposed_status": "candidate",
+  "version_format_policy": {
+    "format": "MAJOR.MINOR.PATCH",
+    "normative_strength": "SHOULD",
+    "unknown_version_behavior": "fail_closed, not_evaluable, or explicit human disposition according to the applicable RFC",
+    "admission_boundary": "implementation support for a version does not admit that version for use"
+  },
+  "classification_policy": {
+    "required_change_class_count": 5,
+    "exactly_one_semantic_change_class_required": true,
+    "semantic_effect_evaluation_precedes_version_mapping": true,
+    "semantic_change_class_and_resulting_version_increment_are_separate_required_fields": true,
+    "version_increment_must_not_define_semantic_change_class": true,
+    "classification_basis": "semantic effect, not textual diff size",
+    "invariants": [
+      "small textual diff != editorial change",
+      "large textual diff != semantic break by itself",
+      "newer RFC version != automatically compatible",
+      "transport compatibility != semantic compatibility",
+      "profile compatible != base invariant weakened",
+      "implementation supports version != version admitted for use"
+    ]
+  },
+  "compatibility_preservation_profile_exception": {
+    "applicable_semantic_change_class": "restrictive",
+    "default_resulting_version_increment": "MAJOR",
+    "conditional_resulting_version_increment": "MINOR",
+    "stable_profile_reference_required": true,
+    "required_profile_reference_field": "compatibility_preservation_profile_ref",
+    "profile_must_be_accepted": true,
+    "must_prove_all": [
+      "no previously valid object identity changes meaning",
+      "no authority verb changes meaning or owner",
+      "no previously conformant implementation becomes silently nonconformant without a declared profile boundary",
+      "old behavior remains valid within an explicitly versioned compatibility mode",
+      "downgrade and negotiation rules prevent authority widening",
+      "existing conformance claims are accurately scoped and are not represented as successor-version conformance",
+      "migration and expiry are defined"
+    ],
+    "failure_behavior": "if any required proof is absent, resulting_version_increment is MAJOR",
+    "non_inference_rule": "a MINOR version number does not imply that a Compatibility Preservation Profile exists or is accepted"
+  },
+  "change_class_records": [
+    {
+      "change_class_id": "AAOS-RFC-CHANGE-0001",
+      "change_class_name": "editorial",
+      "semantic_change_class": "editorial",
+      "normative_definition": "No normative meaning changes.",
+      "default_version_increment": "PATCH",
+      "resulting_version_increment": {
+        "default": "PATCH",
+        "conditional_alternatives": []
+      },
+      "conformance_impact": "none",
+      "migration_requirement": "none unless a non-semantic artifact relocation requires an informative pointer update",
+      "claim_invalidation_behavior": "must not invalidate a conformance claim because no normative meaning changed",
+      "requirement_id_behavior": "preserve the existing requirement ID and version history",
+      "successor_rfc_behavior": "no successor RFC required",
+      "review_requirements": [
+        "verify that normative meaning is unchanged",
+        "verify that no conformance obligation or public claim boundary changed",
+        "record the semantic change class separately from the resulting version increment"
+      ],
+      "ecn_interaction": "an ECN cannot be normalized into an editorial change",
+      "examples_informative_only": [
+        "spelling",
+        "formatting",
+        "link correction",
+        "clearer non-normative explanation"
+      ],
+      "forbidden_misclassification_cases": [
+        "any change to normative meaning",
+        "any change to required evidence",
+        "any change to permitted Authority",
+        "any change to object or state meaning",
+        "any change to failure behavior",
+        "any change to interface obligations",
+        "any change to conformance outcomes",
+        "any change to public claim boundaries"
+      ]
+    },
+    {
+      "change_class_id": "AAOS-RFC-CHANGE-0002",
+      "change_class_name": "clarifying",
+      "semantic_change_class": "clarifying",
+      "normative_definition": "Makes an existing normative meaning more explicit without expanding or narrowing permitted behavior.",
+      "default_version_increment": "PATCH",
+      "resulting_version_increment": {
+        "default": "PATCH",
+        "condition": "the review proves that no requirement semantics or conformance impact changed",
+        "conditional_alternatives": []
+      },
+      "conformance_impact": "none; any changed conformance outcome is not clarifying",
+      "migration_requirement": "none unless the clarification reveals a contradiction that requires a separately classified change",
+      "claim_invalidation_behavior": "must not invalidate or widen a claim because the permitted behavior is unchanged",
+      "requirement_id_behavior": "may preserve the requirement ID only when the meaning remains unchanged",
+      "successor_rfc_behavior": "no successor RFC required when the meaning remains unchanged",
+      "review_requirements": [
+        "evidence that no requirement semantics changed",
+        "human semantic diff review",
+        "explicit review of every forbidden semantic effect",
+        "record the semantic change class separately from the resulting version increment"
+      ],
+      "ecn_interaction": "an ECN restriction cannot be recast as a clarification",
+      "examples_informative_only": [
+        "making an already required condition explicit without expanding or narrowing behavior",
+        "resolving ambiguous wording while preserving the sole previously valid meaning"
+      ],
+      "forbidden_semantic_effects": [
+        "required evidence",
+        "Authority",
+        "object meaning",
+        "state meaning",
+        "failure behavior",
+        "interface obligation",
+        "conformance outcome",
+        "public claim boundary"
+      ],
+      "forbidden_misclassification_cases": [
+        "changes required evidence",
+        "changes permitted Authority",
+        "changes object meaning",
+        "changes state meaning",
+        "changes failure behavior",
+        "changes interface obligations",
+        "changes conformance outcomes",
+        "changes public claim boundaries",
+        "expands permitted behavior",
+        "narrows permitted behavior"
+      ]
+    },
+    {
+      "change_class_id": "AAOS-RFC-CHANGE-0003",
+      "change_class_name": "additive_compatible",
+      "semantic_change_class": "additive_compatible",
+      "normative_definition": "Adds optional behavior, extension points, or stricter bounded support without breaking existing conformant implementations.",
+      "default_version_increment": "MINOR",
+      "resulting_version_increment": {
+        "default": "MINOR",
+        "condition": "existing conformant implementations remain conformant and no mandatory unknown semantic becomes permissive",
+        "conditional_alternatives": []
+      },
+      "conformance_impact": "existing conformant implementations remain conformant; new behavior is separately scoped",
+      "migration_requirement": "declare negotiation, extension namespace, and optional-adoption behavior",
+      "claim_invalidation_behavior": "existing claims remain scoped to their exact version and must not be represented as successor-version conformance without evaluation",
+      "requirement_id_behavior": "preserve unchanged requirement IDs; assign a new primary requirement ID to each new independently testable normative obligation",
+      "successor_rfc_behavior": "not required unless the additive semantics belong to a separately owned RFC",
+      "review_requirements": [
+        "compatibility review",
+        "unknown-version and unknown-mandatory-field review",
+        "extension namespace collision review",
+        "public claim review",
+        "record the semantic change class separately from the resulting version increment"
+      ],
+      "ecn_interaction": "an ECN cannot introduce additive behavior or widen use",
+      "examples_informative_only": [
+        "optional behavior",
+        "declared extension point",
+        "stricter bounded support that leaves existing conformant behavior valid"
+      ],
+      "forbidden_misclassification_cases": [
+        "existing conformant behavior becomes silently nonconformant",
+        "object identity changes meaning",
+        "Authority semantics change",
+        "mandatory unknown semantics become permissive",
+        "base invariant is weakened"
+      ]
+    },
+    {
+      "change_class_id": "AAOS-RFC-CHANGE-0004",
+      "change_class_name": "restrictive",
+      "semantic_change_class": "restrictive",
+      "normative_definition": "Narrows previously permitted behavior to preserve safety or sovereign invariants.",
+      "default_version_increment": "MAJOR",
+      "resulting_version_increment": {
+        "default": "MAJOR",
+        "conditional_alternative": "MINOR",
+        "conditional_alternative_gate": "an accepted Compatibility Preservation Profile with a stable reference proves every required bounded-compatibility condition",
+        "failure_behavior": "MAJOR"
+      },
+      "conformance_impact": "previously conformant behavior may become nonconformant and must not be silently invalidated",
+      "migration_requirement": "required, including existing-claim invalidation consequences and any compatibility mode expiry",
+      "claim_invalidation_behavior": "declare which existing claims remain valid within their original exact version and which are restricted or invalidated",
+      "requirement_id_behavior": "preserve an ID only where the obligation remains semantically compatible; otherwise create a successor requirement or major RFC revision",
+      "successor_rfc_behavior": "a successor RFC is permitted when a major in-place revision would obscure identity or ownership",
+      "review_requirements": [
+        "semantic effect review",
+        "migration and claim-invalidation review",
+        "authority-widening and downgrade review",
+        "Compatibility Preservation Profile proof when MINOR is proposed",
+        "exact human disposition",
+        "record the semantic change class separately from the resulting version increment"
+      ],
+      "ecn_interaction": "an ECN may temporarily restrict or suspend use but cannot become permanent text without a normal RFC revision and disposition",
+      "examples_informative_only": [
+        "narrowing previously permitted behavior to preserve a safety invariant",
+        "removing a fail-open interpretation"
+      ],
+      "forbidden_misclassification_cases": [
+        "MINOR inferred solely from the phrase restrictive compatible",
+        "MINOR inferred from a version number",
+        "Compatibility Preservation Profile absent, unaccepted, or unbound",
+        "previously conformant implementation silently becomes nonconformant",
+        "downgrade or negotiation widens Authority",
+        "existing claims are represented as successor-version conformance without evaluation"
+      ]
+    },
+    {
+      "change_class_id": "AAOS-RFC-CHANGE-0005",
+      "change_class_name": "breaking",
+      "semantic_change_class": "breaking",
+      "normative_definition": "Incompatibly changes object identity, Authority semantics, state meaning, proof requirements, required fields, interface behavior, failure behavior, or conformance obligations.",
+      "default_version_increment": "MAJOR_or_successor_RFC",
+      "resulting_version_increment": {
+        "default": "MAJOR",
+        "allowed_alternative": "successor_RFC",
+        "allowed_alternative_condition": "explicit predecessor and successor identity, requirement mapping, migration consequences, and human disposition"
+      },
+      "conformance_impact": "prior conformance does not imply conformance to the breaking revision or successor",
+      "migration_requirement": "required",
+      "claim_invalidation_behavior": "existing claims remain bounded to their original exact RFC version, subject, environment, restrictions, and validity interval",
+      "requirement_id_behavior": "create an explicit successor requirement or major RFC revision; never silently reuse an ID for materially incompatible semantics",
+      "successor_rfc_behavior": "permitted with exact predecessor and successor mappings and preserved history",
+      "review_requirements": [
+        "breaking semantic change review",
+        "authority and identity review",
+        "complete migration and claim-impact review",
+        "predecessor and successor traceability review",
+        "exact human disposition",
+        "record the semantic change class separately from the resulting version increment"
+      ],
+      "ecn_interaction": "an ECN cannot substitute for permanent breaking-change disposition",
+      "examples_informative_only": [
+        "object identity meaning changes",
+        "Authority owner or verb meaning changes",
+        "required proof or failure behavior changes incompatibly"
+      ],
+      "forbidden_misclassification_cases": [
+        "classified as editorial because the textual diff is small",
+        "classified as clarifying while evidence or conformance semantics change",
+        "classified as additive while a prior conformant implementation breaks",
+        "history rewritten without predecessor and successor mappings"
+      ]
+    }
+  ],
+  "migration_and_claim_rules": [
+    "deprecation, supersession, restrictive revision, breaking revision, ECN issuance, and requirement withdrawal must declare effects on implementations, profiles, schemas, tests, deployment admissions, conformance claims, and public claim language",
+    "conformance to one RFC version must not be represented as conformance to a successor without evaluation against the exact implementation and environment",
+    "a migration window preserves a historical claim only within its original RFC version, evaluated subject, environment, restrictions, and validity interval",
+    "a migration window does not imply conformance to a successor RFC"
+  ]
+}

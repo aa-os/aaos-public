@@ -1,0 +1,1370 @@
+{
+  "component_id": "AAOS-RFC-0000-C4",
+  "component_type": "rfc_status_transition_registry",
+  "component_version": "0.1.0-candidate.1",
+  "rfc_id": "AAOS-RFC-0000",
+  "candidate_version": "0.1.0-candidate.1",
+  "semantic_owner": "abstract_semantic_owner",
+  "source_issue_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277",
+    "https://github.com/aa-os/aaos-public/issues/279"
+  ],
+  "source_review_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047457643",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047507591",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054339690",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054380735",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054665217",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054777271",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054796507"
+  ],
+  "normative_or_informative": "normative",
+  "public_private_projection": "public_safe_abstract",
+  "status_within_package": "materialized_candidate_component",
+  "predecessor_refs": [],
+  "successor_refs": [],
+  "unresolved_input_refs": [
+    "R0-U01",
+    "R0-U02",
+    "R0-U08"
+  ],
+  "canonicalization_method": "RFC8785_JCS",
+  "digest_algorithm": "SHA-256",
+  "rfc_review_state": "under_review",
+  "rfc_status": "not_assigned",
+  "proposed_status": "candidate",
+  "registry_invariants": [
+    "rfc_class != rfc_status",
+    "rfc_review_state != rfc_status",
+    "GitHub state, publication, CI, evaluator output, runtime behavior, implementation availability, conformance results, and elapsed time do not perform a lifecycle transition",
+    "every permitted material transition requires an exact-candidate-bound human disposition",
+    "emergency restriction uses an Emergency Constraint Notice and does not create an undocumented lifecycle jump",
+    "rejected is terminal for the exact candidate but not necessarily for the topic or a future successor candidate",
+    "withdrawal preserves historical identity and prior normative force during its valid period",
+    "supersession requires an exact successor"
+  ],
+  "transition_rules": [
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0001",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "draft",
+      "to_status": "candidate",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "proposer",
+        "editor",
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "rfc_id",
+        "candidate_version",
+        "semantic_manifest_digest_ref",
+        "requirement_registry_digest_ref",
+        "candidate_package_digest_ref",
+        "repository_commit_sha_if_materialized",
+        "repository_tree_sha_if_materialized"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0001"
+      ],
+      "required_unresolved_input_state": "no_unresolved_semantic_owner_contradiction",
+      "private_l0_review_condition": "required_only_when_private_doctrine_is_materially_referenced",
+      "minimum_entry_conditions": [
+        "exact candidate digest exists",
+        "primary requirement manifest exists",
+        "initial review is complete"
+      ],
+      "minimum_exit_conditions": [
+        "exact human disposition is recorded",
+        "candidate identity and constraints are bound"
+      ],
+      "prohibited_inferences": [
+        "issue opened",
+        "text written",
+        "branch created",
+        "document published"
+      ],
+      "migration_effects": "none unless explicitly declared by the disposition",
+      "conformance_claim_effects": "candidate status creates no conformance claim",
+      "dependency_effects": "candidate status creates no downstream implementation or deployment authority",
+      "reversibility": "not automatic; a later state change requires another applicable transition rule",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0002",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "candidate",
+      "to_status": "provisional",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "proposer",
+        "editor",
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "same exact candidate or explicit successor candidate",
+        "semantic_manifest_digest_ref",
+        "requirement_registry_digest_ref",
+        "candidate_package_digest_ref",
+        "repository_commit_sha_if_materialized",
+        "repository_tree_sha_if_materialized"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0002"
+      ],
+      "required_unresolved_input_state": "constraints and private dependencies recorded; no blocking contradiction",
+      "private_l0_review_condition": "required_for_unresolved_institutional_applicability",
+      "minimum_entry_conditions": [
+        "required reviewers are complete",
+        "constraints and private dependencies are recorded"
+      ],
+      "minimum_exit_conditions": [
+        "limited normative use, if any, is explicitly approved",
+        "exact human disposition is recorded"
+      ],
+      "prohibited_inferences": [
+        "pull request merged",
+        "document published",
+        "CI passed"
+      ],
+      "migration_effects": "must be declared when the provisional use affects existing dependencies",
+      "conformance_claim_effects": "provisional status does not establish stable conformance",
+      "dependency_effects": "limited use is bounded by the exact disposition and recorded constraints",
+      "reversibility": "not automatic; a later state change requires another applicable transition rule",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0003",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "provisional",
+      "to_status": "accepted",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "proposer",
+        "editor",
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact disposition-bound candidate",
+        "semantic_manifest_digest_ref",
+        "requirement_registry_digest_ref",
+        "candidate_package_digest_ref",
+        "repository_commit_sha_if_materialized",
+        "repository_tree_sha_if_materialized"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0003"
+      ],
+      "required_unresolved_input_state": "mandatory contradictions resolved and remaining inputs explicitly bounded",
+      "private_l0_review_condition": "required_where_the_public_abstraction_depends_on_private_authority_doctrine",
+      "minimum_entry_conditions": [
+        "all mandatory review dispositions exist",
+        "compatibility and migration consequences are defined"
+      ],
+      "minimum_exit_conditions": [
+        "exact human disposition is recorded",
+        "unresolved input register and constraints are bound"
+      ],
+      "prohibited_inferences": [
+        "absence of objections",
+        "elapsed review time",
+        "implementation availability"
+      ],
+      "migration_effects": "must be explicitly declared",
+      "conformance_claim_effects": "accepted status does not itself establish implementation conformance",
+      "dependency_effects": "accepted status does not authorize implementation, release, deployment, or institutional adoption",
+      "reversibility": "not automatic; a later state change requires another applicable transition rule",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0004",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "accepted",
+      "to_status": "stable",
+      "applicable_rfc_classes": [
+        "process"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact accepted version",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref",
+        "repository_commit_sha_if_materialized",
+        "repository_tree_sha_if_materialized"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0004"
+      ],
+      "required_unresolved_input_state": "no unresolved critical governance contradiction",
+      "private_l0_review_condition": "institution-specific adoption remains separate",
+      "minimum_entry_conditions": [
+        "at least one completed downstream RFC cycle used the process",
+        "status, requirement, and change-control rules were demonstrated usable"
+      ],
+      "minimum_exit_conditions": [
+        "class-specific stability evidence is complete",
+        "exact human disposition is recorded"
+      ],
+      "prohibited_inferences": [
+        "accepted plus elapsed time",
+        "one implementation exists",
+        "tests passed"
+      ],
+      "migration_effects": "must be declared when stability changes dependency or claim handling",
+      "conformance_claim_effects": "stable process status does not make every implementation conformant",
+      "dependency_effects": "stable status does not authorize implementation or deployment",
+      "reversibility": "not automatic; a later state change requires another applicable transition rule",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0005",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "accepted",
+      "to_status": "stable",
+      "applicable_rfc_classes": [
+        "standards_track"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "conformance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact accepted version",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref",
+        "repository_commit_sha_if_materialized",
+        "repository_tree_sha_if_materialized"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0004"
+      ],
+      "required_unresolved_input_state": "no unresolved critical authority-boundary or fail-open defect",
+      "private_l0_review_condition": "institution-specific adoption remains separate",
+      "minimum_entry_conditions": [
+        "two independent implementations or one implementation plus one independent offline validator or specimen exist",
+        "applicable conformance requirements were exercised through positive, negative, adversarial, and indeterminate cases",
+        "version and migration behavior was demonstrated"
+      ],
+      "minimum_exit_conditions": [
+        "class-specific stability evidence is complete",
+        "exact human disposition is recorded"
+      ],
+      "prohibited_inferences": [
+        "accepted plus elapsed time",
+        "one unreviewed implementation exists",
+        "tests passed"
+      ],
+      "migration_effects": "version and migration behavior must be declared and demonstrated",
+      "conformance_claim_effects": "stable RFC status does not make every implementation conformant",
+      "dependency_effects": "stable status does not authorize implementation, release, deployment, or institutional adoption",
+      "reversibility": "not automatic; a later state change requires another applicable transition rule",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0006",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "accepted",
+      "to_status": "stable",
+      "applicable_rfc_classes": [
+        "profile"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "conformance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact accepted version",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref",
+        "repository_commit_sha_if_materialized",
+        "repository_tree_sha_if_materialized"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0004"
+      ],
+      "required_unresolved_input_state": "no unresolved critical authority-boundary or fail-open defect",
+      "private_l0_review_condition": "institution-specific adoption remains separate",
+      "minimum_entry_conditions": [
+        "one conformant base implementation exists",
+        "one profile-specific implementation or specimen exists",
+        "profile-specific conformance evidence exists",
+        "profile strengthening or restriction without Base Profile weakening is proved"
+      ],
+      "minimum_exit_conditions": [
+        "class-specific stability evidence is complete",
+        "exact human disposition is recorded"
+      ],
+      "prohibited_inferences": [
+        "accepted plus elapsed time",
+        "profile compatibility inferred from a version number",
+        "tests passed"
+      ],
+      "migration_effects": "profile inheritance, migration, and claim consequences must be declared",
+      "conformance_claim_effects": "stable Profile status does not establish conformance for unevaluated implementations",
+      "dependency_effects": "a Profile cannot weaken a Base Profile or sovereign invariant",
+      "reversibility": "not automatic; a later state change requires another applicable transition rule",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0007",
+      "rule_effect": "permitted_only_with_documented_should_exception",
+      "from_status": "accepted",
+      "to_status": "stable",
+      "applicable_rfc_classes": [
+        "informational"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact accepted version",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref",
+        "repository_commit_sha_if_materialized",
+        "repository_tree_sha_if_materialized"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0004"
+      ],
+      "required_unresolved_input_state": "no unresolved critical governance contradiction",
+      "private_l0_review_condition": "institution-specific adoption remains separate",
+      "minimum_entry_conditions": [
+        "a documented SHOULD-exception record explains why stable is necessary",
+        "the record binds justification, impact, evidence, scope, and validity"
+      ],
+      "minimum_exit_conditions": [
+        "class-specific stability evidence is complete",
+        "exact human disposition is recorded"
+      ],
+      "prohibited_inferences": [
+        "accepted plus elapsed time",
+        "publication popularity",
+        "informational acceptance creates normative force"
+      ],
+      "migration_effects": "must be declared when dependencies or public claims are affected",
+      "conformance_claim_effects": "informational status creates no normative conformance obligation",
+      "dependency_effects": "the normal path remains accepted to deprecated, superseded, or withdrawn",
+      "reversibility": "not automatic; a later state change requires another applicable transition rule",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0008",
+      "rule_effect": "prohibited",
+      "from_status": "accepted",
+      "to_status": "stable",
+      "applicable_rfc_classes": [
+        "experimental"
+      ],
+      "requester_roles": [],
+      "required_review_roles": {
+        "always": [],
+        "standards_track_or_profile": [],
+        "security_or_authority_sensitive": []
+      },
+      "final_disposer_role": "not_applicable_prohibited_transition",
+      "required_candidate_identity": [],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0004"
+      ],
+      "required_unresolved_input_state": "not_applicable_prohibited_transition",
+      "private_l0_review_condition": "not_applicable_prohibited_transition",
+      "minimum_entry_conditions": [
+        "no direct entry condition exists"
+      ],
+      "minimum_exit_conditions": [
+        "reclassify the RFC or supersede it with a Process, Standards Track, Profile, or Informational RFC"
+      ],
+      "prohibited_inferences": [
+        "experimental acceptance implies stability",
+        "implementation evidence bypasses reclassification or supersession"
+      ],
+      "migration_effects": "must be addressed by the reclassification or successor RFC",
+      "conformance_claim_effects": "experimental status cannot be represented as stable",
+      "dependency_effects": "experimental class is not a stable normative dependency",
+      "reversibility": "not_applicable_prohibited_transition",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "none_prohibited_transition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0009",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "stable",
+      "to_status": "deprecated",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact stable version",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0005"
+      ],
+      "required_unresolved_input_state": "replacement or retirement effects explicitly bounded",
+      "private_l0_review_condition": "as applicable to institutional adoption",
+      "minimum_entry_conditions": [
+        "replacement or planned retirement rationale exists"
+      ],
+      "minimum_exit_conditions": [
+        "migration and claim effects are published",
+        "exact human disposition is recorded"
+      ],
+      "prohibited_inferences": [
+        "newer draft exists",
+        "higher version string exists"
+      ],
+      "migration_effects": "required",
+      "conformance_claim_effects": "existing claims are governed by explicit migration and validity consequences",
+      "dependency_effects": "dependent artifacts receive explicit migration or retirement treatment",
+      "reversibility": "not automatic; a later state change requires another applicable transition rule",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0010",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "deprecated",
+      "to_status": "superseded",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact predecessor version",
+        "exact accepted or stable successor identity",
+        "predecessor_semantic_manifest_digest_ref",
+        "successor_semantic_manifest_digest_ref"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0006"
+      ],
+      "required_unresolved_input_state": "predecessor_successor_mapping_complete",
+      "private_l0_review_condition": "as applicable to institutional adoption",
+      "minimum_entry_conditions": [
+        "exact successor is accepted or stable",
+        "predecessor and successor requirement mapping is complete"
+      ],
+      "minimum_exit_conditions": [
+        "compatibility and migration record is complete",
+        "exact human disposition is recorded"
+      ],
+      "prohibited_inferences": [
+        "same title exists",
+        "higher version exists",
+        "newer document exists"
+      ],
+      "migration_effects": "required",
+      "conformance_claim_effects": "predecessor conformance does not imply successor conformance",
+      "dependency_effects": "all dependent artifacts receive explicit predecessor or successor bindings",
+      "reversibility": "not automatic; historical identity remains preserved",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0011",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "draft",
+      "to_status": "rejected",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "semantic_owner",
+        "governance_reviewer"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact reviewed draft candidate"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0007"
+      ],
+      "required_unresolved_input_state": "reason and successor possibility recorded",
+      "private_l0_review_condition": "required_if_rejection_depends_on_private_applicability",
+      "minimum_entry_conditions": [
+        "exact reviewed candidate exists"
+      ],
+      "minimum_exit_conditions": [
+        "reason and successor possibility are recorded",
+        "historical identity is preserved"
+      ],
+      "prohibited_inferences": [
+        "issue closed as not planned",
+        "branch removed",
+        "file absent"
+      ],
+      "migration_effects": "effects on referenced dependencies must be declared",
+      "conformance_claim_effects": "no new claim may rely on the rejected exact candidate",
+      "dependency_effects": "successor possibility remains explicit and is not inferred",
+      "reversibility": "terminal for the exact candidate",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_rejection_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0012",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "candidate",
+      "to_status": "rejected",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "semantic_owner",
+        "governance_reviewer"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact reviewed candidate",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0007"
+      ],
+      "required_unresolved_input_state": "reason and successor possibility recorded",
+      "private_l0_review_condition": "required_if_rejection_depends_on_private_applicability",
+      "minimum_entry_conditions": [
+        "exact reviewed candidate exists"
+      ],
+      "minimum_exit_conditions": [
+        "reason and successor possibility are recorded",
+        "historical identity is preserved"
+      ],
+      "prohibited_inferences": [
+        "issue closed as not planned",
+        "branch removed",
+        "file deleted"
+      ],
+      "migration_effects": "effects on referenced dependencies must be declared",
+      "conformance_claim_effects": "no new claim may rely on the rejected exact candidate",
+      "dependency_effects": "successor possibility remains explicit and is not inferred",
+      "reversibility": "terminal for the exact candidate",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_rejection_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0013",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "provisional",
+      "to_status": "rejected",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "semantic_owner",
+        "governance_reviewer"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact reviewed provisional candidate",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0007"
+      ],
+      "required_unresolved_input_state": "reason and successor possibility recorded",
+      "private_l0_review_condition": "required_if_rejection_depends_on_private_applicability",
+      "minimum_entry_conditions": [
+        "exact reviewed candidate exists"
+      ],
+      "minimum_exit_conditions": [
+        "reason and successor possibility are recorded",
+        "historical identity and provisional-use effects are preserved"
+      ],
+      "prohibited_inferences": [
+        "issue closed as not planned",
+        "branch removed",
+        "file deleted"
+      ],
+      "migration_effects": "effects on provisional users and dependencies must be declared",
+      "conformance_claim_effects": "affected provisional claims must be explicitly restricted or invalidated",
+      "dependency_effects": "dependent artifacts receive explicit cessation or successor treatment",
+      "reversibility": "terminal for the exact candidate",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_rejection_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0014",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "draft",
+      "to_status": "withdrawn",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact draft identity"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0008"
+      ],
+      "required_unresolved_input_state": "withdrawal reason and effects recorded",
+      "private_l0_review_condition": "as applicable",
+      "minimum_entry_conditions": [
+        "authorized withdrawal request exists"
+      ],
+      "minimum_exit_conditions": [
+        "historical preservation and effects are recorded"
+      ],
+      "prohibited_inferences": [
+        "file deleted",
+        "branch removed"
+      ],
+      "migration_effects": "must be declared where dependencies exist",
+      "conformance_claim_effects": "must be declared",
+      "dependency_effects": "must be declared",
+      "reversibility": "not automatic; a successor requires a distinct identity and disposition",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_withdrawal_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0015",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "candidate",
+      "to_status": "withdrawn",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact candidate",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0008"
+      ],
+      "required_unresolved_input_state": "withdrawal reason and effects recorded",
+      "private_l0_review_condition": "as applicable",
+      "minimum_entry_conditions": [
+        "authorized withdrawal request exists"
+      ],
+      "minimum_exit_conditions": [
+        "historical preservation and effects are recorded"
+      ],
+      "prohibited_inferences": [
+        "file deleted",
+        "branch removed"
+      ],
+      "migration_effects": "must be declared where dependencies exist",
+      "conformance_claim_effects": "must be declared",
+      "dependency_effects": "must be declared",
+      "reversibility": "not automatic; a successor requires a distinct identity and disposition",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_withdrawal_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0016",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "provisional",
+      "to_status": "withdrawn",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact provisional version",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0008"
+      ],
+      "required_unresolved_input_state": "withdrawal reason and effects recorded",
+      "private_l0_review_condition": "as applicable",
+      "minimum_entry_conditions": [
+        "authorized withdrawal request exists"
+      ],
+      "minimum_exit_conditions": [
+        "historical preservation and provisional-use effects are recorded"
+      ],
+      "prohibited_inferences": [
+        "file deleted",
+        "branch removed"
+      ],
+      "migration_effects": "must be declared for provisional users",
+      "conformance_claim_effects": "must be declared for provisional claims",
+      "dependency_effects": "must be declared",
+      "reversibility": "not automatic; a successor requires a distinct identity and disposition",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_withdrawal_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0017",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "accepted",
+      "to_status": "withdrawn",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact accepted version",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0008"
+      ],
+      "required_unresolved_input_state": "withdrawal reason and effects recorded",
+      "private_l0_review_condition": "as applicable",
+      "minimum_entry_conditions": [
+        "authorized withdrawal request exists"
+      ],
+      "minimum_exit_conditions": [
+        "historical preservation, dependencies, claims, and cessation or migration effects are recorded"
+      ],
+      "prohibited_inferences": [
+        "file deleted",
+        "branch removed"
+      ],
+      "migration_effects": "required",
+      "conformance_claim_effects": "required",
+      "dependency_effects": "required",
+      "reversibility": "not automatic; a successor requires a distinct identity and disposition",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_withdrawal_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0018",
+      "rule_effect": "permitted_only_for_critical_conditions",
+      "from_status": "stable",
+      "to_status": "withdrawn",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational"
+      ],
+      "requester_roles": [
+        "semantic_owner",
+        "governance_reviewer"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact stable version",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0008"
+      ],
+      "required_unresolved_input_state": "critical condition and all affected identities are resolved or explicitly bounded",
+      "private_l0_review_condition": "required_if_the_critical_condition_depends_on_private_applicability",
+      "minimum_entry_conditions": [
+        "critical unsafe semantic defect",
+        "continued use would widen Authority or create fail-open behavior",
+        "specification is legally or institutionally impossible to maintain",
+        "or no safe deprecation period exists"
+      ],
+      "minimum_exit_conditions": [
+        "reason is recorded",
+        "affected requirement IDs are recorded",
+        "affected conformance and deployment claims are recorded",
+        "required restrictive consequence is recorded",
+        "migration or cessation instructions are recorded",
+        "historical preservation is recorded",
+        "successor status is recorded if known"
+      ],
+      "prohibited_inferences": [
+        "ordinary replacement",
+        "newer document exists",
+        "convenience",
+        "file deletion"
+      ],
+      "migration_effects": "migration or cessation instructions required",
+      "conformance_claim_effects": "affected conformance and deployment claims must be explicitly restricted or invalidated",
+      "dependency_effects": "all affected dependencies require explicit restrictive treatment",
+      "reversibility": "not automatic; historical identity remains preserved",
+      "emergency_path_allowed": true,
+      "produced_disposition_record_type": "critical_exact_candidate_bound_withdrawal_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0019",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "deprecated",
+      "to_status": "withdrawn",
+      "applicable_rfc_classes": [
+        "process",
+        "standards_track",
+        "profile",
+        "informational",
+        "experimental"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [
+          "conformance_reviewer"
+        ],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact deprecated version",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0008"
+      ],
+      "required_unresolved_input_state": "withdrawal reason and effects recorded",
+      "private_l0_review_condition": "as applicable",
+      "minimum_entry_conditions": [
+        "authorized withdrawal request exists"
+      ],
+      "minimum_exit_conditions": [
+        "historical preservation, dependencies, claims, and migration or cessation effects are recorded"
+      ],
+      "prohibited_inferences": [
+        "deprecation period elapsed",
+        "file deleted",
+        "branch removed"
+      ],
+      "migration_effects": "required",
+      "conformance_claim_effects": "required",
+      "dependency_effects": "required",
+      "reversibility": "not automatic; historical identity remains preserved",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "exact_candidate_bound_withdrawal_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0020",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "candidate",
+      "to_status": "accepted",
+      "applicable_rfc_classes": [
+        "process"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact disposition-bound candidate",
+        "semantic_manifest_digest_ref",
+        "requirement_registry_digest_ref",
+        "candidate_package_digest_ref",
+        "repository_commit_sha_if_materialized",
+        "repository_tree_sha_if_materialized"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0009"
+      ],
+      "required_unresolved_input_state": "mandatory contradictions resolved and remaining inputs explicitly bounded",
+      "private_l0_review_condition": "required_where_the_process_materially_assigns_private_applicability",
+      "minimum_entry_conditions": [
+        "the Process RFC does not directly change runtime, Authority, evidence, object, state, interface, or conformance semantics",
+        "all mandatory review dispositions exist",
+        "compatibility and migration consequences are defined"
+      ],
+      "minimum_exit_conditions": [
+        "exact human disposition explicitly authorizes the direct transition",
+        "unresolved input register and constraints are bound"
+      ],
+      "prohibited_inferences": [
+        "Process class alone permits the direct transition",
+        "absence of objections",
+        "pull request merged"
+      ],
+      "migration_effects": "must be explicitly declared",
+      "conformance_claim_effects": "accepted status does not itself establish implementation conformance",
+      "dependency_effects": "accepted status does not authorize implementation, release, deployment, or institutional adoption",
+      "reversibility": "not automatic; a later state change requires another applicable transition rule",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "direct_process_exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0021",
+      "rule_effect": "permitted_with_conditions",
+      "from_status": "candidate",
+      "to_status": "accepted",
+      "applicable_rfc_classes": [
+        "informational"
+      ],
+      "requester_roles": [
+        "semantic_owner"
+      ],
+      "required_review_roles": {
+        "always": [
+          "semantic_owner",
+          "governance_reviewer",
+          "final_disposer"
+        ],
+        "standards_track_or_profile": [],
+        "security_or_authority_sensitive": [
+          "security_authority_boundary_reviewer"
+        ]
+      },
+      "final_disposer_role": "final_disposer",
+      "required_candidate_identity": [
+        "exact disposition-bound candidate",
+        "semantic_manifest_digest_ref",
+        "candidate_package_digest_ref",
+        "repository_commit_sha_if_materialized",
+        "repository_tree_sha_if_materialized"
+      ],
+      "required_evidence_refs": [
+        "AAOS-RFC-REVIEW-EV-0010"
+      ],
+      "required_unresolved_input_state": "mandatory contradictions resolved and remaining inputs explicitly bounded",
+      "private_l0_review_condition": "required_where_private_applicability_is_materially_referenced",
+      "minimum_entry_conditions": [
+        "acceptance is publication acceptance and does not create normative force",
+        "all mandatory review dispositions exist"
+      ],
+      "minimum_exit_conditions": [
+        "exact human disposition explicitly authorizes the direct transition",
+        "public claim boundary is recorded"
+      ],
+      "prohibited_inferences": [
+        "Informational acceptance creates normative force",
+        "absence of objections",
+        "publication alone"
+      ],
+      "migration_effects": "must be declared where dependencies or public claims are affected",
+      "conformance_claim_effects": "informational acceptance creates no normative conformance obligation",
+      "dependency_effects": "accepted status does not authorize implementation, release, deployment, or institutional adoption",
+      "reversibility": "not automatic; a later state change requires another applicable transition rule",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "direct_informational_exact_candidate_bound_human_disposition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0022",
+      "rule_effect": "prohibited",
+      "from_status": "candidate",
+      "to_status": "accepted",
+      "applicable_rfc_classes": [
+        "standards_track"
+      ],
+      "requester_roles": [],
+      "required_review_roles": {
+        "always": [],
+        "standards_track_or_profile": [],
+        "security_or_authority_sensitive": []
+      },
+      "final_disposer_role": "not_applicable_prohibited_transition",
+      "required_candidate_identity": [],
+      "required_evidence_refs": [],
+      "required_unresolved_input_state": "not_applicable_prohibited_transition",
+      "private_l0_review_condition": "not_applicable_prohibited_transition",
+      "minimum_entry_conditions": [
+        "no direct entry condition exists"
+      ],
+      "minimum_exit_conditions": [
+        "use candidate to provisional before accepted"
+      ],
+      "prohibited_inferences": [
+        "review completeness bypasses provisional",
+        "implementation evidence bypasses provisional",
+        "emergency condition bypasses provisional"
+      ],
+      "migration_effects": "not_applicable_prohibited_transition",
+      "conformance_claim_effects": "not_applicable_prohibited_transition",
+      "dependency_effects": "not_applicable_prohibited_transition",
+      "reversibility": "not_applicable_prohibited_transition",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "none_prohibited_transition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0023",
+      "rule_effect": "prohibited",
+      "from_status": "candidate",
+      "to_status": "accepted",
+      "applicable_rfc_classes": [
+        "profile"
+      ],
+      "requester_roles": [],
+      "required_review_roles": {
+        "always": [],
+        "standards_track_or_profile": [],
+        "security_or_authority_sensitive": []
+      },
+      "final_disposer_role": "not_applicable_prohibited_transition",
+      "required_candidate_identity": [],
+      "required_evidence_refs": [],
+      "required_unresolved_input_state": "not_applicable_prohibited_transition",
+      "private_l0_review_condition": "not_applicable_prohibited_transition",
+      "minimum_entry_conditions": [
+        "no direct entry condition exists"
+      ],
+      "minimum_exit_conditions": [
+        "use candidate to provisional before accepted"
+      ],
+      "prohibited_inferences": [
+        "review completeness bypasses provisional",
+        "implementation evidence bypasses provisional",
+        "emergency condition bypasses provisional"
+      ],
+      "migration_effects": "not_applicable_prohibited_transition",
+      "conformance_claim_effects": "not_applicable_prohibited_transition",
+      "dependency_effects": "not_applicable_prohibited_transition",
+      "reversibility": "not_applicable_prohibited_transition",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "none_prohibited_transition"
+    },
+    {
+      "transition_rule_id": "AAOS-RFC-TRANS-0024",
+      "rule_effect": "prohibited",
+      "from_status": "candidate",
+      "to_status": "accepted",
+      "applicable_rfc_classes": [
+        "experimental"
+      ],
+      "requester_roles": [],
+      "required_review_roles": {
+        "always": [],
+        "standards_track_or_profile": [],
+        "security_or_authority_sensitive": []
+      },
+      "final_disposer_role": "not_applicable_prohibited_transition",
+      "required_candidate_identity": [],
+      "required_evidence_refs": [],
+      "required_unresolved_input_state": "not_applicable_prohibited_transition",
+      "private_l0_review_condition": "not_applicable_prohibited_transition",
+      "minimum_entry_conditions": [
+        "no direct entry condition exists"
+      ],
+      "minimum_exit_conditions": [
+        "use candidate to provisional before any accepted disposition"
+      ],
+      "prohibited_inferences": [
+        "experimental scope bypasses provisional",
+        "implementation evidence bypasses provisional"
+      ],
+      "migration_effects": "not_applicable_prohibited_transition",
+      "conformance_claim_effects": "not_applicable_prohibited_transition",
+      "dependency_effects": "not_applicable_prohibited_transition",
+      "reversibility": "not_applicable_prohibited_transition",
+      "emergency_path_allowed": false,
+      "produced_disposition_record_type": "none_prohibited_transition"
+    }
+  ]
+}

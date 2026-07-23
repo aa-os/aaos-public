@@ -1,0 +1,305 @@
+{
+  "component_id": "AAOS-RFC-0000-COMPONENT-MANIFEST",
+  "component_type": "candidate_package_component_manifest",
+  "component_version": "0.1.0-candidate.1",
+  "rfc_id": "AAOS-RFC-0000",
+  "candidate_version": "0.1.0-candidate.1",
+  "semantic_owner": "abstract_semantic_owner",
+  "source_issue_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277",
+    "https://github.com/aa-os/aaos-public/issues/279"
+  ],
+  "source_review_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047457643",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047507591",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054339690",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054380735",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054665217",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054777271",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054796507"
+  ],
+  "normative_or_informative": "informative_package_index",
+  "public_private_projection": "public_safe_abstract",
+  "status_within_package": "materialized_candidate_component",
+  "predecessor_refs": [],
+  "successor_refs": [],
+  "unresolved_input_refs": [
+    "R0-U01",
+    "R0-U02",
+    "R0-U08"
+  ],
+  "canonicalization_method": "RFC8785_JCS",
+  "digest_algorithm": "SHA-256",
+  "rfc_review_state": "under_review",
+  "rfc_status": "not_assigned",
+  "proposed_status": "candidate",
+  "digest_binding": {
+    "component_manifest_digest_is_recorded_in": [
+      "AAOS-RFC-0000-C0",
+      "phase_5_external_verification_receipt"
+    ],
+    "self_digest_embedded": false
+  },
+  "components": [
+    {
+      "component_id": "AAOS-RFC-0000-C0",
+      "component_type": "package_metadata_and_canonical_digest_descriptor",
+      "required": true,
+      "normative_or_informative": "informative_package_binding",
+      "semantic_owner": "abstract_semantic_owner",
+      "source_dependencies": [
+        "AAOS-RFC-0000-C1",
+        "AAOS-RFC-0000-C2",
+        "AAOS-RFC-0000-C3",
+        "AAOS-RFC-0000-C4",
+        "AAOS-RFC-0000-C5",
+        "AAOS-RFC-0000-C6",
+        "AAOS-RFC-0000-C7",
+        "AAOS-RFC-0000-C8",
+        "AAOS-RFC-0000-C9",
+        "AAOS-RFC-0000-C10",
+        "AAOS-RFC-0000-COMPONENT-MANIFEST"
+      ],
+      "materialization_targets": [
+        "spec/rfc/AAOS-RFC-0000.package.json"
+      ],
+      "digest_status": "candidate_package_digest_calculated_externally_from_canonical_descriptor",
+      "consistency_checks": [
+        "descriptor_has_no_self_digest",
+        "all_component_paths_are_explicit",
+        "all_component_digests_are_sha256"
+      ],
+      "lifecycle_within_package": "required_materialized"
+    },
+    {
+      "component_id": "AAOS-RFC-0000-C1",
+      "component_type": "human_readable_rfc",
+      "required": true,
+      "normative_or_informative": "mixed_explicitly_labeled",
+      "semantic_owner": "AAOS-RFC-0000-C2",
+      "source_dependencies": [
+        "AAOS-RFC-0000-C2",
+        "AAOS-RFC-0000-C3"
+      ],
+      "materialization_targets": [
+        "docs/rfc/AAOS-RFC-0000.md"
+      ],
+      "digest_status": "bound_by_C0",
+      "consistency_checks": [
+        "all_normative_clauses_have_stable_ids",
+        "all_normative_clauses_map_to_primary_requirements",
+        "semantic_manifest_digest_reference_matches_C0"
+      ],
+      "lifecycle_within_package": "required_materialized"
+    },
+    {
+      "component_id": "AAOS-RFC-0000-C2",
+      "component_type": "canonical_semantic_manifest",
+      "required": true,
+      "normative_or_informative": "normative",
+      "semantic_owner": "abstract_semantic_owner",
+      "source_dependencies": [
+        "AAOS-RFC-0000-C3",
+        "AAOS-RFC-0000-C4",
+        "AAOS-RFC-0000-C5",
+        "AAOS-RFC-0000-C6",
+        "AAOS-RFC-0000-C7",
+        "AAOS-RFC-0000-C8",
+        "AAOS-RFC-0000-C9"
+      ],
+      "materialization_targets": [
+        "spec/rfc/AAOS-RFC-0000.manifest.json"
+      ],
+      "digest_status": "bound_by_C0",
+      "consistency_checks": [
+        "rfc8785_deterministic",
+        "primary_normative_disposition_subject_is_semantic_manifest",
+        "ordered_primary_requirements_match_C3"
+      ],
+      "lifecycle_within_package": "required_materialized"
+    },
+    {
+      "component_id": "AAOS-RFC-0000-C3",
+      "component_type": "requirement_registry",
+      "required": true,
+      "normative_or_informative": "normative",
+      "semantic_owner": "abstract_semantic_owner",
+      "source_dependencies": [
+        "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047507591",
+        "AAOS-RFC-0000-C1"
+      ],
+      "materialization_targets": [
+        "spec/rfc/AAOS-RFC-0000.requirements.json"
+      ],
+      "digest_status": "bound_by_C0",
+      "consistency_checks": [
+        "requirement_count_is_39",
+        "requirement_ids_are_unique_and_contiguous",
+        "every_requirement_has_clause_mapping"
+      ],
+      "lifecycle_within_package": "required_materialized"
+    },
+    {
+      "component_id": "AAOS-RFC-0000-C4",
+      "component_type": "rfc_status_transition_registry",
+      "required": true,
+      "normative_or_informative": "normative",
+      "semantic_owner": "abstract_semantic_owner",
+      "source_dependencies": [
+        "AAOS-RFC-0000-C3",
+        "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927"
+      ],
+      "materialization_targets": [
+        "spec/rfc/AAOS-RFC-0000.transitions.json"
+      ],
+      "digest_status": "bound_by_C0",
+      "consistency_checks": [
+        "transition_ids_unique",
+        "rejection_and_withdrawal_sources_enumerated",
+        "no_unresolved_eligible_wildcard"
+      ],
+      "lifecycle_within_package": "required_materialized"
+    },
+    {
+      "component_id": "AAOS-RFC-0000-C5",
+      "component_type": "review_evidence_registry",
+      "required": true,
+      "normative_or_informative": "normative",
+      "semantic_owner": "abstract_semantic_owner",
+      "source_dependencies": [
+        "AAOS-RFC-0000-C4",
+        "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927"
+      ],
+      "materialization_targets": [
+        "spec/rfc/AAOS-RFC-0000.review-evidence.json"
+      ],
+      "digest_status": "bound_by_C0",
+      "consistency_checks": [
+        "class_specific_evidence_branches_present",
+        "review_evidence_does_not_assign_status"
+      ],
+      "lifecycle_within_package": "required_materialized"
+    },
+    {
+      "component_id": "AAOS-RFC-0000-C6",
+      "component_type": "change_and_versioning_registry",
+      "required": true,
+      "normative_or_informative": "normative",
+      "semantic_owner": "abstract_semantic_owner",
+      "source_dependencies": [
+        "AAOS-RFC-0000-C3",
+        "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054796507"
+      ],
+      "materialization_targets": [
+        "spec/rfc/AAOS-RFC-0000.change-versioning.json"
+      ],
+      "digest_status": "bound_by_C0",
+      "consistency_checks": [
+        "semantic_change_class_separate_from_resulting_version_increment",
+        "clarifying_prohibitions_complete"
+      ],
+      "lifecycle_within_package": "required_materialized"
+    },
+    {
+      "component_id": "AAOS-RFC-0000-C7",
+      "component_type": "emergency_constraint_notice_contract",
+      "required": true,
+      "normative_or_informative": "normative",
+      "semantic_owner": "abstract_semantic_owner",
+      "source_dependencies": [
+        "AAOS-RFC-0000-C3",
+        "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927"
+      ],
+      "materialization_targets": [
+        "spec/rfc/AAOS-RFC-0000.ecn.json"
+      ],
+      "digest_status": "bound_by_C0",
+      "consistency_checks": [
+        "initial_validity_is_30",
+        "single_renewal_is_30",
+        "absolute_validity_is_60",
+        "restrictive_only"
+      ],
+      "lifecycle_within_package": "required_materialized"
+    },
+    {
+      "component_id": "AAOS-RFC-0000-C8",
+      "component_type": "public_private_boundary_registry",
+      "required": true,
+      "normative_or_informative": "normative",
+      "semantic_owner": "abstract_role:semantic_owner",
+      "source_dependencies": [
+        "AAOS-RFC-0000-C3",
+        "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927"
+      ],
+      "materialization_targets": [
+        "spec/rfc/AAOS-RFC-0000.public-private-boundary.json"
+      ],
+      "digest_status": "bound_by_C0",
+      "consistency_checks": [
+        "mandatory_receipt_claim_boundary_present",
+        "restricted_private_fields_not_assigned"
+      ],
+      "lifecycle_within_package": "required_materialized"
+    },
+    {
+      "component_id": "AAOS-RFC-0000-C9",
+      "component_type": "traceability_manifest",
+      "required": true,
+      "normative_or_informative": "informative_evidence_index",
+      "semantic_owner": "abstract_semantic_owner",
+      "source_dependencies": [
+        "issues/277",
+        "issues/279",
+        "AAOS-RFC-0000-C1",
+        "AAOS-RFC-0000-C3"
+      ],
+      "materialization_targets": [
+        "spec/rfc/AAOS-RFC-0000.traceability.json"
+      ],
+      "digest_status": "bound_by_C0",
+      "consistency_checks": [
+        "all_eight_exact_comment_ids_present",
+        "all_requirements_trace_to_clauses",
+        "downstream_dependency_278_preserved"
+      ],
+      "lifecycle_within_package": "required_materialized"
+    },
+    {
+      "component_id": "AAOS-RFC-0000-C10",
+      "component_type": "digest_and_disposition_record_template",
+      "required": true,
+      "normative_or_informative": "informative_unexecuted_template",
+      "semantic_owner": "abstract_semantic_owner",
+      "source_dependencies": [
+        "AAOS-RFC-0000-C0",
+        "AAOS-RFC-0000-C2",
+        "AAOS-RFC-0000-C3"
+      ],
+      "materialization_targets": [
+        "spec/rfc/AAOS-RFC-0000.disposition-template.json"
+      ],
+      "digest_status": "template_digest_bound_by_C0_actual_disposition_outside_phase_5",
+      "consistency_checks": [
+        "candidate_package_digest_ref_required",
+        "semantic_manifest_digest_ref_required",
+        "planning_disposition_separate_from_lifecycle_status",
+        "exact_git_identity_must_be_commit_external"
+      ],
+      "lifecycle_within_package": "required_materialized_unexecuted"
+    }
+  ],
+  "component_count": 11,
+  "all_components_required": true,
+  "phase_6_state": "not_started",
+  "authority_boundaries": {
+    "assigns_rfc_lifecycle_status": false,
+    "authorizes_implementation": false,
+    "authorizes_conformance_claim": false,
+    "authorizes_release_or_tag": false,
+    "authorizes_deployment": false,
+    "authorizes_risk_acceptance": false,
+    "authorizes_restore_cutover_or_sealing": false
+  }
+}

@@ -1,0 +1,283 @@
+{
+  "component_id": "AAOS-RFC-0000-C9",
+  "component_type": "traceability_manifest",
+  "component_version": "0.1.0-candidate.1",
+  "rfc_id": "AAOS-RFC-0000",
+  "candidate_version": "0.1.0-candidate.1",
+  "semantic_owner": "abstract_semantic_owner",
+  "source_issue_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277",
+    "https://github.com/aa-os/aaos-public/issues/279"
+  ],
+  "source_review_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047457643",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047507591",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054339690",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054380735",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054665217",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054777271",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054796507"
+  ],
+  "normative_or_informative": "informative_evidence_index",
+  "public_private_projection": "public_safe_abstract",
+  "status_within_package": "materialized_candidate_component",
+  "predecessor_refs": [],
+  "successor_refs": [],
+  "unresolved_input_refs": [
+    "R0-U01",
+    "R0-U02",
+    "R0-U08"
+  ],
+  "canonicalization_method": "RFC8785_JCS",
+  "digest_algorithm": "SHA-256",
+  "rfc_review_state": "under_review",
+  "rfc_status": "not_assigned",
+  "proposed_status": "candidate",
+  "immutable_source_reviews": [
+    {
+      "issue_number": 277,
+      "comment_id": 5047457643,
+      "review_name": "RFC-0000 First Review",
+      "url": "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047457643",
+      "semantic_scope": "R0-REV-01_through_R0-REV-10",
+      "mutable_title_is_identity": false
+    },
+    {
+      "issue_number": 277,
+      "comment_id": 5047507591,
+      "review_name": "RFC-0000 Second Review",
+      "url": "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047507591",
+      "semantic_scope": "AAOS-REQ-0000-001_through_039_and_transition_evidence_matrices",
+      "mutable_title_is_identity": false
+    },
+    {
+      "issue_number": 277,
+      "comment_id": 5054243927,
+      "review_name": "RFC-0000 Third Review",
+      "url": "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927",
+      "semantic_scope": "R0-D01_through_R0-D08",
+      "mutable_title_is_identity": false
+    },
+    {
+      "issue_number": 277,
+      "comment_id": 5054339690,
+      "review_name": "RFC-0000 Fourth Review",
+      "url": "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054339690",
+      "semantic_scope": "candidate_readiness_gate",
+      "mutable_title_is_identity": false
+    },
+    {
+      "issue_number": 279,
+      "comment_id": 5054380735,
+      "review_name": "Phase 1",
+      "url": "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054380735",
+      "semantic_scope": "candidate_semantics_freeze",
+      "mutable_title_is_identity": false
+    },
+    {
+      "issue_number": 279,
+      "comment_id": 5054665217,
+      "review_name": "Phase 2",
+      "url": "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054665217",
+      "semantic_scope": "C0_and_C2_through_C10_package_model",
+      "mutable_title_is_identity": false
+    },
+    {
+      "issue_number": 279,
+      "comment_id": 5054777271,
+      "review_name": "Phase 3",
+      "url": "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054777271",
+      "semantic_scope": "C1_human_readable_draft",
+      "mutable_title_is_identity": false
+    },
+    {
+      "issue_number": 279,
+      "comment_id": 5054796507,
+      "review_name": "Phase 4",
+      "url": "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054796507",
+      "semantic_scope": "consistency_review_and_R0-CORR-01_through_08",
+      "mutable_title_is_identity": false
+    }
+  ],
+  "traceability_edges": [
+    {
+      "trace_edge_id": "AAOS-RFC-TRACE-0001",
+      "source_artifact_type": "github_issue_body",
+      "source_artifact_id": "aa-os/aaos-public#277",
+      "source_version_or_digest": "issue_number_277",
+      "target_artifact_type": "candidate_package",
+      "target_artifact_id": "AAOS-RFC-0000-CANDIDATE-PACKAGE-001",
+      "target_version_or_digest": "0.1.0-candidate.1",
+      "relation_type": "derived_from",
+      "semantic_scope": "rfc_process_problem_and_constraints",
+      "normative_or_informative": "source_planning_evidence",
+      "validity_state": "current_source",
+      "supersession_state": "later_review_reconciliations_control"
+    },
+    {
+      "trace_edge_id": "AAOS-RFC-TRACE-0002",
+      "source_artifact_type": "github_issue_body",
+      "source_artifact_id": "aa-os/aaos-public#279",
+      "source_version_or_digest": "issue_number_279",
+      "target_artifact_type": "candidate_package",
+      "target_artifact_id": "AAOS-RFC-0000-CANDIDATE-PACKAGE-001",
+      "target_version_or_digest": "0.1.0-candidate.1",
+      "relation_type": "constrained_by",
+      "semantic_scope": "C0_through_C10_and_phase_5",
+      "normative_or_informative": "source_planning_evidence",
+      "validity_state": "current_source",
+      "supersession_state": "not_superseded"
+    },
+    {
+      "trace_edge_id": "AAOS-RFC-TRACE-0003",
+      "source_artifact_type": "github_issue_comment",
+      "source_artifact_id": "issuecomment-5047507591",
+      "source_version_or_digest": "immutable_comment_id_5047507591",
+      "target_artifact_type": "requirement_registry",
+      "target_artifact_id": "AAOS-RFC-0000-C3",
+      "target_version_or_digest": "0.1.0-candidate.1",
+      "relation_type": "normatively_owned_by",
+      "semantic_scope": "AAOS-REQ-0000-001_through_039",
+      "normative_or_informative": "normative_candidate_source",
+      "validity_state": "frozen_candidate_source",
+      "supersession_state": "not_superseded"
+    },
+    {
+      "trace_edge_id": "AAOS-RFC-TRACE-0004",
+      "source_artifact_type": "github_issue_comment",
+      "source_artifact_id": "issuecomment-5054243927",
+      "source_version_or_digest": "immutable_comment_id_5054243927",
+      "target_artifact_type": "package_component_set",
+      "target_artifact_id": "AAOS-RFC-0000-C4_through_C8",
+      "target_version_or_digest": "0.1.0-candidate.1",
+      "relation_type": "normatively_owned_by",
+      "semantic_scope": "R0-D01_through_R0-D08",
+      "normative_or_informative": "normative_candidate_source",
+      "validity_state": "frozen_candidate_source",
+      "supersession_state": "not_superseded"
+    },
+    {
+      "trace_edge_id": "AAOS-RFC-TRACE-0005",
+      "source_artifact_type": "github_issue_comment",
+      "source_artifact_id": "issuecomment-5054777271",
+      "source_version_or_digest": "immutable_comment_id_5054777271",
+      "target_artifact_type": "human_readable_rfc",
+      "target_artifact_id": "AAOS-RFC-0000-C1",
+      "target_version_or_digest": "0.1.0-candidate.1",
+      "relation_type": "represented_by",
+      "semantic_scope": "Phase_3_C1_draft",
+      "normative_or_informative": "mixed_explicitly_labeled",
+      "validity_state": "materialized_with_R0-CORR-02",
+      "supersession_state": "not_superseded"
+    },
+    {
+      "trace_edge_id": "AAOS-RFC-TRACE-0006",
+      "source_artifact_type": "github_issue_comment",
+      "source_artifact_id": "issuecomment-5054796507",
+      "source_version_or_digest": "immutable_comment_id_5054796507",
+      "target_artifact_type": "candidate_package",
+      "target_artifact_id": "AAOS-RFC-0000-CANDIDATE-PACKAGE-001",
+      "target_version_or_digest": "0.1.0-candidate.1",
+      "relation_type": "constrained_by",
+      "semantic_scope": "R0-CORR-01_through_R0-CORR-08",
+      "normative_or_informative": "required_non_semantic_corrections",
+      "validity_state": "materialized",
+      "supersession_state": "not_superseded"
+    },
+    {
+      "trace_edge_id": "AAOS-RFC-TRACE-0007",
+      "source_artifact_type": "candidate_package",
+      "source_artifact_id": "AAOS-RFC-0000-CANDIDATE-PACKAGE-001",
+      "source_version_or_digest": "phase_5_external_verification_receipt#candidate_package_sha256",
+      "target_artifact_type": "downstream_review_gate",
+      "target_artifact_id": "aa-os/aaos-public#278",
+      "target_version_or_digest": "issue_number_278",
+      "relation_type": "depends_on",
+      "semantic_scope": "formal_rfc_lifecycle_advancement",
+      "normative_or_informative": "governance_gate",
+      "validity_state": "blocked_pending_phase_6_disposition",
+      "supersession_state": "not_superseded"
+    }
+  ],
+  "requirement_to_clause_edges": [
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-001","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-001","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S04-C01","AAOS-RFC-0000-S15-C02"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-002","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-002","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S04-C02","AAOS-RFC-0000-S04-C03","AAOS-RFC-0000-S15-C01","AAOS-RFC-0000-S15-C02","AAOS-RFC-0000-S15-C03"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-003","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-003","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S03-C02","AAOS-RFC-0000-S15-C03"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-004","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-004","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S03-C01","AAOS-RFC-0000-S03-C02"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-005","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-005","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S03-C03"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-006","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-006","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S05-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-007","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-007","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S05-C02"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-008","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-008","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S05-C03","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-009","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-009","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S05-C04"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-010","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-010","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S05-C05"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-011","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-011","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S06-C01","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-012","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-012","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S02-C01","AAOS-RFC-0000-S06-C02"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-013","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-013","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S06-C03"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-014","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-014","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S06-C04","AAOS-RFC-0000-S07-C02","AAOS-RFC-0000-S07-C03","AAOS-RFC-0000-S07-C04","AAOS-RFC-0000-S07-C05","AAOS-RFC-0000-S07-C06"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-015","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-015","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S07-C01","AAOS-RFC-0000-S07-C02","AAOS-RFC-0000-S07-C03","AAOS-RFC-0000-S07-C04","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-016","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-016","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S06-C05"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-017","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-017","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S08-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-018","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-018","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S08-C02","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-019","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-019","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S08-C03","AAOS-RFC-0000-S15-C01","AAOS-RFC-0000-S15-C02","AAOS-RFC-0000-S15-C03"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-020","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-020","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S04-C03","AAOS-RFC-0000-S08-C04","AAOS-RFC-0000-S15-C01","AAOS-RFC-0000-S15-C03"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-021","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-021","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S09-C01","AAOS-RFC-0000-S09-C02"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-022","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-022","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S09-C03","AAOS-RFC-0000-S09-C05"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-023","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-023","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S09-C04","AAOS-RFC-0000-S09-C05","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-024","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-024","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S10-C01","AAOS-RFC-0000-S10-C02","AAOS-RFC-0000-S10-C03"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-025","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-025","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S10-C03","AAOS-RFC-0000-S10-C04","AAOS-RFC-0000-S10-C05","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-026","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-026","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S11-C01","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-027","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-027","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S12-C01","AAOS-RFC-0000-S12-C04"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-028","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-028","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S12-C02","AAOS-RFC-0000-S12-C04"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-029","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-029","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S12-C03","AAOS-RFC-0000-S12-C04","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-030","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-030","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S02-C01","AAOS-RFC-0000-S13-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-031","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-031","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S02-C01","AAOS-RFC-0000-S13-C02","AAOS-RFC-0000-S13-C03","AAOS-RFC-0000-S15-C03"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-032","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-032","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S11-C02","AAOS-RFC-0000-S13-C03","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-033","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-033","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S02-C02"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-034","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-034","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S02-C03","AAOS-RFC-0000-S10-C05","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-035","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-035","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S13-C04"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-036","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-036","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S07-C02","AAOS-RFC-0000-S07-C05","AAOS-RFC-0000-S14-C01","AAOS-RFC-0000-S16-C01"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-037","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-037","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S07-C05","AAOS-RFC-0000-S07-C06","AAOS-RFC-0000-S14-C02"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-038","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-038","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S14-C03"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"},
+    {"trace_edge_id":"AAOS-RFC-REQ-TRACE-039","source_artifact_type":"primary_requirement","source_artifact_id":"AAOS-REQ-0000-039","source_version_or_digest":"0.1.0-candidate.1","target_artifact_type":"c1_normative_clause_set","target_artifact_id":["AAOS-RFC-0000-S14-C04"],"target_version_or_digest":"0.1.0-candidate.1","relation_type":"represented_by","semantic_scope":"full_requirement","normative_or_informative":"normative","validity_state":"mapped","supersession_state":"not_superseded"}
+  ],
+  "requirement_record_targets": {
+    "c2_record_pattern": "AAOS-RFC-0000-C2#/ordered_primary_requirements/{requirement_id}",
+    "c3_record_pattern": "AAOS-RFC-0000-C3#/requirements/{requirement_id}",
+    "all_39_requirements_present_in_c2": true,
+    "all_39_requirements_present_in_c3": true
+  },
+  "future_artifact_traceability_contract": [
+    {
+      "artifact_type": "implementation_contract",
+      "required_bindings": ["rfc_id", "rfc_version", "primary_requirement_ids"],
+      "relationship": "implements",
+      "presence_proves_conformance": false
+    },
+    {
+      "artifact_type": "schema",
+      "required_bindings": ["rfc_id", "rfc_version", "primary_requirement_ids"],
+      "relationship": "represented_by",
+      "presence_proves_conformance": false
+    },
+    {
+      "artifact_type": "validator_or_test",
+      "required_bindings": ["rfc_id", "rfc_version", "primary_requirement_ids", "evaluated_subject_identity"],
+      "relationship": "evaluates",
+      "presence_proves_conformance": false
+    },
+    {
+      "artifact_type": "conformance_claim",
+      "required_bindings": ["rfc_id", "rfc_version", "primary_requirement_ids", "exact_implementation", "exact_environment", "validity_interval"],
+      "relationship": "verifies",
+      "presence_proves_institutional_adoption": false
+    }
+  ],
+  "traceability_boundary": {
+    "traceability_edge_present_proves_target_semantic_correctness": false,
+    "traceability_edge_present_assigns_rfc_status": false,
+    "traceability_edge_present_authorizes_runtime_or_deployment": false,
+    "downstream_issue_278_state": "blocked_from_formal_lifecycle_advancement_pending_phase_6"
+  },
+  "phase_6_state": "not_started"
+}

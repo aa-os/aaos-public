@@ -1,0 +1,172 @@
+{
+  "component_id": "AAOS-RFC-0000-C10",
+  "component_type": "digest_and_disposition_record_template",
+  "component_version": "0.1.0-candidate.1",
+  "rfc_id": "AAOS-RFC-0000",
+  "candidate_version": "0.1.0-candidate.1",
+  "semantic_owner": "abstract_semantic_owner",
+  "source_issue_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277",
+    "https://github.com/aa-os/aaos-public/issues/279"
+  ],
+  "source_review_refs": [
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047457643",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5047507591",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054243927",
+    "https://github.com/aa-os/aaos-public/issues/277#issuecomment-5054339690",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054380735",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054665217",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054777271",
+    "https://github.com/aa-os/aaos-public/issues/279#issuecomment-5054796507"
+  ],
+  "normative_or_informative": "informative_unexecuted_template",
+  "public_private_projection": "public_safe_abstract",
+  "status_within_package": "materialized_unexecuted_phase_6_template",
+  "predecessor_refs": [],
+  "successor_refs": [],
+  "unresolved_input_refs": [
+    "R0-U01",
+    "R0-U02",
+    "R0-U08"
+  ],
+  "canonicalization_method": "RFC8785_JCS",
+  "digest_algorithm": "SHA-256",
+  "rfc_review_state": "under_review",
+  "rfc_status": "not_assigned",
+  "proposed_status": "candidate",
+  "phase_6_state": "not_started",
+  "digest_set_contract": {
+    "digest_set_id": "AAOS-RFC-0000-DIGEST-SET-001",
+    "required_fields": [
+      "semantic_manifest_sha256",
+      "requirement_registry_sha256",
+      "human_readable_document_sha256",
+      "component_manifest_sha256",
+      "candidate_package_sha256"
+    ],
+    "semantic_manifest_digest_ref": "AAOS-RFC-0000-C0#/component_digests/semantic_manifest_sha256",
+    "requirement_registry_digest_ref": "AAOS-RFC-0000-C0#/component_digests/requirement_registry_sha256",
+    "human_readable_document_digest_ref": "AAOS-RFC-0000-C0#/component_digests/human_readable_document_sha256",
+    "component_manifest_digest_ref": "AAOS-RFC-0000-C0#/component_digests/component_manifest_sha256",
+    "candidate_package_digest_ref": "phase_5_external_verification_receipt#candidate_package_sha256",
+    "value_binding_state": "values_recorded_in_phase_5_commit_external_receipt",
+    "candidate_package_digest_is_embedded_in_hashed_descriptor": false,
+    "distinctions": [
+      "semantic_manifest_sha256 != requirement_registry_sha256",
+      "semantic_manifest_sha256 != human_readable_document_sha256",
+      "semantic_manifest_sha256 != component_manifest_sha256",
+      "semantic_manifest_sha256 != candidate_package_sha256",
+      "candidate_package_sha256 != git_blob_sha",
+      "candidate_package_sha256 != git_commit_sha",
+      "candidate_package_sha256 != git_tree_sha"
+    ]
+  },
+  "repository_identity_contract": {
+    "repository_identity_state": "materialized_exact_identity_bound_in_commit_external_receipt",
+    "repository": "aa-os/aaos-public",
+    "repository_url": "https://github.com/aa-os/aaos-public",
+    "branch": "agent/rfc-0000-candidate-package",
+    "base_commit_sha": "9259c2eebffb98352a2f79783d6c345177a5fc77",
+    "final_commit_sha": {
+      "required": true,
+      "value_location": "phase_5_external_verification_receipt"
+    },
+    "final_tree_sha": {
+      "required": true,
+      "value_location": "phase_5_external_verification_receipt"
+    },
+    "binding_rule": "The final commit and tree SHALL be recorded after commit creation in the Draft PR and Issue #279 Phase 5 verification receipt.",
+    "non_recursive_reason": "Embedding a commit or tree identity in the same tree whose identity it changes would create an unsatisfiable self-reference.",
+    "identity_must_not_be_approximated": true
+  },
+  "disposition_record_contract": {
+    "disposition_record_id": "AAOS-RFC-0000-DISPOSITION-001",
+    "required_fields": [
+      "disposition_record_id",
+      "rfc_id",
+      "candidate_version",
+      "candidate_package_digest_ref",
+      "semantic_manifest_digest_ref",
+      "requirement_registry_digest_ref",
+      "disposition",
+      "constraints",
+      "unresolved_inputs",
+      "review_evidence_refs",
+      "semantic_owner_ref",
+      "governance_reviewer_ref",
+      "conformance_reviewer_ref",
+      "security_authority_boundary_reviewer_ref",
+      "final_disposer_authority_ref",
+      "effective_at",
+      "clock_context",
+      "resulting_rfc_review_state",
+      "resulting_rfc_status",
+      "migration_effects",
+      "claim_effects",
+      "supersession_effects",
+      "rejection_or_withdrawal_effects"
+    ],
+    "allowed_planning_dispositions": [
+      "accept",
+      "accept_with_constraints",
+      "changes_requested",
+      "reject",
+      "withdraw"
+    ],
+    "planning_package_disposition_is_rfc_lifecycle_transition": false,
+    "candidate_package_digest_ref_required": true,
+    "semantic_manifest_digest_ref_required": true,
+    "exact_git_identity_required_when_materialized": true,
+    "unknown_or_missing_digest_behavior": "reject_disposition_record_as_not_evaluable",
+    "role_assignments": {
+      "semantic_owner_ref": null,
+      "governance_reviewer_ref": null,
+      "conformance_reviewer_ref": null,
+      "security_authority_boundary_reviewer_ref": null,
+      "final_disposer_authority_ref": null,
+      "null_reason": "R0-U01 and R0-U02 remain unresolved; no private or institutional role is assigned by Phase 5."
+    }
+  },
+  "unexecuted_disposition_record": {
+    "disposition_record_id": "AAOS-RFC-0000-DISPOSITION-001",
+    "rfc_id": "AAOS-RFC-0000",
+    "candidate_version": "0.1.0-candidate.1",
+    "candidate_package_digest_ref": "phase_5_external_verification_receipt#candidate_package_sha256",
+    "semantic_manifest_digest_ref": "AAOS-RFC-0000-C0#/component_digests/semantic_manifest_sha256",
+    "requirement_registry_digest_ref": "AAOS-RFC-0000-C0#/component_digests/requirement_registry_sha256",
+    "disposition": null,
+    "constraints": [],
+    "unresolved_inputs": [
+      "R0-U01",
+      "R0-U02",
+      "R0-U08"
+    ],
+    "review_evidence_refs": [],
+    "semantic_owner_ref": null,
+    "governance_reviewer_ref": null,
+    "conformance_reviewer_ref": null,
+    "security_authority_boundary_reviewer_ref": null,
+    "final_disposer_authority_ref": null,
+    "effective_at": null,
+    "clock_context": null,
+    "resulting_rfc_review_state": null,
+    "resulting_rfc_status": "not_assigned",
+    "migration_effects": [],
+    "claim_effects": [],
+    "supersession_effects": [],
+    "rejection_or_withdrawal_effects": [],
+    "execution_state": "not_executed_phase_6_not_started"
+  },
+  "authority_boundaries": {
+    "template_presence_is_disposition": false,
+    "digest_presence_is_disposition": false,
+    "github_pr_state_is_disposition": false,
+    "test_result_is_disposition": false,
+    "assigns_rfc_lifecycle_status": false,
+    "authorizes_implementation": false,
+    "authorizes_release_or_tag": false,
+    "authorizes_deployment": false,
+    "authorizes_risk_acceptance": false,
+    "authorizes_restore_cutover_or_sealing": false
+  }
+}
