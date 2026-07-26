@@ -1,0 +1,59 @@
+{
+  "record_id": "AAOS-RFC-0000-PUBLICATION-METADATA-001",
+  "rfc_id": "AAOS-RFC-0000",
+  "publication_class": "public-profile",
+  "projection_scope": "interface-only",
+  "authority_status": "non-authoritative",
+  "derivative_status": "review-material",
+  "supersession_marker": "none",
+  "represented_public_source": {
+    "repository": "aa-os/aaos-public",
+    "commit": "92b4503c5834f993ccf6b0a28e097564c468c4b8",
+    "path": "docs/rfc/AAOS-RFC-0000.md",
+    "blob_sha": "7d757f5fa8316764543ad6d404fbb5f7f9dd6131",
+    "url": "https://github.com/aa-os/aaos-public/blob/92b4503c5834f993ccf6b0a28e097564c468c4b8/docs/rfc/AAOS-RFC-0000.md",
+    "candidate_package_id": "AAOS-RFC-0000-CANDIDATE-PACKAGE-001",
+    "candidate_version": "0.1.0-candidate.1",
+    "candidate_package_sha256": "d6b00b1a70b6b5e89da576090f74eb8ef37193cee0983c86c3bdaada7ff0c81b",
+    "semantic_manifest_sha256": "522296812eb8b5e88a5353643a27500447459a6cf747d20b347993aa7b0ae7bc",
+    "source_declared_rfc_review_state": "under_review",
+    "source_declared_rfc_status": "not_assigned",
+    "source_proposed_status": "candidate"
+  },
+  "restricted_derivation_source": {
+    "repository": "aa-os/aaos-governance-private",
+    "registry_id": "AAOS-PRIVATE-RFC-REGISTRY",
+    "registry_path": "rfc/registry.yaml",
+    "authority_envelope_path": "rfc/AAOS-RFC-0000/authority.yaml",
+    "publication_policy_path": "rfc/AAOS-RFC-0000/public-derivative-policy.md",
+    "authority_status": "canonical",
+    "visibility": "restricted",
+    "canonical_scope": "private_repository_authority_envelope"
+  },
+  "public_derivative": {
+    "path": "docs/rfc/AAOS-RFC-0000.public-profile.md",
+    "markers": [
+      "public-profile",
+      "interface-only",
+      "non-authoritative"
+    ],
+    "independent_semantic_fork_permitted": false,
+    "modifies_original_candidate_package": false,
+    "assigns_rfc_lifecycle_status": false,
+    "authorizes_publication_or_merge": false,
+    "authorizes_implementation": false,
+    "authorizes_deployment": false,
+    "authorizes_risk_acceptance": false,
+    "authorizes_restore_or_cutover": false,
+    "authorizes_proof_sealing": false
+  },
+  "governance_stop": {
+    "current_item_id": "R1-U01",
+    "next_permitted_item_id": "R1-U01",
+    "input_state": "open_fail_closed",
+    "r1_u02_permitted": false,
+    "lifecycle_effect": "none",
+    "canonicalization_effect": "none",
+    "supersession_effect": "none"
+  }
+}
